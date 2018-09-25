@@ -1,0 +1,150 @@
+
+/*-------
+ * Modal Scrollbar
+  -------*/
+.modal-dialog{
+    overflow-y: initial !important;
+}
+.modal-body-400{
+    height: 400px;
+    overflow-y: auto;
+}
+.modal-body-600{
+    height: 600px;
+    overflow-y: auto;
+}
+.modal-lg{
+    max-width:80%;
+}
+
+/*-------
+ * NAV CSS 
+ --------*/
+.wrapper {
+    display: flex;
+    align-items: stretch;
+}
+
+#diy-sidebar a, #diy-sidebar a:hover, #diy-sidebar a:focus {
+    color: #000;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+#diy-sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    background: #fff;
+    color: #000;
+    transition: all 0.3s;
+}
+
+#diy-sidebar.active {
+    margin-left: -250px;
+
+}
+
+#diy-sidebar .sidebar-header {
+    padding: 20px;
+    background: #fff;
+}
+
+#diy-sidebar ul.components {
+    padding: 20px 0;
+    border-bottom: 1px solid #47748b;
+}
+
+#diy-sidebar ul p {
+    color: #000;
+    padding: 10px;
+}
+
+#diy-sidebar ul li a {
+    padding: 5px;
+    margin: 5px;
+    font-size: 1.0em;
+    display: block;
+}
+
+#diy-sidebar ul li a:hover {
+    color: #000;
+    background: rgb(48, 120, 255);
+}
+
+#diy-sidebar ul li.active > a, a[aria-expanded="true"] {
+    color: #000;
+    background: rgb(48, 120, 255);
+}
+
+a[data-toggle="collapse"] {
+    position: relative;
+}
+
+/*a[aria-expanded="false"]::before, a[aria-expanded="true"]::before {
+    content: '\e259';
+    display: block;
+    position: absolute;
+    right: 20px;
+    font-family: 'Glyphicons Halflings';
+    font-size: 0.6em;
+}
+a[aria-expanded="true"]::before {
+    content: '\e260';
+}*/
+
+#diy-sidebar ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 20px !important;
+}
+#diy-sidebar ul ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 40px !important;
+    background: rgb(255, 255, 255);
+}
+/* 
+ul.CTAs {
+    padding: 20px;
+}
+
+ul.CTAs a {
+    text-align: center;
+    font-size: 0.9em !important;
+    display: block;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+a.download {
+    background: #464646;
+    color: #ffffff;
+}
+
+a.article, a.article:hover {
+    background: #ffffff !important;
+    color: #fff !important;
+}
+*/
+/* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+#diy-content {
+    padding: 20px;
+    min-height: 100vh;
+    width: 100%;
+    transition: all 0.3s;
+}
+
+/* ---------------------------------------------------
+    MEDIAQUERIES
+----------------------------------------------------- */
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -250px;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+    #sidebarCollapse span {
+        display: none;
+    }
+}

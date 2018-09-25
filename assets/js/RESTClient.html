@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>RESTClient</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RESTClient, a debugger for RESTful web services.">
+    <meta name="author" content="Chao ZHOU (chao@zhou.fr)">
+    <link rel="shortcut icon" href="moz-extension://63904867-227b-2340-ac57-192b4d68736b/icons/icon-16.png">
+    <link href="RESTClient_files/bootstrap.css" rel="stylesheet">
+    <link href="RESTClient_files/font-awesome.css" rel="stylesheet">
+    <link href="RESTClient_files/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="RESTClient_files/animate.css" rel="stylesheet">
+    <link href="RESTClient_files/toastr.css" rel="stylesheet">
+    <link href="RESTClient_files/typeaheadjs.css" rel="stylesheet">
+    <link href="RESTClient_files/pace-theme-minimal.css" rel="stylesheet">
+    <link href="RESTClient_files/bttn.css" rel="stylesheet">
+    <link href="RESTClient_files/codemirror.css" rel="stylesheet">
+    <link href="RESTClient_files/foldgutter.css" rel="stylesheet">
+    <link href="RESTClient_files/tagsinput.css" rel="stylesheet">
+    <link href="RESTClient_files/ladda-themeless.css" rel="stylesheet">
+    <link href="RESTClient_files/typo.css" rel="stylesheet">
+    <link href="RESTClient_files/index.css" rel="stylesheet">
+<style type="text/css"></style></head>
+
+<body class="  pace-done"><div class="pace  pace-inactive"><div class="pace-progress" style="transform: translate3d(100%, 0px, 0px);" data-progress-text="100%" data-progress="99">
+  <div class="pace-progress-inner"></div>
+</div>
+<div class="pace-activity"></div></div>
+  <div id="favorite-requests-list" data-count="0" class="slideout-menu slideout-menu-left">
+  <h3 data-i18n="favoriteTitle">Favorites</h3>
+  <small class="no-favorite-tip" data-i18n="favoriteIsEmptyTip">You have no favorite request yet, you can add your request to from menu "Favorite" - "Save Current Request".</small>
+  <div class="tags-list m-t-md"></div>
+  <div class="requests-list m-t-md"></div>
+</div>
+
+<!-- Template -->
+<script src="RESTClient_files/css.js"></script><script src="RESTClient_files/javascript.js"></script><script src="RESTClient_files/xml.js"></script><script src="RESTClient_files/htmlmixed.js"></script><script type="text-template" id="template-favorite-request">
+    <div class="request card">
+      <div class="card-block">
+        <h4 class="card-title">
+          <i class="type fa fa-file-text-o text-primary"></i> 
+          <a href="#" class="btn-load-favorite-request">
+            <span class="name"></span>
+          </a>
+          <a href="#" class="card-link pull-right btn-remove-favorite-request">
+            <i class="fa fa-trash"></i>
+          </a>
+        </h4>
+        <p class="card-text"><span class="method"></span> <span class="host"></span></p>
+      </div>
+    </div>
+  </script>
+<!-- Template end -->
+  <main id="wrapper" class="slideout-panel slideout-panel-left">
+    <!-- Navbar start -->
+<div class="navbar navbar-toggleable-md flex-column flex-md-row navbar-light bg-primary">
+    <button type="button" class="hamburger is-closed animated fadeInLeft" data-toggle="sidebar" data-invisible-incognito="true">
+        <span class="hamb-top"></span>
+        <span class="hamb-middle"></span>
+        <span class="hamb-bottom"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+
+        <!-- menu at the left -->
+        <ul class="navbar-nav navbar-left">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="nav-item-authentication"><span data-i18n="menuAuthentication">Authentication</span>
+                    <span class="caret"></span>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="nav-item-authentication">
+                    <div class="dropdown-header" data-i18n="menuHttpAuthentication">HTTP authentication</div>
+                    <a class="dropdown-item" href="#" data-target="#modal-basic-auth" data-toggle="modal" data-i18n="menuBasicAuthentication">Basic Authentication</a>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-header" data-i18n="menuOAuthProtocol">OAuth Protocol</div>
+                    <a class="dropdown-item btn-oauth" href="#" data-toggle="modal" data-target="#modal-oauth" data-i18n="menuOAuth10Authentication">OAuth 1.0</a>
+                    <a class="dropdown-item btn-oauth2" href="#" data-toggle="modal" data-target="#modal-oauth2" data-i18n="menuOAuth20Authentication">OAuth 2.0</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="nav-item-headers" data-i18n="menuHeaders">Headers</a>
+                <div class="dropdown-menu dd-favorite-headers" aria-labelledby="nav-item-headers">
+                    <a class="dropdown-item default-menu nav-custom-header" href="#" data-i18n="menuCustomHeader">Custom Header</a>
+                    <div class="dropdown-divider default-menu"></div>
+                    <a class="dropdown-item default-menu nav-custom-header-clear" href="#" data-i18n="menuClearFavorites">Clear Favorites</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="nav-item-view"><span data-i18n="menuView">View</span>
+                    <span class="caret"></span>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="nav-item-view">
+                    <a class="dropdown-item" href="#request-title" data-i18n="menuViewRequest">Request</a>
+                    <a class="dropdown-item" href="#response-title" data-i18n="menuViewResponse">Response</a>
+                    <a class="dropdown-item" href="#curl-title" data-i18n="menuViewCurl">Curl</a>
+                </div>
+            </li>
+        </ul>
+
+        <!-- menu at the right -->
+        <ul class="nav navbar-nav navbar-right ml-auto">
+            <li class="nav-item dropdown" data-invisible-incognito="true">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="nav-item-favorite" data-i18n="menuFavorites">Favorites</a>
+                <div class="dropdown-menu" aria-labelledby="nav-item-favorite">
+
+                    <a class="dropdown-item" href="#" data-target="#modal-file-import" data-toggle="modal" data-i18n="menuImportFavorites">Import Favorite Request</a>
+                    <a id="nav-download-favorite-request" class="dropdown-item" href="#" data-i18n="menuExportFavorites">Export Favorite Request</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item btn-manage-favorite-request" href="#" data-i18n="menuManageFavorite">Manage Favorite Request</a>
+                    <a class="dropdown-item" href="#" data-target="#modal-favorite-save" data-toggle="modal" data-i18n="menuSaveCurrentRequest">Save Current Request</a>
+                </div>
+            </li>
+            <li class="nav-item" id="nav-migration" style="display: none;" data-invisible-incognito="true">
+                <a class="nav-link" href="#" data-target="#modal-migrate-204" data-toggle="modal" data-i18n="menuDataMigration">Data migration</a>
+            </li>
+            <li class="nav-item">
+                <a href="moz-extension://63904867-227b-2340-ac57-192b4d68736b/" class="navbar-right navbar-brand">RESTClient</a>
+            </li>
+        </ul>
+
+        
+    </div>
+</div>
+<!-- Navbar end -->
+    <!-- Request -->
+<div class="request-container container-fluid panel m-t-lg">
+    <div class="row">
+        <div class="col-12">
+            <h5 id="request-title" class="text-muted title">
+                <a class="btn-toggle-panel">[<span>-</span>] <span data-i18n="requestTitle">Request</span></a>
+                <div class="btn-group authentication-mode animated zoomIn" data-mode="basic">
+                    <button type="button" class="btn btn-primary btn-sm btn-auth-mode btn-basic">
+                        <span class="name" data-i18n="requestBasicAuthentication">Basic authentication</span>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm btn-close">
+                        <i class="fa fa-close"></i>
+                    </button>
+                </div>
+                <div class="btn-group authentication-mode animated zoomIn" data-mode="oauth10">
+                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle btn-auth-mode btn-oauth-10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="name" data-i18n="requestOAuth10">OAuth 1.0</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item btn-edit" href="#" data-i18n="requestEdit">Edit</a>
+                        <a class="dropdown-item btn-preview" data-target="#modal-oauth-preview" data-toggle="modal" href="#" data-i18n="requestPreview">Preview</a>
+                        <a class="dropdown-item btn-refresh" href="#" data-i18n="requestRefresh">Refresh</a>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-sm btn-close">
+                        <i class="fa fa-close"></i>
+                    </button>
+                </div>
+                <div class="btn-group authentication-mode animated zoomIn" data-mode="oauth20">
+                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle btn-auth-mode btn-oauth-10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="name" data-i18n="requestOAuth20">OAuth 2.0</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item btn-edit" href="#" data-i18n="requestEdit">Edit</a>
+                        <a class="dropdown-item btn-preview" href="#" data-i18n="requestPreview">Preview</a>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-header" data-i18n="requestRefresh">Refresh</div>
+                        <a class="dropdown-item btn-oauth2-refresh ladda-button" href="#" data-i18n="requestRefreshNow" data-style="expand-right"><span class="ladda-label">Refresh now</span><span class="ladda-spinner"></span></a>
+                        <a class="dropdown-item btn-oauth2-refresh-setting" href="#" data-i18n="requestSetting">Setting</a>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-header" data-i18n="requestTokenTransmission">Token transmission</div>
+                        <a class="dropdown-item dropdown-item-checked btn-oauth2-transmission" data-type="header" href="#" data-i18n="requestTokenTransmissionAsHeader">As header</a>
+                        <a class="dropdown-item btn-oauth2-transmission" data-type="querystring" href="#" data-i18n="requestTokenTransmissionAsQueryString">As query string</a>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-sm btn-close">
+                        <i class="fa fa-close"></i>
+                    </button>
+                </div>
+            </h5>
+        </div>
+    </div>
+    <form class="request-form row m-t-none">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-block">
+                    <div class="form-inline d-flex flex-row">
+                        <label for="request-method" data-i18n="requestMethod">Method</label>
+                        <div class="input-group ig-request-method">
+                            <input class="form-control" id="request-method" placeholder="GET" autocomplete="off" value="POST" type="text">
+
+                            <button type="button" class="input-group-addon" id="dd-request-methods" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-angle-down"></i>
+                            </button>
+                            <div id="request-method-dropdown" class="dropdown-menu dropdown-menu-right" aria-labelledby="dd-request-methods" x-placement="bottom-end" style="position: absolute; transform: translate3d(128px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                <a class="dropdown-item" href="#">GET</a>
+                                <a class="dropdown-item" href="#">POST</a>
+                                <a class="dropdown-item" href="#">PUT</a>
+                                <a class="dropdown-item" href="#">DELETE</a>
+                                <a class="dropdown-item" href="#">OPTIONS</a>
+                                <a class="dropdown-item" href="#">HEAD</a>
+                                <a class="dropdown-item" href="#">TRACE</a>
+                                <a class="dropdown-item" href="#">CONNECT</a>
+                                <a class="dropdown-item" href="#">PATCH</a>
+                            </div>
+                        </div>
+                        <label for="request-url" class="d-inline-flex m-l-sm m-r-xs" data-i18n="requestUrl">URL</label>
+                        <div class="input-group d-flex request-combo">
+                            <button type="button" class="input-group-addon" id="dd-response-type" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-file-text-o icon-response-type"></i>
+                            </button>
+                            <div id="response-type-dropdown" class="dropdown-menu" aria-labelledby="dd-response-type">
+                                <div class="dropdown-header" data-i18n="requestResponseTypeMenu">Response type</div>
+                                <a class="dropdown-item btn-switch-response-type active" data-type="text" href="#"><i class="fa fa-file-text-o"></i> <span data-i18n="requestResponseTypeMenuText">Text</span></a>
+                                <a class="dropdown-item btn-switch-response-type" data-type="blob" href="#"><i class="fa fa-file-archive-o"></i> <span data-i18n="requestResponseTypeMenuBlob">Blob (Binary file)</span></a>
+                            </div>
+                            <div class="input-group ig-request-url">
+                                <input class="form-control" id="request-url" placeholder="http://www.example.com" value="http://localhost/erp_backend/api/inventory/invoices/index.php/" type="text">
+                                <button type="button" class="input-group-addon btn-toggle-favorite-url">
+                                    <i class="fa fa-star-o"></i>
+                                </button>
+                                <button type="button" class="input-group-addon" id="dd-request-urls" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-angle-down"></i>
+                                </button>
+                                <div id="request-urls-dropdown" class="dropdown-menu dropdown-menu-right" aria-labelledby="dd-request-urls"><a class="dropdown-item disabled" href="#">No favorite URLs</a></div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-send-request btn-primary" data-i18n="requestSend">SEND</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 div-request-headers m-t-sm" style="display: none;">
+            <div class="card">
+                <div class="card-block">
+                    <h6 class="card-title"><span data-i18n="requestHeaders">Headers</span>
+                        <button type="button" class="btn-remove-all-headers btn btn-outline-secondary btn-sm">
+                            <i class="fa fa-trash"></i> <span data-i18n="requestRemoveAll">Remove all</span>
+                        </button>
+                    </h6>
+                    <div class="d-flex flex-wrap list-request-headers">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 div-request-body m-t-sm">
+            <div class="card">
+                <div class="card-block">
+                    <h6 class="card-title">
+                        <span data-i18n="requestBody">Body</span>
+                        <button type="button" class="btn btn-link pull-right btn-form-data" data-target="#modal-form-data" data-toggle="modal">
+                            <i class="fa fa-table"></i>
+                        </button>
+                    </h6>
+                    <div class="d-flex">
+                        <textarea id="request-body" class="form-control" placeholder="Request Body" data-i18n-target="placeholder" data-i18n="requestBodyTextarea" style="height: 140px;"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- Request end -->
+    <!-- Response -->
+<div class="response-container container-fluid m-t-xlg panel">
+    <div class="row">
+        <div class="col-12">
+            <h5 id="response-title" class="text-muted title">
+                <a class="btn-toggle-panel">[<span>-</span>] <span data-i18n="responseTitle">Response</span></a>
+                <div class="btn-group response-type animated zoomIn" data-type="blob">
+                    <button type="button" class="btn btn-primary btn-sm btn-response-type">
+                        <span class="name" data-i18n="responseTypeBadge">Binary</span>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm btn-close">
+                        <i class="fa fa-close"></i>
+                    </button>
+                </div>
+            </h5>
+        </div>
+    </div>
+
+    <div class="row div-response m-t-xs">
+        <div class="col-12">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link headers" data-toggle="tab" href="#tab-response-headers" role="tab" data-i18n="responseTabHeaders" aria-expanded="false">Headers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link response active" data-toggle="tab" href="#tab-response-body" role="tab" data-i18n="responseTabResponse" aria-expanded="true">Response</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link preview" data-toggle="tab" href="#tab-response-preview" role="tab" style="" data-i18n="responseTabPreview" aria-expanded="false">Preview</a>
+                </li>
+            </ul>
+           
+            <div class="tab-content m-t-sm">
+                <!-- response-headers -->
+                <div class="tab-pane" id="tab-response-headers" role="tabpanel" aria-expanded="false">
+                    <div id="response-headers" class=" card ">
+                        <div class="card-block">
+                            <ol class="linenums"><li><span class="d-flex"><span class="header-name">Status Code</span><span class="header-split">: </span><span class="header-value">500 Internal Server Error</span></span></li><li><span class="d-flex"><span class="header-name">Connection</span><span class="header-split">: </span><span class="header-value">close</span></span></li><li><span class="d-flex"><span class="header-name">Content-Length</span><span class="header-split">: </span><span class="header-value">445</span></span></li><li><span class="d-flex"><span class="header-name">Content-Type</span><span class="header-split">: </span><span class="header-value">text/html;charset=UTF-8</span></span></li><li><span class="d-flex"><span class="header-name">Date</span><span class="header-split">: </span><span class="header-value">Thu, 02 Aug 2018 16:46:05 GMT</span></span></li><li><span class="d-flex"><span class="header-name">Server</span><span class="header-split">: </span><span class="header-value">Apache/2.4.29 (Unix) OpenSSL/1.0.2n PHP/7.2.1 mod_perl/2.0.8-dev Perl/v5.16.3</span></span></li><li><span class="d-flex"><span class="header-name">X-Powered-By</span><span class="header-split">: </span><span class="header-value">PHP/7.2.1</span></span></li></ol>
+                        </div>
+                    </div>
+                </div>
+                <!-- response-headers end -->
+
+                <div class="tab-pane active" id="tab-response-body" role="tabpanel" aria-expanded="true">
+                    <a class="btn btn-secondary btn-download-response" data-i18n="responseTabDownload" data-i18n-target="title" title="download response body" style="display: inline;">
+                        <i class="fa fa-download"></i>
+                    </a>
+                    <textarea id="response-body" class="form-control" placeholder="Response Body" data-i18n="responseContentBody" data-i18n-target="placeholder" style="display: none;"></textarea><div class="CodeMirror cm-s-default CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5px; left: 35px;"><textarea style="position: absolute; bottom: -1em; padding: 0px; width: 1px; height: 1em; outline: currentcolor none medium;" autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" wrap="off"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true" style="bottom: 0px;"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1" draggable="true"><div class="CodeMirror-sizer" style="margin-left: 30px; margin-bottom: -15px; border-right-width: 15px; min-height: 78px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div style="position: relative; outline: currentcolor none medium;" role="presentation"><div class="CodeMirror-measure"><div class="CodeMirror-linenumber CodeMirror-gutter-elt"><div>1</div></div></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 4px; top: 0px; height: 23.4px;">&nbsp;</div></div><div class="CodeMirror-code" role="presentation"><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation"><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">html</span><span class="cm-tag cm-bracket">&gt;&lt;</span><span class="cm-tag">head</span><span class="cm-tag cm-bracket">&gt;&lt;</span><span class="cm-tag">meta</span> <span class="cm-attribute">http-equiv</span>=<span class="cm-string">'Content-Type'</span> <span class="cm-attribute">content</span>=<span class="cm-string">'text/html; charset=utf-8'</span><span class="cm-tag cm-bracket">&gt;&lt;</span><span class="cm-tag">title</span><span class="cm-tag cm-bracket">&gt;</span>Slim Application Error<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">title</span><span class="cm-tag cm-bracket">&gt;&lt;</span><span class="cm-tag">style</span><span class="cm-tag cm-bracket">&gt;</span><span class="cm-tag">body</span>{<span class="cm-property">margin</span>:<span class="cm-number">0</span>;<span class="cm-property">padding</span>:<span class="cm-number">30px</span>;<span class="cm-property">font</span>:<span class="cm-number">12px</span>/<span class="cm-number">1.5</span> <span class="cm-variable">Helvetica</span>,<span class="cm-variable">Arial</span>,<span class="cm-variable">Verdana</span>,<span class="cm-atom">sans-serif</span>;}<span class="cm-tag">h1</span>{<span class="cm-property">margin</span>:<span class="cm-number">0</span>;<span class="cm-property">font-size</span>:<span class="cm-number">48px</span>;<span class="cm-property">font-weight</span>:<span class="cm-atom">normal</span>;<span class="cm-property">line-height</span>:<span class="cm-number">48px</span>;}<span class="cm-tag">strong</span>{<span class="cm-property">display</span>:<span class="cm-atom">inline-block</span>;<span class="cm-property">width</span>:<span class="cm-number">65px</span>;}<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">style</span><span class="cm-tag cm-bracket">&gt;&lt;/</span><span class="cm-tag">head</span><span class="cm-tag cm-bracket">&gt;&lt;</span><span class="cm-tag">body</span><span class="cm-tag cm-bracket">&gt;&lt;</span><span class="cm-tag">h1</span><span class="cm-tag cm-bracket">&gt;</span>Slim Application Error<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">h1</span><span class="cm-tag cm-bracket">&gt;&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">&gt;</span>A website error has occurred. Sorry for the temporary inconvenience.<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">&gt;&lt;/</span><span class="cm-tag">body</span><span class="cm-tag cm-bracket">&gt;&lt;/</span><span class="cm-tag">html</span><span class="cm-tag cm-bracket">&gt;</span></span></pre></div></div></div></div></div></div><div style="position: absolute; height: 15px; width: 1px; border-bottom: 0px solid transparent; top: 78px;"></div><div class="CodeMirror-gutters" style="left: 0px; height: 93px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 29px;"></div></div></div></div>
+                </div>
+                <div class="tab-pane" id="tab-response-preview" role="tabpanel" aria-expanded="false">
+                    <iframe id="iframe-response" src="blank.html" class="card" allowfullscreen="" sandbox="allow-same-origin allow-forms" width="100%" height="500" frameborder="0">
+                    </iframe>
+                    <textarea id="response-body-preview" class="form-control" placeholder="Response Preview" data-i18n="responseContentPreview" data-i18n-target="placeholder" style="display: none;"></textarea><div class="CodeMirror cm-s-default CodeMirror-wrap" style="display: none;"><div style="overflow: hidden; position: relative; width: 3px; height: 0px;"><textarea style="position: absolute; bottom: -1em; padding: 0px; width: 1px; height: 1em; outline: currentcolor none medium;" autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" wrap="off"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1" draggable="true"><div class="CodeMirror-sizer" style="margin-left: 0px;"><div style="position: relative;"><div class="CodeMirror-lines" role="presentation"><div style="position: relative; outline: currentcolor none medium;" role="presentation"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"></div><div class="CodeMirror-code" role="presentation"></div></div></div></div></div><div style="position: absolute; height: 30px; width: 1px;"></div><div class="CodeMirror-gutters" style="left: 0px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 1px;"></div><div class="CodeMirror-gutter CodeMirror-foldgutter"></div></div></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Response End -->
+<script id="template-response-redirects" type="text/template">
+<div class="response-redirects card m-b-sm">
+    <div class="card-block p-v-sm">
+        <ol class="linenums">
+            <li>
+                <span class="d-flex">
+                    <span class="header-name">Status</span>
+                    <span class="header-split">: </span>
+                    <span class="header-value">{{statusCode}}</span>
+                </span>
+            </li>
+            <li>
+                <span class="d-flex">
+                    <span class="header-name">Location</span>
+                    <span class="header-split">: </span>
+                    <span class="header-value">{{url}}</span>
+                </span>
+            </li>
+        </ol>
+    </div>
+</div>
+</script>
+    <!-- Curl -->
+<div class="curl-container container-fluid m-t-xlg panel">
+  <div class="row">
+      <div class="col-12">
+          <h5 id="curl-title" class="text-muted title">
+              <a class="btn-toggle-panel">[<span>-</span>] <span data-i18n="mainPanelCurl">Curl</span></a>
+          </h5>
+      </div>
+  </div>
+
+  <div class="row m-t-xs">
+    <div class="col-12">
+
+      <div class="card">
+        <div class="card-block">
+          <h6 class="card-title">
+            <span data-i18n="mainCurlCommand">Command</span>
+            <div class="btn-group btn-group-command" role="group" aria-label="Copy &amp; Paste">
+              <button type="button" class="btn btn-secondary" id="btn-curl-copy" data-i18n-target="title" data-i18n="curlButtonTitleCopy" title="Copy" data-clipboard-target="#p-curl">
+                <i class="fa fa-files-o" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn btn-secondary" id="btn-curl-paste" data-i18n-target="title" data-i18n="curlButtonTitlePaste" title="Paste">
+                <i class="fa fa-clipboard" aria-hidden="true"></i>
+              </button>
+            </div>
+          </h6>
+          <textarea id="p-curl" data-i18n-target="placeholder" data-i18n="curlTextareaPlaceholder" placeholder="CURL command" style="height: 272px;">curl
+ -X POST -i 
+'http://localhost/erp_backend/api/inventory/invoices/index.php/' --data 
+'{"invoicenum":"INV2018080217","prefix":"INV","quotation":"","employeecode":"110022","invoicedate":"2018-08-02
+ 
+18:32:17","shopcode":"HQ02","customer":{"uid":2,"cust_code":"C150302","mail_addr":"\u65b0\u754c\u8475\u6d8c\u8475\u8c50\u885718-26\u865f\u6c38\u5eb7\u5de5\u696d\u5927\u5ec83\u6a13
+ 
+H\u5ba4","shop_addr":"\u65b0\u754c\u8475\u6d8c\u8475\u8c50\u885718-26\u865f\u6c38\u5eb7\u5de5\u696d\u5927\u5ec83\u6a13
+ 
+H\u5ba4","delivery_addr":"\u65b0\u754c\u8475\u6d8c\u8475\u8c50\u885718-26\u865f\u6c38\u5eb7\u5de5\u696d\u5927\u5ec83\u6a13
+ 
+H\u5ba4","phone":6797,"fax":0,"email":"","statement_remark":"","attn":"\u6234\u5148\u751f","name":"\u5b56\u5bf6\u8eca\u4ed4\u9eb5","group_name":"","pm_code":"PM001","pt_code":"","remark":"","create_date":"0000-00-00
+ 00:00:00","modify_date":"0000-00-00 
+00:00:00"},"customername":"\u5b56\u5bf6\u8eca\u4ed4\u9eb5","items":{"DA0205":{"uid":"5","item_code":"DA0205","eng_name":"Graese
+ Trap Cleaner","chi_name":"Drain Away 
+\u9694\u6cb9\u6c60\u5316\u6cb9\u5291","desc":"null","price":"340.00","price_special":"0.00","type_id":"PDT","unit":"2x5
+ Ltr","create_date":"0000-00-00 00:00:00","modify_date":"0000-00-00 
+00:00:00","qty":1,"subtotal":"340.00","index":1},"DF0205":{"uid":"11","item_code":"DF0205","eng_name":"Concentrated
+ Dishwasher Drying Agent","chi_name":"Dry Flash 
+\u9ad8\u6fc3\u7e2e\u6d17\u7897\u789f\u6a5f\u5feb\u4e7e\u5291","desc":"null","price":"90.00","price_special":"0.00","type_id":"PDT","unit":"2x5
+ Ltr","create_date":"0000-00-00 00:00:00","modify_date":"0000-00-00 
+00:00:00","qty":1,"subtotal":"90.00","index":2},"DM0205":{"uid":"15","item_code":"DM0205","eng_name":"Concentrated
+ Oxygenic Stain Remover","chi_name":"Dip Master 
+\u9ad8\u6fc3\u7e2e\u6d3b\u6c27\u6d78\u6f2c\u7c89","desc":"null","price":"150.00","price_special":"0.00","type_id":"PDT","unit":"2x5
+ KGS","create_date":"0000-00-00 00:00:00","modify_date":"0000-00-00 
+00:00:00","qty":1,"subtotal":"150.00","index":3}},"total":"580","remark":"test","paymentmethod":"PM001","shopname":"DD
+ moving Co, (HK)","paymentmethodname":"Cash","formtype":"create"}'</textarea>
+          <textarea id="curl-paste" contenteditable="true"></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- Curl End -->
+    <footer id="footer" class="container-fluid m-t-md">
+  <div class="row">
+    <div class="col-lg-12">
+      <ul class="list-unstyled">
+        <li class="float-lg-right" style="margin-right: 2px;">
+          <small data-i18n="appVersion">v3.0.7</small>
+        </li>
+        <li>
+          <a class="text-muted m-l-xs" href="http://www.restclient.net/" data-i18n="footerAHome">Home</a>
+        </li>
+        <li>
+          <a class="text-muted" href="https://github.com/chao/RESTClient/" data-i18n="footerAForkMe">Fork me</a>
+        </li>
+        <li>
+          <a class="text-muted" href="https://github.com/chao/RESTClient/issues" data-i18n="footerAReportAIssue">Report an issue</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</footer>
+  </main>
+  
+  <!-- Section for fullscreen progress bar -->
+<section id="fullscreen-progressbar" class="module-hero overlay-light" style="display: none;">
+    <!-- button for abort current request -->
+    <div class="panic-button">
+        <button type="button" id="btn-abort-request" class="bttn-material-circle bttn-lg bttn-danger">
+            <i class="fa fa-close"></i>
+        </button>
+    </div>
+
+    <div class="container container-progressbar">
+        <div class="row">
+            <div class="col col-lg-4"></div>
+            <div class="col col-lg-4">
+                <h1 style="margin-bottom: 30px;">
+                    <b>RESTClient</b>
+                    <small class="text-muted" data-i18n="appVersion">v3.0.7</small>
+                </h1>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <p class="current-request" style="margin-top: 20px;">
+                    <span class="current-request-basic"> </span>
+                    <br class="hidden-xs">
+                    <span class="current-request-status">Successed! Processing result...</span>
+                </p>
+            </div>
+            <div class="col col-lg-4"></div>
+        </div>
+    </div>
+
+    <div id="time-passed" style="margin-top: 60px;">
+        <div>
+            <div class="div-seconds">000.1</div>
+            <i data-i18n="overlaySecond">Seconds Passed</i>
+        </div>
+    </div>
+</section>
+  <!-- Modals -->
+  <div class="modal fade" id="modal-header" tabindex="-1" role="dialog" aria-labelledby="modal-header" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form class="form-request-header">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-headers" data-i18n="modalHeaderTitle">Request Headers</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="request-header-name" class="col-form-label" data-i18n="modalHeaderName">Name</label>
+                        <span class="twitter-typeahead" style="position: relative; display: inline-block;"><input class="form-control tt-hint" autocomplete="off" data-i18n="modalHeaderAttributeName" data-i18n-target="placeholder" style="position: absolute; top: 0px; left: 0px; border-color: transparent; box-shadow: none; opacity: 1; background: rgb(255, 255, 255) none repeat scroll 0% 0% padding-box;" readonly="readonly" spellcheck="false" tabindex="-1" dir="ltr" type="text"><input class="form-control tt-input" id="request-header-name" placeholder="Attribute Name" autocomplete="off" data-i18n="modalHeaderAttributeName" data-i18n-target="placeholder" spellcheck="false" dir="auto" style="position: relative; vertical-align: top; background-color: transparent;" aria-activedescendant="" aria-owns="request-header-name_listbox" role="combobox" aria-readonly="true" aria-autocomplete="list" type="text"><span role="status" aria-live="polite" style="position: absolute; padding: 0px; border: 0px none; height: 1px; width: 1px; margin-bottom: -1px; margin-right: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap;"></span><pre aria-hidden="true" style="position: absolute; visibility: hidden; white-space: pre; font-family: PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif; font-size: 13px; font-style: normal; font-variant: normal; font-weight: 300; word-spacing: 0px; letter-spacing: 0px; text-indent: 0px; text-rendering: optimizelegibility; text-transform: none;"></pre><div role="listbox" class="tt-menu" style="position: absolute; top: 100%; left: 0px; z-index: 100; display: none;"><div role="presentation" class="tt-dataset tt-dataset-names"></div></div></span>
+                        <small class="form-text text-danger helper" style="display: none;"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="request-header-value" class="col-form-label" data-i18n="modalHeaderValue">Attribute Value</label>
+                        <span class="twitter-typeahead" style="position: relative; display: inline-block;"><input class="form-control tt-hint" autocomplete="off" data-i18n="modalHeaderAttributeValue" data-i18n-target="placeholder" style="position: absolute; top: 0px; left: 0px; border-color: transparent; box-shadow: none; opacity: 1; background: rgb(255, 255, 255) none repeat scroll 0% 0% padding-box;" readonly="readonly" spellcheck="false" tabindex="-1" dir="ltr" type="text"><input class="form-control tt-input" id="request-header-value" placeholder="Value" autocomplete="off" data-i18n="modalHeaderAttributeValue" data-i18n-target="placeholder" spellcheck="false" dir="auto" style="position: relative; vertical-align: top; background-color: transparent;" aria-activedescendant="" aria-owns="request-header-value_listbox" role="combobox" aria-readonly="true" aria-autocomplete="list" type="text"><span role="status" aria-live="polite" style="position: absolute; padding: 0px; border: 0px none; height: 1px; width: 1px; margin-bottom: -1px; margin-right: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap;"></span><pre aria-hidden="true" style="position: absolute; visibility: hidden; white-space: pre; font-family: PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif; font-size: 13px; font-style: normal; font-variant: normal; font-weight: 300; word-spacing: 0px; letter-spacing: 0px; text-indent: 0px; text-rendering: optimizelegibility; text-transform: none;"></pre><div role="listbox" class="tt-menu" style="position: absolute; top: 100%; left: 0px; z-index: 100; display: none;"><div role="presentation" class="tt-dataset tt-dataset-values"></div></div></span>
+                        <small class="form-text text-danger helper" style="display: none;"></small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-check abc-checkbox abc-checkbox-danger">
+                        <input class="form-check-input" id="save-request-header-favorite" type="checkbox">
+                        <label class="form-check-label" for="save-request-header-favorite" data-i18n="modalHeaderFavorite">Favorite header</label>
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-i18n="modalClose">Close</button>
+                    <button type="submit" class="btn btn-primary" data-i18n="modalOkay">Okay</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+  <div class="modal fade" id="modal-basic-auth" tabindex="-1" role="dialog" aria-labelledby="modal-basic-auth" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <form class="form-basic-auth">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" data-i18n="modalBasicAuthenticationTitle">Basic Authentication</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group required">
+              <label class="form-control-label" for="basic-auth-name" data-i18n="modalBasicAuthenticationUsername">Username</label>
+              <input class="form-control" id="basic-auth-name" placeholder="Username" data-i18n="modalBasicAuthenticationUsername" data-i18n-target="placeholder" type="text">
+              <small class="form-text valid-info basic-auth-name-helper" data-i18n="modalBasicAuthenticationUsernameInfo">Username cannot be empty.</small>
+            </div>
+            <div class="form-group">
+              <label class="form-control-label" for="basic-auth-password" data-i18n="modalBasicAuthenticationPassword">Password</label>
+              <input class="form-control" id="basic-auth-password" placeholder="Password" data-i18n="modalBasicAuthenticationPassword" data-i18n-target="placeholder" type="password">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" data-i18n="modalClose">Close</button>
+            <button type="submit" class="btn btn-primary" data-i18n="modalOkay">Okay</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal fade" id="modal-file-import" tabindex="-1" role="dialog" aria-labelledby="modal-file-import" aria-hidden="true">
+  <div class="modal-dialog modal-md" role="document">
+    <form class="form-file-import">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" data-i18n="modalImportTitle">Import Favorite Request</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-danger" role="alert">
+            <strong class="text-primary" data-i18n="modalImportWarning">Warning:</strong> 
+            <span data-i18n="modalImportWarningDetail">any requests that have the same request name as ones already in your favorites will replace automatically.</span>
+          </div>
+          <div id="dropzone-import" class="dropzone">
+            <span data-i18n="modalImportDPTitle">Drag and drop your favorite request file (.json) here,</span>
+            <br> <span data-i18n="modalImportDPClient">or click here to select file.</span>
+            <br>
+            <small data-i18n="modalImportDPMax">Max file size: 5 MB</small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" data-i18n="modalClose">Close</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+  <div class="modal fade" id="modal-form-data" tabindex="-1" role="dialog" aria-labelledby="modal-form-data" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <form class="form-form-data">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-i18n="modalFormDataTitle">Form Data Editor</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col col-md-3">
+                            <input class="form-control" name="name" placeholder="Name" data-i18n="modalFormDataName" data-i18n-target="placeholder" type="text">
+                        </div>
+                        <div class="col col-md-6">
+                            <input class="form-control" name="value" placeholder="Value" data-i18n="modalFormDataValue" data-i18n-target="placeholder" type="text">
+                        </div>
+                        <div class="col col-md-3">
+                            <div class="btn-group" role="group" aria-label="operation">
+                                <button type="button" class="btn btn-plus btn-secondary">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                                <button type="button" class="btn btn-minus btn-secondary" disabled="disabled">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-i18n="modalClose">Close</button>
+                    <button type="button" class="btn btn-primary btn-update-form-data" data-i18n="modalOkay">Okay</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+  <div class="modal fade" id="modal-favorite-save" tabindex="-1" role="dialog" aria-labelledby="modal-favorite-save" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" data-i18n="modalFavoriteTitle">Save Current Request</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-favorite-save">
+                    <div class="form-group row">
+                        <label for="favorite-name" class="col-2 col-form-label" data-i18n="modalFavoriteName">Name</label>
+                        <div class="col-10">
+                            <input class="form-control" id="favorite-name" name="favorite-name" aria-describedby="favorite name" placeholder="Name" data-i18n="modalFavoriteName" data-i18n-target="placeholder" type="text">
+                            <small id="favorite-name-helper" class="form-text text-danger" style="display: none" data-i18n="modalFavoriteNameHelper">Name must be filled out.</small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="favorite-tags" class="col-2 col-form-label" data-i18n="modalFavoriteTags">Tags</label>
+                        <div class="col-10">
+                            <div class="bootstrap-tagsinput"><span class="twitter-typeahead" style="position: relative; display: inline-block;"><input class="tt-hint" style="position: absolute; top: 0px; left: 0px; border-color: transparent; box-shadow: none; opacity: 1; background: rgba(0, 0, 0, 0) none repeat scroll 0% 0%;" readonly="readonly" spellcheck="false" tabindex="-1" dir="ltr" type="text"><input placeholder="Tags" class="tt-input" spellcheck="false" dir="auto" style="position: relative; vertical-align: top; background-color: transparent;" aria-activedescendant="" aria-owns="undefined_listbox" role="combobox" aria-readonly="true" aria-autocomplete="list" type="text"><span role="status" aria-live="polite" style="position: absolute; padding: 0px; border: 0px none; height: 1px; width: 1px; margin-bottom: -1px; margin-right: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap;"></span><pre aria-hidden="true" style="position: absolute; visibility: hidden; white-space: pre; font-family: PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif; font-size: 13px; font-style: normal; font-variant: normal; font-weight: 300; word-spacing: 0px; letter-spacing: 0px; text-indent: 0px; text-rendering: optimizelegibility; text-transform: none;"></pre><div role="listbox" class="tt-menu" style="position: absolute; top: 100%; left: 0px; z-index: 100; display: none;"><div role="presentation" class="tt-dataset tt-dataset-tags"></div></div></span></div><input class="form-control" id="favorite-tags" name="favorite-tags" aria-describedby="favorite tags" placeholder="Tags" data-i18n="modalFavoriteTags" data-i18n-target="placeholder" style="display: none;" type="text">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" data-i18n="modalClose">Close</button>
+                <button type="button" class="btn btn-primary btn-save-favorite" data-i18n="modalSave">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="modal fade" id="modal-oauth" tabindex="-1" role="dialog" aria-labelledby="modal-oauth" aria-hidden="true">
+    <form id="form-oauth">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" data-i18n="modalOAuthTitle">OAuth 1.0</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" data-toggle="tab" href="#oauth-signature" role="tab" data-i18n="modalOAuthSign">Signature for this request</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-toggle="tab" href="#oauth-setting" role="tab" data-i18n="modalOAuthSetting">Settings</a>
+                </li>
+              </ul>
+              
+              <!-- Tab panes -->
+              <div class="tab-content">
+                <div class="tab-pane container active" id="oauth-signature" role="tabpanel">
+                  <!-- oauth-signature -->
+                    <div class="form-group row m-t-md required">
+                      <label for="oauth-consumer-key" class="col-sm-3 form-control-label" data-i18n="modalOAuthConsumerKey">Consumer key</label>
+                      <div class="col-sm-9">
+                        <input class="form-control" id="oauth-consumer-key" placeholder="Consumer key" type="text">
+                        <small id="oauth-consumer-key-helper" class="form-text text-danger helper" style="display: none" data-i18n="modalOAuthConsumerKeyHelper">Consumer key must be filled out</small>
+                      </div>
+                    </div>
+                    <div class="form-group row required">
+                      <label for="oauth-shared-secret" class="col-sm-3 form-control-label" data-i18n="modalOAuthSharedSecret">Shared secret</label>
+                      <div class="col-sm-9">
+                        <input class="form-control" id="oauth-shared-secret" placeholder="Shared secret" type="text">
+                        <small id="oauth-shared-secret-helper" class="form-text text-danger helper" style="display: none" data-i18n="modalOAuthSharedSecretHelper">Shared secret must be filled out</small>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="oauth-access-token" class="col-sm-3 col-form-label" data-i18n="modalOAuthAcessToken">Access token</label>
+                      <div class="col-sm-9">
+                        <input class="form-control" id="oauth-access-token" placeholder="Access token" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="oauth-access-token-secret" class="col-sm-3 col-form-label" data-i18n="modalOAuthAcessTokenSecret">Access token secret</label>
+                      <div class="col-sm-9">
+                        <input class="form-control" id="oauth-access-token-secret" placeholder="Access token secret" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row m-b-xs">
+                      <label for="oauth-parameter-transmission" class="col-sm-3 col-form-label" data-i18n="modalOAuthPT">Parameter transmission</label>
+                      <div class="col-sm-9" style="line-height: 34px;">
+                        <div class="form-check abc-radio d-inline-block m-b-none m-r-md">
+                          <input class="form-check-input" name="oauth-parameter-transmission" id="oauth-parameter-transmission-header" value="header" checked="checked" type="radio">
+                          <label class="form-check-label" for="oauth-parameter-transmission-header" data-i18n="modalOAuthPTHeader">Authorization header</label>
+                        </div>
+                        <div class="form-check abc-radio d-inline-block m-b-none m-r-md">
+                          <input class="form-check-input" name="oauth-parameter-transmission" id="oauth-parameter-transmission-query" value="query" type="radio">
+                          <label class="form-check-label" for="oauth-parameter-transmission-query" data-i18n="modalOAuthPTQS">Request query string</label>
+                        </div>
+                      </div>
+                    </div>
+                  <!-- oauth-signature -->
+                </div>
+                <div class="tab-pane container" id="oauth-setting" role="tabpanel">
+                  <!-- oauth-settings -->
+                  <div class="form-group row m-t-md">
+                    <label for="oauth-signature-method" class="col-sm-3 col-form-label" data-i18n="modalOAuthMethod">Signature method</label>
+                    <div class="col-sm-9" style="line-height: 34px;">
+                      <div class="form-check abc-radio d-inline-block m-b-none m-r-md">
+                        <input class="form-check-input" name="oauth-signature-method" id="oauth-signature-plaintext" value="PLAINTEXT" type="radio">
+                        <label class="form-check-label" for="oauth-signature-plaintext">
+                          PLAINTEXT
+                        </label>
+                      </div>
+                      <div class="form-check abc-radio d-inline-block m-b-none m-r-md">
+                        <input class="form-check-input" name="oauth-signature-method" id="oauth-signature-hmac-sha1" value="HMAC-SHA1" type="radio">
+                        <label class="form-check-label" for="oauth-signature-hmac-sha1">
+                          HMAC-SHA1
+                        </label>
+                      </div>
+                      <div class="form-check abc-radio d-inline-block m-b-none m-r-md">
+                        <input class="form-check-input" name="oauth-signature-method" id="oauth-signature-hmac-sha256" value="HMAC-SHA256" checked="checked" type="radio">
+                        <label class="form-check-label" for="oauth-signature-hmac-sha256">
+                          HMAC-SHA256
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row m-t-md">
+                    <label for="oauth-consumer-key" class="col-sm-3 col-form-label" data-i18n="modalOAuthVersion">OAuth version</label>
+                    <div class="col-sm-9">
+                      <input class="form-control" id="oauth-version" placeholder="1.0" value="1.0" readonly="readonly" type="text">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="oauth-consumer-secret" class="col-sm-3 col-form-label" data-i18n="modalOAuthRealm">Realm</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <input class="form-control" id="oauth-realm" placeholder="Realm, e.g. http://sp.example.com" readonly="readonly" type="text">
+                        <span class="input-group-addon d-inline-block abc-checkbox abc-checkbox-dark">
+                          <input id="oauth-realm-auto" checked="checked" disabled="true" aria-label="Checkbox for following text input" type="checkbox"> 
+                          <label for="oauth-realm-auto" data-i18n="modalAuto">Auto</label>
+                        </span>
+                        <span class="input-group-addon d-inline-block abc-checkbox abc-checkbox-dark">
+                          <input id="oauth-realm-disabled" checked="checked" aria-label="Checkbox for following text input" type="checkbox">
+                          <label for="oauth-realm-disabled" data-i18n="modalDisabled">Disabled</label>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="oauth-access-token" class="col-sm-3 col-form-label" data-i18n="modalOAuthNonce">OAuth nonce</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <input class="form-control" id="oauth-nonce" placeholder="OAuth nonce" readonly="readonly" type="text">
+                        <span class="input-group-addon d-inline-block abc-checkbox abc-checkbox-dark">
+                          <input id="oauth-nonce-auto" checked="checked" aria-label="Checkbox for following text input" type="checkbox">
+                          <label for="oauth-nonce-auto" data-i18n="modalAuto">Auto</label>
+                        </span>
+                      </div>                    
+                    </div>
+                  </div>
+                  <div class="form-group row m-b-xs">
+                    <label for="oauth-access-token-secret" class="col-sm-3 col-form-label" data-i18n="modalOAuthTimestamp">OAuth timestamp</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <input step="1" class="form-control" id="oauth-timestamp" placeholder="OAuth timestamp" readonly="readonly" type="number">
+                        <span class="input-group-addon d-inline-block abc-checkbox abc-checkbox-dark">
+                          <input id="oauth-timestamp-auto" checked="checked" aria-label="Checkbox for following text input" type="checkbox">
+                          <label for="oauth-timestamp-auto" data-i18n="modalAuto">Auto</label>
+                        </span>
+                      </div>
+                      <small id="oauth-timestamp-help" class="form-text text-muted" style="display: none;"></small>
+                    </div>
+                  </div>
+                  <!-- oauth-settings -->
+                </div>
+              </div>
+            
+          </div>
+          <div class="modal-footer">
+            <div class="form-check abc-checkbox abc-checkbox-danger">
+              <input class="form-check-input" id="save-oauth" type="checkbox">
+              <label class="form-check-label" for="save-oauth" data-i18n="modalOAuthRemember">Remember this signature</label>
+            </div>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" data-i18n="modalClose">Close</button>
+            <button type="submit" class="btn btn-primary btn-oauth-okay" data-i18n="modalOkay">Okay</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal fade" id="modal-oauth-preview" tabindex="-1" role="dialog" aria-labelledby="modal-oauth-preview" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <form class="form-request-header">
+        <div class="modal-content">
+          <div class="modal-body">
+            <h5 data-i18n="modalOauthPreviewTitle">OAuth Parameters</h5>
+            <table class="table table-hover table-bordered m-t-md">
+              <thead class="thead-inverse">
+                <tr>
+                  <th>#</th>
+                  <th data-i18n="modalOauthPreviewName">Name</th>
+                  <th data-i18n="modalOauthPreviewValue">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+            <h5 class="m-t-lg" data-i18n="modalOauthPreviewHeader">OAuth header</h5>
+            <div class="card card-outline-primary text-xs-center m-t-md">
+              <div class="card-block">
+                <blockquote class="card-blockquote oauth-preview-header">
+                  <code>Authorization:</code><code class="name"></code>
+                </blockquote>
+              </div>
+            </div>
+            <h5 class="m-t-lg" data-i18n="modalOauthPreviewSignedUrl">OAuth signed URL</h5>
+            <div class="card card-outline-primary text-xs-center m-t-md">
+              <div class="card-block">
+                <blockquote class="card-blockquote oauth-preview-url">
+                  <code></code>
+                </blockquote>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" data-i18n="modalClose">Close</button>
+            <button type="button" class="btn btn-primary btn-refresh"><i class="fa fa-refresh"></i> <span data-i18n="modalRefresh">Refresh</span></button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal fade" id="modal-oauth2" tabindex="-1" role="dialog" aria-labelledby="modal-oauth2" aria-hidden="true">
+  <form id="form-oauth2">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><span data-i18n="modalOAuth2Title">OAuth 2.0</span>
+            <small class="text-muted m-l-sm" data-i18n="modalOAuth2Intro">Get new access token</small>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <!-- oauth2-authorization -->
+            <div class="form-group row required" data-code="" data-credentials="">
+              <label for="oauth2-grant-type" class="col-sm-3 col-form-label" data-i18n="modalOAuth2GrantType">Grant type</label>
+              <div class="col-sm-9" style="line-height: 34px;">
+                <div class="form-check abc-radio d-inline-block m-b-none m-r-md">
+                  <input class="form-check-input" name="oauth2-grant-type" id="oauth2-grant-type-code" value="authorization_code" data-type="code" checked="checked" type="radio">
+                  <label class="form-check-label" for="oauth2-grant-type-code" data-i18n="modalOAuth2GTAC">Authorization code</label>
+                </div>
+                <div class="form-check abc-radio d-inline-block m-b-none m-r-md">
+                  <input class="form-check-input" name="oauth2-grant-type" id="oauth2-grant-type-credentials" value="client_credentials" data-type="credentials" type="radio">
+                  <label class="form-check-label" for="oauth2-grant-type-credentials" data-i18n="modalOAuth2GTCC">Client credentials</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row required" data-code="" data-credentials="">
+              <label for="oauth2-client-id" class="col-sm-3 form-control-label" data-i18n="modalOAuth2ClientId">Client id</label>
+              <div class="col-sm-9">
+                <input class="form-control" id="oauth2-client-id" placeholder="Client id, e.g. rKGCVb7Z7b7Z8sVW" data-i18n="modalOAuth2ClientIdInput" data-i18n-target="placeholder" type="text">
+                <small id="oauth2-client-id-helper" class="form-text text-danger helper" style="display: none" data-i18n="modalOAuth2ClientIdInputHelper">Client id must be filled out</small>
+              </div>
+            </div>
+            <div class="form-group row required" data-code="" data-credentials="">
+              <label for="oauth2-client-secret" class="col-sm-3 form-control-label" data-i18n="modalOAuth2ClientSecret">Client secret</label>
+              <div class="col-sm-9">
+                <input class="form-control" id="oauth2-client-secret" placeholder="Client secret, e.g. 4pL5Vxtsk673USqwN5aJAwtJ6a6pdvzgzHsM9V83VZTbevMn" data-i18n="modalOAuth2ClientSecretInput" data-i18n-target="placeholder" type="text">
+                <small id="oauth2-client-secret-helper" class="form-text text-danger helper" style="display: none" data-i18n="modalOAuth2ClientSecretInputHelper">Client secret must be filled out</small>
+              </div>
+            </div>
+            <div class="form-group row" data-code="" data-credentials="">
+              <label for="oauth2-scope" class="col-sm-3 form-control-label" data-i18n="modalOAuth2Scope">Scope</label>
+              <div class="col-sm-9">
+                <input class="form-control" id="oauth2-scope" placeholder="Scope" data-i18n="modalOAuth2ScopeInput" data-i18n-target="placeholder" type="text">
+              </div>
+            </div>
+            <div class="form-group row" data-code="">
+              <label for="oauth2-state" class="col-sm-3 form-control-label" data-code="" data-i18n="modalOAuth2State">State</label>
+              <div class="col-sm-9">
+                <div class="input-group">
+                  <input class="form-control" id="oauth2-state" placeholder="OAuth state" readonly="readonly" data-i18n="modalOAuth2StateInput" data-i18n-target="placeholder" type="text">
+                  <span class="input-group-addon d-inline-block abc-checkbox abc-checkbox-dark">
+                    <input id="oauth2-state-auto" checked="checked" aria-label="Checkbox for following text input" type="checkbox">
+                    <label for="oauth2-state-auto" data-i18n="modalAuto">Auto</label>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row required" data-code="" data-credentials="">
+              <label for="oauth2-grant-type" class="col-sm-3 col-form-label" data-i18n="modalOAuth2RequestMethod">Request Method</label>
+              <div class="col-sm-9" style="line-height: 34px;">
+                <div class="form-check abc-radio d-inline-block m-b-none m-r-md">
+                  <input class="form-check-input" name="oauth2-request-method" id="oauth2-request-method-post" value="post" checked="checked" type="radio">
+                  <label class="form-check-label" for="oauth2-request-method-post" data-i18n="modalOAuth2RMPost">POST</label>
+                </div>
+                <div class="form-check abc-radio d-inline-block m-b-none m-r-md">
+                  <input class="form-check-input" name="oauth2-request-method" id="oauth2-request-method-get" value="get" type="radio">
+                  <label class="form-check-label" for="oauth2-request-method-get" data-i18n="modalOAuth2RMGet">GET</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row required" data-code="">
+              <label for="oauth2-authorization-endpoint" class="col-sm-3 form-control-label" data-i18n="modalOAuth2AuthEP">Authorization endpoint</label>
+              <div class="col-sm-9">
+                <input class="form-control" id="oauth2-authorization-endpoint" placeholder="https://github.com/login/oauth/authorize" data-i18n="modalOAuth2AuthEPInput" data-i18n-target="placeholder" type="text">
+                <small id="oauth2-authorization-endpoint-helper" class="form-text text-danger helper" style="display: none" data-i18n="modalOAuth2AuthEPInputHelper">Authorization endpoint must be filled out</small>
+              </div>
+            </div>
+            <div class="form-group row required" data-code="" data-credentials="">
+              <label for="oauth2-token-endpoint" class="col-sm-3 form-control-label" data-i18n="modalOAuth2TokenEP">Token endpoint</label>
+              <div class="col-sm-9">
+                <input class="form-control" id="oauth2-token-endpoint" placeholder="https://github.com/login/oauth/access_token" data-i18n="modalOAuth2TokenEPInput" data-i18n-target="placeholder" type="text">
+                <small id="oauth2-token-endpoint-helper" class="form-text text-danger helper" style="display: none" data-i18n="modalOAuth2TokenEPHelper">Token endpoint must be filled out</small>
+              </div>
+            </div>
+            <div class="form-group row required" data-code="">
+              <label for="oauth2-redirect-endpoint" class="col-sm-3 form-control-label" data-i18n="modalOAuth2RedirectEP">Redirect endpoint</label>
+              <div class="col-sm-9">
+                <input class="form-control" id="oauth2-redirect-endpoint" placeholder="http://restclient.net/auth/github/callback" data-i18n="modalOAuth2RedirectEPInput" data-i18n-target="placeholder" type="text">
+                <small id="oauth2-redirect-endpoint-helper" class="form-text text-danger helper" style="display: none" data-i18n="modalOAuth2RedirectEPInputHelper">Redirect endpoint must be filled out</small>
+              </div>
+            </div>
+            <!-- oauth2-authorization -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="form-check abc-checkbox abc-checkbox-danger">
+            <input class="form-check-input" id="save-oauth2" type="checkbox">
+            <label class="form-check-label" for="save-oauth2" data-i18n="modalOAuth2Remember">Remember this setting</label>
+          </div>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" data-i18n="modalClose">Close</button>
+          <button type="submit" class="btn btn-primary btn-oauth2-request ladda-button" data-style="expand-right" data-size="s" data-i18n="modalOAuth2RequestToken"><span class="ladda-label">Request token</span><span class="ladda-spinner"></span></button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal fade" id="modal-oauth2-refresh" tabindex="-1" role="dialog" aria-labelledby="modal-oauth2-refresh" aria-hidden="true">
+  <form id="form-oauth2-refresh">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" data-i18n="modalOAuth2RefreshTitle">OAuth 2.0 <small class="text-muted">Refresh access token</small></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body container">
+
+          <!-- oauth2-refresh -->
+          <div class="form-group row required">
+            <label for="oauth2-refresh-token" class="col-sm-3 form-control-label" data-i18n="modalOAuth2RefreshToken">Refresh token</label>
+            <div class="col-sm-9">
+              <input class="form-control" id="oauth2-refresh-token" placeholder="Refresh token, e.g. 4pL5Vxtsk673USqwN5aJAwtJ6a6pdvzgzHsM9V83VZTbevMn" data-i18n="modalOAuth2RefreshTokenInput" data-i18n-target="placeholder" type="text">
+              <small id="oauth2-refresh-token-helper" class="form-text text-danger helper" style="display: none" data-i18n="modalOAuth2RefreshTokenInputHelper">Refresh token must be filled out for refreshing</small>
+            </div>
+          </div>
+          <div class="form-group row required">
+            <label for="oauth2-refresh-endpoint" class="col-sm-3 form-control-label" data-i18n="modalOAuth2RefreshEndpoint">Refreshing endpoint</label>
+            <div class="col-sm-9">
+              <input class="form-control" id="oauth2-refresh-endpoint" placeholder="Refreshing endpoint, e.g. https://github.com/login/oauth/access_token" data-i18n="modalOAuth2RefreshEndpointInput" data-i18n-target="placeholder" type="text">
+              <small id="oauth2-refresh-endpoint-helper" class="form-text text-danger helper" style="display: none" data-i18n="modalOAuth2RefreshEndpointInputHelper">Refresh endpoint must be filled out for refreshing</small>
+            </div>
+          </div>
+          <div class="form-group row m-b-xs">
+            <label for="oauth2-refresh-scope" class="col-sm-3 form-control-label" data-i18n="modalOAuth2RefreshScope">Scope</label>
+            <div class="col-sm-9">
+              <input class="form-control" id="oauth2-refresh-scope" placeholder="Scope" data-i18n="modalOAuth2RefreshScopeInput" data-i18n-target="placeholder" type="text">
+            </div>
+          </div>
+          <!-- oauth2-refresh -->
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" data-i18n="modalClose">Close</button>
+          <button type="submit" class="btn btn-primary ladda-button" data-style="expand-right" data-size="s" data-i18n="modalRefresh"><span class="ladda-label">Refresh</span><span class="ladda-spinner"></span></button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal fade" id="modal-oauth2-preview" tabindex="-1" role="dialog" aria-labelledby="modal-oauth2-preview" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form class="form-oauth2-preview">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" data-i18n="modalOAuth2PreviewTitle">OAuth 2.0 Access token</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-hover table-bordered" style="margin: 0;">
+            <thead class="thead-inverse">
+              <tr>
+                <th style="min-width: 20px;">#</th>
+                <th data-i18n="modalOAuth2PreviewName">Name</th>
+                <th data-i18n="modalOAuth2PreviewValue">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" data-i18n="modalClose">Close</button>
+          <button type="button" class="btn btn-primary btn-oauth2-refresh ladda-button" data-style="expand-right" data-size="s"><span class="ladda-label">
+            <i class="fa fa-refresh"></i> <span data-i18n="modalRefresh">Refresh</span>
+          </span><span class="ladda-spinner"></span></button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+  <div class="modal fade" id="modal-migrate-204" tabindex="-1" role="dialog" aria-labelledby="modal-migrate-204" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" data-i18n="modalMigrationTitle">Migrate from RESTClient 2</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#204-migration-help" role="tab" data-i18n="modalMigrationHowTo">How to</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#204-migrate" role="tab" data-i18n="modalMigrationMigrate">Migrate</a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane container active" id="204-migration-help" role="tabpanel">
+                        <p class="text-muted m-t-xlg" data-i18n="modalMigrationReason">Firefox
+ 57 drops support for legacy API for accessing preferences system in 
+Firefox. RESTClient 2 uses preferences to store your favorited headers, 
+urls, and requests. To import your old favorites data, you will have to 
+do it manually.</p>
+                        <p class="m-t-md" data-i18n="modalMigrationConfig">This following content describes how to use the <code>about:config</code> page to get RESTClient2 preference settings.</p>
+                        <h5 class="m-t-lg" style="font-size: 16px;" data-i18n="modalMigrationStep1">1. Opening about:config</h5>
+                        <p class="m-t-md" data-i18n="modalMigrationStep1Info">In the address bar, type <code>about:config</code> and press Return. <br>
+ The about:config "This might void your warranty!" warning page may 
+appear. Click I accept the risk! to continue to the about:config page.</p>
+                        <p>
+                            <img src="RESTClient_files/204-1.png" class="img-fluid rounded" data-i18n="imageMigration2041" data-i18n-target="src">
+                        </p>
+                        <h5 class="m-t-xlg" style="font-size: 16px;" data-i18n="modalMigrationStep2">2. Searching for RESTClient preferences and copy RESTClient2 settings</h5>
+                        <p class="m-t-md" data-i18n="modalMigrationStep2Info">You can enter <code>restclient</code> in the <code>Search</code> box at the top of the <code>about:config</code> page to quickly find <code>RESTClient</code> preferences.</p>
+                        <p>
+                            <img src="RESTClient_files/204-2.png" class="img-fluid rounded" data-i18n="imageMigration2042" data-i18n-target="src">
+                        </p>
+                        <h5 class="m-t-xlg" style="font-size: 16px;" data-i18n="modalMigrationStep3">3. Go to <code>migrate</code> tab panel paste settings</h5>
+                        <p class="m-t-md" data-i18n="modalMigrationStep3Info">You will need to copy and paste the following values: <ul><li>extension.restclient.cachedUrls</li><li>extension.restclient.favoriteHeaders</li><li>extension.restclient.savedRequest</li></ul></p>
+                        <p class="m-t-md m-b-lg">
+                            <button class="btn btn-md btn-primary btn-switch-migrate-tab" data-i18n="modalMigrationTabSwitcher">Go to migrate panel</button>
+                        </p>
+                    </div>
+                    <div class="tab-pane container" id="204-migrate" role="tabpanel">
+                        <!-- 204-migrate -->
+                        <div class="form-group row m-t-md">
+                            <label for="204-migrate-urls" class="col-sm-3 col-form-label" data-i18n="modalMigrationURL">Favorite URLs</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" id="204-migrate-urls" rows="3" placeholder="[&quot;http://www.facebook.com&quot;, &quot;http://www.google.com&quot;]"></textarea>
+                                <small id="204-migrate-urls-helper" class="form-text text-muted" data-i18n="modalMigrationURLHelper">Paste preference <span class="text-danger">`extension.restclient.cachedUrls`</span> value.</small>
+                            </div>
+                        </div>
+                        <div class="form-group row m-t-md">
+                            <label for="204-migrate-headers" class="col-sm-3 col-form-label" data-i18n="modalMigrationHeader">Favorite Headers</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" id="204-migrate-headers" rows="3" placeholder="[[&quot;Accept&quot;,&quot;application/json&quot;], [&quot;Content-type&quot;, &quot;text/xml&quot;]]"></textarea>
+                                <small id="204-migrate-headers-helper" class="form-text text-muted" data-i18n="modalMigrationHeaderHelper">Paste preference <span class="text-danger">`extension.restclient.favoriteHeaders`</span> value.</small>
+                            </div>
+                        </div>
+                        <div class="form-group row m-t-md">
+                            <label for="204-migrate-requests" class="col-sm-3 col-form-label" data-i18n="modalMigrationRequest">Favorite Requests</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" id="204-migrate-requests" rows="3" placeholder="{
+  &quot;example&quot;:    
+{  
+&quot;method&quot;:&quot;POST&quot;,  
+&quot;url&quot;:&quot;http://www.example.com&quot;,  
+&quot;body&quot;:&quot;request body&quot;,  
+&quot;overrideMimeType&quot;:false,  
+&quot;headers&quot;:[ [ &quot;Accept&quot;, &quot;xml&quot; ] ]  
+}
+ }"></textarea>
+                                <small id="204-migrate-requests-helper" class="form-text text-muted" data-i18n="modalMigrationRequestHelper">Paste preference<span class="text-danger">`extension.restclient.savedRequest`</span> value.</small>
+                            </div>
+                        </div>
+                        <div class="form-group row m-t-md">
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-9">
+                                <button type="button" class="btn btn-primary btn-migrate" data-i18n="modalMigrationDoItNow">Migrate it now</button>
+                            </div>
+                        </div>
+                        <!-- 204-migrate end -->
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning btn-ignore" data-i18n="modalMigrationDontBotherMe">Don't bother me</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" data-i18n="modalClose">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+  <div class="modal fade" id="modal-https" tabindex="-1" role="dialog" aria-labelledby="modal-https" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" data-i18n="modalHttpsTitle">null uses an invalid security certificate</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <!-- modal-body -->
+      <div class="modal-body">
+        <p class="text-muted m-t-md" data-i18n="modalHttpsReason">It 
+seems the web site "null" is using an invalid security certificate. You 
+can add an exception in order to visit the site. Please open the web 
+site on a new tab then click on the button <code>Advanced</code>, then click <code>Add Exception...</code> button and click the button <code>Confirm Security Exception</code>
+ in Add Security Exception dialog. After add the web site "null" to the 
+exception list you can use RESTClient continue to test that web site 
+again.</p>
+        <p class="m-t-xlg">
+          <img src="RESTClient_files/certificate.png" class="img-fluid rounded" data-i18n="imageHttpsCertificateException" data-i18n-target="src">
+        </p>
+        <p class="text-muted m-t-xlg" data-i18n="modalHttpsMore">For more information please refer to: <a href="http://mzl.la/1lFJl3h">Firefox support</a></p>
+      </div>
+      <!-- modal-body end -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning btn-open-tab" data-i18n="modalHttpsOpenTab">Open in a new tab</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" data-i18n="modalClose">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <div class="modal fade" id="modal-binary-warning" tabindex="-1" role="dialog" aria-labelledby="modal-https" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" data-i18n="modalBinWarning">Binary response detected</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <!-- modal-body -->
+      <div class="modal-body">
+        <p class="text-muted m-t-md" data-i18n="modalBinWarningContent">Your
+ current HTTP response MIME type is "null". To view the response 
+properly, you need to switch response type to "Blob (Binary file)" type.
+ </p>
+        <p class="text-muted m-t-md" data-i18n="modalBinWarningHowTo">You can switch response type from the drop down menu at the left of the URL input box.</p>
+        <p class="m-t-xlg text-center m-b-md">
+          <img src="RESTClient_files/type.png" class="img-fluid rounded" data-i18n="modalBinWarningImage" data-i18n-target="src">
+        </p>
+      </div>
+      <!-- modal-body end -->
+      <div class="modal-footer">
+        <div class="form-check abc-checkbox abc-checkbox-danger">
+          <input class="form-check-input" id="modal-binary-warning-ignore" type="checkbox">
+          <label class="form-check-label" for="modal-binary-warning-ignore" data-i18n="modalBinWarningCheck">Don't bother me again!</label>
+        </div>
+        <button type="button" class="btn btn-warning btn-set-response-type-blob" data-i18n="modalBinWarningBtn">Set response type to Blob, and send again</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" data-i18n="modalClose">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <!-- Modals end -->
+
+  <a href="javascript:void(0);" id="scroll" title="Scroll to Top" data-i18n="scroll" data-i18n-target="title">Top
+    <span></span>
+  </a>
+  
+  <!-- plugins -->
+<script src="RESTClient_files/pace.js" data-pace-options="{ &quot;document&quot;: false }"></script>
+<script src="RESTClient_files/jquery.js"></script>
+<script src="RESTClient_files/popper.js"></script>
+<script src="RESTClient_files/bootstrap.js"></script>
+<script src="RESTClient_files/lodash.js"></script>
+<script src="RESTClient_files/toastr.js"></script>
+<script src="RESTClient_files/typeahead.js"></script>
+<script src="RESTClient_files/numeral.js"></script>
+<script src="RESTClient_files/codemirror.js"></script>
+<script src="RESTClient_files/loadmode.js"></script>
+<script src="RESTClient_files/meta.js"></script>
+<script src="RESTClient_files/foldcode.js"></script>
+<script src="RESTClient_files/foldgutter.js"></script>
+<script src="RESTClient_files/brace-fold.js"></script>
+<script src="RESTClient_files/xml-fold.js"></script>
+<script src="RESTClient_files/indent-fold.js"></script>
+<script src="RESTClient_files/markdown-fold.js"></script>
+<script src="RESTClient_files/comment-fold.js"></script>
+<script src="RESTClient_files/tagsinput.js"></script>
+<script src="RESTClient_files/slideout.js"></script>
+<script src="RESTClient_files/bootbox.js"></script>
+<script src="RESTClient_files/beautify.js"></script>
+<script src="RESTClient_files/beautify-html.js"></script>
+<script src="RESTClient_files/beautify-css.js"></script>
+<script src="RESTClient_files/OAuthSimple.js"></script>
+<script src="RESTClient_files/hmac-sha1.js"></script>
+<script src="RESTClient_files/hmac-sha256.js"></script>
+<script src="RESTClient_files/enc-base64.js"></script>
+<script src="RESTClient_files/mustache.js"></script>
+<script src="RESTClient_files/spin.js"></script>
+<script src="RESTClient_files/ladda.js"></script>
+<script src="RESTClient_files/clipboard.js"></script>
+<script src="RESTClient_files/base64.js"></script>
+
+<!-- main javascript libraries -->
+<script src="RESTClient_files/index_002.js"></script>
+<script src="RESTClient_files/misc.js"></script>
+<script src="RESTClient_files/message.js"></script>
+<script src="RESTClient_files/keyboard.js"></script>
+<script src="RESTClient_files/favorite.js"></script>
+<script src="RESTClient_files/database.js"></script>
+<script src="RESTClient_files/request_002.js"></script>
+<script src="RESTClient_files/oauth.js"></script>
+<script src="RESTClient_files/oauth2.js"></script>
+<script src="RESTClient_files/basic.js"></script>
+<script src="RESTClient_files/auth.js"></script>
+<script src="RESTClient_files/schema.js"></script>
+<script src="RESTClient_files/index.js"></script>
+<script src="RESTClient_files/curl.js"></script>
+<script src="RESTClient_files/https.js"></script>
+<script src="RESTClient_files/binary.js"></script>
+<script src="RESTClient_files/i18n.js"></script>
+<script src="RESTClient_files/headers.js"></script>
+<script src="RESTClient_files/204.js"></script>
+
+<script src="RESTClient_files/favorite_002.js"></script>
+<script src="RESTClient_files/request.js"></script>
+<script src="RESTClient_files/response.js"></script>
+<script src="RESTClient_files/main.js"></script>
+
+
+</body></html>
