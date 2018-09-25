@@ -2,7 +2,7 @@
     extract($data["query"]);
 ?>
 
-
+<form id="form1" name="form1" method="POST" action="<?=$save_url.$item_code?>">
 <div class="card">
   <div class="card-header">
     <h2> Item Code: <u><?=$item_code?></u></h2>
@@ -77,7 +77,42 @@
         </div>
     </div>
 </div>
-
+</form>
 <script>
+
+
+$("#save").click(function(){
+    $.validator.addMethod("selectValid", function(value, element, arg){
+        return arg !== value;
+    }, "This field is required.");
+
+    var isvalid = $("#form1").validate({
+        rules: {
+            // simple rule, converted to {required:true}
+            "i-itemcode": {
+                required: true,
+                minlength: 2
+            },
+            "i-chiname": {
+                required: true
+            },
+            "i-price" : {
+                required: true,
+                number: true
+            },
+            "i-specialprice" : {
+                required: true,
+                number: true
+            },
+            "i-category": {
+                selectValid : "null"
+            }
+        }
+    });
+    if(isvalid){
+        $("#form1").submit();
+    }
+    console.log("clicked")
+});
 
 </script>

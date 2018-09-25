@@ -60,6 +60,7 @@ $route['translate_uri_dashes'] = FALSE;
 // items
 $route['products/items/page/(:any)'] = 'items/index/$1';
 $route['products/items/edit/(:any)'] = 'items/edit/$1';
+
 $route['products/items/delete/(:any)'] = 'items/delete/$1';
 $route['products/items/delete/confirmed/(:any)'] = 'items/savedel/$1';
 $route['products/items'] = 'items/index';
