@@ -201,7 +201,7 @@ class Items extends CI_Controller
 			);
 			var_dump($_key);
 			
-			if($_key)
+			if($_key !== false)
 			{
 				$_cur = $_key;
 				$_next = $_key + 1;
@@ -335,31 +335,39 @@ class Items extends CI_Controller
 	 */
 	public function saveedit($item_code="")
 	{
-		// API data
-		// $this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/items/index.php/".$item_code);
-		// $this->component_api->CallDelete();
-		// $result = json_decode($this->component_api->GetConfig("result"),true);
-		var_dump($item_code);
+		if(isset($_POST) && !empty($_POST) && isset($item_code) && !empty($item_code))
+		{
+			$_api_body = json_encode($_POST,true);
+			if($_api_body != "null")
+			{
+				// API data
+				$this->component_api->SetConfig("body", $_api_body);
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/items/index.php/".$item_code);
+				$this->component_api->CallPatch();
+				$result = json_decode($this->component_api->GetConfig("result"),true);
+				var_dump($result);
 
-		// if(isset($result['error']['message']) || isset($result['error']['code']))
-		// {
+				// if(isset($result['error']['message']) || isset($result['error']['code']))
+				// {
 
-		// 	$alert = "danger";
-		// 	switch($result['error']['code'])
-		// 	{
-		// 		case "00000":
-		// 			$alert = "success";
-		// 		break;
-		// 	}					
+				// 	$alert = "danger";
+				// 	switch($result['error']['code'])
+				// 	{
+				// 		case "00000":
+				// 			$alert = "success";
+				// 		break;
+				// 	}					
+					
+				// 	$this->load->view('error-handle', [
+				// 		'message' => $result['error']['message'], 
+				// 		'code'=> $result['error']['code'], 
+				// 		'alertstyle' => $alert
+				// 	]);
 			
-		// 	$this->load->view('error-handle', [
-		// 		'message' => $result['error']['message'], 
-		// 		'code'=> $result['error']['code'], 
-		// 		'alertstyle' => $alert
-		// 	]);
-	
-		// 	// callback initial page
-		// 	header("Refresh: 5; url=".base_url("/products/items/"));
-		// }
+				// 	// callback initial page
+				// 	header("Refresh: 5; url=".base_url("/products/items/"));
+				// }
+			}
+		}
 	}
 }
