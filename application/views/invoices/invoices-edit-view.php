@@ -58,40 +58,34 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-header">
-                            <div class="input-group input-group-sm mb-3">
-                                <input type="text" class="form-control" id="cust-search" placeholder="Search..." aria-label="" aria-describedby="">
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" id="cust-search-btn" type="button">Search</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-body-400">
+                        <div class="modal-body-600">
                         <!-- content -->
-                            <table class="table table-sm table-striped" id="cust-list">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Code</th>
-                                        <th scope="col">Name</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                        if(!empty($ajax['customers'])):
-                                            foreach($ajax['customers'] as $k => $v):
-                                    ?>
-                                        <tr data-custcode="<?=$v['cust_code']?>" data-custname="<?=$v['name']?>" data-pmcode="<?=$v['pm_code']?>">
-                                            <td><?=$k+1?></td>
-                                            <td><?=$v['cust_code']?></td>
-                                            <td><?=$v['name']?></td>
+                            <div class="container-fluid">
+                                <table class="table table-sm table-striped" id="cust-list">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Code</th>
+                                            <th scope="col">Name</th>
                                         </tr>
-                                    <?php
-                                            endforeach;
-                                        endif;
-                                    ?>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                            if(!empty($ajax['customers'])):
+                                                foreach($ajax['customers'] as $k => $v):
+                                        ?>
+                                            <tr data-custcode="<?=$v['cust_code']?>" data-custname="<?=$v['name']?>" data-pmcode="<?=$v['pm_code']?>">
+                                                <td><?=$k+1?></td>
+                                                <td><?=$v['cust_code']?></td>
+                                                <td><?=$v['name']?></td>
+                                            </tr>
+                                        <?php
+                                                endforeach;
+                                            endif;
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         <!-- content end -->
                         </div>
                         
@@ -156,45 +150,39 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-header">
-                            <div class="input-group input-group-sm mb-3">
-                                <input type="text" class="form-control" id="item-sort" placeholder="Search...">
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" id="items-search-btn" type="button">Search</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-body-400">
+                        <div class="modal-body-600">
                         <!-- content -->
-                            <table class="table table-sm table-striped" id="items-list">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Code</th>
-                                        <th scope="col">Chinese Name</th>
-                                        <th scope="col">English Name</th>
-                                        <th scope="col">Price</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                        if(!empty($ajax["items"])):
-                                            foreach($ajax["items"] as $k => $v):
-                                    ?>
-                                            <tr data-itemcode="<?=$v['item_code']?>">
-                                                <td><?=$k+1?></td>
-                                                <td><?=$v["item_code"]?></td>
-                                                <td><?=$v["chi_name"]?></td>
-                                                <td><?=$v["eng_name"]?></td>
-                                                <td>$<?=$v["price"]?></td>
-                                            </tr>
-                                    <?php
-                                            endforeach;
-                                        endif;
+                            <div class="container-fluid">
+                                <table class="table table-sm table-striped" id="items-list">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Code</th>
+                                            <th scope="col">Chinese Name</th>
+                                            <th scope="col">English Name</th>
+                                            <th scope="col">Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                            if(!empty($ajax["items"])):
+                                                foreach($ajax["items"] as $k => $v):
+                                        ?>
+                                                <tr data-itemcode="<?=$v['item_code']?>">
+                                                    <td><?=$k+1?></td>
+                                                    <td><?=$v["item_code"]?></td>
+                                                    <td><?=$v["chi_name"]?></td>
+                                                    <td><?=$v["eng_name"]?></td>
+                                                    <td>$<?=$v["price"]?></td>
+                                                </tr>
+                                        <?php
+                                                endforeach;
+                                            endif;
 
-                                    ?>
-                                </tbody>
-                            </table>
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         <!-- content end -->
                         </div>
                         <div class="modal-footer">
@@ -403,6 +391,7 @@
         let _recal = 0
         let _isEmpty
         //console.log(cpAllItems)
+        cpAllItems[_uSearch].qty = 0
         delete cpAllItems[_uSearch]
         console.log(cpAllItems)
         for(let i in cpAllItems){
@@ -423,7 +412,21 @@
 
     doRender(theprint)
 
-    // doRender(theprint)
+   // use Datatable plug-in in customer and items modal 
+   $('#cust-list').DataTable({
+        "select": {
+            items: 'column'
+        },
+        "iDisplayLength": <?=$default_per_page?>,
+    });
+
+    $('#items-list').DataTable({
+        "select": {
+            items: 'column'
+        },
+        "iDisplayLength": 10,
+    });
+
     // customer modal
     // event trigger - customer modal
     $("#cust-list > tbody > tr").each(function(i){

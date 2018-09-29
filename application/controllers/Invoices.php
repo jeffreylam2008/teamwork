@@ -69,7 +69,9 @@ class Invoices extends CI_Controller
 	}
 	public function create($_invoice_num = "")
 	{
-		
+		// variable initial
+		$_default_per_page = 50;
+
 		if(!empty($_invoice_num))
 		{
 			if(substr($_invoice_num , 0 , 3) === $this->_inv_header_param["topNav"]['prefix'] 
@@ -159,7 +161,8 @@ class Invoices extends CI_Controller
 						"customers" => $_cust_list['query'],
 						"tender" => $_tender['query']
 					],
-					"theprint_data" => $_show_transaction_data
+					"theprint_data" => $_show_transaction_data,
+					"default_per_page" => $_default_per_page
 				]);
 				// persent footer view
 				$this->load->view('footer');
@@ -168,8 +171,10 @@ class Invoices extends CI_Controller
 	}
 	public function edit($_invoice_num = "")
 	{
+		// variable initial
+		$_default_per_page = 50;
 		$_show_transaction_data = "";
-		//$_transaction = [];
+
 		if(!empty($_invoice_num))
 		{
 			$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/index.php/".$_invoice_num);
@@ -254,7 +259,8 @@ class Invoices extends CI_Controller
 						"tender" => $_tender['query']
 					],
 					"theprint_data" => $_show_transaction_data,
-					"show" => $_show_void_btn
+					"show" => $_show_void_btn,
+					"default_per_page" => $_default_per_page
 				]);
 			}
 			else
