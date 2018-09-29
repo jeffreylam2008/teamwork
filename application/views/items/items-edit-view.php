@@ -54,7 +54,7 @@
         <div class="form-row">
             <div class="col-6">
                 <label>Items Type</label> <a href='<?=$categories_baseurl?>'>New</a>
-                <select class="form-control">
+                <select class="form-control" name="i-type">
                 <?php if(array_key_exists($cate_code, $cate_code)):?>
                     <option value="<?=$cata_code?>"><?=$categories[$cata_code]?></option>
                 <?php endif;?>
@@ -62,7 +62,7 @@
                             foreach($categories as $k => $v):
                     ?>
                                 <?="<option value='".$k."'>".$v."</option>"?>
-                    <?
+                    <?php
                             endforeach;
                     ?>
                 </select>

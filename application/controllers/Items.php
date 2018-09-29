@@ -199,8 +199,6 @@ class Items extends CI_Controller
 			$_key = array_search(
 				$item_code, array_column($_items['query'], "item_code")
 			);
-			var_dump($_key);
-			
 			if($_key !== false)
 			{
 				$_cur = $_key;
@@ -340,6 +338,7 @@ class Items extends CI_Controller
 			$_api_body = json_encode($_POST,true);
 			if($_api_body != "null")
 			{
+				
 				// API data
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/items/index.php/".$item_code);

@@ -76,7 +76,7 @@
                                             foreach($categories as $k => $v):
                                     ?>
                                                 <?="<option value='".$k."'>".$v."</option>"?>
-                                    <?
+                                    <?php
                                             endforeach;
                                     ?>
                                 </select>
@@ -92,7 +92,6 @@
                 </form>
                 <!-- Modal Content End-->
             </div>
-            
         </div>
     </div>
 </div>
@@ -115,10 +114,7 @@
             $("#form1").trigger("reset");
         });
     });
-    
-
-        // configure your validation
-    
+    // configure your validation
     $("#save").click(function(){
         $.validator.addMethod("selectValid", function(value, element, arg){
             return arg !== value;
@@ -155,6 +151,4 @@
         }
         
     });
-
-
 </script>
