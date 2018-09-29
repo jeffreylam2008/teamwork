@@ -338,13 +338,16 @@ class Items extends CI_Controller
 			$_api_body = json_encode($_POST,true);
 			if($_api_body != "null")
 			{
-				
+
+				echo $_api_body;
 				// API data
-				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/items/index.php/".$item_code);
-				$this->component_api->CallPatch();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
-				var_dump($result);
+				// $this->component_api->SetConfig("body", $_api_body);
+				// $this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/items/index.php/".$item_code);
+				// $this->component_api->CallPatch();
+				// $result = json_decode($this->component_api->GetConfig("result"),true);
+
+				
+				// var_dump($result);
 
 				// if(isset($result['error']['message']) || isset($result['error']['code']))
 				// {
