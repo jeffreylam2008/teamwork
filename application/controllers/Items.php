@@ -336,9 +336,9 @@ class Items extends CI_Controller
 		if(isset($_POST) && !empty($_POST) && isset($item_code) && !empty($item_code))
 		{
 			$_api_body = json_encode($_POST,true);
+
 			if($_api_body != "null")
 			{
-
 				
 				// API data
 				$this->component_api->SetConfig("body", $_api_body);
