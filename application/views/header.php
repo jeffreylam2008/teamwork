@@ -2,13 +2,18 @@
 <html>
     <head>
         <title><?=$title; ?></title>
+        <!-- CSS -->
+        
         <link rel="stylesheet" href="<?=base_url('/assets/css/bootstrap.css');?>">
+        <link rel="stylesheet" href="<?=base_url('/assets/css/jquery.dataTables.css');?>">
+
+        
         <link rel="stylesheet" href="<?=base_url('/assets/css/style.css');?>">
         <link rel="stylesheet" href="<?=base_url('/assets/fontawesome-free-5.0.6/web-fonts-with-css/css/fontawesome-all.css');?>">
-        <!-- validate plugin 1.17.0 -->
+        <!--  validate plugin 1.17.0 -->
         <link rel="stylesheet" href="<?=base_url('/assets/css/css/screen.css');?>">
         
-
+        <!-- JS -->
         <!-- import jquery -->
         <script src="<?=base_url('/assets/js/jquery-3.3.1.min.js');?>"></script>
         

@@ -80,7 +80,7 @@ class Categories extends CI_Controller {
 		// function bar with next, preview and save button
 		$this->load->view('function-bar', [
 			"btn" => [
-				["name" => "New", "type"=>"button", "id" => "newitem", "url"=> base_url("/products/categories/new"), "style" => "", "show" => true]
+				["name" => "New", "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => true, "extra" => "data-toggle='modal' data-target='#modal01'"]
 			]
 		]);
 		// Main view loaded
@@ -90,6 +90,10 @@ class Categories extends CI_Controller {
 			"data" => $_data,
 			"default_per_page" => $_default_per_page,
 			"page" => $_page
+		]);
+
+		$this->load->view("categories/categories-create-view",[
+			"save_url" => base_url("/products/categories/save/")
 		]);
 		$this->load->view('footer');
 	}
@@ -169,7 +173,7 @@ class Categories extends CI_Controller {
 				["name" => "Save", "type"=>"button", "id" => "Save", "url"=>"", "style" => "", "show" => true]
 			]
 		]);
-		$this->load->view("categories/categories-create-view");
+		
 	}
 
 	function savecreate()

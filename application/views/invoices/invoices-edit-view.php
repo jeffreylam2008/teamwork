@@ -277,15 +277,10 @@
     var dbItems = <?=json_encode($ajax["items"],true)?>;
     var cpAllItems = {};
     var cpTotal = 0;
-    var custcode = "", custname = "", cust_pmcode = "";
-
-
+    var custcode = "", custname = "", cust_pmcode = "", selecteditemcode = "";
 
     //testing here
     console.log(theprint);
-
-
-
 
     // Data massage
     for(j in dbItems){
@@ -377,7 +372,6 @@
                     }
                 }
                 console.log(cpAllItems)
-
                 showItemsList(cpAllItems, cpTotal)
             }
             else{
@@ -413,14 +407,14 @@
     doRender(theprint)
 
    // use Datatable plug-in in customer and items modal 
-   $('#cust-list').DataTable({
+   var custTbl = $('#cust-list').DataTable({
         "select": {
             items: 'column'
         },
         "iDisplayLength": <?=$default_per_page?>,
     });
 
-    $('#items-list').DataTable({
+    var itemTbl =$('#items-list').DataTable({
         "select": {
             items: 'column'
         },
@@ -429,17 +423,19 @@
 
     // customer modal
     // event trigger - customer modal
-    $("#cust-list > tbody > tr").each(function(i){
-        $(this).on("click", function(){
-            $("#cust-list > tbody > tr").each(function(i){
-                $(this).css("background-color","")
-            })
-            $(this).css("background-color","red")
+    $('#cust-list tbody').on( 'click', 'tr', function () {
+        if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+        }
+        else {
+            custTbl.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
             custcode = $(this).data("custcode")
             custname = $(this).data("custname")
             cust_pmcode = $(this).data("pmcode")
-        })
+        }
     });
+    
     // handle customer modal close while press enter
     $('body').on('shown.bs.modal', '#customers_modal', function () {
         $(this).on("keypress", function(e){
@@ -478,17 +474,18 @@
     })
 
     // item modal
-    // event trigger - items-list
-    $("#items-list > tbody > tr").each(function(i){
-        $(this).on("click", function(){
-            $("#items-list > tbody > tr").each(function(i){
-                $(this).css("background-color","")
-            })
-            $(this).css("background-color","red")
-            
-            $(".item-input").val($(this).data("itemcode"))
-        })
+    // event trigger - items modal
+    $('#items-list tbody').on( 'click', 'tr', function () {
+        if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+        }
+        else {
+            itemTbl.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            selecteditemcode = $(this).data("itemcode")
+        }
     });
+
     // handle items modal close while press enter
     $('body').on('shown.bs.modal', '#items_modal', function () {
         $(this).on("keypress", function(e){
@@ -514,10 +511,7 @@
     });
     // dispatch data from modal to outside
     $("#item-ok").on("click", function(){
-        $("#items-list > tbody > tr").each(function(i){
-            $(this).css("background-color","")
-        })
-        doSearch($(".item-input").val())
+        doSearch(selecteditemcode)
     });
     $("#item-search").on("click", function(){
         doSearch($(".item-input").val())

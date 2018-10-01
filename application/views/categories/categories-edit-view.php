@@ -1,8 +1,6 @@
 <?php
     extract($data["query"]);
 ?>
-
-
 <div class="card">
     <div class="card-body"> 
         <div class="form-row">

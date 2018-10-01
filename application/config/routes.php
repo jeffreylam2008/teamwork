@@ -76,6 +76,7 @@ $route['products/categories'] = 'categories/index';
 $route['categories'] = 'error_404';
 $route['categories/page/(:any)'] = 'error_404';
 $route['products/categories/new'] = 'categories/create';
+$route['products/itecategoriesms/save'] = 'categories/savecreate';
 
 // invocies
 $route['invoices/print'] = 'theprint/invoices'; 

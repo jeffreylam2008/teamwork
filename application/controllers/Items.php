@@ -126,7 +126,6 @@ class Items extends CI_Controller
 		// user data
 		$_page = $this->session->userdata("page");
 		$_comfirm_show = true;
-		$_msg = "";
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/transaction/d/index.php/".$item_code);
 		$this->component_api->CallGet();
@@ -134,13 +133,8 @@ class Items extends CI_Controller
 		if(isset($_data))
 		{
 			// configure message 
-			if(!$_data['query'])
+			if($_data['query'])
 			{
-				$_msg = "Are you sure to delete";
-			}
-			else
-			{
-				$_msg = "Transaction : <u>". $_data['query']['trans_code']."</u> has this ";
 				$_comfirm_show = false;
 			}
 			// function bar with next, preview and save button
@@ -153,7 +147,7 @@ class Items extends CI_Controller
 			// main view loaded
 			$this->load->view("items/items-del-view",[
 				"item_code" => $item_code,
-				"msg" => $_msg,
+				"trans_url" => base_url("/invoices/edit/".$_data['query']['trans_code']),
 				"data" => $_data,
 			]);
 		}
