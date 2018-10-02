@@ -159,26 +159,41 @@ class Categories extends CI_Controller {
 			"data" => $_data,
 		]);
 	}
-	public function create()
-	{
-		// set user data
-		$_page = 1;
-		$_page = $this->session->userdata("page");
-
-
-		// function bar with next, preview and save button
-		$this->load->view('function-bar', [
-			"btn" => [
-				["name" => "Back", "type"=>"button", "id" => "Back", "url"=> base_url('/products/categories/page/'.$_page), "style" => "", "show" => true],
-				["name" => "Save", "type"=>"button", "id" => "Save", "url"=>"", "style" => "", "show" => true]
-			]
-		]);
-		
-	}
 
 	function savecreate()
 	{
+		if(isset($_POST) && !empty($_POST))
+		{
+			$_api_body = json_encode($_POST,true);
+			if($_api_body != "null")
+			{
+				// API data
+				$this->component_api->SetConfig("body", $_api_body);
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/categories/index.php");
+				$this->component_api->CallPost();
+				$result = json_decode($this->component_api->GetConfig("result"),true);
 
+				if(isset($result['message']) || isset($result['code']))
+				{
+					$alert = "danger";
+					switch($result['code'])
+					{
+						case "00000":
+							$alert = "success";
+						break;
+					}					
+					
+					$this->load->view('error-handle', [
+						'message' => $result['message'], 
+						'code'=> $result['code'], 
+						'alertstyle' => $alert
+					]);
+			
+					// callback initial page
+					header("Refresh: 5; url=".base_url("/products/items/"));
+				}
+			}
+		}
 	}
 	function saveedit()
 	{

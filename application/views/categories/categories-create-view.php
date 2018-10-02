@@ -86,26 +86,9 @@
         var isvalid = $("#form1").validate({
             rules: {
                 // simple rule, converted to {required:true}
-                "i-itemcode": {
+                "i-catecode": {
                     required: true,
                     minlength: 2
-                },
-                "i-chiname": {
-                    required: true
-                },
-                "i-engname": {
-                    required: true
-                },
-                "i-price" : {
-                    required: true,
-                    number: true
-                },
-                "i-specialprice" : {
-                    required: true,
-                    number: true
-                },
-                "i-category": {
-                    selectValid : "null"
                 }
             }
         });
@@ -114,26 +97,4 @@
         }
         
     });
-</script>
-
-
-
-
-
-
-
-
-
-<script>
-    $( function() {
-        $( "#form1" ).sisyphus( {
-            locationBased: false,
-            timeout: 5,
-            autoRelease: true,
-            onSave: function(){
-                console.log("saved")
-            }
-        } );
-    } );
-
 </script>
