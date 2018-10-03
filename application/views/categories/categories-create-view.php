@@ -8,7 +8,7 @@
                 </div>
                 <div class="col-3">
                     <label for="">Description</label>
-                    <input type="text" class="form-control form-control-sm" name="i-decs" placeholder="Description" value="">
+                    <input type="text" class="form-control form-control-sm" name="i-desc" placeholder="Description" value="">
                 </div>
             </div>
 
@@ -46,7 +46,7 @@
                                 </div>
                                 <div class="col-3">
                                     <label for="">Description</label>
-                                    <input type="text" class="form-control form-control-sm" name="i-decs" placeholder="Description" value="">
+                                    <input type="text" class="form-control form-control-sm" name="i-desc" placeholder="Description" value="">
                                 </div>
                             </div>
 

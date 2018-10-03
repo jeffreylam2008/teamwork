@@ -162,9 +162,11 @@ class Categories extends CI_Controller {
 
 	function savecreate()
 	{
+		
 		if(isset($_POST) && !empty($_POST))
 		{
 			$_api_body = json_encode($_POST,true);
+
 			if($_api_body != "null")
 			{
 				// API data
@@ -172,7 +174,7 @@ class Categories extends CI_Controller {
 				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/categories/index.php");
 				$this->component_api->CallPost();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
-
+				
 				if(isset($result['message']) || isset($result['code']))
 				{
 					$alert = "danger";
@@ -190,7 +192,7 @@ class Categories extends CI_Controller {
 					]);
 			
 					// callback initial page
-					header("Refresh: 5; url=".base_url("/products/items/"));
+					header("Refresh: 5; url=".base_url("/products/categories/"));
 				}
 			}
 		}
