@@ -4,9 +4,9 @@
 
 <form id="form1" name="form1" method="POST" action="<?=$save_url.$item_code?>">
 <div class="card">
-  <div class="card-header">
-    <h2> Item Code: <u><?=$item_code?></u></h2>
-  </div>
+    <div class="card-header">
+        <h2> Item Code: <u><?=$item_code?></u></h2>
+    </div>
     <div class="card-body">
 
         <div class="form-row">

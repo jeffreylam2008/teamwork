@@ -80,7 +80,7 @@ class Categories extends CI_Controller {
 		// function bar with next, preview and save button
 		$this->load->view('function-bar', [
 			"btn" => [
-				["name" => "New", "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => true, "extra" => "data-toggle='modal' data-target='#modal01'"]
+				["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => true, "extra" => "data-toggle='modal' data-target='#modal01'"]
 			]
 		]);
 		// Main view loaded
@@ -100,8 +100,8 @@ class Categories extends CI_Controller {
 	public function edit($cate_code="")
 	{
 		// variable initial
-		$_next_btn_show = true;
-		$_previous_btn_show = true;
+		$_previous_disable = "";
+		$_next_disable = "";
 		$_page = 1;
 
 		// set user data
@@ -132,12 +132,12 @@ class Categories extends CI_Controller {
 			
 			if($_cur == (count($_all)-1))
 			{
-				$_next_btn_show = false;
+				$_next_disable = "disabled";
 				$_next = (count($_all)-1);
 			}
 			if($_cur <= 0)
 			{
-				$_previous_btn_show = false;
+				$_previous_disable = "disabled";
 				$_previous = 0;
 			}
 			// echo "<pre>";
@@ -150,13 +150,14 @@ class Categories extends CI_Controller {
 		$this->load->view('function-bar', [
 			"btn" => [
 				["name" => "Back", "type"=>"button", "id" => "Back", "url"=> base_url('/products/categories/page/'.$_page), "style" => "", "show" => true],
-				["name" => "Save", "type"=>"button", "id" => "Save", "url"=>"", "style" => "", "show" => true],
-				["name" => "|<<<", "type"=>"button", "id" => "Previous", "url"=> base_url("/products/categories/edit/".$_all[$_previous]), "style" => "btn btn-link", "show" => $_previous_btn_show],
-				["name" => ">>>|", "type"=>"button", "id" => "Next", "url"=> base_url("/products/categories/edit/".$_all[$_next]), "style" => "btn btn-link", "show" => $_next_btn_show]
+				["name" => "Save", "type"=>"button", "id" => "Save", "url"=> "#", "style" => "", "show" => true],
+				["name" => "Previous", "type"=>"button", "id" => "Previous", "url"=> base_url("/products/categories/edit/".$_all[$_previous]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
+				["name" => "Next", "type"=>"button", "id" => "Next", "url"=> base_url("/products/categories/edit/".$_all[$_next]), "style" => "btn btn-outline-secondary ". $_next_disable, "show" => true]
 			]
 		]);
 		$this->load->view("categories/categories-edit-view", [
-			"data" => $_data,
+			"save_url" => base_url("/products/items/edit/save/"),
+			"data" => $_data
 		]);
 	}
 

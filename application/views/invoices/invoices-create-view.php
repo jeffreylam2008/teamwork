@@ -252,11 +252,19 @@
             <td>{{item_code}}</td>
             <td>{{eng_name}}</td>
             <td>{{chi_name}}</td>
-            <td>{{qty}}</td>
+            <td>{{qty}} 
+                <button class='btn btn-secondary btn-sm' id='item-plus' type='button'>
+                    <i class="fas fa-plus"></i>
+                </button>
+                <button class='btn btn-secondary btn-sm' id='item-minus' type='button'>
+                    <i class="fas fa-minus"></i>
+                </button>
+            </td>
+
             <td>{{unit}}</td>
             <td>{{price}}</td>
             <td>{{subtotal}}</td>
-            <td><button class='btn btn-danger btn-sm' id='item-del' type='button'>X</button></td>
+            <td><button class='btn btn-danger btn-sm' id='item-del' type='button'><i class='fas fa-trash-alt'></i></button></td>
         </tr>
     {{/items}}
     <tr>
@@ -493,7 +501,7 @@
     $('body').on('shown.bs.modal', '#items_modal', function () {
         $(this).on("keypress", function(e){
             if(e.keyCode==13){
-                doSearch($(".item-input").val())
+                doSearch(selecteditemcode)
                 $("#items-list > tbody > tr").each(function(i){
                     $(this).css("background-color","")
                 })

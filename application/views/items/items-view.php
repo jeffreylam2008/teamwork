@@ -33,7 +33,7 @@
                     echo "<td>".($key+1)."</td>";
                     if($user_auth)
                     {
-                        echo "<td><a href='".$del_url.$val['item_code']."' class='btn btn-danger btn-sm'>X</a></td>";
+                        echo "<td><a href='".$del_url.$val['item_code']."'><i class='fas fa-trash-alt'></i></a></td>";
                     }
                     echo "<td><a href='".$edit_url.$val['item_code']."'>".$val['item_code']."</a></td>";
                     echo "<td>".$val['eng_name']."</td>";

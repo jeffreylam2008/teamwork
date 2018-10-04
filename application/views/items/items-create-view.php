@@ -13,9 +13,9 @@
             </div>
             <div class="modal-body">
 
-                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Back</button>
-                <button type="button" id="reset" class="btn btn-outline-secondary">Reset</button>
-                <button type="button" id="save" class="btn btn-outline-primary">Save</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Back</button>
+                <button type="button" id="reset" class="btn btn-outline-secondary btn-sm">Reset</button>
+                <button type="button" id="save" class="btn btn-outline-primary btn-sm">Save</button>
                 <!-- Modal Content -->
                 <form id="form1" name="form1" method="POST" action="<?=$save_url?>">
                     <div class="card-body">
