@@ -95,7 +95,7 @@ class Items extends CI_Controller
 		$this->load->view('function-bar', [
 			"btn" => [
 				// ["name" => "New", "type"=>"button", "id" => "newitem", "url"=> base_url('/products/items/new/'), "style" => "", "show" => true]
-				["name" => "New", "type"=>"button", "id" => "newitem", "url"=> "#", "style" => "", "show" => true, "extra" => "data-toggle='modal' data-target='#modal01'"]
+				["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=> "#", "style" => "", "show" => true, "extra" => "data-toggle='modal' data-target='#modal01'"]
 			]
 		]);
 

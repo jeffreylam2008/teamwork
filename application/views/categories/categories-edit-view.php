@@ -23,3 +23,27 @@
     </div>
 
 </form>
+
+<script>
+
+
+$("#save").click(function(){
+    var isvalid = $("#form1").validate({
+        rules: {
+            // simple rule, converted to {required:true}
+            "i-catecode": {
+                required: true,
+                minlength: 3
+            },
+            "i-decs": {
+                required: true
+            }
+        }
+    });
+    if(isvalid){
+        $("#form1").submit();
+    }
+    console.log("clicked")
+});
+
+</script>

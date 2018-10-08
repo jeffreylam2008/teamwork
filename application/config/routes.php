@@ -72,6 +72,8 @@ $route['products/items/save'] = 'items/savecreate';
 // categories
 $route['products/categories/page/(:any)'] = 'categories/index/page/$1';
 $route['products/categories/edit/(:any)'] = 'categories/edit/$1';
+$route['products/categories/delete/(:any)'] = 'categories/delete/$1';
+$route['products/categories/delete/confirmed/(:any)'] = 'categories/savedel/$1';
 $route['products/categories'] = 'categories/index';
 $route['categories'] = 'error_404';
 $route['categories/page/(:any)'] = 'error_404';

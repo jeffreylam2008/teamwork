@@ -78,8 +78,6 @@
 </div>
 </form>
 <script>
-
-
 $("#save").click(function(){
     $.validator.addMethod("selectValid", function(value, element, arg){
         return arg !== value;

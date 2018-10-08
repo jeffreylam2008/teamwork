@@ -255,12 +255,20 @@
             <td>{{item_code}}</td>
             <td>{{eng_name}}</td>
             <td>{{chi_name}}</td>
-            <td>{{qty}}</td>
+            <td>
+            <button class='btn btn-secondary btn-sm' id='item-minus' type='button'>
+                <i class="fas fa-minus"></i>
+            </button>
+            {{qty}} 
+            <button class='btn btn-secondary btn-sm' id='item-plus' type='button'>
+                <i class="fas fa-plus"></i>
+            </button>
+            </td>
             <td>{{unit}}</td>
             <td>{{price}}</td>
             <td>{{subtotal}}</td>
             <?php if($show):?>
-            <td><button class='btn btn-danger btn-sm' id='item-del' type='button'>X</button></td>
+            <td><button class='btn btn-danger btn-sm' id='item-del' type='button'><i class='fas fa-trash-alt'></i></button></td>
             <?php endif; ?>
         </tr>
     {{/items}}
@@ -305,8 +313,10 @@
     function showItemsList(itemList, itemListTotal){
         itemList = objToArr(itemList)
         for(var i in itemList){
-            itemList[i]["index"] = (parseInt(i) + 1)
+           itemList[i]["index"] = (parseInt(i) + 1)
+           itemList[i]["qty"] = parseFloat(itemList[i]["qty"])
         }
+
         var toHtml = Mustache.render($("#template-items").html(), {"items": itemList ,"total": itemListTotal.toFixed(2)})
         $("#render-items").html(toHtml)
     }
@@ -398,9 +408,42 @@
         if($.isEmptyObject(cpAllItems)){
             cpTotal = 0
         }
-
-        showItemsList(cpAllItems, cpTotal)
+        showItemsList(cpAllItems, cpTotal)        
+    }
         
+    function doQtyPlus(itemcode)
+    {
+        let _uSearch = itemcode
+        let _recal = 0
+        if(cpAllItems[_uSearch].qty >= 0){
+            cpAllItems[_uSearch].qty = parseFloat(cpAllItems[_uSearch].qty) + 1
+                for(let i in cpAllItems){
+                //console.log("loop")
+                if(cpAllItems.hasOwnProperty(i)){
+                    _recal += parseFloat(cpAllItems[i].subtotal)
+                    
+                    cpTotal = _recal
+                }
+            }
+            showItemsList(cpAllItems, cpTotal)
+        }
+    }
+
+    function doQtyMinus(itemcode)
+    {
+        let _uSearch = itemcode
+        let _recal = 0
+        if(cpAllItems[_uSearch].qty > 0){
+            cpAllItems[_uSearch].qty = parseFloat(cpAllItems[_uSearch].qty) - 1
+            for(let i in cpAllItems){
+                //console.log("loop")
+                if(cpAllItems.hasOwnProperty(i)){
+                    _recal += parseFloat(cpAllItems[i].subtotal)
+                    cpTotal = _recal
+                }
+            }
+            showItemsList(cpAllItems, cpTotal)
+        }
     }
     
 
@@ -490,7 +533,7 @@
     $('body').on('shown.bs.modal', '#items_modal', function () {
         $(this).on("keypress", function(e){
             if(e.keyCode==13){
-                doSearch($(".item-input").val())
+                doSearch(selecteditemcode)
                 $("#items-list > tbody > tr").each(function(i){
                     $(this).css("background-color","")
                 })
@@ -504,10 +547,18 @@
         $(this).unbind()
     })
     // remove item from list
-    $("#items-table").on("click","tbody > tr > td > button",function(e){
+    $("#items-table").on("click","tbody > tr > td > button#item-del",function(e){
         e.preventDefault()
         $(this).parent().parent().remove()
         doRemove($(this).parent().parent().data("itemcode"))
+    });
+    $("#items-table").on("click","tbody > tr > td > button#item-plus",function(e){
+        e.preventDefault()
+        doQtyPlus($(this).parent().parent().data("itemcode"))
+    });
+    $("#items-table").on("click","tbody > tr > td > button#item-minus",function(e){
+        e.preventDefault()
+        doQtyMinus($(this).parent().parent().data("itemcode"))
     });
     // dispatch data from modal to outside
     $("#item-ok").on("click", function(){

@@ -24,7 +24,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <!-- Modal Head -->
-                <h2 class="modal-title" id=""><b>New Item</b></h2>
+                <h2 class="modal-title" id=""><b>Create New Category</b></h2>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>

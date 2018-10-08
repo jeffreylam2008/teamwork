@@ -86,8 +86,10 @@ class Categories extends CI_Controller {
 		// Main view loaded
 		$this->load->view("categories/categories-view",[
 			"base_url" => base_url("/products/categories/edit/"),
+			"del_url" => base_url("/products/categories/delete/"),
 			"route_url" => base_url("/products/categories/page/"),
 			"data" => $_data,
+			"user_auth" => true,
 			"default_per_page" => $_default_per_page,
 			"page" => $_page
 		]);
@@ -97,6 +99,10 @@ class Categories extends CI_Controller {
 		]);
 		$this->load->view('footer');
 	}
+	/**
+	 * Edit
+	 * 
+	 */
 	public function edit($cate_code="")
 	{
 		// variable initial
@@ -149,21 +155,28 @@ class Categories extends CI_Controller {
 		// function bar with next, preview and save button
 		$this->load->view('function-bar', [
 			"btn" => [
-				["name" => "Back", "type"=>"button", "id" => "Back", "url"=> base_url('/products/categories/page/'.$_page), "style" => "", "show" => true],
-				["name" => "Save", "type"=>"button", "id" => "Save", "url"=> "#", "style" => "", "show" => true],
+				["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/products/categories/page/'.$_page), "style" => "", "show" => true],
+				["name" => "Save", "type"=>"button", "id" => "save", "url"=> "#", "style" => "", "show" => true],
 				["name" => "Previous", "type"=>"button", "id" => "Previous", "url"=> base_url("/products/categories/edit/".$_all[$_previous]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
 				["name" => "Next", "type"=>"button", "id" => "Next", "url"=> base_url("/products/categories/edit/".$_all[$_next]), "style" => "btn btn-outline-secondary ". $_next_disable, "show" => true]
 			]
 		]);
 		$this->load->view("categories/categories-edit-view", [
-			"save_url" => base_url("/products/items/edit/save/"),
+			"save_url" => base_url("/products/categories/edit/save/"),
 			"data" => $_data
 		]);
 	}
-
-	function savecreate()
+	/**
+	 * Delete
+	 * 
+	 */
+	public function delete($cate_code="")
 	{
-		
+
+	}
+
+	public function savecreate()
+	{
 		if(isset($_POST) && !empty($_POST))
 		{
 			$_api_body = json_encode($_POST,true);
@@ -198,8 +211,41 @@ class Categories extends CI_Controller {
 			}
 		}
 	}
-	function saveedit()
+	public function saveedit($cate_code = "")
 	{
-		
+		if(isset($_POST) && !empty($_POST) && isset($cate_code) && !empty($cate_code))
+		{
+			$_api_body = json_encode($_POST,true);
+			if($_api_body != "null")
+			{
+				// API data
+				$this->component_api->SetConfig("body", $_api_body);
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/categories/index.php/".$cate_code);
+				$this->component_api->CallPatch();
+				$result = json_decode($this->component_api->GetConfig("result"),true);
+
+				// var_dump($result);
+				if(isset($result['error']['message']) || isset($result['error']['code']))
+				{
+
+					$alert = "danger";
+					switch($result['error']['code'])
+					{
+						case "00000":
+							$alert = "success";
+						break;
+					}					
+					
+					$this->load->view('error-handle', [
+						'message' => $result['error']['message'], 
+						'code'=> $result['error']['code'], 
+						'alertstyle' => $alert
+					]);
+			
+					// callback initial page
+					header("Refresh: 5; url=".base_url("/products/categories/"));
+				}
+			}
+		}
 	}
 }

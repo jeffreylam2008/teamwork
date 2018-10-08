@@ -56,22 +56,23 @@ class Invoices extends CI_Controller
 	}
 	public function donew()
 	{
+		// if(!empty($this->session->userdata('transaction')))
+		// {
+		// 	$_transaction = $this->session->userdata('transaction');
+		// 	$_tran = array_keys($_transaction);
+		// 	$_invoice_num = $_tran[0];
+		// }
 		if(!empty($this->session->userdata('transaction')))
 		{
-			$_transaction = $this->session->userdata('transaction');
-			$_tran = array_keys($_transaction);
-			$_invoice_num = $_tran[0];
+			$this->session->unset_userdata('transaction');
 		}
-		else{
-			$_invoice_num = $this->_inv_header_param['topNav']['prefix'].date("Ymds");
-		}
+		$_invoice_num = $this->_inv_header_param['topNav']['prefix'].date("Ymds");
 		redirect(base_url("invoices/create/".$_invoice_num),"refresh");
 	}
 	public function create($_invoice_num = "")
 	{
 		// variable initial
 		$_default_per_page = 50;
-
 		if(!empty($_invoice_num))
 		{
 			if(substr($_invoice_num , 0 , 3) === $this->_inv_header_param["topNav"]['prefix'] 
