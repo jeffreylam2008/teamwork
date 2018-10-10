@@ -24,7 +24,7 @@ class Invoices extends CI_Controller
 		
 		$username = "iamadmin";
 		// fatch employee API
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/index.php/".$username);
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
 		$this->component_api->CallGet();
 		$_employee = json_decode($this->component_api->GetConfig("result"),true);
 		//var_dump($_employee);
@@ -37,7 +37,7 @@ class Invoices extends CI_Controller
 			"today" => date("Y-m-d")
 		];
 		// fatch side bar API
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/index.php/side");
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
 		$this->component_api->CallGet();
 		$_nav_list = json_decode($this->component_api->GetConfig("result"), true);
 		$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
@@ -178,7 +178,7 @@ class Invoices extends CI_Controller
 
 		if(!empty($_invoice_num))
 		{
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/index.php/".$_invoice_num);
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/".$_invoice_num);
 			$this->component_api->CallGet();
 			$_invoices = json_decode($this->component_api->GetConfig("result"),true);
 	
@@ -210,19 +210,19 @@ class Invoices extends CI_Controller
 				}
 
 				// fatch items API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/items/index.php");
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/items/");
 				$this->component_api->CallGet();
 				$_items_list = json_decode($this->component_api->GetConfig("result"), true);
 				// fatch shop code and shop detail API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shop/index.php");
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shop/");
 				$this->component_api->CallGet();
 				$_shopcode_list = json_decode($this->component_api->GetConfig("result"), true);
 				// fatch customer API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/customers/index.php");
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/customers/");
 				$this->component_api->CallGet();
 				$_cust_list = json_decode($this->component_api->GetConfig("result"), true);
 				// fatch payment method API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/tender/index.php");
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/tender/");
 				$this->component_api->CallGet();
 				$_tender = json_decode($this->component_api->GetConfig("result"),true);
 				
@@ -285,7 +285,7 @@ class Invoices extends CI_Controller
 		// var_dump ($_SESSION);
 		// echo "</pre>";
 
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/customers/index.php/".$_data['customer']);
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/customers/".$_data['customer']);
 			$this->component_api->CallGet();
 			$result = json_decode($this->component_api->GetConfig("result"),true);
 
@@ -363,7 +363,7 @@ class Invoices extends CI_Controller
 			if($_api_body != "null")
 			{
 				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/index.php/".$_transaction[$_cur_invoicenum]['invoicenum']);
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/".$_transaction[$_cur_invoicenum]['invoicenum']);
 				$this->component_api->CallPatch();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
 			
@@ -418,7 +418,7 @@ class Invoices extends CI_Controller
 			{
 
 				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/index.php");
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/");
 				$this->component_api->CallPost();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
 				
@@ -475,7 +475,7 @@ class Invoices extends CI_Controller
 		$_shopcode_list = [];
 
 		// fatch items API
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/index.php");
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/");
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
 		// fatch shop API

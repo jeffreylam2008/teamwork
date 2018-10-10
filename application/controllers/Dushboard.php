@@ -25,7 +25,7 @@ class Dushboard extends CI_Controller
 			"user_id" => ""
 		];
 
-		$this->component_api->SetConfig("url", "http://localhost/erp_backend/api/systems/menu/index.php/side");
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
 		$this->component_api->CallGet();
 		$nav_list = json_decode($this->component_api->GetConfig("result"), true);
 		$this->component_sidemenu->SetConfig("nav_list", $nav_list);
