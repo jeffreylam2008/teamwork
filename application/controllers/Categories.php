@@ -176,27 +176,25 @@ class Categories extends CI_Controller {
 		$_page = $this->session->userdata("page");
 		$_comfirm_show = true;
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/transaction/d/".$item_code);
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/items/has/category/".$cate_code);
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
 		if(isset($_data))
-		{
-			// configure message 
+		{	
 			if($_data['query'])
 			{
-				$_comfirm_show = false;
+				$_comfirm_show = false;	
 			}
 			// function bar with next, preview and save button
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "Back", "url"=>base_url('/products/items/page/'.$_page), "style" => "", "show" => true],
-					["name" => "Yes", "type"=>"button", "id" => "yes", "url"=>base_url('/products/items/delete/confirmed/'.$item_code), "style" => "btn btn-outline-danger", "show" => $_comfirm_show],
+					["name" => "Back", "type"=>"button", "id" => "Back", "url"=>base_url('/products/categories/page/'.$_page), "style" => "", "show" => true],
+					["name" => "Yes", "type"=>"button", "id" => "yes", "url"=>base_url('/products/categories/delete/confirmed/'.$cate_code), "style" => "btn btn-outline-danger", "show" => $_comfirm_show],
 				]
 			]);
 			// main view loaded
-			$this->load->view("items/items-del-view",[
-				"item_code" => $item_code,
-				"trans_url" => base_url("/invoices/edit/".$_data['query']['trans_code']),
+			$this->load->view("categories/categories-del-view",[
+				"cate_code" => $cate_code,
 				"data" => $_data,
 			]);
 		}
@@ -273,6 +271,33 @@ class Categories extends CI_Controller {
 					header("Refresh: 5; url=".base_url("/products/categories/"));
 				}
 			}
+		}
+	}
+	public function savedel($cate_code = "")
+	{
+		// API data
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/categories/".$cate_code);
+		$this->component_api->CallDelete();
+		$result = json_decode($this->component_api->GetConfig("result"),true);
+		if(isset($result['error']['message']) || isset($result['error']['code']))
+		{
+
+			$alert = "danger";
+			switch($result['error']['code'])
+			{
+				case "00000":
+					$alert = "success";
+				break;
+			}					
+			
+			$this->load->view('error-handle', [
+				'message' => $result['error']['message'], 
+				'code'=> $result['error']['code'], 
+				'alertstyle' => $alert
+			]);
+	
+			// callback initial page
+			header("Refresh: 5; url=".base_url("/products/items/"));
 		}
 	}
 }
