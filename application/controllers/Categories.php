@@ -297,7 +297,7 @@ class Categories extends CI_Controller {
 			]);
 	
 			// callback initial page
-			header("Refresh: 5; url=".base_url("/products/items/"));
+			header("Refresh: 5; url=".base_url("/products/categories/"));
 		}
 	}
 }
