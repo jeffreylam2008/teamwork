@@ -137,10 +137,6 @@
                     required: true,
                     number: true
                 },
-                "i-specialprice" : {
-                    required: true,
-                    number: true
-                },
                 "i-category": {
                     selectValid : "null"
                 }

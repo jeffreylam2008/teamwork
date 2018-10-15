@@ -77,7 +77,7 @@ class Items extends CI_Controller
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/categories/");
 		$this->component_api->CallGet();
 		$_data_categories = json_decode($this->component_api->GetConfig("result"), true);
-		
+			
 		// data for items type selection
 		if(!empty($_data_categories["query"]))
 		{
@@ -85,36 +85,37 @@ class Items extends CI_Controller
 			{
 				$_categories[$val["cate_code"]] = $val["desc"];
 			}
+			
+
+			// set user data
+			$this->session->set_userdata('page',$page);
+			$this->session->set_userdata('items_list',$_data);
+
+			// function bar with next, preview and save button
+			$this->load->view('function-bar', [
+				"btn" => [
+					// ["name" => "New", "type"=>"button", "id" => "newitem", "url"=> base_url('/products/items/new/'), "style" => "", "show" => true]
+					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=> "#", "style" => "", "show" => true, "extra" => "data-toggle='modal' data-target='#modal01'"]
+				]
+			]);
+
+			// Main view loaded
+			$this->load->view("items/items-view",[
+				"edit_url" => base_url("/products/items/edit/"),
+				"del_url" => base_url("/products/items/delete/"),
+				"route_url" => base_url("/products/items/page/"),
+				"data" => $_data,
+				"user_auth" => true,
+				"default_per_page" => $_default_per_page,
+				"page" => $page
+			]);
+			$this->load->view("items/items-create-view",[
+				"save_url" => base_url("/products/items/save/"),
+				"categories_baseurl" => base_url("/products/categories/new/"),
+				"categories" => $_categories
+			]);
+			$this->load->view('footer');
 		}
-
-		// set user data
-		$this->session->set_userdata('page',$page);
-		$this->session->set_userdata('items_list',$_data);
-
-		// function bar with next, preview and save button
-		$this->load->view('function-bar', [
-			"btn" => [
-				// ["name" => "New", "type"=>"button", "id" => "newitem", "url"=> base_url('/products/items/new/'), "style" => "", "show" => true]
-				["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=> "#", "style" => "", "show" => true, "extra" => "data-toggle='modal' data-target='#modal01'"]
-			]
-		]);
-
-		// Main view loaded
-		$this->load->view("items/items-view",[
-			"edit_url" => base_url("/products/items/edit/"),
-			"del_url" => base_url("/products/items/delete/"),
-			"route_url" => base_url("/products/items/page/"),
-			"data" => $_data,
-			"user_auth" => true,
-			"default_per_page" => $_default_per_page,
-			"page" => $page
-		]);
-		$this->load->view("items/items-create-view",[
-			"save_url" => base_url("/products/items/save/"),
-			"categories_baseurl" => base_url("/products/categories/new/"),
-			"categories" => $_categories
-		]);
-		$this->load->view('footer');
 	}
 
 	/** 

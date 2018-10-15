@@ -90,5 +90,8 @@ $route['invoices/list/page/(:any)'] = 'invoices/invlist/$1';
 $route['invoices/edit/(:any)'] = 'invoices/edit/$1';
 $route['invoices/edit'] = 'error_404';
 
+// Shop
+$route['administration/shop'] = 'shops';
+
 /// payment Method
 //$route['invoices/'] = 'theprint/invoices'; 
