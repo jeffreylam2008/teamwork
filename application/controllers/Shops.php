@@ -17,15 +17,14 @@ class Shops extends CI_Controller
 			"isLogin" => true,
 			"username" => "",
 			"employee_code" => "110022",
-			"prefix" => "INV",
 			"shop_code" => "0012",
 			"today" => date("Y-m-d")
 		];
 
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
 		$this->component_api->CallGet();
-		$nav_list = json_decode($this->component_api->GetConfig("result"), true);
-		$this->component_sidemenu->SetConfig("nav_list", $nav_list);
+		$_nav_list = json_decode($this->component_api->GetConfig("result"), true);
+		$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
 		$this->component_sidemenu->SetConfig("active",true);
 		$this->component_sidemenu->Proccess();
 

@@ -34,7 +34,6 @@ class Items extends CI_Controller
 			"isLogin" => true,
 			"username" => "",
 			"employee_code" => "110022",
-			"prefix" => "INV",
 			"shop_code" => "0012",
 			"today" => date("Y-m-d")
 		];
