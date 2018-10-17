@@ -18,7 +18,7 @@
             <td><?=($k + 1)?></td>
             <td><?=$v['shop_code']?></td>
             <td><?=$v['name']?></td>
-            <td><?=preg_replace("/^1?(\d{4})(\d{4})$/", "$1-$2", $v['phone']);?></td>
+            <td><?=preg_replace("/(\d{4})(\d{4})/", "$1-$2", $v['phone']);?></td>
 
             
             <td><?=$v['address1']?></td>
