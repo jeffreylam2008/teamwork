@@ -1,11 +1,32 @@
+
 <table id="tbl" class="table table-striped table-borderedNO" style="width:100%">
     <thead>
         <tr>
-
+            <td>#</td>
+            <td>Shop Code</td>
+            <td>Shop Name</td>
+            <td>Phone</td>
+            <td>Address1</td>
+            <td>Address2</td>
         </tr>
     <thead>
     <tbody>
-        
+        <?php
+            foreach($data as $k => $v): 
+        ?>
+        <tr>
+            <td><?=($k + 1)?></td>
+            <td><?=$v['shop_code']?></td>
+            <td><?=$v['name']?></td>
+            <td><?=preg_replace("/^1?(\d{4})(\d{4})$/", "$1-$2", $v['phone']);?></td>
+
+            
+            <td><?=$v['address1']?></td>
+            <td><?=$v['address2']?></td>
+        </tr>
+        <?
+            endforeach;
+        ?>
     </tbody>
 </table>
 <script>
@@ -23,4 +44,6 @@ $(document).ready(function() {
         $(location).attr('href', '<?=$route_url?>'+(info.page+1))
     });
 });
+
 </script>
+

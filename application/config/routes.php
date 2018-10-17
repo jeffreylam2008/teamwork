@@ -91,6 +91,7 @@ $route['invoices/edit/(:any)'] = 'invoices/edit/$1';
 $route['invoices/edit'] = 'error_404';
 
 // Shop
+$route['administration/shops/page/(:any)'] = 'shops/index/page/$1';
 $route['administration/shops'] = 'shops';
 
 
