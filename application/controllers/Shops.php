@@ -39,7 +39,8 @@ class Shops extends CI_Controller
 	}
 	public function index()
 	{
-		
+		// load shops view
+		$this->load->view('shops/shops-view');
 		$this->load->view('footer');
 	}
 }
