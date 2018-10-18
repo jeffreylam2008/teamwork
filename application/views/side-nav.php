@@ -6,20 +6,22 @@
         </ul>
     </nav>
     <?php
+
+
     // echo "<pre>";
     // var_dump($sideNav);
     // echo "</pre>";
-    
+
     //echo traversal($sideNav);
     function traversal($sideNav){
         $result = "";
-       
+        $active = "";
         foreach($sideNav as $key => $val)
         {
             // one and many item on menu with Parent and Children
             if(isset($val["child"]))
             {   
-                $result .= "<li class=''><a href='#".$val["name"]."' data-toggle='collapse' aria-expanded='false'>";
+                $result .= "<li class=''><a href='#".$val["name"]."' data-toggle='collapse' data-parent='#".$val["name"]."' aria-expanded='false'>";
                 $result .= $val["name"];
                 $result .= "</a>";
                 $result .= "<ul class='list-unstyled collapse' id='".$val["name"]."'>";
@@ -29,13 +31,14 @@
             }
             // Single item on menu with no Children
             else{
+                
                 $result .= "<li>";
-                $result .= "<a href='".base_url($val["slug"])."'>";
+                $result .= "<a href='".base_url($val["slug"])."' $active>";
                 $result .= $val["name"];
                 $result .= "</a>";
             }
             $result .= "</li>";
-            
+
         }
         return $result;
     }

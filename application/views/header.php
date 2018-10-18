@@ -43,6 +43,11 @@
                  <!-- menu section -->
                 <?php echo $sideNav_view; ?>
                 <!--</div>-->
+                <script>
+                    $("#diy-sidebar").on('click', function(){
+                        console.log($(this))
+                    });
+                </script>
                 <!-- content section -->
                 <div id="diy-content">
                 <!-- <div class="col-sm-10">-->

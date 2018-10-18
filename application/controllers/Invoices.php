@@ -31,6 +31,7 @@ class Invoices extends CI_Controller
 		$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
 		$this->component_sidemenu->Proccess();
 		
+		
 		// render the view
 		$this->load->view('header',[
 			'title'=>'Invoices',
@@ -163,6 +164,10 @@ class Invoices extends CI_Controller
 		// variable initial
 		$_default_per_page = 50;
 		$_show_transaction_data = "";
+		$_items_list = [];
+		$_shopcode_list = ["query" =>[]];
+		$_cust_list = [];
+		$_tender = [];
 
 		if(!empty($_invoice_num))
 		{
@@ -202,7 +207,7 @@ class Invoices extends CI_Controller
 				$this->component_api->CallGet();
 				$_items_list = json_decode($this->component_api->GetConfig("result"), true);
 				// fatch shop code and shop detail API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shop/");
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shop");
 				$this->component_api->CallGet();
 				$_shopcode_list = json_decode($this->component_api->GetConfig("result"), true);
 				// fatch customer API
@@ -213,7 +218,7 @@ class Invoices extends CI_Controller
 				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/tender/");
 				$this->component_api->CallGet();
 				$_tender = json_decode($this->component_api->GetConfig("result"),true);
-				
+
 				// function bar with next, preview and save button
 				$this->load->view('function-bar', [
 					"btn" => [
@@ -317,7 +322,7 @@ class Invoices extends CI_Controller
 			// function bar
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url("/invoices/".$_data['formtype']."/".$_data['invoicenum']."") ,"style" => "","show" => true],
+					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/invoices/'.$_data['formtype'].'/'.$_data['invoicenum']) ,"style" => "","show" => true],
 					["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
 					["name" => "Save", "type"=>"button", "id" => "save", "url"=> base_url("/invoices/".$_the_form_type) , "style" => "","show" => $_show_save_btn],
 					["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
@@ -467,7 +472,7 @@ class Invoices extends CI_Controller
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
 		// fatch shop API
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shop/");
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
 		$this->component_api->CallGet();
 		$_shopcode_list = json_decode($this->component_api->GetConfig("result"), true);
 

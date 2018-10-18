@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Shops extends CI_Controller 
+class Customers extends CI_Controller 
 {
 	public function __construct()
 	{
@@ -28,8 +28,6 @@ class Shops extends CI_Controller
 		$this->component_sidemenu->SetConfig("active",true);
 		$this->component_sidemenu->Proccess();
 
-
-		echo $this->uri->uri_string();
 		// load header view
 		$this->load->view('header',[
 			'title'=>'Shop',
@@ -41,30 +39,8 @@ class Shops extends CI_Controller
 	}
 	public function index()
 	{
-		// variable initial
-		$_default_per_page = 50;
-		$_categories = [];
-		if(empty($page))
-		{
-			$page = 1;
-		}
-		// Call API
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
-		$this->component_api->CallGet();
-		$_data = json_decode($this->component_api->GetConfig("result"), true);
-		
-		// echo "<pre>";
-		// var_dump($_shops);
-		// echo "</pre>";
 		// load shops view
-		$this->load->view('shops/shops-view', [
-			"route_url" => base_url("/products/shops/page/"),
-			"data" => $_data['query'],
-			"user_auth" => true,
-			"default_per_page" => $_default_per_page,
-			"page" => $page
-			
-		]);
+		$this->load->view('customers/customers-view');
 		$this->load->view('footer');
 	}
 }

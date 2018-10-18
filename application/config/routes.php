@@ -90,12 +90,16 @@ $route['invoices/list/page/(:any)'] = 'invoices/invlist/$1';
 $route['invoices/edit/(:any)'] = 'invoices/edit/$1';
 $route['invoices/edit'] = 'error_404';
 
-// Shop
+// Shops
 $route['administration/shops/page/(:any)'] = 'shops/index/page/$1';
 $route['administration/shops'] = 'shops';
 
 
-// Employee
+// Employees
 $route['administration/employees'] = 'employees';
+
+// quotations
+$route['quotation'] = 'quotation';
+
 /// payment Method
 //$route['invoices/'] = 'theprint/invoices'; 
