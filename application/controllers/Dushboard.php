@@ -23,7 +23,7 @@ class Dushboard extends CI_Controller
 
 		// load header view
 		$this->load->view('header',[
-			'title'=>'Items',
+			'title'=>'Dushboard',
 			'sideNav_view' => $this->load->view('side-nav', ["sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list")], TRUE), 
 			'topNav_view' => $this->load->view('top-nav', ["topNav" => $sampleNavData["topNav"]], TRUE) 
 		]);

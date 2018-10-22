@@ -495,6 +495,13 @@ class Invoices extends CI_Controller
 		// echo "<pre>";
 		// var_dump($_shop_data);
 		// echo "</pre>";
+
+			$this->load->view('function-bar', [
+				"btn" => [
+					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=> base_url("invoices/donew/"), "style" => "", "show" => true, "extra" => ""]
+				]
+			]);
+
 			$this->load->view("invoices/invoices-list-view", [
 				'data' => $_data, 
 				"url" => base_url("invoices/edit/"),

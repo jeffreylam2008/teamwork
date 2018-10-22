@@ -37,10 +37,18 @@ class Quotations extends CI_Controller
 			'sideNav_view' => $this->load->view('side-nav', ["sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list")], TRUE), 
 			'topNav_view' => $this->load->view('top-nav', ["topNav" => $this->_inv_header_param["topNav"]], TRUE)
 		]);
-    }
-    public function index()
+	}
+	public function donew()
 	{
-        $this->load->view('quotations/quotations-view');
+
+	}
+	public function create($_invoice_num = "")
+	{
+		
+	}
+    public function qualist()
+	{
+        $this->load->view('quotations/quotations-list-view');
         $this->load->view('footer');
 
 	}

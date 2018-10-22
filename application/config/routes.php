@@ -99,7 +99,11 @@ $route['administration/shops'] = 'shops';
 $route['administration/employees'] = 'employees';
 
 // quotations
-$route['quotation'] = 'quotation';
+$route['quotations'] = 'error_404';
+$route['quotations/list'] = 'quotations/qualist/1';
+$route['quotations/list/page/(:any)'] = 'quotations/qualist/$1';
+$route['quotations/create'] = 'error_404';
+
 
 /// payment Method
 //$route['invoices/'] = 'theprint/invoices'; 
