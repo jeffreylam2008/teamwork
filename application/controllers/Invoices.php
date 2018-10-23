@@ -113,7 +113,7 @@ class Invoices extends CI_Controller
 				$this->component_api->CallGet();
 				$_cust_list = json_decode($this->component_api->GetConfig("result"), true);
 				// fatch payment method API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/tender/");
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
 				$this->component_api->CallGet();
 				$_tender = json_decode($this->component_api->GetConfig("result"),true);
 				
@@ -215,7 +215,7 @@ class Invoices extends CI_Controller
 				$this->component_api->CallGet();
 				$_cust_list = json_decode($this->component_api->GetConfig("result"), true);
 				// fatch payment method API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/tender/");
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
 				$this->component_api->CallGet();
 				$_tender = json_decode($this->component_api->GetConfig("result"),true);
 

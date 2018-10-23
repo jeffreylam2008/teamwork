@@ -22,7 +22,7 @@ class Quotations extends CI_Controller
 			"employee_code" => "110022",
 			"shop_code" => "0012",
 			"today" => date("Y-m-d"),
-			"prefix" => "INV"
+			"prefix" => "QTA"
 		];
 		// fatch side bar API
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
@@ -40,17 +40,127 @@ class Quotations extends CI_Controller
 	}
 	public function donew()
 	{
-		$this->load->view('quotations/quotations-create-view');
-        $this->load->view('footer');
+		if(!empty($this->session->userdata('transaction')))
+		{
+			$this->session->unset_userdata('transaction');
+		}
+		$_num = $this->_inv_header_param['topNav']['prefix'].date("Ymds");
+		redirect(base_url("quotations/create/".$_num),"refresh");
 	}
-	public function create($_invoice_num = "")
+	public function create($_num = "")
 	{
-		
+		// variable initial
+		$_default_per_page = 50;
+		if(!empty($_num))
+		{
+			if(substr($_num , 0 , 3) === $this->_inv_header_param["topNav"]['prefix'] 
+				&& strlen($_num) == 13)
+			{
+				// variable initial
+				$_show_discard_btn = false;
+				$_show_transaction_data = "";
+				$_cur_invoicenum = "";
+				$_transaction = [];
+				
+				if(!empty($this->session->userdata('transaction')))
+				{
+					$_cur_invoicenum = $this->session->userdata('cur_invoicenum');
+					$_transaction = $this->session->userdata('transaction');
+				}
+				//unset($_SESSION['transaction']);
+				// echo "<pre>";
+				// var_dump($_SESSION);
+				// echo "</pre>";
+				// echo "<pre>";
+				// var_dump($_transaction);
+				// echo "</pre>";
+				
+				// check invoices is exist or new create
+				if(array_key_exists($_num, $_transaction))
+				{
+					$_show_discard_btn = true;
+					$_show_transaction_data = $_transaction[$_num];
+				}
+				else
+				{
+					$_show_discard_btn = true;
+					$_transaction[$_num] = [];
+					// set invoices number to session
+					$this->session->set_userdata('cur_invoicenum',$_num);
+					$this->session->set_userdata('transaction',$_transaction);
+				}
+				// fatch items API
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/items/");
+				$this->component_api->CallGet();
+				$_items_list = json_decode($this->component_api->GetConfig("result"), true);
+				// fatch shop code and shop detail API
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
+				$this->component_api->CallGet();
+				$_shopcode_list = json_decode($this->component_api->GetConfig("result"), true);
+				// fatch customer API
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/customers/");
+				$this->component_api->CallGet();
+				$_cust_list = json_decode($this->component_api->GetConfig("result"), true);
+				// fatch payment method API
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
+				$this->component_api->CallGet();
+				$_tender = json_decode($this->component_api->GetConfig("result"),true);
+				
+				
+				// var_dump($_theprint_data);
+				// function bar with next, preview and save button
+				$this->load->view('function-bar', [
+					"btn" => [
+						["name" => "Next", "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
+						["name" => "Discard", "type"=>"button", "id" => "discard", "url"=> base_url('/quotations/discard'), "style" => "btn btn-danger", "show" => $_show_discard_btn]
+					]
+				]);
+				// present form view
+				$this->load->view('quotations/quotations-create-view', [
+					"submit_to" => base_url("/quotations/tender"),
+					"prefix" => $this->_inv_header_param['topNav']['prefix'],
+					"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
+					"quotation_num" => $_num,
+					"date" => date("Y-m-d H:i:s"),
+					"items" => [
+						0 => [
+							"item_code" => "",
+							"eng_name" => "",
+							"chi_name" => "",
+							"qty" => "",
+							"unit" => "",
+							"price" => "",
+						]
+					],
+					"total" => 0,
+					"ajax" => [
+						"items" => $_items_list['query'],
+						"shop_code" => $_shopcode_list['query'],
+						"customers" => $_cust_list['query'],
+						"tender" => $_tender['query']
+					],
+					"theprint_data" => $_show_transaction_data,
+					"default_per_page" => $_default_per_page
+				]);
+				// persent footer view
+				$this->load->view('footer');
+			}
+		}
 	}
     public function qualist()
 	{
         $this->load->view('quotations/quotations-list-view');
         $this->load->view('footer');
 
+	}
+	public function tender()
+	{
+
+
+	}
+	public function discard()
+	{
+
+		
 	}
 }
