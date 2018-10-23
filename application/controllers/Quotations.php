@@ -40,7 +40,8 @@ class Quotations extends CI_Controller
 	}
 	public function donew()
 	{
-
+		$this->load->view('quotations/quotations-create-view');
+        $this->load->view('footer');
 	}
 	public function create($_invoice_num = "")
 	{
