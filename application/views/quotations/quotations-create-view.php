@@ -314,9 +314,8 @@
     function doRender(list){
 
         if(list != ""){
-            $("#i-invoicenum").val(list.invoicenum)
-            $("#i-invoicedate").val(list.invoicedate)
-            $("#i-quotation").val(list.quotation)
+            $("#i-quotationnum").val(list.quotationnum)
+            $("#i-date").val(list.date)
             $("#i-shopcode").val(list.shopcode)
             if(list.hasOwnProperty("customer")){
                 $("#i-customer").val(list.customer.cust_code)
@@ -578,11 +577,10 @@
     $("#next").on("click",function(){
         var _inputs = {};
         var _valid = 0;
-        _inputs["invoicenum"] = $("#i-invoicenum").val()
+        _inputs["quotationnum"] = $("#i-quotationnum").val()
         _inputs["prefix"] = $("#i-prefix").val()
-        _inputs["quotation"] = $("#i-quotation").val()
         _inputs["employeecode"] = $("#i-employeecode").val()
-        _inputs["invoicedate"] = $("#i-invoicedate").val()
+        _inputs["date"] = $("#i-date").val()
         _inputs["shopcode"] = $("#i-shopcode").val()
         _inputs["customer"] = $("#i-customer").val()
         _inputs["customername"] = $("#i-customer-name").val()

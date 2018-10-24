@@ -155,8 +155,80 @@ class Quotations extends CI_Controller
 	}
 	public function tender()
 	{
+		echo "<pre>";
+		var_dump($_POST);
+		echo "</pre>";
 
 
+		if(isset($_POST["i-post"]))
+		{
+			// variable initial
+			$_data = json_decode($_POST['i-post'], true);
+			$_cur_invoicenum = $this->session->userdata('cur_invoicenum');
+			$_show_save_btn = false;
+			$_show_reprint_btn = false;
+			$_transaction = [];
+		// echo "<pre>";
+		// var_dump ($_SESSION);
+		// echo "</pre>";
+
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/customers/".$_data['customer']);
+			$this->component_api->CallGet();
+			$result = json_decode($this->component_api->GetConfig("result"),true);
+
+			//$session = json_encode($this->session->userdata('theprint'),true);
+			// combine customer data from API to main array. * it must be only one reoard retrieve 
+			$_data['customer'] = $result['query'][0];
+
+			
+			$_transaction[$_num] = $_data;
+
+			// save print data to session
+			$this->session->set_userdata('transaction',$_transaction);
+
+			// show save button
+			if(isset($_transaction[$_num]['editmode']))
+			{
+				if($_transaction[$_num]['editmode'])
+				{
+					$_show_save_btn = true;
+				}
+			}
+			else{
+				$_show_save_btn = true;
+			}
+
+			switch($_data['formtype'])
+			{
+				case "edit":
+					$_show_reprint_btn = true;
+					$_the_form_type = "saveedit";
+				break;
+				case "create":
+					$_show_reprint_btn = false;
+					$_the_form_type = "save";
+				break;
+			}
+		// echo "<pre>";
+		// var_dump($_transaction);
+		// echo "</pre>";
+			
+			// // function bar
+			// $this->load->view('function-bar', [
+			// 	"btn" => [
+			// 		["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/invoices/'.$_data['formtype'].'/'.$_data['invoicenum']) ,"style" => "","show" => true],
+			// 		["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
+			// 		["name" => "Save", "type"=>"button", "id" => "save", "url"=> base_url("/invoices/".$_the_form_type) , "style" => "","show" => $_show_save_btn],
+			// 		["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
+			// 	]
+			// ]);
+			// // render view
+			// $this->load->view("invoices/invoices-tender-view", [
+			// 	"preview_url" => base_url('/ThePrint/invoices/preview'),
+			// 	"print_url" => base_url('/ThePrint/invoices/save')
+			// ]);
+			
+		}
 	}
 	public function discard()
 	{
