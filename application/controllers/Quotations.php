@@ -164,7 +164,7 @@ class Quotations extends CI_Controller
 		{
 			// variable initial
 			$_data = json_decode($_POST['i-post'], true);
-			$_cur_invoicenum = $this->session->userdata('cur_invoicenum');
+			$_cur_num = $this->session->userdata('cur_invoicenum');
 			$_show_save_btn = false;
 			$_show_reprint_btn = false;
 			$_transaction = [];
@@ -181,15 +181,15 @@ class Quotations extends CI_Controller
 			$_data['customer'] = $result['query'][0];
 
 			
-			$_transaction[$_num] = $_data;
+			$_transaction[$_cur_num] = $_data;
 
 			// save print data to session
 			$this->session->set_userdata('transaction',$_transaction);
 
 			// show save button
-			if(isset($_transaction[$_num]['editmode']))
+			if(isset($_transaction[$_cur_num]['editmode']))
 			{
-				if($_transaction[$_num]['editmode'])
+				if($_transaction[$_cur_num]['editmode'])
 				{
 					$_show_save_btn = true;
 				}
