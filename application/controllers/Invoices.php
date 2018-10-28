@@ -207,7 +207,7 @@ class Invoices extends CI_Controller
 				$this->component_api->CallGet();
 				$_items_list = json_decode($this->component_api->GetConfig("result"), true);
 				// fatch shop code and shop detail API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shop");
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
 				$this->component_api->CallGet();
 				$_shopcode_list = json_decode($this->component_api->GetConfig("result"), true);
 				// fatch customer API
