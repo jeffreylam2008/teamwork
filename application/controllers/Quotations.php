@@ -38,6 +38,57 @@ class Quotations extends CI_Controller
 			'topNav_view' => $this->load->view('top-nav', ["topNav" => $this->_inv_header_param["topNav"]], TRUE)
 		]);
 	}
+
+	public function qualist()
+	{
+		// variable initial
+		$_default_per_page = 50;
+		$data = [];
+		$_shopcode_list = [];
+
+		// fatch quotation API
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/quotations/");
+		$this->component_api->CallGet();
+		$_data = json_decode($this->component_api->GetConfig("result"), true);
+		// fatch shop API
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
+		$this->component_api->CallGet();
+		$_shopcode_list = json_decode($this->component_api->GetConfig("result"), true);
+
+		if(!empty($_data) && !empty($_shopcode_list))
+		{
+			foreach($_shopcode_list['query'] as $key => $val)
+			{
+				$_shop_data[$val['shop_code']] = $val;
+			}
+			foreach($_data['query'] as $key => $val)
+			{
+				if(array_key_exists($val['shop_code'],$_shop_data))
+				{
+					$_data['query'][$key]['shop_name'] = $_shop_data[$val['shop_code']]['name'];
+				}
+			}
+		// echo "<pre>";
+		// var_dump($_data);
+		// echo "</pre>";
+		// echo "<pre>";
+		// var_dump($_shop_data);
+		// echo "</pre>";
+
+			$this->load->view('function-bar', [
+				"btn" => [
+					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=> base_url("invoices/donew/"), "style" => "", "show" => true, "extra" => ""]
+				]
+			]);
+
+			$this->load->view("quotations/quotations-list-view", [
+				'data' => $_data, 
+				"url" => base_url("quotations/edit/"),
+				"default_per_page" => $_default_per_page,
+				"page" => $page
+			]);
+		}
+	}
 	public function donew()
 	{
 		if(!empty($this->session->userdata('transaction')))
@@ -147,7 +198,8 @@ class Quotations extends CI_Controller
 			}
 		}
 	}
-	public function edit()
+
+	public function edit($_num)
 	{
 		// variable initial
 		$_default_per_page = 50;
@@ -157,106 +209,105 @@ class Quotations extends CI_Controller
 		$_cust_list = [];
 		$_tender = [];
 
-		if(!empty($_invoice_num))
+		if(!empty($_num))
 		{
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/".$_invoice_num);
+			// Check Quotation exist
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."//invoices/".$_invoice_num);
 			$this->component_api->CallGet();
-			$_invoices = json_decode($this->component_api->GetConfig("result"),true);
+			$_quotation = json_decode($this->component_api->GetConfig("result"),true);
 	
-			// set current invoice number to session
-			//$this->session->set_userdata('transaction',$_transaction);
-			$this->session->set_userdata('cur_invoicenum',$_invoice_num);
+			// // set current invoice number to session
+			// //$this->session->set_userdata('transaction',$_transaction);
+			// $this->session->set_userdata('cur_quotation',$_num);
 			
-			// unset($_SESSION['transaction']);
-			// unset($_SESSION['cur_invoicenum']);
+			// // unset($_SESSION['transaction']);
+			// // unset($_SESSION['cur_invoicenum']);
 
-			// echo "<pre>";
-			// var_dump($_invoices);
-			// echo "</pre>";
+			// // echo "<pre>";
+			// // var_dump($_invoices);
+			// // echo "</pre>";
 
-			if($_invoices['has'])
-			{
-				// variable initial
-				$_show_void_btn = false;
-				$_show_transaction_data = $_invoices['query'];
+			// if($_quotation['has'])
+			// {
+			// 	// variable initial
+			// 	$_show_void_btn = true;
+			// 	$_show_transaction_data = $_quotation['query'];
 
-				$_today = date_create($this->_inv_header_param['topNav']['today']);
-				$_invoice_date = date_create(date("Y-m-d",strtotime($_invoices['query']['invoicedate'])));
-				$_diff = date_diff($_today,$_invoice_date);
+			// 	$_today = date_create($this->_inv_header_param['topNav']['today']);
+			// 	$_invoice_date = date_create(date("Y-m-d",strtotime($_quotation['query']['invoicedate'])));
+			// 	$_diff = date_diff($_today,$_invoice_date);
 				
-				$_the_date_diff = $_diff->format("%a");
-				// check invoice date was same with today
-				if($_the_date_diff =! 0){
-					$_show_void_btn = true;
-				}
+			// 	// Check business date for void 
+			// 	// $_the_date_diff = $_diff->format("%a");
+			// 	// // check invoice date was same with today
+			// 	// if($_the_date_diff =! 0){
+			// 	// 	$_show_void_btn = true;
+			// 	// }
 
-				// fatch items API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/items/");
-				$this->component_api->CallGet();
-				$_items_list = json_decode($this->component_api->GetConfig("result"), true);
-				// fatch shop code and shop detail API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
-				$this->component_api->CallGet();
-				$_shopcode_list = json_decode($this->component_api->GetConfig("result"), true);
-				// fatch customer API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/customers/");
-				$this->component_api->CallGet();
-				$_cust_list = json_decode($this->component_api->GetConfig("result"), true);
-				// fatch payment method API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
-				$this->component_api->CallGet();
-				$_tender = json_decode($this->component_api->GetConfig("result"),true);
+			// 	// fatch items API
+			// 	$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/items/");
+			// 	$this->component_api->CallGet();
+			// 	$_items_list = json_decode($this->component_api->GetConfig("result"), true);
+			// 	// fatch shop code and shop detail API
+			// 	$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
+			// 	$this->component_api->CallGet();
+			// 	$_shopcode_list = json_decode($this->component_api->GetConfig("result"), true);
+			// 	// fatch customer API
+			// 	$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/customers/");
+			// 	$this->component_api->CallGet();
+			// 	$_cust_list = json_decode($this->component_api->GetConfig("result"), true);
+			// 	// fatch payment method API
+			// 	$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
+			// 	$this->component_api->CallGet();
+			// 	$_tender = json_decode($this->component_api->GetConfig("result"),true);
 
-				// function bar with next, preview and save button
-				$this->load->view('function-bar', [
-					"btn" => [
-						["name" => "Back", "type"=>"button", "id" => "Back", "url"=> base_url('/invoices/list'), "style" => "", "show" => true],
-						["name" => "Next", "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
-						["name" => "Void", "type"=>"button", "id" => "discard", "url"=> base_url('/invoices/void'), "style" => "btn btn-danger", "show" => $_show_void_btn]
-					]
-				]);
-				// show edit view
-				$this->load->view('invoices/invoices-edit-view', [
-					"submit_to" => base_url("/invoices/tender"),
-					"prefix" => $this->_inv_header_param['topNav']['prefix'],
-					"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
-					"quotation" => "",
-					"invoice_num" => $_invoice_num,
-					"invoice_date" => date("Y-m-d H:i:s"),
-					"items" => [
-						0 => [
-							"item_code" => "",
-							"eng_name" => "",
-							"chi_name" => "",
-							"qty" => "",
-							"unit" => "",
-							"price" => "",
-						]
-					],
-					"total" => 0,
-					"ajax" => [
-						"items" => $_items_list['query'],
-						"shop_code" => $_shopcode_list['query'],
-						"customers" => $_cust_list['query'],
-						"tender" => $_tender['query']
-					],
-					"theprint_data" => $_show_transaction_data,
-					"show" => $_show_void_btn,
-					"default_per_page" => $_default_per_page
-				]);
-			}
-			else
-			{
-				redirect(base_url("invoices/list/"),"refresh");
-			}
+			// 	// function bar with next, preview and save button
+			// 	$this->load->view('function-bar', [
+			// 		"btn" => [
+			// 			["name" => "Back", "type"=>"button", "id" => "Back", "url"=> base_url('/invoices/list'), "style" => "", "show" => true],
+			// 			["name" => "Next", "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
+			// 			["name" => "Void", "type"=>"button", "id" => "discard", "url"=> base_url('/invoices/void'), "style" => "btn btn-danger", "show" => $_show_void_btn]
+			// 		]
+			// 	]);
+			// 	// show edit view
+			// 	$this->load->view('quotations/quotations-edit-view', [
+			// 		"submit_to" => base_url("/quotation/tender"),
+			// 		"prefix" => $this->_inv_header_param['topNav']['prefix'],
+			// 		"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
+			// 		"quotation" => "",
+			// 		"invoice_num" => $_invoice_num,
+			// 		"invoice_date" => date("Y-m-d H:i:s"),
+			// 		"items" => [
+			// 			0 => [
+			// 				"item_code" => "",
+			// 				"eng_name" => "",
+			// 				"chi_name" => "",
+			// 				"qty" => "",
+			// 				"unit" => "",
+			// 				"price" => "",
+			// 			]
+			// 		],
+			// 		"total" => 0,
+			// 		"ajax" => [
+			// 			"items" => $_items_list['query'],
+			// 			"shop_code" => $_shopcode_list['query'],
+			// 			"customers" => $_cust_list['query'],
+			// 			"tender" => $_tender['query']
+			// 		],
+			// 		"theprint_data" => $_show_transaction_data,
+			// 		"show" => $_show_void_btn,
+			// 		"default_per_page" => $_default_per_page
+			// 	]);
+			// }
+			// else
+			// {
+			// 	redirect(base_url("invoices/list/"),"refresh");
+			// }
 		}
 	}
-    public function qualist()
-	{
-        $this->load->view('quotations/quotations-list-view');
-        $this->load->view('footer');
 
-	}
+
+
 	public function tender()
 	{
 		echo "<pre>";
@@ -336,7 +387,6 @@ class Quotations extends CI_Controller
 	}
 	public function discard()
 	{
-
 		
 	}
 }
