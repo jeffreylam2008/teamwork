@@ -110,23 +110,23 @@ class Quotations extends CI_Controller
 				// variable initial
 				$_show_discard_btn = false;
 				$_show_transaction_data = "";
-				$_cur_invoicenum = "";
+				$_cur_quotationnum = "";
 				$_transaction = [];
 				
 				if(!empty($this->session->userdata('transaction')))
 				{
-					$_cur_invoicenum = $this->session->userdata('cur_invoicenum');
+					$_cur_quotationnum = $this->session->userdata('cur_quotationnum');
 					$_transaction = $this->session->userdata('transaction');
 				}
 				//unset($_SESSION['transaction']);
-				// echo "<pre>";
-				// var_dump($_SESSION);
-				// echo "</pre>";
+				echo "<pre>";
+				var_dump($_SESSION);
+				echo "</pre>";
 				// echo "<pre>";
 				// var_dump($_transaction);
 				// echo "</pre>";
 				
-				// check invoices is exist or new create
+				// check quotation is exist or new create
 				if(array_key_exists($_num, $_transaction))
 				{
 					$_show_discard_btn = true;
@@ -136,8 +136,8 @@ class Quotations extends CI_Controller
 				{
 					$_show_discard_btn = true;
 					$_transaction[$_num] = [];
-					// set invoices number to session
-					$this->session->set_userdata('cur_invoicenum',$_num);
+					// set quotation number to session
+					$this->session->set_userdata('cur_quotationnum',$_num);
 					$this->session->set_userdata('transaction',$_transaction);
 				}
 				// fatch items API
@@ -387,6 +387,11 @@ class Quotations extends CI_Controller
 	}
 	public function discard()
 	{
-		
+		//unset($_SESSION['cur_invoicenum']);
+		$_cur_quotationnum = $this->session->userdata('cur_quotationnum');
+		$_transaction = $this->session->userdata('transaction');
+		unset($_SESSION['cur_quotationnum']);
+		unset($_transaction[$_cur_quotationnum]);
+		redirect(base_url("quotations/donew"),"refresh");
 	}
 }

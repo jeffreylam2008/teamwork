@@ -79,9 +79,9 @@ class Invoices extends CI_Controller
 					$_transaction = $this->session->userdata('transaction');
 				}
 				//unset($_SESSION['transaction']);
-				// echo "<pre>";
-				// var_dump($_SESSION);
-				// echo "</pre>";
+				echo "<pre>";
+				var_dump($_SESSION);
+				echo "</pre>";
 				// echo "<pre>";
 				// var_dump($_transaction);
 				// echo "</pre>";
@@ -450,10 +450,8 @@ class Invoices extends CI_Controller
 	{
 		$_cur_invoicenum = $this->session->userdata('cur_invoicenum');
 		$_transaction = $this->session->userdata('transaction');
-		unset($_SESSION['$_cur_invoicenum']);
+		unset($_SESSION['cur_invoicenum']);
 		unset($_transaction[$_cur_invoicenum]);
-		$this->session->set_userdata('cur_invoicenum',"");
-		$this->session->set_userdata('transaction',$_transaction);
 		redirect(base_url("invoices/donew"),"refresh");
 	}
 	/*
