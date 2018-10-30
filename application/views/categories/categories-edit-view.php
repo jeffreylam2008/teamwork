@@ -15,7 +15,7 @@
                 </div>
                 <div class="col-3">
                     <label for="">Description</label>
-                    <input type="text" class="form-control form-control-sm" name="i-decs" placeholder="Description" value="<?=$desc?>">
+                    <input type="text" class="form-control form-control-sm" name="i-desc" placeholder="Description" value="<?=$desc?>">
                 </div>
             </div>
 
@@ -34,9 +34,6 @@ $("#save").click(function(){
             "i-catecode": {
                 required: true,
                 minlength: 3
-            },
-            "i-decs": {
-                required: true
             }
         }
     });

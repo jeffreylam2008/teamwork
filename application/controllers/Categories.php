@@ -57,7 +57,7 @@ class Categories extends CI_Controller {
 		}
 		
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/categories/");
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
 		
@@ -103,7 +103,7 @@ class Categories extends CI_Controller {
 		$_cate = $this->session->userdata('cate_list');
 
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/categories/".$cate_code);
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/".$cate_code);
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
 
@@ -164,7 +164,7 @@ class Categories extends CI_Controller {
 		$_page = $this->session->userdata("page");
 		$_comfirm_show = true;
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/items/has/category/".$cate_code);
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/has/category/".$cate_code);
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
 		if(isset($_data))
@@ -193,12 +193,11 @@ class Categories extends CI_Controller {
 		if(isset($_POST) && !empty($_POST))
 		{
 			$_api_body = json_encode($_POST,true);
-
 			if($_api_body != "null")
 			{
 				// API data
 				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/categories/");
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
 				$this->component_api->CallPost();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
 				
@@ -229,32 +228,32 @@ class Categories extends CI_Controller {
 		if(isset($_POST) && !empty($_POST) && isset($cate_code) && !empty($cate_code))
 		{
 			$_api_body = json_encode($_POST,true);
-			if($_api_body != "null")
+			// echo "<pre>";
+			// var_dump($_api_body);
+			// echo "</pre>";
+			if($_api_body != "")
 			{
 				// API data
 				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/categories/".$cate_code);
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/".$cate_code);
 				$this->component_api->CallPatch();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
-
-				// var_dump($result);
+				
 				if(isset($result['error']['message']) || isset($result['error']['code']))
 				{
-
 					$alert = "danger";
 					switch($result['error']['code'])
 					{
 						case "00000":
 							$alert = "success";
 						break;
-					}					
-					
+					}		
 					$this->load->view('error-handle', [
 						'message' => $result['error']['message'], 
 						'code'=> $result['error']['code'], 
 						'alertstyle' => $alert
 					]);
-			
+					
 					// callback initial page
 					header("Refresh: 5; url=".base_url("/products/categories/"));
 				}
@@ -264,7 +263,7 @@ class Categories extends CI_Controller {
 	public function savedel($cate_code = "")
 	{
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/categories/".$cate_code);
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/".$cate_code);
 		$this->component_api->CallDelete();
 		$result = json_decode($this->component_api->GetConfig("result"),true);
 		if(isset($result['error']['message']) || isset($result['error']['code']))

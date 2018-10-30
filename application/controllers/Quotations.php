@@ -141,7 +141,7 @@ class Quotations extends CI_Controller
 					$this->session->set_userdata('transaction',$_transaction);
 				}
 				// fatch items API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/items/");
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
 				$this->component_api->CallGet();
 				$_items_list = json_decode($this->component_api->GetConfig("result"), true);
 				// fatch shop code and shop detail API
@@ -212,7 +212,7 @@ class Quotations extends CI_Controller
 		if(!empty($_num))
 		{
 			// Check Quotation exist
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."//invoices/".$_invoice_num);
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/invoices/".$_invoice_num);
 			$this->component_api->CallGet();
 			$_quotation = json_decode($this->component_api->GetConfig("result"),true);
 	
@@ -245,7 +245,7 @@ class Quotations extends CI_Controller
 			// 	// }
 
 			// 	// fatch items API
-			// 	$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/items/");
+			// 	$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
 			// 	$this->component_api->CallGet();
 			// 	$_items_list = json_decode($this->component_api->GetConfig("result"), true);
 			// 	// fatch shop code and shop detail API
@@ -305,9 +305,9 @@ class Quotations extends CI_Controller
 			// }
 		}
 	}
-
-
-
+	/**
+	 * tender payment
+	 */
 	public function tender()
 	{
 		echo "<pre>";
