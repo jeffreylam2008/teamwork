@@ -59,10 +59,10 @@ class Items extends CI_Controller
 		}
 
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/items/");
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/categories/");
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
 		$this->component_api->CallGet();
 		$_data_categories = json_decode($this->component_api->GetConfig("result"), true);
 			
@@ -158,10 +158,10 @@ class Items extends CI_Controller
 		$_items = $this->session->userdata('items_list');
 
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/categories/");
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
 		$this->component_api->CallGet();
 		$_data_categories = json_decode($this->component_api->GetConfig("result"), true);
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/items/".$item_code);
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/".$item_code);
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
 
@@ -244,7 +244,7 @@ class Items extends CI_Controller
 	public function savedel($item_code="")
 	{
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/items/".$item_code);
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/".$item_code);
 		$this->component_api->CallDelete();
 		$result = json_decode($this->component_api->GetConfig("result"),true);
 		if(isset($result['error']['message']) || isset($result['error']['code']))
@@ -282,7 +282,7 @@ class Items extends CI_Controller
 			{
 				// API data
 				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/items/");
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
 				$this->component_api->CallPost();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
 
@@ -324,7 +324,7 @@ class Items extends CI_Controller
 				
 				// API data
 				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/items/".$item_code);
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/".$item_code);
 				$this->component_api->CallPatch();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
 
