@@ -79,9 +79,9 @@ class Invoices extends CI_Controller
 					$_transaction = $this->session->userdata('transaction');
 				}
 				//unset($_SESSION['transaction']);
-				echo "<pre>";
-				var_dump($_SESSION);
-				echo "</pre>";
+				// echo "<pre>";
+				// var_dump($_SESSION);
+				// echo "</pre>";
 				// echo "<pre>";
 				// var_dump($_transaction);
 				// echo "</pre>";

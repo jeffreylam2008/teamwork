@@ -33,7 +33,7 @@ class Quotations extends CI_Controller
 		
 		// render the view
 		$this->load->view('header',[
-			'title'=>'Invoices',
+			'title'=>'Quotations',
 			'sideNav_view' => $this->load->view('side-nav', ["sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list")], TRUE), 
 			'topNav_view' => $this->load->view('top-nav', ["topNav" => $this->_inv_header_param["topNav"]], TRUE)
 		]);
@@ -119,9 +119,9 @@ class Quotations extends CI_Controller
 					$_transaction = $this->session->userdata('transaction');
 				}
 				//unset($_SESSION['transaction']);
-				echo "<pre>";
-				var_dump($_SESSION);
-				echo "</pre>";
+				// echo "<pre>";
+				// var_dump($_SESSION);
+				// echo "</pre>";
 				// echo "<pre>";
 				// var_dump($_transaction);
 				// echo "</pre>";

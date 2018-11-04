@@ -41,7 +41,6 @@
 
 #diy-sidebar.active {
     margin-left: -250px;
-
 }
 
 #diy-sidebar .sidebar-header {
@@ -73,7 +72,7 @@
 
 #diy-sidebar ul li.active > a, a[aria-expanded="true"] {
     color: #000;
-    background: rgb(48, 120, 255);
+    background: rgb(255, 255, 255);
 }
 
 a[data-toggle="collapse"] {

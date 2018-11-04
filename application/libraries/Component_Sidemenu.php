@@ -6,7 +6,7 @@ class Component_Sidemenu
     private $config = [
         "nav_list" => [],
         "nav_finished_list" => [],
-        "active" => ""
+        "uri" => ""
     ];
     public function __construct()
 	{
@@ -14,11 +14,10 @@ class Component_Sidemenu
     }
     public function Proccess()
     {
-        $this->config['nav_finished_list'] = $this->build_menu($this->GetConfig("nav_list"));
+        $this->config['nav_finished_list'] = $this->build_menu($this->GetConfig("nav_list"), 0, $this->config['uri']);
         // echo "<pre>";
         // var_dump($this->config['nav_finished_list']);
         // echo "</pre>";
-
     }
     private function has_children($rows,$id) {
         foreach ($rows as $row) {
@@ -27,7 +26,7 @@ class Component_Sidemenu
         }
         return false;
     }
-    private function build_menu($rows,$parent=0)
+    private function build_menu($rows, $parent=0, $set_active="")
     {  
         /*
 		id - 1 login
@@ -41,21 +40,34 @@ class Component_Sidemenu
 		id - 22 administration
 			-> 71 setttings
 				-> 44 test items
-		*/
+        */
+        
         foreach ($rows as $row)
         {
             if ($row['parent_id'] == $parent){
                 $result[$row['id']] = $row;
+                $result[$row['id']]['active'] = "";
+                // echo $result[$row['id']]['slug'] . " ---- ". $set_active . " ===== ";
+                // echo "str cmp = " . strcmp($result[$row['id']]['slug'], $set_active) . "<br>";
+                if(strcmp($result[$row['id']]['slug'], $set_active) == 0 )
+                {
+                    $result[$row['id']]['active'] = "show";
+                }
+                
                 if ($this->has_children($rows,$row['id'])){
-                    $result[$row['id']]['child'] = $this->build_menu($rows,$row['id']);
+                    $result[$row['id']]['child'] = $this->build_menu($rows,$row['id'],$set_active);
                     $result[$row['id']]['isParent'] = false;
                 }
                 else{
                     $result[$row['id']]['isParent'] = true;
+                    
                 }
+                
             }
-           
         }
+        // echo "<pre>";
+        // var_dump($result);
+        // echo "</pre>";
         return $result;
     }
 

@@ -29,7 +29,6 @@ class Categories extends CI_Controller {
 		$this->component_api->CallGet();
 		$nav_list = json_decode($this->component_api->GetConfig("result"), true);
 		$this->component_sidemenu->SetConfig("nav_list", $nav_list);
-		$this->component_sidemenu->SetConfig("active",true);
 		$this->component_sidemenu->Proccess();
 
 		// load header view

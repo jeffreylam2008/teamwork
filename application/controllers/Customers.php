@@ -7,6 +7,8 @@ class Customers extends CI_Controller
 	{
 		parent::__construct();
 		
+		// dummy data
+		
 		$username = "iamadmin";
 		// fatch employee API
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
@@ -25,7 +27,6 @@ class Customers extends CI_Controller
 		$this->component_api->CallGet();
 		$_nav_list = json_decode($this->component_api->GetConfig("result"), true);
 		$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
-		$this->component_sidemenu->SetConfig("active",true);
 		$this->component_sidemenu->Proccess();
 
 		// load header view
