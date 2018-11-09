@@ -6,8 +6,11 @@ class Component_Sidemenu
     private $config = [
         "nav_list" => [],
         "nav_finished_list" => [],
-        "uri" => ""
+        "uri" => "",
+        "current" => "",
+        "path" => []
     ];
+    private $path = [];
     public function __construct()
 	{
         
@@ -15,6 +18,9 @@ class Component_Sidemenu
     public function Proccess()
     {
         $this->config['nav_finished_list'] = $this->build_menu($this->GetConfig("nav_list"), 0, $this->config['uri']);
+        $this->FindParent($this->GetConfig("nav_list"),333);
+        echo $this->config['current'];
+        $this->config['path'] = $this->path;
         // echo "<pre>";
         // var_dump($this->config['nav_finished_list']);
         // echo "</pre>";
@@ -46,31 +52,40 @@ class Component_Sidemenu
         {
             if ($row['parent_id'] == $parent){
                 $result[$row['id']] = $row;
-                $result[$row['id']]['active'] = "";
-                // echo $result[$row['id']]['slug'] . " ---- ". $set_active . " ===== ";
-                // echo "str cmp = " . strcmp($result[$row['id']]['slug'], $set_active) . "<br>";
+                
+                // If the result same as current URI 
                 if(strcmp($result[$row['id']]['slug'], $set_active) == 0 )
                 {
-                    $result[$row['id']]['active'] = "show";
+                    // Set current
+                    $this->config['current'] = $row['id'];
                 }
-                
+
                 if ($this->has_children($rows,$row['id'])){
                     $result[$row['id']]['child'] = $this->build_menu($rows,$row['id'],$set_active);
                     $result[$row['id']]['isParent'] = false;
                 }
                 else{
                     $result[$row['id']]['isParent'] = true;
-                    
                 }
-                
             }
         }
-        // echo "<pre>";
-        // var_dump($result);
-        // echo "</pre>";
+
         return $result;
     }
-
+    public function FindParent($rows, $parent)
+    {
+        foreach($rows as $k => $row)
+        {
+            if ($row['id'] == $parent){
+                $this->path[] = $row['name'];
+                
+                if(!empty($row['parent_id']))
+                {
+                    $this->FindParent($rows, $row['parent_id']);
+                }
+            }
+        }
+    }
     public function SetConfig($func, $val)
     {
         $this->config[$func] = $val;

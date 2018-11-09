@@ -33,8 +33,12 @@ class Items extends CI_Controller
 		// load header view
 		$this->load->view('header',[
 			'title'=>'Items',
-			'sideNav_view' => $this->load->view('side-nav', ["sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list")], TRUE), 
-			'topNav_view' => $this->load->view('top-nav', ["topNav" => $this->_inv_header_param["topNav"]], TRUE)
+			'sideNav_view' => $this->load->view('side-nav', [
+				"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list")
+			], TRUE), 
+			'topNav_view' => $this->load->view('top-nav', [
+				"topNav" => $this->_inv_header_param["topNav"]
+			], TRUE)
 		]);
 		// load breadcrumb
 		//$this->load->view('breadcrumb');

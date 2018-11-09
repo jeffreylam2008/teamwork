@@ -43,10 +43,12 @@
                  <!-- menu section -->
                 <?php echo $sideNav_view; ?>
                 <!--</div>-->
-                <script>
-
-                </script>
+               
                 <!-- content section -->
                 <div id="diy-content">
+                <script>
+     
+                    
+                </script>
                 <!-- <div class="col-sm-10">-->
         

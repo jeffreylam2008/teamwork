@@ -30,13 +30,19 @@ class Dushboard extends CI_Controller
 		$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
 		$this->component_sidemenu->SetConfig("uri", $this->uri->uri_string());
 		$this->component_sidemenu->Proccess();
-		
-		echo $this->uri->uri_string();
+
+		var_dump($this->uri->uri_string());
+
+
 		// render the view
 		$this->load->view('header',[
 			'title'=>'Dushboard',
-			'sideNav_view' => $this->load->view('side-nav', ["sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list")], TRUE), 
-			'topNav_view' => $this->load->view('top-nav', ["topNav" => $this->_inv_header_param["topNav"]], TRUE)
+			'sideNav_view' => $this->load->view('side-nav', [
+				"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list"),
+			], TRUE), 
+			'topNav_view' => $this->load->view('top-nav', [
+				"topNav" => $this->_inv_header_param["topNav"]
+			], TRUE)
 		]);
 
 		// load breadcrumb

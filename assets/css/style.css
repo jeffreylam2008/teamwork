@@ -70,11 +70,14 @@
     background: rgb(48, 120, 255);
 }
 
-#diy-sidebar ul li.active > a, a[aria-expanded="true"] {
+/* #diy-sidebar ul li.active > a, a[aria-expanded="true"] {
     color: #000;
     background: rgb(255, 255, 255);
+} */
+#diy-sidebar li.active > a, a[aria-expanded="true"] {
+    color: #000;
+    background: rgb(179, 17, 17);
 }
-
 a[data-toggle="collapse"] {
     position: relative;
 }
