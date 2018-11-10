@@ -3,6 +3,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Component_Sidemenu
 {
+    /**
+     * Global variable
+     */
     private $config = [
         "nav_list" => [],
         "nav_finished_list" => [],
@@ -11,20 +14,40 @@ class Component_Sidemenu
         "path" => []
     ];
     private $path = [];
+    /**
+     * Class constructor
+     * 
+     */
     public function __construct()
 	{
         
     }
+    /**
+     * Proccess
+     * 
+     * To generate the menu
+     */
     public function Proccess()
     {
-        $this->config['nav_finished_list'] = $this->build_menu($this->GetConfig("nav_list"), 0, $this->config['uri']);
-        $this->FindParent($this->GetConfig("nav_list"),333);
-        echo $this->config['current'];
-        $this->config['path'] = $this->path;
+        if(empty($this->config['uri']))
+        {
+            $this->config['uri'] = "dushboard";
+        }
+        $this->config['nav_finished_list'] = $this->build_menu($this->config["nav_list"], 0, $this->config['uri']);
+        $this->find_parent($this->config["nav_list"],$this->config["current"]);
+        $this->config['path'] = array_reverse($this->path);
         // echo "<pre>";
         // var_dump($this->config['nav_finished_list']);
         // echo "</pre>";
     }
+    /**
+     * has_children
+     * 
+     * look for children from the list
+     * 
+     * @param rows the list of menu
+     * @param id parent ID
+     */
     private function has_children($rows,$id) {
         foreach ($rows as $row) {
         if ($row['parent_id'] == $id)
@@ -32,21 +55,30 @@ class Component_Sidemenu
         }
         return false;
     }
+    /**
+     * build_menu
+     * 
+     * build the menu structure
+     * 
+     * @param rows the list of menu
+     * @param parent user input parent ID for comparison
+     * @param set_active the uri that currently located
+     */
     private function build_menu($rows, $parent=0, $set_active="")
     {  
-        /*
-		id - 1 login
-		id - 2 Dushboard
-		id - 3 product
-			-> 23 items
-                -> 43 Add
-                    -> 899 detail 
-            -> 54 categories
-            -> 62 settings
-		id - 22 administration
-			-> 71 setttings
-				-> 44 test items
-        */
+        // /*
+		// id - 1 login
+		// id - 2 Dushboard
+		// id - 3 product
+		// 	-> 23 items
+        //         -> 43 Add
+        //             -> 899 detail 
+        //     -> 54 categories
+        //     -> 62 settings
+		// id - 22 administration
+		// 	-> 71 setttings
+		// 		-> 44 test items
+        // */
         
         foreach ($rows as $row)
         {
@@ -72,7 +104,15 @@ class Component_Sidemenu
 
         return $result;
     }
-    public function FindParent($rows, $parent)
+    /**
+     * find_parent
+     * 
+     * Look for parent ID of the element
+     * 
+     * @param rows the list of menu
+     * @param parent user input parent ID for comparison
+     */
+    private function find_parent($rows, $parent)
     {
         foreach($rows as $k => $row)
         {
@@ -81,15 +121,32 @@ class Component_Sidemenu
                 
                 if(!empty($row['parent_id']))
                 {
-                    $this->FindParent($rows, $row['parent_id']);
+                    $this->find_parent($rows, $row['parent_id']);
                 }
             }
         }
     }
+
+    /**
+     * SetConfig
+     * 
+     * Set user input to this class
+     * 
+     * @param func the key for this item
+     * @param val the val to set
+     */
     public function SetConfig($func, $val)
     {
         $this->config[$func] = $val;
     }
+
+    /**
+     * SetConfig
+     * 
+     * Retrieve user input from this class
+     * 
+     * @param func the key for this item
+     */
     public function GetConfig($func)
     {
         return $this->config[$func];

@@ -28,8 +28,11 @@ class Items extends CI_Controller
 		$this->component_api->CallGet();
 		$_nav_list = json_decode($this->component_api->GetConfig("result"), true);
 		$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
+		$this->component_sidemenu->SetConfig("uri", $this->uri->uri_string());
 		$this->component_sidemenu->Proccess();
 
+		var_dump($this->component_sidemenu->GetConfig("path"));
+		
 		// load header view
 		$this->load->view('header',[
 			'title'=>'Items',
@@ -65,7 +68,7 @@ class Items extends CI_Controller
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
 		$this->component_api->CallGet();
 		$_data_categories = json_decode($this->component_api->GetConfig("result"), true);
-			
+		
 		// data for items type selection
 		if(!empty($_data_categories["query"]))
 		{

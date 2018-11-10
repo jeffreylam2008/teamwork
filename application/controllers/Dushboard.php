@@ -31,9 +31,8 @@ class Dushboard extends CI_Controller
 		$this->component_sidemenu->SetConfig("uri", $this->uri->uri_string());
 		$this->component_sidemenu->Proccess();
 
-		var_dump($this->uri->uri_string());
-
-
+		var_dump($this->component_sidemenu->GetConfig("path"));
+		
 		// render the view
 		$this->load->view('header',[
 			'title'=>'Dushboard',
