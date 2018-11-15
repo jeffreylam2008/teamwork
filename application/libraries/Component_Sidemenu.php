@@ -102,7 +102,6 @@ class Component_Sidemenu
                 }
             }
         }
-
         return $result;
     }
     /**

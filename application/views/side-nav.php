@@ -1,7 +1,8 @@
     <nav id="diy-sidebar">
         <ul class="list-unstyled components">
             <?php 
-            echo traversal($sideNav,$path);
+
+            echo traversal($sideNav,$path, $slug);
             ?>
         </ul>
     </nav>
@@ -16,7 +17,7 @@
 
     //echo traversal($sideNav);
 
-    function traversal($sideNav, $path){
+    function traversal($sideNav, $path, $slug=""){
         $result = "";
         foreach($sideNav as $key => $val)
         {
@@ -41,16 +42,15 @@
                 {
                     $result .= "<ul class='list-unstyled collapse' id='".$val["name"]."'>";
                 }
-                $result .= traversal($val["child"],$path);
+                $result .= traversal($val["child"],$path, $slug );
                 $result .= "</ul>";
                 $result .= "</li>";
             }
             // Single item on menu with no Children
             else{
                 
-                if(in_array($val["name"],$path))
+                if(strcmp($val["slug"],$slug) == 0)
                 {
-                    
                     $result .= "<li class='active'>";
                 }
                 else

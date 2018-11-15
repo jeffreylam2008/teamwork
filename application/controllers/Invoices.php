@@ -37,7 +37,8 @@ class Invoices extends CI_Controller
 			'title'=>'Invoices',
 			'sideNav_view' => $this->load->view('side-nav', [
 				"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list"), 
-				"path"=>$this->component_sidemenu->GetConfig("path")
+				"path"=>$this->component_sidemenu->GetConfig("path"),
+				"slug" => $this->uri->uri_string()
 			], TRUE), 
 			'topNav_view' => $this->load->view('top-nav', ["topNav" => $this->_inv_header_param["topNav"]], TRUE)
 		]);
