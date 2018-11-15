@@ -1,36 +1,62 @@
     <nav id="diy-sidebar">
         <ul class="list-unstyled components">
             <?php 
-            echo traversal($sideNav);
+            echo traversal($sideNav,$path);
             ?>
         </ul>
     </nav>
     <?php
 
     // echo "<pre>";
-    // var_dump($sideNav);
+    // var_dump($path);
+    // echo "</pre>";
+    // echo "<pre>";
+    // var_dump($slug);
     // echo "</pre>";
 
-
     //echo traversal($sideNav);
-    function traversal($sideNav){
+
+    function traversal($sideNav, $path){
         $result = "";
         foreach($sideNav as $key => $val)
         {
             // one and many item on menu with Parent and Children
             if(isset($val["child"]))
             {
-                $result .= "<li data-role='root'><a href='#".$val["name"]."' data-toggle='collapse' aria-expanded='false' >";
+                if(in_array($val["name"],$path))
+                {
+                    $result .= "<li><a href='#".$val["name"]."' data-toggle='collapse' aria-expanded='true' >";
+                }
+                else{
+                    $result .= "<li><a href='#".$val["name"]."' data-toggle='collapse' aria-expanded='false' >";
+                }
+                
                 $result .= $val["name"];
                 $result .= "</a>";
-                $result .= "<ul class='list-unstyled collapse' id='".$val["name"]."'>";
-                $result .= traversal($val["child"]);
+                if(in_array($val["name"],$path))
+                {
+                    $result .= "<ul class='list-unstyled collapse show' id='".$val["name"]."'>";
+                }
+                else
+                {
+                    $result .= "<ul class='list-unstyled collapse' id='".$val["name"]."'>";
+                }
+                $result .= traversal($val["child"],$path);
                 $result .= "</ul>";
                 $result .= "</li>";
             }
             // Single item on menu with no Children
             else{
-                $result .= "<li data-role='child'>";
+                
+                if(in_array($val["name"],$path))
+                {
+                    
+                    $result .= "<li class='active'>";
+                }
+                else
+                {
+                    $result .= "<li>";
+                }
                 $result .= "<a href='".base_url($val["slug"])."'>";
                 $result .= $val["name"];
                 $result .= "</a>";

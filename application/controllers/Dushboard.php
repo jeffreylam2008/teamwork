@@ -31,13 +31,12 @@ class Dushboard extends CI_Controller
 		$this->component_sidemenu->SetConfig("uri", $this->uri->uri_string());
 		$this->component_sidemenu->Proccess();
 
-		var_dump($this->component_sidemenu->GetConfig("path"));
-		
 		// render the view
 		$this->load->view('header',[
 			'title'=>'Dushboard',
 			'sideNav_view' => $this->load->view('side-nav', [
 				"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list"),
+				"path"=>$this->component_sidemenu->GetConfig("path")
 			], TRUE), 
 			'topNav_view' => $this->load->view('top-nav', [
 				"topNav" => $this->_inv_header_param["topNav"]

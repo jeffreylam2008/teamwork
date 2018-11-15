@@ -11,9 +11,10 @@ class Component_Sidemenu
         "nav_finished_list" => [],
         "uri" => "",
         "current" => "",
-        "path" => []
+        "path" => [],
+        "slug" => ""
     ];
-    private $path = [];
+
     /**
      * Class constructor
      * 
@@ -35,7 +36,7 @@ class Component_Sidemenu
         }
         $this->config['nav_finished_list'] = $this->build_menu($this->config["nav_list"], 0, $this->config['uri']);
         $this->find_parent($this->config["nav_list"],$this->config["current"]);
-        $this->config['path'] = array_reverse($this->path);
+        $this->config['path'] = array_reverse($this->config['path']);
         // echo "<pre>";
         // var_dump($this->config['nav_finished_list']);
         // echo "</pre>";
@@ -117,10 +118,10 @@ class Component_Sidemenu
         foreach($rows as $k => $row)
         {
             if ($row['id'] == $parent){
-                $this->path[] = $row['name'];
-                
+                $this->config['path'][] = $row['name'];
                 if(!empty($row['parent_id']))
                 {
+                    $this->config['slug'] = $row['slug'];
                     $this->find_parent($rows, $row['parent_id']);
                 }
             }

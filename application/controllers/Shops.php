@@ -34,7 +34,8 @@ class Shops extends CI_Controller
 		$this->load->view('header',[
 			'title'=>'Shop',
 			'sideNav_view' => $this->load->view('side-nav', [
-				"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list")
+				"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list"),
+				"path"=>$this->component_sidemenu->GetConfig("path")
 			], TRUE), 
 			'topNav_view' => $this->load->view('top-nav', [
 				"topNav" => $this->_inv_header_param["topNav"]

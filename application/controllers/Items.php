@@ -30,14 +30,17 @@ class Items extends CI_Controller
 		$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
 		$this->component_sidemenu->SetConfig("uri", $this->uri->uri_string());
 		$this->component_sidemenu->Proccess();
-
-		var_dump($this->component_sidemenu->GetConfig("path"));
+		// echo "<pre>";
+		// var_dump( $this->component_sidemenu->GetConfig("slug"));
+		// echo "</pre>";
 		
 		// load header view
 		$this->load->view('header',[
 			'title'=>'Items',
 			'sideNav_view' => $this->load->view('side-nav', [
-				"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list")
+				"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list"),
+				"path"=>$this->component_sidemenu->GetConfig("path"),
+				"slug"=>$this->component_sidemenu->GetConfig("slug")
 			], TRUE), 
 			'topNav_view' => $this->load->view('top-nav', [
 				"topNav" => $this->_inv_header_param["topNav"]
