@@ -32,6 +32,8 @@ class Invoices extends CI_Controller
 		$this->component_sidemenu->SetConfig("uri", $this->uri->uri_string());
 		$this->component_sidemenu->Proccess();
 		
+		var_dump( $this->uri->ruri_string());
+
 		// render the view
 		$this->load->view('header',[
 			'title'=>'Invoices',
