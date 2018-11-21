@@ -9,7 +9,7 @@ class Component_Sidemenu
     private $config = [
         "nav_list" => [],
         "nav_finished_list" => [],
-        "uri" => "",
+        "active" => "",
         "current" => "",
         "path" => [],
         "slug" => ""
@@ -30,11 +30,13 @@ class Component_Sidemenu
      */
     public function Proccess()
     {
-        if(empty($this->config['uri']))
+        if(empty($this->config['active']))
         {
-            $this->config['uri'] = "dushboard";
+            $this->config['active'] = "dushboard";
         }
-        $this->config['nav_finished_list'] = $this->build_menu($this->config["nav_list"], 0, $this->config['uri']);
+        echo $this->config["current"];
+        echo "<br>";
+        $this->config['nav_finished_list'] = $this->build_menu($this->config["nav_list"], 0, $this->config['active']);
         $this->find_parent($this->config["nav_list"],$this->config["current"]);
         $this->config['path'] = array_reverse($this->config['path']);
         // echo "<pre>";
@@ -87,7 +89,7 @@ class Component_Sidemenu
                 $result[$row['id']] = $row;
                 
                 // If the result same as current URI 
-                if(strcmp($result[$row['id']]['slug'], $set_active) == 0 )
+                if(strcmp($result[$row['id']]['param'], $set_active) == 0 )
                 {
                     // Set current
                     $this->config['current'] = $row['id'];

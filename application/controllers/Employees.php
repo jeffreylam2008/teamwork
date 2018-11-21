@@ -10,6 +10,8 @@ class Employees extends CI_Controller
 		// dummy data
 
 		$username = "iamadmin";
+		$_param = $this->uri->segment(1)."/".$this->uri->segment(2);
+
 		// fatch employee API
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
 		$this->component_api->CallGet();
@@ -27,7 +29,7 @@ class Employees extends CI_Controller
 		$this->component_api->CallGet();
 		$_nav_list = json_decode($this->component_api->GetConfig("result"), true);
 		$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
-		$this->component_sidemenu->SetConfig("uri", $this->uri->uri_string());
+		$this->component_sidemenu->SetConfig("active", $_param);
 		$this->component_sidemenu->Proccess();
 
 		// load header view
@@ -36,7 +38,7 @@ class Employees extends CI_Controller
 			'sideNav_view' => $this->load->view('side-nav', [
 				"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list"),
 				"path"=>$this->component_sidemenu->GetConfig("path"),
-				"slug" => $this->uri->uri_string()
+				"param"=> $_param
 			], TRUE), 
 			'topNav_view' => $this->load->view('top-nav', [
 				"topNav" => $this->_inv_header_param["topNav"]
