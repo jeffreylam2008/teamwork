@@ -11,14 +11,8 @@ class Invoices extends CI_Controller
 		// dummy data
 		
 		$username = "iamadmin";
-		if($this->uri->total_segments() >= 2)
-		{
-			$_param = $this->uri->segment(1)."/".$this->uri->segment(2);
-		}
-		else
-		{
-			$_param = $this->uri->uri_string();
-		}
+
+		$this->uri->total_segments() >= 2 ? $_param = $this->uri->segment(1)."/".$this->uri->segment(2) : $_param = $this->uri->uri_string();
 
 		// fatch employee API
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
@@ -39,7 +33,6 @@ class Invoices extends CI_Controller
 		$_nav_list = json_decode($this->component_api->GetConfig("result"), true);
 		$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
 		$this->component_sidemenu->SetConfig("active", $_param);
-		
 		$this->component_sidemenu->Proccess();
 
 		// render the view
