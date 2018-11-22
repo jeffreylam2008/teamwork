@@ -87,7 +87,9 @@ $route['invoices'] = 'error_404';
 $route['invoices/create'] = 'error_404';
 $route['invoices/list'] = 'invoices/invlist/1';
 $route['invoices/list/page/(:any)'] = 'invoices/invlist/$1';
-$route['invoices/edit/(:any)'] = 'invoices/edit/$1';
+$route['invoices/list/edit/(:any)'] = 'invoices/edit/$1';
+$route['invoices/edit/(:any)'] = 'error_404';
+$route['invoices/list/edit'] = 'error_404';
 $route['invoices/edit'] = 'error_404';
 
 // Shops

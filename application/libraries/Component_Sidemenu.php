@@ -34,8 +34,7 @@ class Component_Sidemenu
         {
             $this->config['active'] = "dushboard";
         }
-        echo $this->config["current"];
-        echo "<br>";
+
         $this->config['nav_finished_list'] = $this->build_menu($this->config["nav_list"], 0, $this->config['active']);
         $this->find_parent($this->config["nav_list"],$this->config["current"]);
         $this->config['path'] = array_reverse($this->config['path']);
@@ -119,7 +118,9 @@ class Component_Sidemenu
         foreach($rows as $k => $row)
         {
             if ($row['id'] == $parent){
+				// found parent
                 $this->config['path'][] = $row['name'];
+				// has parent, then find next
                 if(!empty($row['parent_id']))
                 {
                     $this->config['slug'] = $row['slug'];
