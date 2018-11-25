@@ -325,11 +325,6 @@ class Quotations extends CI_Controller
 	 */
 	public function tender()
 	{
-		echo "<pre>";
-		var_dump($_POST);
-		echo "</pre>";
-
-
 		if(isset($_POST["i-post"]))
 		{
 			// variable initial
@@ -344,13 +339,10 @@ class Quotations extends CI_Controller
 
 			$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/customers/".$_data['customer']);
 			$this->component_api->CallGet();
-			$result = json_decode($this->component_api->GetConfig("result"),true);
+			$customer = json_decode($this->component_api->GetConfig("result"),true);
 
-			//$session = json_encode($this->session->userdata('theprint'),true);
-			// combine customer data from API to main array. * it must be only one reoard retrieve 
-			$_data['customer'] = $result['query'][0];
-
-			
+			// marge customer data from API to main array. * it must be only one reoard retrieve 
+			$_data['customer'] = $customer['query'][0];
 			$_transaction[$_cur_num] = $_data;
 
 			// save print data to session
@@ -379,9 +371,9 @@ class Quotations extends CI_Controller
 					$_the_form_type = "save";
 				break;
 			}
-		// echo "<pre>";
-		// var_dump($_transaction);
-		// echo "</pre>";
+		echo "<pre>";
+		var_dump($_transaction[$_cur_num]);
+		echo "</pre>";
 			
 			// // function bar
 			// $this->load->view('function-bar', [
