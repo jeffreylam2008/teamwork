@@ -27,4 +27,8 @@ class ThePrint extends CI_Controller
             }
         }
     }
+    public function quotations($_option)
+    {
+        echo $_option;
+    }
 }

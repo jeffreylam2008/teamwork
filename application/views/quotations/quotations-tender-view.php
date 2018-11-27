@@ -11,22 +11,16 @@
 
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <span class="input-group-text" >Invoice Number</span>
+            <span class="input-group-text" >Quotation Number</span>
         </div>
         
-        <input type="text" class="form-control" value="<?=$invoicenum?>" disabled>
-    </div>
-    <div class="input-group mb-2 input-group-sm">
-        <div class="input-group-prepend">
-            <span class="input-group-text" >Quotation</span>
-        </div>
-        <input type="text" class="form-control" value="<?=$quotation?>" disabled>
+        <input type="text" class="form-control" value="<?=$quotationnum?>" disabled>
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
             <span class="input-group-text" >Date</span>
         </div>
-        <input type="text" class="form-control" value="<?=$invoicedate?>" disabled >
+        <input type="text" class="form-control" value="<?=$date?>" disabled >
     </div>
     <!-- Company -->
     <div class="input-group mb-2 input-group-sm">
