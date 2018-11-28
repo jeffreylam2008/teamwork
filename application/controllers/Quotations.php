@@ -400,58 +400,48 @@ class Quotations extends CI_Controller
 		// var_dump($_transaction);
 		// echo "</pre>";
 
-		echo json_encode($_transaction[$_cur_num],true);
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "Create New", "type"=>"button", "id" => "donew", "url"=> base_url('/quotations/donew'),"style" => "","show" => true],
+			]
+		]);
+		if(!empty($_cur_num))
+		{
+			// echo "<pre>";
+			// var_dump($_transaction[$_cur_num]);
+			// echo "</pre>";
+			$_api_body = json_encode($_transaction[$_cur_num],true);
 
-		// $this->load->view('function-bar', [
-		// 	"btn" => [
-		// 		["name" => "Create New", "type"=>"button", "id" => "donew", "url"=> base_url('/invoices/donew'),"style" => "","show" => true],
-		// 	]
-		// ]);
-		// if(!empty($_cur_num))
-		// {
-		// 	// echo "<pre>";
-		// 	// var_dump($_transaction[$_cur_num]);
-		// 	// echo "</pre>";
-		// 	$_api_body = json_encode($_transaction[$_cur_num],true);
-		// 	// echo $_cur_num;
-		// // echo "<pre>";
-		// // var_dump($_api_body);
-		// // echo "</pre>";
-		// 	if($_api_body != "null")
-		// 	{
+			if($_api_body != "null")
+			{
+				$this->component_api->SetConfig("body", $_api_body);
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/quotations/");
+				$this->component_api->CallPost();
+				$result = json_decode($this->component_api->GetConfig("result"),true);
 
-		// 		$this->component_api->SetConfig("body", $_api_body);
-		// 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/");
-		// 		$this->component_api->CallPost();
-		// 		$result = json_decode($this->component_api->GetConfig("result"),true);
-				
-		// 	// echo "<pre>";
-		// 	// var_dump($result);
-		// 	// echo "</pre>";
-
-		// 		if(isset($result['message']) || isset($result['code']))
-		// 		{
-		// 			$alert = "danger";
-		// 			switch($result['code'])
-		// 			{
-		// 				case "00000":
-		// 					$alert = "success";
-		// 				break;
-		// 			}					
+				if(isset($result['message']) || isset($result['code']))
+				{
+					$alert = "danger";
+					switch($result['code'])
+					{
+						case "00000":
+							$alert = "success";
+						break;
+					}					
 					
-		// 			$this->load->view('error-handle', [
-		// 				'message' => $result['message'], 
-		// 				'code'=> $result['code'], 
-		// 				'alertstyle' => $alert
-		// 			]);
-		// 			unset($_transaction[$_cur_num]);
-		// 			$this->session->set_userdata('cur_invoicenum',"");
-		// 			$this->session->set_userdata('transaction',$_transaction);
+					$this->load->view('error-handle', [
+						'message' => $result['message'], 
+						'code'=> $result['code'], 
+						'alertstyle' => $alert
+					]);
+					unset($_transaction[$_cur_num]);
+					$this->session->set_userdata('cur_quotationnum',"");
+					$this->session->set_userdata('transaction',$_transaction);
 					
-		// 			header("Refresh: 10; url='donew/'");
-		// 		}
-		// 	}
-		// }
+					header("Refresh: 10; url='donew/'");
+				}
+			}
+		}
 	}
 	public function saveedit()
 	{
