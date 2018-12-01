@@ -1,7 +1,6 @@
     <nav id="diy-sidebar">
         <ul class="list-unstyled components">
             <?php 
-            echo $param;
             echo traversal($sideNav,$path, $param);
             ?>
         </ul>

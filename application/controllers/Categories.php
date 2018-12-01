@@ -12,8 +12,7 @@ class Categories extends CI_Controller {
 		// var_dump($_SESSION);
 		// echo "</pre>";
 		$username = "iamadmin";
-		$_param = $this->uri->segment(1)."/".$this->uri->segment(2);
-
+		$this->uri->total_segments() >= 2 ? $_param = $this->uri->segment(1)."/".$this->uri->segment(2) : $_param = $this->uri->uri_string();
 		// fatch employee API
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
 		$this->component_api->CallGet();

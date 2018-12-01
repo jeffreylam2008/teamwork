@@ -11,7 +11,8 @@ class Invoices extends CI_Controller
 		// dummy data
 		
 		$username = "iamadmin";
-		$_param = $this->uri->segment(1)."/".$this->uri->segment(2);
+
+		$this->uri->total_segments() >= 2 ? $_param = $this->uri->segment(1)."/".$this->uri->segment(2) : $_param = $this->uri->uri_string();
 
 		// fatch employee API
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
@@ -42,7 +43,9 @@ class Invoices extends CI_Controller
 				"path"=>$this->component_sidemenu->GetConfig("path"),
 				"param"=> $_param
 			], TRUE), 
-			'topNav_view' => $this->load->view('top-nav', ["topNav" => $this->_inv_header_param["topNav"]], TRUE)
+			'topNav_view' => $this->load->view('top-nav', [
+				"topNav" => $this->_inv_header_param["topNav"]
+			], TRUE)
 		]);
 	}
 	public function index()
@@ -508,7 +511,7 @@ class Invoices extends CI_Controller
 
 			$this->load->view("invoices/invoices-list-view", [
 				'data' => $_data, 
-				"url" => base_url("invoices/edit/"),
+				"url" => base_url("invoices/list/edit/"),
 				"default_per_page" => $_default_per_page,
 				"page" => $page
 			]);

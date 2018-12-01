@@ -24,7 +24,7 @@
             <td><?=$v['address1']?></td>
             <td><?=$v['address2']?></td>
         </tr>
-        <?
+        <?php
             endforeach;
         ?>
     </tbody>

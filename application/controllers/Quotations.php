@@ -11,7 +11,14 @@ class Quotations extends CI_Controller
 		// dummy data
 		
 		$username = "iamadmin";
-		$_param = $this->uri->segment(1)."/".$this->uri->segment(2);
+		if($this->uri->total_segments() >= 2)
+		{
+			$_param = $this->uri->segment(1)."/".$this->uri->segment(2);
+		}
+		else
+		{
+			$_param = $this->uri->uri_string();
+		}
 
 		// fatch employee API
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
@@ -223,7 +230,7 @@ class Quotations extends CI_Controller
 			$this->component_api->SetConfig("url", $this->config->item('api_url')."/invoices/".$_invoice_num);
 			$this->component_api->CallGet();
 			$_quotation = json_decode($this->component_api->GetConfig("result"),true);
-	
+			
 			// // set current invoice number to session
 			// //$this->session->set_userdata('transaction',$_transaction);
 			// $this->session->set_userdata('cur_quotation',$_num);
@@ -318,32 +325,24 @@ class Quotations extends CI_Controller
 	 */
 	public function tender()
 	{
-		echo "<pre>";
-		var_dump($_POST);
-		echo "</pre>";
-
-
 		if(isset($_POST["i-post"]))
 		{
 			// variable initial
 			$_data = json_decode($_POST['i-post'], true);
-			$_cur_num = $this->session->userdata('cur_invoicenum');
+			$_cur_num = $this->session->userdata('cur_quotationnum');
 			$_show_save_btn = false;
 			$_show_reprint_btn = false;
 			$_transaction = [];
 		// echo "<pre>";
-		// var_dump ($_SESSION);
+		// var_dump ($_data);
 		// echo "</pre>";
 
 			$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/customers/".$_data['customer']);
 			$this->component_api->CallGet();
-			$result = json_decode($this->component_api->GetConfig("result"),true);
+			$customer = json_decode($this->component_api->GetConfig("result"),true);
 
-			//$session = json_encode($this->session->userdata('theprint'),true);
-			// combine customer data from API to main array. * it must be only one reoard retrieve 
-			$_data['customer'] = $result['query'][0];
-
-			
+			// marge customer data from API to main array. * it must be only one reoard retrieve 
+			$_data['customer'] = $customer['query'][0];
 			$_transaction[$_cur_num] = $_data;
 
 			// save print data to session
@@ -373,25 +372,80 @@ class Quotations extends CI_Controller
 				break;
 			}
 		// echo "<pre>";
-		// var_dump($_transaction);
+		// var_dump($_transaction[$_cur_num]);
 		// echo "</pre>";
 			
-			// // function bar
-			// $this->load->view('function-bar', [
-			// 	"btn" => [
-			// 		["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/invoices/'.$_data['formtype'].'/'.$_data['invoicenum']) ,"style" => "","show" => true],
-			// 		["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
-			// 		["name" => "Save", "type"=>"button", "id" => "save", "url"=> base_url("/invoices/".$_the_form_type) , "style" => "","show" => $_show_save_btn],
-			// 		["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
-			// 	]
-			// ]);
-			// // render view
-			// $this->load->view("invoices/invoices-tender-view", [
-			// 	"preview_url" => base_url('/ThePrint/invoices/preview'),
-			// 	"print_url" => base_url('/ThePrint/invoices/save')
-			// ]);
+			// function bar
+			$this->load->view('function-bar', [
+				"btn" => [
+					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/quotations/'.$_data['formtype'].'/'.$_data['quotationnum']) ,"style" => "","show" => true],
+					["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
+					["name" => "Save", "type"=>"button", "id" => "save", "url"=> base_url("/quotations/".$_the_form_type) , "style" => "","show" => $_show_save_btn],
+					["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
+				]
+			]);
+			// render view
+			$this->load->view("quotations/quotations-tender-view", [
+				"preview_url" => base_url('/ThePrint/quotations/preview'),
+				"print_url" => base_url('/ThePrint/quotations/save')
+			]);
 			
 		}
+	}
+	public function save()
+	{
+		$_cur_num = $this->session->userdata('cur_quotationnum');
+		$_transaction = $this->session->userdata('transaction');
+		// echo "<pre>";
+		// var_dump($_transaction);
+		// echo "</pre>";
+
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "Create New", "type"=>"button", "id" => "donew", "url"=> base_url('/quotations/donew'),"style" => "","show" => true],
+			]
+		]);
+		if(!empty($_cur_num))
+		{
+			// echo "<pre>";
+			// var_dump($_transaction[$_cur_num]);
+			// echo "</pre>";
+			$_api_body = json_encode($_transaction[$_cur_num],true);
+
+			if($_api_body != "null")
+			{
+				$this->component_api->SetConfig("body", $_api_body);
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/quotations/");
+				$this->component_api->CallPost();
+				$result = json_decode($this->component_api->GetConfig("result"),true);
+
+				if(isset($result['message']) || isset($result['code']))
+				{
+					$alert = "danger";
+					switch($result['code'])
+					{
+						case "00000":
+							$alert = "success";
+						break;
+					}					
+					
+					$this->load->view('error-handle', [
+						'message' => $result['message'], 
+						'code'=> $result['code'], 
+						'alertstyle' => $alert
+					]);
+					unset($_transaction[$_cur_num]);
+					$this->session->set_userdata('cur_quotationnum',"");
+					$this->session->set_userdata('transaction',$_transaction);
+					
+					header("Refresh: 10; url='donew/'");
+				}
+			}
+		}
+	}
+	public function saveedit()
+	{
+
 	}
 	public function discard()
 	{
