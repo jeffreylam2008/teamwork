@@ -3,6 +3,7 @@
        
         $data = json_decode($_POST["i-post"],true);
         extract($data);
+
     ?>
 
 </div>

@@ -227,10 +227,10 @@ class Quotations extends CI_Controller
 		if(!empty($_num))
 		{
 			// Check Quotation exist
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/invoices/".$_invoice_num);
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/quotations/".$_num);
 			$this->component_api->CallGet();
 			$_quotation = json_decode($this->component_api->GetConfig("result"),true);
-	
+			
 			// // set current invoice number to session
 			// //$this->session->set_userdata('transaction',$_transaction);
 			// $this->session->set_userdata('cur_quotation',$_num);
@@ -329,12 +329,12 @@ class Quotations extends CI_Controller
 		{
 			// variable initial
 			$_data = json_decode($_POST['i-post'], true);
-			$_cur_num = $this->session->userdata('cur_invoicenum');
+			$_cur_num = $this->session->userdata('cur_quotationnum');
 			$_show_save_btn = false;
 			$_show_reprint_btn = false;
 			$_transaction = [];
 		// echo "<pre>";
-		// var_dump ($_SESSION);
+		// var_dump ($_data);
 		// echo "</pre>";
 
 			$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/customers/".$_data['customer']);
@@ -371,26 +371,81 @@ class Quotations extends CI_Controller
 					$_the_form_type = "save";
 				break;
 			}
-		echo "<pre>";
-		var_dump($_transaction[$_cur_num]);
-		echo "</pre>";
+		// echo "<pre>";
+		// var_dump($_transaction[$_cur_num]);
+		// echo "</pre>";
 			
-			// // function bar
-			// $this->load->view('function-bar', [
-			// 	"btn" => [
-			// 		["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/invoices/'.$_data['formtype'].'/'.$_data['invoicenum']) ,"style" => "","show" => true],
-			// 		["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
-			// 		["name" => "Save", "type"=>"button", "id" => "save", "url"=> base_url("/invoices/".$_the_form_type) , "style" => "","show" => $_show_save_btn],
-			// 		["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
-			// 	]
-			// ]);
-			// // render view
-			// $this->load->view("invoices/invoices-tender-view", [
-			// 	"preview_url" => base_url('/ThePrint/invoices/preview'),
-			// 	"print_url" => base_url('/ThePrint/invoices/save')
-			// ]);
+			// function bar
+			$this->load->view('function-bar', [
+				"btn" => [
+					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/quotations/'.$_data['formtype'].'/'.$_data['quotationnum']) ,"style" => "","show" => true],
+					["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
+					["name" => "Save", "type"=>"button", "id" => "save", "url"=> base_url("/quotations/".$_the_form_type) , "style" => "","show" => $_show_save_btn],
+					["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
+				]
+			]);
+			// render view
+			$this->load->view("quotations/quotations-tender-view", [
+				"preview_url" => base_url('/ThePrint/quotations/preview'),
+				"print_url" => base_url('/ThePrint/quotations/save')
+			]);
 			
 		}
+	}
+	public function save()
+	{
+		$_cur_num = $this->session->userdata('cur_quotationnum');
+		$_transaction = $this->session->userdata('transaction');
+		// echo "<pre>";
+		// var_dump($_transaction);
+		// echo "</pre>";
+
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "Create New", "type"=>"button", "id" => "donew", "url"=> base_url('/quotations/donew'),"style" => "","show" => true],
+			]
+		]);
+		if(!empty($_cur_num))
+		{
+			// echo "<pre>";
+			// var_dump($_transaction[$_cur_num]);
+			// echo "</pre>";
+			$_api_body = json_encode($_transaction[$_cur_num],true);
+
+			if($_api_body != "null")
+			{
+				$this->component_api->SetConfig("body", $_api_body);
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/quotations/");
+				$this->component_api->CallPost();
+				$result = json_decode($this->component_api->GetConfig("result"),true);
+
+				if(isset($result['message']) || isset($result['code']))
+				{
+					$alert = "danger";
+					switch($result['code'])
+					{
+						case "00000":
+							$alert = "success";
+						break;
+					}					
+					
+					$this->load->view('error-handle', [
+						'message' => $result['message'], 
+						'code'=> $result['code'], 
+						'alertstyle' => $alert
+					]);
+					unset($_transaction[$_cur_num]);
+					$this->session->set_userdata('cur_quotationnum',"");
+					$this->session->set_userdata('transaction',$_transaction);
+					
+					header("Refresh: 10; url='donew/'");
+				}
+			}
+		}
+	}
+	public function saveedit()
+	{
+
 	}
 	public function discard()
 	{
