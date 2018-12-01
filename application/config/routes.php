@@ -103,6 +103,7 @@ $route['administration/employees'] = 'employees';
 // quotations
 $route['quotations'] = 'error_404';
 $route['quotations/list'] = 'quotations/qualist/1';
+$route['quotations/list/edit/(:any)'] = 'quotations/edit/$1';
 $route['quotations/list/page/(:any)'] = 'quotations/qualist/$1';
 $route['quotations/create'] = 'error_404';
 

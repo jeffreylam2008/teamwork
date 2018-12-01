@@ -71,17 +71,19 @@ class Invoices extends CI_Controller
 	{
 		// variable initial
 		$_default_per_page = 50;
+		$_show_discard_btn = false;
+		$_show_transaction_data = "";
+		$_cur_invoicenum = "";
+		$_transaction = [];
+		$_items_list = [];
+		$_shopcode_list = [];
+		$_cust_list = [];
+		$_tender = [];
 		if(!empty($_invoice_num))
 		{
 			if(substr($_invoice_num , 0 , 3) === $this->_inv_header_param["topNav"]['prefix'] 
 				&& strlen($_invoice_num) == 13)
-			{
-				// variable initial
-				$_show_discard_btn = false;
-				$_show_transaction_data = "";
-				$_cur_invoicenum = "";
-				$_transaction = [];
-				
+			{	
 				if(!empty($this->session->userdata('transaction')))
 				{
 					$_cur_invoicenum = $this->session->userdata('cur_invoicenum');
@@ -177,6 +179,9 @@ class Invoices extends CI_Controller
 		$_shopcode_list = ["query" =>[]];
 		$_cust_list = [];
 		$_tender = [];
+		$_invoices = [];
+		$_items_list = [];
+		$_shopcode_list = [];
 
 		if(!empty($_invoice_num))
 		{
