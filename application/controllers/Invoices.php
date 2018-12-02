@@ -67,7 +67,16 @@ class Invoices extends CI_Controller
 		$_invoice_num = $this->_inv_header_param['topNav']['prefix'].date("Ymds");
 		redirect(base_url("invoices/create/".$_invoice_num));
 	}
-	public function create($_invoice_num = "")
+	public function convert($_quotation_num = "")
+	{
+		if(!empty($this->session->userdata('transaction')))
+		{
+			$this->session->unset_userdata('transaction');
+		}
+		$_invoice_num = $this->_inv_header_param['topNav']['prefix'].date("Ymds");
+		redirect(base_url("invoices/create/".$_invoice_num."/".$_quotation_num));
+	}
+	public function create($_invoice_num = "", $_quotation_num = "")
 	{
 		// variable initial
 		$_default_per_page = 50;
@@ -79,8 +88,12 @@ class Invoices extends CI_Controller
 		$_shopcode_list = [];
 		$_cust_list = [];
 		$_tender = [];
+
+
+		
 		if(!empty($_invoice_num))
 		{
+			$_show_discard_btn = true;
 			if(substr($_invoice_num , 0 , 3) === $this->_inv_header_param["topNav"]['prefix'] 
 				&& strlen($_invoice_num) == 13)
 			{	
@@ -96,16 +109,14 @@ class Invoices extends CI_Controller
 				// echo "<pre>";
 				// var_dump($_transaction);
 				// echo "</pre>";
-				
+		
 				// check invoices is exist or new create
 				if(array_key_exists($_invoice_num, $_transaction))
-				{
-					$_show_discard_btn = true;
+				{	
 					$_show_transaction_data = $_transaction[$_invoice_num];
 				}
 				else
 				{
-					$_show_discard_btn = true;
 					$_transaction[$_invoice_num] = [];
 					// set invoices number to session
 					$this->session->set_userdata('cur_invoicenum',$_invoice_num);
@@ -142,7 +153,7 @@ class Invoices extends CI_Controller
 					"submit_to" => base_url("/invoices/tender"),
 					"prefix" => $this->_inv_header_param['topNav']['prefix'],
 					"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
-					"quotation" => "",
+					"quotation" => $_quotation_num,
 					"invoice_num" => $_invoice_num,
 					"invoice_date" => date("Y-m-d H:i:s"),
 					"items" => [

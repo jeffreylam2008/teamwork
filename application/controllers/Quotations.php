@@ -217,6 +217,7 @@ class Quotations extends CI_Controller
 	{
 		// variable initial
 		$_default_per_page = 50;
+		$_show_void_btn = false;
 		$_show_transaction_data = [];
 		$_items_list = [];
 		$_shopcode_list = ["query" =>[]];
@@ -244,7 +245,6 @@ class Quotations extends CI_Controller
 			if($_quotation['has'])
 			{
 				// variable initial
-				$_show_void_btn = false;
 				$_show_transaction_data = $_quotation['query'];
 
 				$_today = date_create($this->_inv_header_param['topNav']['today']);
@@ -280,6 +280,7 @@ class Quotations extends CI_Controller
 					"btn" => [
 						["name" => "Back", "type"=>"button", "id" => "Back", "url"=> base_url('/quotations/list'), "style" => "", "show" => true],
 						["name" => "Next", "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
+						["name" => "Convert to Invoice", "type"=>"button", "id" => "convert", "url"=> base_url('/invoices/donew'), "style" => "", "show" => true],
 						["name" => "Void", "type"=>"button", "id" => "discard", "url"=> base_url('/invoices/void'), "style" => "btn btn-danger", "show" => $_show_void_btn]
 					]
 				]);
