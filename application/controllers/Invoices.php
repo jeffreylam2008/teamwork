@@ -89,96 +89,117 @@ class Invoices extends CI_Controller
 		$_cust_list = [];
 		$_tender = [];
 
-
+		echo "<pre>";
+		var_dump($_SESSION);
+		echo "</pre>";
 		
 		if(!empty($_invoice_num))
 		{
 			$_show_discard_btn = true;
-			if(substr($_invoice_num , 0 , 3) === $this->_inv_header_param["topNav"]['prefix'] 
-				&& strlen($_invoice_num) == 13)
-			{	
-				if(!empty($this->session->userdata('transaction')))
-				{
-					$_cur_invoicenum = $this->session->userdata('cur_invoicenum');
-					$_transaction = $this->session->userdata('transaction');
-				}
-				//unset($_SESSION['transaction']);
-				// echo "<pre>";
-				// var_dump($_SESSION);
-				// echo "</pre>";
-				// echo "<pre>";
-				// var_dump($_transaction);
-				// echo "</pre>";
-		
-				// check invoices is exist or new create
-				if(array_key_exists($_invoice_num, $_transaction))
-				{	
-					$_show_transaction_data = $_transaction[$_invoice_num];
-				}
-				else
-				{
-					$_transaction[$_invoice_num] = [];
-					// set invoices number to session
-					$this->session->set_userdata('cur_invoicenum',$_invoice_num);
-					$this->session->set_userdata('transaction',$_transaction);
-				}
-				// fatch items API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
+			// convert from quotation
+			if(!empty($_quotation_num))
+			{
+				// Check Quotation exist
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/quotations/".$_quotation_num);
 				$this->component_api->CallGet();
-				$_items_list = json_decode($this->component_api->GetConfig("result"), true);
-				// fatch shop code and shop detail API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
-				$this->component_api->CallGet();
-				$_shopcode_list = json_decode($this->component_api->GetConfig("result"), true);
-				// fatch customer API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/customers/");
-				$this->component_api->CallGet();
-				$_cust_list = json_decode($this->component_api->GetConfig("result"), true);
-				// fatch payment method API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
-				$this->component_api->CallGet();
-				$_tender = json_decode($this->component_api->GetConfig("result"),true);
-				
-				
-				// var_dump($_theprint_data);
-				// function bar with next, preview and save button
-				$this->load->view('function-bar', [
-					"btn" => [
-						["name" => "Next", "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
-						["name" => "Discard", "type"=>"button", "id" => "discard", "url"=> base_url('/invoices/discard'), "style" => "btn btn-danger", "show" => $_show_discard_btn]
-					]
-				]);
-				// present form view
-				$this->load->view('invoices/invoices-create-view', [
-					"submit_to" => base_url("/invoices/tender"),
-					"prefix" => $this->_inv_header_param['topNav']['prefix'],
-					"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
-					"quotation" => $_quotation_num,
-					"invoice_num" => $_invoice_num,
-					"invoice_date" => date("Y-m-d H:i:s"),
-					"items" => [
-						0 => [
-							"item_code" => "",
-							"eng_name" => "",
-							"chi_name" => "",
-							"qty" => "",
-							"unit" => "",
-							"price" => "",
-						]
-					],
-					"total" => 0,
-					"ajax" => [
-						"items" => $_items_list['query'],
-						"shop_code" => $_shopcode_list['query'],
-						"customers" => $_cust_list['query'],
-						"tender" => $_tender['query']
-					],
-					"theprint_data" => $_show_transaction_data,
-					"default_per_page" => $_default_per_page
-				]);
-				// persent footer view
-				$this->load->view('footer');
+				$_quotation = json_decode($this->component_api->GetConfig("result"),true);
+				echo "<pre>";
+				var_dump($_quotation['query']);
+				echo "</pre>";
+				$_show_transaction_data = $_quotation['query'];
 			}
+			else
+			{
+				if(substr($_invoice_num , 0 , 3) === $this->_inv_header_param["topNav"]['prefix'] 
+					&& strlen($_invoice_num) == 13)
+				{	
+					// retrieve existing transaction from session
+					if(!empty($this->session->userdata('transaction')))
+					{
+						$_cur_invoicenum = $this->session->userdata('cur_invoicenum');
+						$_transaction = $this->session->userdata('transaction');
+					}
+					//unset($_SESSION['transaction']);
+					
+					// echo "<pre>";
+					// var_dump($_transaction);
+					// echo "</pre>";
+			
+					// check invoices is exist or new create
+					if(array_key_exists($_invoice_num, $_transaction))
+					{	
+						$_show_transaction_data = $_transaction[$_invoice_num];
+					}
+					// New invoices
+					else
+					{
+						$_transaction[$_invoice_num] = [];
+						// set invoices number to session
+						$this->session->set_userdata('cur_invoicenum',$_invoice_num);
+						$this->session->set_userdata('transaction',$_transaction);
+					}
+					
+				}
+			}
+
+			// fatch items API
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
+			$this->component_api->CallGet();
+			$_items_list = json_decode($this->component_api->GetConfig("result"), true);
+			// fatch shop code and shop detail API
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
+			$this->component_api->CallGet();
+			$_shopcode_list = json_decode($this->component_api->GetConfig("result"), true);
+			// fatch customer API
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/customers/");
+			$this->component_api->CallGet();
+			$_cust_list = json_decode($this->component_api->GetConfig("result"), true);
+			// fatch payment method API
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
+			$this->component_api->CallGet();
+			$_tender = json_decode($this->component_api->GetConfig("result"),true);
+
+			
+			// var_dump($_theprint_data);
+			// function bar with next, preview and save button
+			$this->load->view('function-bar', [
+				"btn" => [
+					["name" => "Next", "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
+					["name" => "Discard", "type"=>"button", "id" => "discard", "url"=> base_url('/invoices/discard'), "style" => "btn btn-danger", "show" => $_show_discard_btn]
+				]
+			]);
+
+
+			// present form view
+			$this->load->view('invoices/invoices-create-view', [
+				"submit_to" => base_url("/invoices/tender"),
+				"prefix" => $this->_inv_header_param['topNav']['prefix'],
+				"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
+				"quotation" => $_quotation_num,
+				"invoice_num" => $_invoice_num,
+				"invoice_date" => date("Y-m-d H:i:s"),
+				"items" => [
+					0 => [
+						"item_code" => "",
+						"eng_name" => "",
+						"chi_name" => "",
+						"qty" => "",
+						"unit" => "",
+						"price" => "",
+					]
+				],
+				"total" => 0,
+				"ajax" => [
+					"items" => $_items_list['query'],
+					"shop_code" => $_shopcode_list['query'],
+					"customers" => $_cust_list['query'],
+					"tender" => $_tender['query']
+				],
+				"theprint_data" => $_show_transaction_data,
+				"default_per_page" => $_default_per_page
+			]);
+			// persent footer view
+			$this->load->view('footer');
 		}
 	}
 	public function edit($_invoice_num = "")
