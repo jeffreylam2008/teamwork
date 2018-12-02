@@ -17,7 +17,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text" id="">Date</span>
             </div>
-            <input type="text" class="form-control" id="i-invoicedate" value="<?=$invoice_date?>" disabled >
+            <input type="text" class="form-control" id="i-date" value="<?=$date?>" disabled >
         </div>
         <!-- Company -->
         <div class="input-group mb-2 input-group-sm">
@@ -320,7 +320,7 @@
 
         if(list != ""){
             $("#i-invoicenum").val(list.invoicenum)
-            $("#i-invoicedate").val(list.invoicedate)
+            $("#i-date").val(list.date)
             $("#i-quotation").val(list.quotation)
             $("#i-shopcode").val(list.shopcode)
             if(list.hasOwnProperty("customer")){
@@ -587,7 +587,7 @@
         _inputs["prefix"] = $("#i-prefix").val()
         _inputs["quotation"] = $("#i-quotation").val()
         _inputs["employeecode"] = $("#i-employeecode").val()
-        _inputs["invoicedate"] = $("#i-invoicedate").val()
+        _inputs["date"] = $("#i-date").val()
         _inputs["shopcode"] = $("#i-shopcode").val()
         _inputs["customer"] = $("#i-customer").val()
         _inputs["customername"] = $("#i-customer-name").val()

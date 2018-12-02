@@ -14,7 +14,7 @@
             <span class="input-group-text" >Quotation Number</span>
         </div>
         
-        <input type="text" class="form-control" value="<?=$quotationnum?>" disabled>
+        <input type="text" class="form-control" value="<?=$quotation?>" disabled>
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">

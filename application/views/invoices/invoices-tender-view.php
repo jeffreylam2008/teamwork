@@ -2,6 +2,9 @@
     <?php 
        
         $data = json_decode($_POST["i-post"],true);
+        // echo "<pre>";
+        // var_dump($data);
+        // echo "</pre>";
         extract($data);
 
     ?>
@@ -27,7 +30,7 @@
         <div class="input-group-prepend">
             <span class="input-group-text" >Date</span>
         </div>
-        <input type="text" class="form-control" value="<?=$invoicedate?>" disabled >
+        <input type="text" class="form-control" value="<?=$date?>" disabled >
     </div>
     <!-- Company -->
     <div class="input-group mb-2 input-group-sm">

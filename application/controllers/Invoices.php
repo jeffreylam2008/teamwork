@@ -89,9 +89,9 @@ class Invoices extends CI_Controller
 		$_cust_list = [];
 		$_tender = [];
 
-		echo "<pre>";
-		var_dump($_SESSION);
-		echo "</pre>";
+		// echo "<pre>";
+		// var_dump($_SESSION);
+		// echo "</pre>";
 		
 		if(!empty($_invoice_num))
 		{
@@ -103,11 +103,11 @@ class Invoices extends CI_Controller
 				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/quotations/".$_quotation_num);
 				$this->component_api->CallGet();
 				$_quotation = json_decode($this->component_api->GetConfig("result"),true);
-				echo "<pre>";
-				var_dump($_quotation['query']);
-				echo "</pre>";
+				
+				$_quotation['query']['invoicenum'] = $_invoice_num;
 				$_show_transaction_data = $_quotation['query'];
 			}
+			// create invoice
 			else
 			{
 				if(substr($_invoice_num , 0 , 3) === $this->_inv_header_param["topNav"]['prefix'] 
@@ -177,7 +177,7 @@ class Invoices extends CI_Controller
 				"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
 				"quotation" => $_quotation_num,
 				"invoice_num" => $_invoice_num,
-				"invoice_date" => date("Y-m-d H:i:s"),
+				"date" => date("Y-m-d H:i:s"),
 				"items" => [
 					0 => [
 						"item_code" => "",
@@ -239,8 +239,8 @@ class Invoices extends CI_Controller
 				$_show_transaction_data = $_invoices['query'];
 
 				$_today = date_create($this->_inv_header_param['topNav']['today']);
-				$_invoice_date = date_create(date("Y-m-d",strtotime($_invoices['query']['invoicedate'])));
-				$_diff = date_diff($_today,$_invoice_date);
+				$_date = date_create(date("Y-m-d",strtotime($_invoices['query']['date'])));
+				$_diff = date_diff($_today,$_date);
 				
 				$_the_date_diff = $_diff->format("%a");
 				// check invoice date was same with today
@@ -280,7 +280,7 @@ class Invoices extends CI_Controller
 					"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
 					"quotation" => "",
 					"invoice_num" => $_invoice_num,
-					"invoice_date" => date("Y-m-d H:i:s"),
+					"date" => date("Y-m-d H:i:s"),
 					"items" => [
 						0 => [
 							"item_code" => "",
@@ -368,7 +368,7 @@ class Invoices extends CI_Controller
 			// function bar
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/invoices/list/'.$_data['formtype'].'/'.$_data['invoicenum']) ,"style" => "","show" => true],
+					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/invoices/'.$_data['formtype'].'/'.$_data['invoicenum']) ,"style" => "","show" => true],
 					["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
 					["name" => "Save", "type"=>"button", "id" => "save", "url"=> base_url("/invoices/".$_the_form_type) , "style" => "","show" => $_show_save_btn],
 					["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]

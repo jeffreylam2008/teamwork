@@ -4,7 +4,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text" id="">Quotation Number</span>
             </div>
-            <input type="text" class="form-control" id="i-quotationnum" value="<?=$quotation_num?>" disabled>
+            <input type="text" class="form-control" id="i-quotation" value="<?=$quotation?>" disabled>
         </div>
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
@@ -312,7 +312,7 @@
     function doRender(list){
 
         if(list != ""){
-            $("#i-quotationnum").val(list.quotationnum)
+            $("#i-quotation").val(list.quotation)
             $("#i-date").val(list.date)
             $("#i-shopcode").val(list.shopcode)
             if(list.hasOwnProperty("customer")){
@@ -575,7 +575,7 @@
     $("#next").on("click",function(){
         var _inputs = {};
         var _valid = 0;
-        _inputs["quotationnum"] = $("#i-quotationnum").val()
+        _inputs["quotation"] = $("#i-quotation").val()
         _inputs["prefix"] = $("#i-prefix").val()
         _inputs["employeecode"] = $("#i-employeecode").val()
         _inputs["date"] = $("#i-date").val()

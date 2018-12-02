@@ -11,7 +11,7 @@
                 
             </td>
             <td style="width: 10%;">
-                <?=substr($invoicedate,0,-8)?>
+                <?=substr($date,0,-8)?>
             </td>
             <td style="width: 10%;"></td>
             <td style="width: 10%;">

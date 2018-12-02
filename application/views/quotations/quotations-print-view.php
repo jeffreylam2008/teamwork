@@ -14,7 +14,7 @@
             </td>
             <td style="width: 10%;"></td>
             <td style="width: 10%;">
-                <?=$quotationnum?>
+                <?=$quotation?>
             </td>
         </tr>
         <tr style='height: 250px;'>

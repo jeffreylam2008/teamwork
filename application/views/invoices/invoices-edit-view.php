@@ -17,7 +17,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text" id="">Date</span>
             </div>
-            <input type="text" class="form-control" id="i-invoicedate" value="<?=$invoice_date?>" disabled >
+            <input type="text" class="form-control" id="i-date" value="<?=$date?>" disabled >
         </div>
         <!-- Company -->
         <div class="input-group mb-2 input-group-sm">
@@ -324,7 +324,7 @@
     function doRender(list){
         if(list != ""){
             $("#i-invoicenum").val(list.invoicenum)
-            $("#i-invoicedate").val(list.invoicedate)
+            $("#i-date").val(list.date)
             $("#i-quotation").val(list.quotation)
             $("#i-shopcode").val(list.shopcode)
             if(list.hasOwnProperty("customer")){

@@ -185,7 +185,7 @@ class Quotations extends CI_Controller
 					"submit_to" => base_url("/quotations/tender"),
 					"prefix" => $this->_inv_header_param['topNav']['prefix'],
 					"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
-					"quotation_num" => $_num,
+					"quotation" => $_num,
 					"date" => date("Y-m-d H:i:s"),
 					"items" => [
 						0 => [
@@ -238,9 +238,6 @@ class Quotations extends CI_Controller
 			// unset($_SESSION['transaction']);
 			// unset($_SESSION['cur_invoicenum']);
 
-			// echo "<pre>";
-			// var_dump($_quotation);
-			// echo "</pre>";
 
 			if($_quotation['has'])
 			{
@@ -280,7 +277,7 @@ class Quotations extends CI_Controller
 					"btn" => [
 						["name" => "Back", "type"=>"button", "id" => "Back", "url"=> base_url('/quotations/list'), "style" => "", "show" => true],
 						["name" => "Next", "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
-						["name" => "Convert to Invoice", "type"=>"button", "id" => "convert", "url"=> base_url('/invoices/donew'), "style" => "", "show" => true],
+						["name" => "Convert to Invoice", "type"=>"button", "id" => "convert", "url"=> base_url('/invoices/convert/'.$_quotation['query']['quotation']), "style" => "", "show" => true],
 						["name" => "Void", "type"=>"button", "id" => "discard", "url"=> base_url('/invoices/void'), "style" => "btn btn-danger", "show" => $_show_void_btn]
 					]
 				]);
@@ -289,7 +286,7 @@ class Quotations extends CI_Controller
 					"submit_to" => base_url("/quotations/tender"),
 					"prefix" => $this->_inv_header_param['topNav']['prefix'],
 					"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
-					"quotation_num" => $_quotation['query']['quotationnum'],
+					"quotation" => $_quotation['query']['quotation'],
 					"date" => date("Y-m-d H:i:s"),
 					"items" => [
 						0 => [
@@ -326,6 +323,7 @@ class Quotations extends CI_Controller
 	{
 		if(isset($_POST["i-post"]))
 		{
+
 			// variable initial
 			$_data = json_decode($_POST['i-post'], true);
 			$_cur_num = $this->session->userdata('cur_quotationnum');
@@ -377,7 +375,7 @@ class Quotations extends CI_Controller
 			// function bar
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/quotations/list/'.$_data['formtype'].'/'.$_data['quotationnum']) ,"style" => "","show" => true],
+					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/quotations/'.$_data['formtype'].'/'.$_data['quotation']) ,"style" => "","show" => true],
 					["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
 					["name" => "Save", "type"=>"button", "id" => "save", "url"=> base_url("/quotations/".$_the_form_type), "style" => "","show" => $_show_save_btn],
 					["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
