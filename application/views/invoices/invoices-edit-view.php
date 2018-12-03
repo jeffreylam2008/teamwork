@@ -17,7 +17,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text" id="">Date</span>
             </div>
-            <input type="text" class="form-control" id="i-date" value="<?=$date?>" disabled >
+            <input type="text" class="form-control" id="i-date" value="<?=$date?>" disabled>
         </div>
         <!-- Company -->
         <div class="input-group mb-2 input-group-sm">
@@ -582,7 +582,7 @@
         _inputs["prefix"] = $("#i-prefix").val()
         _inputs["quotation"] = $("#i-quotation").val()
         _inputs["employeecode"] = $("#i-employeecode").val()
-        _inputs["invoicedate"] = $("#i-invoicedate").val()
+        _inputs["date"] = $("#i-date").val()
         _inputs["shopcode"] = $("#i-shopcode").val()
         _inputs["customer"] = $("#i-customer").val()
         _inputs["customername"] = $("#i-customer-name").val()

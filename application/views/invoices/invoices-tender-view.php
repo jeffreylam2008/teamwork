@@ -18,26 +18,26 @@
             <span class="input-group-text" >Invoice Number</span>
         </div>
         
-        <input type="text" class="form-control" value="<?=$invoicenum?>" disabled>
+        <input type="text" class="form-control" value="<?=$invoicenum?>" disabled />
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
             <span class="input-group-text" >Quotation</span>
         </div>
-        <input type="text" class="form-control" value="<?=$quotation?>" disabled>
+        <input type="text" class="form-control" value="<?=$quotation?>" disabled />
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
             <span class="input-group-text" >Date</span>
         </div>
-        <input type="text" class="form-control" value="<?=$date?>" disabled >
+        <input type="text" class="form-control" value="<?=$date?>" disabled />
     </div>
     <!-- Company -->
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
             <span class="input-group-text">Company</span>
         </div>
-        <input type="text" class="form-control" value="(<?=$shopcode?>) <?=$shopname?>" disabled >
+        <input type="text" class="form-control" value="(<?=$shopcode?>) <?=$shopname?>" disabled />
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">

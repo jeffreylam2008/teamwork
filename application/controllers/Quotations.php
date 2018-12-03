@@ -7,7 +7,9 @@ class Quotations extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-
+	// echo "<pre>";
+	// var_dump($_SESSION);
+	// echo "</pre>";
 		// dummy data
 		
 		$username = "iamadmin";

@@ -8,8 +8,7 @@ class Invoices extends CI_Controller
 	{
 		parent::__construct();
 
-		// dummy data
-		
+	// dummy data
 		$username = "iamadmin";
 
 		$this->uri->total_segments() >= 2 ? $_param = $this->uri->segment(1)."/".$this->uri->segment(2) : $_param = $this->uri->uri_string();
@@ -89,13 +88,28 @@ class Invoices extends CI_Controller
 		$_cust_list = [];
 		$_tender = [];
 
-		// echo "<pre>";
-		// var_dump($_SESSION);
-		// echo "</pre>";
-		
 		if(!empty($_invoice_num))
 		{
 			$_show_discard_btn = true;
+			// create invoice	
+			if((substr($_invoice_num , 0 , 3) === $this->_inv_header_param["topNav"]['prefix']) && (strlen($_invoice_num) == 13))
+			{	
+				// For back button after submit to tender page
+				if(!empty($this->session->userdata('transaction')) && !empty($this->session->userdata('cur_invoicenum')))
+				{
+					$_invoice_num = $this->session->userdata('cur_invoicenum');
+					$_transaction = $this->session->userdata('transaction');
+				}
+				// For new create
+				else 
+				{
+					$_transaction[$_invoice_num] = [];
+				}
+				$_show_transaction_data = $_transaction[$_invoice_num];
+				$this->session->set_userdata('cur_invoicenum',$_invoice_num);
+				$this->session->set_userdata('transaction',$_transaction);
+			}
+		
 			// convert from quotation
 			if(!empty($_quotation_num))
 			{
@@ -103,44 +117,16 @@ class Invoices extends CI_Controller
 				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/quotations/".$_quotation_num);
 				$this->component_api->CallGet();
 				$_quotation = json_decode($this->component_api->GetConfig("result"),true);
-				
 				$_quotation['query']['invoicenum'] = $_invoice_num;
+				$_quotation['query']['date'] = date("Y-m-d H:i:s");
 				$_show_transaction_data = $_quotation['query'];
+
 			}
-			// create invoice
-			else
-			{
-				if(substr($_invoice_num , 0 , 3) === $this->_inv_header_param["topNav"]['prefix'] 
-					&& strlen($_invoice_num) == 13)
-				{	
-					// retrieve existing transaction from session
-					if(!empty($this->session->userdata('transaction')))
-					{
-						$_cur_invoicenum = $this->session->userdata('cur_invoicenum');
-						$_transaction = $this->session->userdata('transaction');
-					}
-					//unset($_SESSION['transaction']);
-					
-					// echo "<pre>";
-					// var_dump($_transaction);
-					// echo "</pre>";
 			
-					// check invoices is exist or new create
-					if(array_key_exists($_invoice_num, $_transaction))
-					{	
-						$_show_transaction_data = $_transaction[$_invoice_num];
-					}
-					// New invoices
-					else
-					{
-						$_transaction[$_invoice_num] = [];
-						// set invoices number to session
-						$this->session->set_userdata('cur_invoicenum',$_invoice_num);
-						$this->session->set_userdata('transaction',$_transaction);
-					}
-					
-				}
-			}
+		// echo "<pre>";
+		// var_dump($_SESSION);
+		// echo "</pre>";
+
 
 			// fatch items API
 			$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
@@ -368,9 +354,9 @@ class Invoices extends CI_Controller
 			// function bar
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/invoices/'.$_data['formtype'].'/'.$_data['invoicenum']) ,"style" => "","show" => true],
+					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/invoices/list/'.$_data['formtype'].'/'.$_data['invoicenum']."/".$_data['quotation']) ,"style" => "","show" => true],
 					["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
-					["name" => "Save", "type"=>"button", "id" => "save", "url"=> base_url("/invoices/".$_the_form_type) , "style" => "","show" => $_show_save_btn],
+					["name" => "Save", "type"=>"button", "id" => "save", "url"=> base_url("/invoices/list/".$_the_form_type) , "style" => "","show" => $_show_save_btn],
 					["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
 				]
 			]);
