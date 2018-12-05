@@ -11,7 +11,9 @@ class Customers extends CI_Controller
 		
 		$username = "iamadmin";
 		// read URI
-		$this->uri->total_segments() >= 2 ? $_param = $this->uri->segment(1)."/".$this->uri->segment(2) : $_param = $this->uri->uri_string();
+		$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
+		echo $_param;
+		
 		// fatch employee API
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
 		$this->component_api->CallGet();
