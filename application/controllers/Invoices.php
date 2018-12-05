@@ -66,7 +66,7 @@ class Invoices extends CI_Controller
 			$this->session->unset_userdata('transaction');
 		}
 		$_invoice_num = $this->_inv_header_param['topNav']['prefix'].date("Ymds");
-		redirect(base_url("invoices/create/".$_invoice_num));
+		redirect(base_url("invoices/list/create/".$_invoice_num));
 	}
 	public function convert($_quotation_num = "")
 	{
@@ -75,7 +75,7 @@ class Invoices extends CI_Controller
 			$this->session->unset_userdata('transaction');
 		}
 		$_invoice_num = $this->_inv_header_param['topNav']['prefix'].date("Ymds");
-		redirect(base_url("invoices/create/".$_invoice_num."/".$_quotation_num));
+		redirect(base_url("invoices/list/create/".$_invoice_num."/".$_quotation_num));
 	}
 	public function create($_invoice_num = "", $_quotation_num = "")
 	{
@@ -122,7 +122,6 @@ class Invoices extends CI_Controller
 				$_quotation['query']['invoicenum'] = $_invoice_num;
 				$_quotation['query']['date'] = date("Y-m-d H:i:s");
 				$_show_transaction_data = $_quotation['query'];
-
 			}
 			
 		// echo "<pre>";

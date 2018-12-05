@@ -15,7 +15,7 @@ class Quotations extends CI_Controller
 		$username = "iamadmin";
 		$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
 		echo $_param;
-		
+
 		// fatch employee API
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
 		$this->component_api->CallGet();
@@ -371,9 +371,9 @@ class Quotations extends CI_Controller
 			// function bar
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/quotations/'.$_data['formtype'].'/'.$_data['quotation']) ,"style" => "","show" => true],
+					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/quotations/list/'.$_data['formtype'].'/'.$_data['quotation']) ,"style" => "","show" => true],
 					["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
-					["name" => "Save", "type"=>"button", "id" => "save", "url"=> base_url("/quotations/".$_the_form_type), "style" => "","show" => $_show_save_btn],
+					["name" => "Save", "type"=>"button", "id" => "save", "url"=> base_url("/quotations/list/".$_the_form_type), "style" => "","show" => $_show_save_btn],
 					["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
 				]
 			]);
