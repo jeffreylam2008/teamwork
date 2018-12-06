@@ -3,6 +3,7 @@
         <thead>
             <tr>
                 <th>Invoices Number</th>
+                <th>Quotations Number</th>
                 <th>Shop code / name</th>
                 <th>Customer</th>
                 <th>Payment Method</th>
@@ -23,6 +24,7 @@
             {
                 echo "<tr>";
                 echo "<td><a href='".$url.$val['trans_code']."'>".$val['trans_code']."</a></td>";
+                echo "<td>".$val['quotation_code']."</td>";
                 echo "<td>(".$val['shop_code'].") - ".$val['shop_name']."</td>";
                 echo "<td>".$val['customer']."</td>";
                 echo "<td>".$val['payment_method']."</td>";

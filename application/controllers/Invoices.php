@@ -10,10 +10,18 @@ class Invoices extends CI_Controller
 
 	// dummy data
 		$username = "iamadmin";
-
-		//$this->uri->total_segments() >= 2 ? $_param = $this->uri->segment(1)."/".$this->uri->segment(2) : $_param = $this->uri->uri_string();
+		// sidebar session
 		$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
-		echo $_param;
+		switch($_param)
+		{
+			case "quotations/edit":
+				$_param = "invoices/invlist";
+			break;
+			case "quotations/tender":
+				$_param = "invoices/invlist";
+			break;
+		}
+		
 
 		// fatch employee API
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
@@ -66,7 +74,7 @@ class Invoices extends CI_Controller
 			$this->session->unset_userdata('transaction');
 		}
 		$_invoice_num = $this->_inv_header_param['topNav']['prefix'].date("Ymds");
-		redirect(base_url("invoices/list/create/".$_invoice_num));
+		redirect(base_url("invoices/create/".$_invoice_num));
 	}
 	public function convert($_quotation_num = "")
 	{
@@ -75,7 +83,7 @@ class Invoices extends CI_Controller
 			$this->session->unset_userdata('transaction');
 		}
 		$_invoice_num = $this->_inv_header_param['topNav']['prefix'].date("Ymds");
-		redirect(base_url("invoices/list/create/".$_invoice_num."/".$_quotation_num));
+		redirect(base_url("invoices/create/".$_invoice_num."/".$_quotation_num));
 	}
 	public function create($_invoice_num = "", $_quotation_num = "")
 	{
@@ -355,9 +363,9 @@ class Invoices extends CI_Controller
 			// function bar
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/invoices/list/'.$_data['formtype'].'/'.$_data['invoicenum']."/".$_data['quotation']) ,"style" => "","show" => true],
+					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/invoices/'.$_data['formtype'].'/'.$_data['invoicenum']."/".$_data['quotation']) ,"style" => "","show" => true],
 					["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
-					["name" => "Save", "type"=>"button", "id" => "save", "url"=> base_url("/invoices/list/".$_the_form_type) , "style" => "","show" => $_show_save_btn],
+					["name" => "Save", "type"=>"button", "id" => "save", "url"=> base_url("/invoices/".$_the_form_type) , "style" => "","show" => $_show_save_btn],
 					["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
 				]
 			]);
@@ -535,7 +543,7 @@ class Invoices extends CI_Controller
 
 			$this->load->view("invoices/invoices-list-view", [
 				'data' => $_data, 
-				"url" => base_url("invoices/list/edit/"),
+				"url" => base_url("invoices/edit/"),
 				"default_per_page" => $_default_per_page,
 				"page" => $page
 			]);

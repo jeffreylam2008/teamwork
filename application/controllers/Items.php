@@ -11,7 +11,15 @@ class Items extends CI_Controller
 		// dummy data
 
 		$username = "iamadmin";
+		// sidebar session
 		$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
+		switch($_param)
+		{
+			case "items/edit":
+				$_param = "items/index";
+			break;
+		}
+		
 		echo $_param;
 		
 		// fatch employee API
@@ -107,7 +115,7 @@ class Items extends CI_Controller
 			]);
 			$this->load->view("items/items-create-view",[
 				"save_url" => base_url("/products/items/save/"),
-				"categories_baseurl" => base_url("/products/categories/new/"),
+				"categories_baseurl" => base_url("/products/categories/"),
 				"categories" => $_categories
 			]);
 			$this->load->view('footer');
@@ -173,10 +181,10 @@ class Items extends CI_Controller
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/".$item_code);
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
-
-		// echo "<pre>";
-		// var_dump($_data);
-		// echo "</pre>";
+		$_data['query']['desc'] = trim($_data['query']['desc']);
+		echo "<pre>";
+		var_dump($_data);
+		echo "</pre>";
 		
 		// data convertion for items edit (next and previous functions)
 		if(!empty($_items))
@@ -226,9 +234,10 @@ class Items extends CI_Controller
 						["name" => "Next", "type"=>"button", "id" => "next", "url"=> base_url("/products/items/edit/".$_all[$_next]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
 					]
 				]);
+
 				// main view loaded
 				$this->load->view("items/items-edit-view",[
-					"categories_baseurl" => base_url("/products/categories/new/"),
+					"categories_baseurl" => base_url("/products/categories/"),
 					"save_url" => base_url("/products/items/edit/save/"),
 					"data" => $_data,
 					"categories" => $_categories
@@ -327,22 +336,24 @@ class Items extends CI_Controller
 		if(isset($_POST) && !empty($_POST) && isset($item_code) && !empty($item_code))
 		{
 			$_api_body = json_encode($_POST,true);
+			// echo "<pre>";
+			// var_dump($_api_body);
+			// echo "</pre>";
 
 			if($_api_body != "null")
 			{
-				
+
 				// API data
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/".$item_code);
 				$this->component_api->CallPatch();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
 
-				
+				// echo "<pre>";
 				// var_dump($result);
-
+				// echo "</pre>";
 				if(isset($result['error']['message']) || isset($result['error']['code']))
 				{
-
 					$alert = "danger";
 					switch($result['error']['code'])
 					{

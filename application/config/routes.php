@@ -85,27 +85,23 @@ $route['products/categories/edit/save/(:any)'] = 'categories/saveedit/$1';
 $route['invoices/print'] = 'theprint/invoices'; 
 $route['invoices'] = 'error_404';
 $route['invoices/create'] = 'error_404';
-$route['invoices/create/(:any)'] = 'error_404';
-$route['invoices/list/create/(:any)'] = 'invoices/create/$1';
-$route['invoices/list/create/(:any)/(:any)'] = 'invoices/create/$1/$2';
+$route['invoices/create/(:any)'] = 'invoices/create/$1';
+$route['invoices/create/(:any)/(:any)'] = 'invoices/create/$1/$2';
 $route['invoices/list'] = 'invoices/invlist/1';
 $route['invoices/list/page/(:any)'] = 'invoices/invlist/$1';
-$route['invoices/list/edit/(:any)'] = 'invoices/edit/$1';
-$route['invoices/edit/(:any)'] = 'error_404';
+$route['invoices/edit/(:any)'] = 'invoices/edit/$1';
 $route['invoices/list/edit'] = 'error_404';
 $route['invoices/edit'] = 'error_404';
 
 // quotations
 $route['quotations'] = 'error_404';
 $route['quotations/create'] = 'error_404';
-$route['quotations/create/(:any)'] = 'error_404';
-$route['quotations/list/create/(:any)'] = 'quotations/create/$1';
+$route['quotations/create/(:any)'] = 'quotations/create/$1';
 $route['quotations/list'] = 'quotations/qualist/1';
 $route['quotations/list/page/(:any)'] = 'quotations/qualist/$1';
-$route['quotations/list/edit/(:any)'] = 'quotations/edit/$1';
-$route['quotations/edit/(:any)'] = 'error_404';
+$route['quotations/edit/(:any)'] = 'quotations/edit/$1';
 $route['quotations/list/edit'] = 'error_404';
-$route['invquotationsoices/edit'] = 'error_404';
+$route['quotations/edit'] = 'error_404';
 
 
 // Shops

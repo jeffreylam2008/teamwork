@@ -12,7 +12,15 @@ class Categories extends CI_Controller {
 		// var_dump($_SESSION);
 		// echo "</pre>";
 		$username = "iamadmin";
+
+		// sidebar session
 		$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
+		switch($_param)
+		{
+			case "categories/edit":
+				$_param = "categories/index";
+			break;
+		}
 		echo $_param;
 		
 		// fatch employee API

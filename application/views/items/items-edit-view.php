@@ -23,9 +23,7 @@
         <div class="form-row">
             <div class="col-6">
                 <label for="t1">Description</label>
-                <textarea class="form-control form-control-sm" placeholder="Type Something" name="i-desc" rows="2">
-                <?=$desc?>
-                </textarea>
+                <textarea class="form-control form-control-sm" placeholder="Type Something" name="i-desc" rows="2"><?=$desc?></textarea>
             </div>
         </div>
 
@@ -55,8 +53,8 @@
             <div class="col-6">
                 <label>Items Type</label> <a href='<?=$categories_baseurl?>'>New</a>
                 <select class="form-control" name="i-category">
-                <?php if(array_key_exists($cate_code, $cate_code)):?>
-                    <option value="<?=$cata_code?>"><?=$categories[$cata_code]?></option>
+                <?php if(array_key_exists($cate_code, $categories)):?>
+                    <option value="<?=$cate_code?>"><?=$categories[$cate_code]?></option>
                 <?php endif;?>
                     <?php 
                             foreach($categories as $k => $v):
