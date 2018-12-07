@@ -98,7 +98,7 @@ class Quotations extends CI_Controller
 
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=> base_url("invoices/donew/"), "style" => "", "show" => true, "extra" => ""]
+					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=> base_url("quotations/donew/"), "style" => "", "show" => true, "extra" => ""]
 				]
 			]);
 
@@ -384,7 +384,7 @@ class Quotations extends CI_Controller
 					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/quotations/'.$_data['formtype'].'/'.$_data['quotation']) ,"style" => "","show" => true],
 					["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
 					["name" => "Save", "type"=>"button", "id" => "save", "url"=> base_url("/quotations/".$_the_form_type), "style" => "","show" => $_show_save_btn],
-					["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
+					//["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
 				]
 			]);
 			// render view
@@ -451,7 +451,10 @@ class Quotations extends CI_Controller
 		// session
 		$_cur_num = $this->session->userdata('cur_quotationnum');
 		$_transaction = $this->session->userdata('transaction');
-		
+		// echo "<pre>";
+		// var_dump($_SESSION);
+		// echo "</pre>";
+
 		$this->load->view('function-bar', [
 			"btn" => [
 				["name" => "Create New", "type"=>"button", "id" => "donew", "url"=> base_url('/invoices/donew'),"style" => "","show" => true],
@@ -461,13 +464,13 @@ class Quotations extends CI_Controller
 		{
 			$_api_body = json_encode($_transaction[$_cur_num],true);
 			// echo $_cur_invoicenum;
-			echo "<pre>";
-			var_dump($_api_body);
-			echo "</pre>";
+			// echo "<pre>";
+			// var_dump($_api_body);
+			// echo "</pre>";
 			if($_api_body != "null")
 			{
 				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/".$_transaction[$_cur_num]['quotation']);
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/".$_cur_num);
 				$this->component_api->CallPatch();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
 			
@@ -490,7 +493,7 @@ class Quotations extends CI_Controller
 						'alertstyle' => $alert
 					]);
 
-					// header("Refresh: 10; url='list/'");
+					header("Refresh: 2; url='list/'");
 					// unset($_transaction[$_cur_invoicenum]);
 					// $this->session->set_userdata('cur_invoicenum',"");
 					// $this->session->set_userdata('transaction',$_transaction);

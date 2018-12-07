@@ -397,7 +397,7 @@ class Invoices extends CI_Controller
 			if($_api_body != "null")
 			{
 				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/".$_transaction[$_cur_invoicenum]['invoicenum']);
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/".$_cur_invoicenum);
 				$this->component_api->CallPatch();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
 			
