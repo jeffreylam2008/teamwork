@@ -112,7 +112,8 @@ $route['administration/shops'] = 'shops';
 // Employees
 $route['administration/employees'] = 'employees';
 
-
+// Payment Method
+$route['administration/payments'] = 'payments';
 
 
 /// payment Method

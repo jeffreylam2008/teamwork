@@ -19,9 +19,7 @@ class Items extends CI_Controller
 				$_param = "items/index";
 			break;
 		}
-		
-		echo $_param;
-		
+
 		// fatch employee API
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
 		$this->component_api->CallGet();
@@ -182,9 +180,9 @@ class Items extends CI_Controller
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
 		$_data['query']['desc'] = trim($_data['query']['desc']);
-		echo "<pre>";
-		var_dump($_data);
-		echo "</pre>";
+			// echo "<pre>";
+			// var_dump($_data);
+			// echo "</pre>";
 		
 		// data convertion for items edit (next and previous functions)
 		if(!empty($_items))

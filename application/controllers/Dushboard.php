@@ -12,7 +12,6 @@ class Dushboard extends CI_Controller
 		
 		$username = "iamadmin";
 		$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
-		echo $_param;
 		
 		// fatch employee API
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
