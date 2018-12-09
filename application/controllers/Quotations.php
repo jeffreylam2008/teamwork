@@ -64,7 +64,7 @@ class Quotations extends CI_Controller
 	{
 		// variable initial
 		$_default_per_page = 50;
-		$data = [];
+		$_data = [];
 		$_shopcode_list = [];
 
 		// fatch quotation API
@@ -78,6 +78,7 @@ class Quotations extends CI_Controller
 
 		if(!empty($_data) && !empty($_shopcode_list))
 		{
+			// shopcode data massage
 			foreach($_shopcode_list['query'] as $key => $val)
 			{
 				$_shop_data[$val['shop_code']] = $val;
@@ -88,7 +89,11 @@ class Quotations extends CI_Controller
 				{
 					$_data['query'][$key]['shop_name'] = $_shop_data[$val['shop_code']]['name'];
 				}
+				$_data['query'][$key]['is_convert'] == 1 ? $_data['query'][$key]['is_convert'] = "Yes" : $_data['query'][$key]['is_convert'] = "No";
 			}
+			// quotations convert data massage
+			// $_data['query']['is_convert'] == 1 ? "No" : "Yes";
+			
 		// echo "<pre>";
 		// var_dump($_data);
 		// echo "</pre>";
@@ -223,8 +228,10 @@ class Quotations extends CI_Controller
 	{
 		// variable initial
 		$_default_per_page = 50;
-		$_show_void_btn = true;
+		$_show_void_btn = false;
 		$_show_transaction_data = [];
+		$_show_convert_btn = false;
+		$_show_next_btn = false;
 		$_items_list = [];
 		$_shopcode_list = ["query" =>[]];
 		$_cust_list = [];
@@ -244,12 +251,21 @@ class Quotations extends CI_Controller
 			// unset($_SESSION['transaction']);
 			// unset($_SESSION['cur_invoicenum']);
 
+			
 
 			if($_quotation['has'])
 			{
 				// variable initial
 				$_show_transaction_data = $_quotation['query'];
-
+			// echo "<pre>";
+			// var_dump($_show_transaction_data);
+			// echo "</pre>";
+				if($_quotation['query']['is_convert'] === 0)
+				{
+					$_show_convert_btn = true;
+					$_show_void_btn = true;
+					$_show_next_btn = true;
+				}
 				$_today = date_create($this->_inv_header_param['topNav']['today']);
 				$_invoice_date = date_create(date("Y-m-d",strtotime($_quotation['query']['date'])));
 				$_diff = date_diff($_today,$_invoice_date);
@@ -282,8 +298,8 @@ class Quotations extends CI_Controller
 				$this->load->view('function-bar', [
 					"btn" => [
 						["name" => "Back", "type"=>"button", "id" => "Back", "url"=> base_url('/quotations/list'), "style" => "", "show" => true],
-						["name" => "Next", "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
-						["name" => "Convert to Invoice", "type"=>"button", "id" => "convert", "url"=> base_url('/invoices/convert/'.$_quotation['query']['quotation']), "style" => "", "show" => true],
+						["name" => "Next", "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => $_show_next_btn],
+						["name" => "Convert to Invoice", "type"=>"button", "id" => "convert", "url"=> base_url('/invoices/convert/'.$_quotation['query']['quotation']), "style" => "", "show" => $_show_convert_btn],
 						["name" => "Void", "type"=>"button", "id" => "discard", "url"=> base_url('/quotations/void/'.$_quotation['query']['quotation']), "style" => "btn btn-danger", "show" => $_show_void_btn]
 					]
 				]);

@@ -14,10 +14,10 @@ class Invoices extends CI_Controller
 		$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
 		switch($_param)
 		{
-			case "quotations/edit":
+			case "invoices/edit":
 				$_param = "invoices/invlist";
 			break;
-			case "quotations/tender":
+			case "invoices/tender":
 				$_param = "invoices/invlist";
 			break;
 		}
@@ -394,7 +394,7 @@ class Invoices extends CI_Controller
 			// echo "<pre>";
 			// var_dump($_api_body);
 			// echo "</pre>";
-			if($_api_body != "null")
+			if($_api_body != null)
 			{
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/".$_cur_invoicenum);
@@ -440,9 +440,9 @@ class Invoices extends CI_Controller
 		]);
 		if(!empty($_cur_invoicenum))
 		{
-			echo "<pre>";
-			var_dump($_transaction[$_cur_invoicenum]);
-			echo "</pre>";
+			// echo "<pre>";
+			// var_dump($_transaction[$_cur_invoicenum]);
+			// echo "</pre>";
 			$_api_body = json_encode($_transaction[$_cur_invoicenum],true);
 			// echo $_cur_invoicenum;
 		// echo "<pre>";
@@ -450,36 +450,37 @@ class Invoices extends CI_Controller
 		// echo "</pre>";
 			if($_api_body != null)
 			{
-				// $this->component_api->SetConfig("body", $_api_body);
-				// $this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/");
-				// $this->component_api->CallPost();
-				// $result = json_decode($this->component_api->GetConfig("result"),true);
+
+				$this->component_api->SetConfig("body", $_api_body);
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/");
+				$this->component_api->CallPost();
+				$result = json_decode($this->component_api->GetConfig("result"),true);
 				
 			// echo "<pre>";
 			// var_dump($result);
 			// echo "</pre>";
 
-				// if(isset($result['message']) || isset($result['code']))
-				// {
-				// 	$alert = "danger";
-				// 	switch($result['code'])
-				// 	{
-				// 		case "00000":
-				// 			$alert = "success";
-				// 		break;
-				// 	}					
+				if(isset($result['message']) || isset($result['code']))
+				{
+					$alert = "danger";
+					switch($result['code'])
+					{
+						case "00000":
+							$alert = "success";
+						break;
+					}					
 					
-				// 	$this->load->view('error-handle', [
-				// 		'message' => $result['message'], 
-				// 		'code'=> $result['code'], 
-				// 		'alertstyle' => $alert
-				// 	]);
-				// 	unset($_transaction[$_cur_invoicenum]);
-				// 	$this->session->set_userdata('cur_invoicenum',"");
-				// 	$this->session->set_userdata('transaction',$_transaction);
+					$this->load->view('error-handle', [
+						'message' => $result['message'], 
+						'code'=> $result['code'], 
+						'alertstyle' => $alert
+					]);
+					unset($_transaction[$_cur_invoicenum]);
+					$this->session->set_userdata('cur_invoicenum',"");
+					$this->session->set_userdata('transaction',$_transaction);
 					
-				// 	header("Refresh: 10; url='donew/'");
-				// }
+					header("Refresh: 10; url='donew/'");
+				}
 			}
 		}
 		//header("Refresh: 10; url='donew/'");

@@ -6,6 +6,7 @@
                 <th>Customer</th>
                 <th>Payment Method</th>
                 <th>Total</th>
+                <th>Converted</th>
                 <th>Invoice Date</th>
                 <th>Modify Date</th>
             </tr>
@@ -26,6 +27,7 @@
                 echo "<td>".$val['customer']."</td>";
                 echo "<td>".$val['payment_method']."</td>";
                 echo "<td>$".$val['total']."</td>";
+                echo "<td>".$val['is_convert']."</td>";
                 echo "<td>".$val['create_date']."</td>";
                 echo "<td>".$val['modify_date']."</td>";
                 echo "</tr>";
