@@ -223,7 +223,7 @@ class Quotations extends CI_Controller
 	{
 		// variable initial
 		$_default_per_page = 50;
-		$_show_void_btn = false;
+		$_show_void_btn = true;
 		$_show_transaction_data = [];
 		$_items_list = [];
 		$_shopcode_list = ["query" =>[]];
@@ -284,7 +284,7 @@ class Quotations extends CI_Controller
 						["name" => "Back", "type"=>"button", "id" => "Back", "url"=> base_url('/quotations/list'), "style" => "", "show" => true],
 						["name" => "Next", "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
 						["name" => "Convert to Invoice", "type"=>"button", "id" => "convert", "url"=> base_url('/invoices/convert/'.$_quotation['query']['quotation']), "style" => "", "show" => true],
-						["name" => "Void", "type"=>"button", "id" => "discard", "url"=> base_url('/invoices/void'), "style" => "btn btn-danger", "show" => $_show_void_btn]
+						["name" => "Void", "type"=>"button", "id" => "discard", "url"=> base_url('/quotations/void/'.$_quotation['query']['quotation']), "style" => "btn btn-danger", "show" => $_show_void_btn]
 					]
 				]);
 				// show edit view
@@ -509,5 +509,12 @@ class Quotations extends CI_Controller
 		unset($_SESSION['cur_quotationnum']);
 		unset($_transaction[$_cur_quotationnum]);
 		redirect(base_url("quotations/donew"),"refresh");
+	}
+	public function void($_num = "")
+	{
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/quotations/".$_num);
+		$this->component_api->CallDelete();
+		$_result = json_decode($this->component_api->GetConfig("result"),true);
+		var_dump($_result);
 	}
 }
