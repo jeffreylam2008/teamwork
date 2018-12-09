@@ -103,11 +103,9 @@ $route['quotations/edit/(:any)'] = 'quotations/edit/$1';
 $route['quotations/list/edit'] = 'error_404';
 $route['quotations/edit'] = 'error_404';
 
-
 // Shops
 $route['administration/shops/page/(:any)'] = 'shops/index/page/$1';
 $route['administration/shops'] = 'shops';
-
 
 // Employees
 $route['administration/employees'] = 'employees';
@@ -115,6 +113,8 @@ $route['administration/employees'] = 'employees';
 // Payment Method
 $route['administration/payments'] = 'payments';
 
+// customers
+$route['customers/list'] = 'customers/cuslist';
 
 /// payment Method
 //$route['invoices/'] = 'theprint/invoices'; 

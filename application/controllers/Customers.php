@@ -25,7 +25,7 @@ class Customers extends CI_Controller
 			"shop_code" => "0012",
 			"today" => date("Y-m-d")
 		];
-
+		// Call API here
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
 		$this->component_api->CallGet();
 		$_nav_list = json_decode($this->component_api->GetConfig("result"), true);
@@ -48,10 +48,33 @@ class Customers extends CI_Controller
 		// load breadcrumb
 		//$this->load->view('breadcrumb');
 	}
-	public function index()
+	public function cuslist($page="")
 	{
-		// load shops view
-		$this->load->view('customers/customers-view');
+		$_default_per_page = 50;
+		$data = [];
+
+		// Call API here
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/");
+		$this->component_api->CallGet();
+		$_data = json_decode($this->component_api->GetConfig("result"), true);
+
+		echo "<pre>";
+		echo var_dump($_data);
+		echo "</pre>";
+		// load function bar view
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=>"", "style" => "", "show" => true, "extra" => ""]
+			]
+		]);
+
+		// load main view
+		$this->load->view('customers/customers-list-view', [
+			'data' => $_data, 
+			"url" => base_url("customers/edit/"),
+			"default_per_page" => $_default_per_page,
+			"page" => $page
+		]);
 		$this->load->view('footer');
 	}
 }

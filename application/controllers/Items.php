@@ -18,6 +18,9 @@ class Items extends CI_Controller
 			case "items/edit":
 				$_param = "items/index";
 			break;
+			case "items/delete":
+				$_param = "items/index";
+			break;
 		}
 
 		// fatch employee API

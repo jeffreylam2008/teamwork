@@ -20,8 +20,10 @@ class Categories extends CI_Controller {
 			case "categories/edit":
 				$_param = "categories/index";
 			break;
+			case "categories/delete":
+				$_param = "categories/index";
+			break;
 		}
-		echo $_param;
 		
 		// fatch employee API
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
