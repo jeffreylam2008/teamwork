@@ -35,7 +35,7 @@ class Customers extends CI_Controller
 
 		// load header view
 		$this->load->view('header',[
-			'title'=>'Shop',
+			'title'=>'Customers',
 			'sideNav_view' => $this->load->view('side-nav', [
 				"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list"),
 				"path"=>$this->component_sidemenu->GetConfig("path"),
@@ -54,12 +54,25 @@ class Customers extends CI_Controller
 		$data = [];
 
 		// Call API here
+		// Get customer on list
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/");
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
+		// Get payment method
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
+		$this->component_api->CallGet();
+		$_paymethod = json_decode($this->component_api->GetConfig("result"),true);
 
+		// join different table into one array
+		foreach($_data['query'] as $key => $val)
+		{
+			if(array_key_exists($val['pm_code'],$_paymethod['query']))
+			{
+				$_data['query'][$key]['pm_code'] = $_paymethod['query'][$_data['query'][$key]['pm_code']];
+			}
+		}
 		echo "<pre>";
-		echo var_dump($_data);
+		var_dump($_data);
 		echo "</pre>";
 		// load function bar view
 		$this->load->view('function-bar', [
@@ -70,7 +83,7 @@ class Customers extends CI_Controller
 
 		// load main view
 		$this->load->view('customers/customers-list-view', [
-			'data' => $_data, 
+			'data' => $_data,
 			"url" => base_url("customers/edit/"),
 			"default_per_page" => $_default_per_page,
 			"page" => $page

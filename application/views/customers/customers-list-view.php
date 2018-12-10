@@ -1,7 +1,7 @@
 <table id="tbl" class="table table-striped table-borderedNO" style="width:100%">
         <thead>
             <tr>
-                <th></th>
+                <th>Customer Code</th>
                 <th></th>
                 <th></th>
                 <th></th>
@@ -24,8 +24,8 @@
                 echo "<tr>";
                 echo "<td><a href='".$url.$val['cust_code']."'>".$val['cust_code']."</a></td>";
                 echo "<td>".$val['name']."</td>";
-                echo "<td></td>";
-                echo "<td></td>";
+                echo "<td>".$val['phone_1']."</td>";
+                echo "<td>".$val['pm_code']['payment_method']."</td>";
                 echo "<td></td>";
                 echo "<td></td>";
                 echo "<td></td>";
