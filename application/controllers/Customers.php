@@ -64,16 +64,16 @@ class Customers extends CI_Controller
 		$_paymethod = json_decode($this->component_api->GetConfig("result"),true);
 
 		// join different table into one array
-		foreach($_data['query'] as $key => $val)
-		{
-			if(array_key_exists($val['pm_code'],$_paymethod['query']))
-			{
-				$_data['query'][$key]['pm_code'] = $_paymethod['query'][$_data['query'][$key]['pm_code']];
-			}
-		}
-		echo "<pre>";
-		var_dump($_data);
-		echo "</pre>";
+		// foreach($_data['query'] as $key => $val)
+		// {
+		// 	if(array_key_exists($val['pm_code'],$_paymethod['query']))
+		// 	{
+		// 		$_data['query'][$key]['pm_code'] = $_paymethod['query'][$_data['query'][$key]['pm_code']];
+		// 	}
+		// }
+		// echo "<pre>";
+		// var_dump($_data);
+		// echo "</pre>";
 		// load function bar view
 		$this->load->view('function-bar', [
 			"btn" => [
@@ -84,6 +84,7 @@ class Customers extends CI_Controller
 		// load main view
 		$this->load->view('customers/customers-list-view', [
 			'data' => $_data,
+			'paymethod' => $_paymethod,
 			"url" => base_url("customers/edit/"),
 			"default_per_page" => $_default_per_page,
 			"page" => $page

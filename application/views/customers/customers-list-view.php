@@ -16,16 +16,20 @@
         if(!empty($data))
         {
         // echo "<pre>";
-        // var_dump($data);
+        // var_dump($paymethod);
         // echo "</pre>";
             extract($data);
             foreach($query as $key => $val)
             {
+                if(array_key_exists($val['pm_code'],$paymethod['query']))
+                {
+                    $_pm_code = $paymethod['query'][$val['pm_code']]['payment_method'];
+                }
                 echo "<tr>";
                 echo "<td><a href='".$url.$val['cust_code']."'>".$val['cust_code']."</a></td>";
                 echo "<td>".$val['name']."</td>";
                 echo "<td>".$val['phone_1']."</td>";
-                echo "<td>".$val['pm_code']['payment_method']."</td>";
+                echo "<td>".$_pm_code."</td>";
                 echo "<td></td>";
                 echo "<td></td>";
                 echo "<td></td>";
