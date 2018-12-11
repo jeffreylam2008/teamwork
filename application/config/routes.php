@@ -114,7 +114,7 @@ $route['administration/employees'] = 'employees';
 $route['administration/payments'] = 'payments';
 
 // customers
-$route['customers/list'] = 'customers/cuslist';
-
+$route['customers'] = 'customers/index';
+$route['customers/edit/(:any)'] = 'customers/edit/$1';
 /// payment Method
 //$route['invoices/'] = 'theprint/invoices'; 

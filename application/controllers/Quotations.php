@@ -66,6 +66,11 @@ class Quotations extends CI_Controller
 		$_default_per_page = 50;
 		$_data = [];
 		$_shopcode_list = [];
+		// set page
+		if(empty($page))
+		{
+			$page = 1;
+		}
 
 		// fatch quotation API
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/quotations/");
@@ -78,6 +83,9 @@ class Quotations extends CI_Controller
 
 		if(!empty($_data) && !empty($_shopcode_list))
 		{
+			// set user data
+			$this->session->set_userdata('page',$page);
+
 			// shopcode data massage
 			foreach($_shopcode_list['query'] as $key => $val)
 			{

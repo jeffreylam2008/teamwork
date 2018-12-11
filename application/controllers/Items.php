@@ -70,11 +70,8 @@ class Items extends CI_Controller
 	{	
 		// variable initial
 		$_default_per_page = 50;
-		$_categories = [];
-		if(empty($page))
-		{
-			$page = 1;
-		}
+		$_data_categories = [];
+
 
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
@@ -89,7 +86,7 @@ class Items extends CI_Controller
 		{
 			foreach($_data_categories["query"] as $key => $val)
 			{
-				$_categories[$val["cate_code"]] = $val["desc"];
+				$_data_categories[$val["cate_code"]] = $val["desc"];
 			}
 			
 
@@ -117,7 +114,7 @@ class Items extends CI_Controller
 			$this->load->view("items/items-create-view",[
 				"save_url" => base_url("/products/items/save/"),
 				"categories_baseurl" => base_url("/products/categories/"),
-				"categories" => $_categories
+				"categories" => $_data_categories
 			]);
 			$this->load->view('footer');
 		}

@@ -505,6 +505,10 @@ class Invoices extends CI_Controller
 		$_default_per_page = 50;
 		$data = [];
 		$_shopcode_list = [];
+		if(empty($page))
+		{
+			$page = 1;
+		}
 
 		// fatch items API
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/");
@@ -517,6 +521,9 @@ class Invoices extends CI_Controller
 
 		if(!empty($_data) && !empty($_shopcode_list))
 		{
+			// set user data
+			$this->session->set_userdata('page',$page);
+
 			foreach($_shopcode_list['query'] as $key => $val)
 			{
 				$_shop_data[$val['shop_code']] = $val;
