@@ -33,7 +33,7 @@ class Quotations extends CI_Controller
 		//var_dump($_employee);
 		$this->_inv_header_param["topNav"] = [
 			"isLogin" => true,
-			"username" => "",
+			"username" => $username,
 			"employee_code" => "110022",
 			"shop_code" => "0012",
 			"today" => date("Y-m-d"),
@@ -76,32 +76,13 @@ class Quotations extends CI_Controller
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/quotations/");
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
-		// fatch shop API
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
-		$this->component_api->CallGet();
-		$_shopcode_list = json_decode($this->component_api->GetConfig("result"), true);
 
-		if(!empty($_data) && !empty($_shopcode_list))
+
+		if(!empty($_data))
 		{
 			// set user data
 			$this->session->set_userdata('page',$page);
 
-			// shopcode data massage
-			foreach($_shopcode_list['query'] as $key => $val)
-			{
-				$_shop_data[$val['shop_code']] = $val;
-			}
-			foreach($_data['query'] as $key => $val)
-			{
-				if(array_key_exists($val['shop_code'],$_shop_data))
-				{
-					$_data['query'][$key]['shop_name'] = $_shop_data[$val['shop_code']]['name'];
-				}
-				$_data['query'][$key]['is_convert'] == 1 ? $_data['query'][$key]['is_convert'] = "Yes" : $_data['query'][$key]['is_convert'] = "No";
-			}
-			// quotations convert data massage
-			// $_data['query']['is_convert'] == 1 ? "No" : "Yes";
-			
 		// echo "<pre>";
 		// var_dump($_data);
 		// echo "</pre>";
@@ -140,6 +121,10 @@ class Quotations extends CI_Controller
 		$_show_transaction_data = [];
 		$_cur_quotationnum = "";
 		$_transaction = [];
+		$_items_list = [];
+		$_shopcode_list = [];
+		$_cust_list = [];
+		$_tender_list = [];
 				
 		if(!empty($_num))
 		{
@@ -188,7 +173,7 @@ class Quotations extends CI_Controller
 				// fatch payment method API
 				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
 				$this->component_api->CallGet();
-				$_tender = json_decode($this->component_api->GetConfig("result"),true);
+				$_tender_list = json_decode($this->component_api->GetConfig("result"),true);
 				
 				
 				// var_dump($_theprint_data);
@@ -221,7 +206,7 @@ class Quotations extends CI_Controller
 						"items" => $_items_list['query'],
 						"shop_code" => $_shopcode_list['query'],
 						"customers" => $_cust_list['query'],
-						"tender" => $_tender['query']
+						"tender" => $_tender_list['query']
 					],
 					"theprint_data" => $_show_transaction_data,
 					"default_per_page" => $_default_per_page
@@ -237,13 +222,14 @@ class Quotations extends CI_Controller
 		// variable initial
 		$_default_per_page = 50;
 		$_show_void_btn = false;
-		$_show_transaction_data = [];
 		$_show_convert_btn = false;
 		$_show_next_btn = false;
+		$_show_transaction_data = [];
 		$_items_list = [];
-		$_shopcode_list = ["query" =>[]];
+		$_shopcode_list = [];
 		$_cust_list = [];
-		$_tender = [];
+		$_tender_list = [];
+		$_quotation = [];
 
 		if(!empty($_num))
 		{
@@ -258,8 +244,6 @@ class Quotations extends CI_Controller
 			
 			// unset($_SESSION['transaction']);
 			// unset($_SESSION['cur_invoicenum']);
-
-			
 
 			if($_quotation['has'])
 			{
@@ -300,7 +284,7 @@ class Quotations extends CI_Controller
 				// fatch payment method API
 				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
 				$this->component_api->CallGet();
-				$_tender = json_decode($this->component_api->GetConfig("result"),true);
+				$_tender_list = json_decode($this->component_api->GetConfig("result"),true);
 
 				// function bar with next, preview and save button
 				$this->load->view('function-bar', [
@@ -333,7 +317,7 @@ class Quotations extends CI_Controller
 						"items" => $_items_list['query'],
 						"shop_code" => $_shopcode_list['query'],
 						"customers" => $_cust_list['query'],
-						"tender" => $_tender['query']
+						"tender" => $_tender_list['query']
 					],
 					"theprint_data" => $_show_transaction_data,
 					"show" => $_show_void_btn,

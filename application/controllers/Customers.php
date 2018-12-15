@@ -20,7 +20,7 @@ class Customers extends CI_Controller
 		//var_dump($_employee);
 		$this->_inv_header_param["topNav"] = [
 			"isLogin" => true,
-			"username" => "",
+			"username" => $username,
 			"employee_code" => "110022",
 			"shop_code" => "0012",
 			"today" => date("Y-m-d")
@@ -48,14 +48,11 @@ class Customers extends CI_Controller
 		// load breadcrumb
 		//$this->load->view('breadcrumb');
 	}
-	public function index($page="")
+	public function index($page=1)
 	{
 		$_default_per_page = 50;
 		$data = [];
-		if(empty($page))
-		{
-			$page = 1;
-		}
+
 		// set user data
 		$this->session->set_userdata('page',$page);
 
@@ -110,6 +107,7 @@ class Customers extends CI_Controller
 	{
 		$_data = [];
 
+		var_dump($_SESSION);
 		// user data
 		$_page = $this->session->userdata("page");
 

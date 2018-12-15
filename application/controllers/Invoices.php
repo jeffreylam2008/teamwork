@@ -8,6 +8,7 @@ class Invoices extends CI_Controller
 	{
 		parent::__construct();
 
+		var_dump($_SESSION);
 	// dummy data
 		$username = "iamadmin";
 		// sidebar session
@@ -30,7 +31,7 @@ class Invoices extends CI_Controller
 		//var_dump($_employee);
 		$this->_inv_header_param["topNav"] = [
 			"isLogin" => true,
-			"username" => "",
+			"username" => $username,
 			"employee_code" => "110022",
 			"shop_code" => "0012",
 			"today" => date("Y-m-d"),
@@ -116,6 +117,7 @@ class Invoices extends CI_Controller
 					$_transaction[$_invoice_num] = [];
 				}
 				$_show_transaction_data = $_transaction[$_invoice_num];
+				
 				$this->session->set_userdata('cur_invoicenum',$_invoice_num);
 				$this->session->set_userdata('transaction',$_transaction);
 			}
@@ -499,42 +501,23 @@ class Invoices extends CI_Controller
 	 * List out all Invoices
 	 *  
 	 */
-	public function invlist($page="")
+	public function invlist($page=1)
 	{
 		// variable initial
 		$_default_per_page = 50;
 		$data = [];
 		$_shopcode_list = [];
-		if(empty($page))
-		{
-			$page = 1;
-		}
 
 		// fatch items API
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/");
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
-		// fatch shop API
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
-		$this->component_api->CallGet();
-		$_shopcode_list = json_decode($this->component_api->GetConfig("result"), true);
 
-		if(!empty($_data) && !empty($_shopcode_list))
+		if(!empty($_data) )//&& !empty($_shopcode_list))
 		{
 			// set user data
 			$this->session->set_userdata('page',$page);
-
-			foreach($_shopcode_list['query'] as $key => $val)
-			{
-				$_shop_data[$val['shop_code']] = $val;
-			}
-			foreach($_data['query'] as $key => $val)
-			{
-				if(array_key_exists($val['shop_code'],$_shop_data))
-				{
-					$_data['query'][$key]['shop_name'] = $_shop_data[$val['shop_code']]['name'];
-				}
-			}
+			
 		// echo "<pre>";
 		// var_dump($_data);
 		// echo "</pre>";

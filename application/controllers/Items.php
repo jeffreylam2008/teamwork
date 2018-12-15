@@ -30,7 +30,7 @@ class Items extends CI_Controller
 		//var_dump($_employee);
 		$this->_inv_header_param["topNav"] = [
 			"isLogin" => true,
-			"username" => "",
+			"username" => $username,
 			"employee_code" => "110022",
 			"shop_code" => "0012",
 			"today" => date("Y-m-d")
