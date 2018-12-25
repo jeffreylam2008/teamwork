@@ -116,5 +116,8 @@ $route['administration/payments'] = 'payments';
 // customers
 $route['customers'] = 'customers/index';
 $route['customers/edit/(:any)'] = 'customers/edit/$1';
+
+// Login
+$route['login'] = 'login/index';
 /// payment Method
 //$route['invoices/'] = 'theprint/invoices'; 

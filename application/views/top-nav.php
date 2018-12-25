@@ -39,10 +39,10 @@
 </nav> --> 
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="navbar-collapse collapse w-200 order-1 order-md-0 dual-collapse2">
+    <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="#"><img src="<?=base_url('assets/img/logo-ex-4.png');?>" width="50" height="50" alt=""></a>
+                <a class="nav-link" href="#"><img src="<?=base_url('assets/img/logo-ex-4.png');?>" width="30" height="30" alt=""></a>
             </li>
         </ul>
     </div>
@@ -54,14 +54,14 @@
         </button>
     </div>
 
-    <div class="navbar-collapse collapse w-90 order-2 dual-collapse2">
+    <div class="navbar-collapse collapse w-100 order-2 dual-collapse2">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
             <div class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class="far fa-user-circle fa-2x"></i>
                 </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <div class="dropdown-menu  dropdown-menu-right" aria-labelledby="navbarDropdown">
                   <a class="dropdown-item" href="#">Profile</a>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="#">Logout</a>

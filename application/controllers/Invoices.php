@@ -8,7 +8,7 @@ class Invoices extends CI_Controller
 	{
 		parent::__construct();
 
-		var_dump($_SESSION);
+		// var_dump($_SESSION);
 	// dummy data
 		$username = "iamadmin";
 		// sidebar session
@@ -515,22 +515,19 @@ class Invoices extends CI_Controller
 
 		if(!empty($_data) )//&& !empty($_shopcode_list))
 		{
-			// set user data
+			// Set user data
 			$this->session->set_userdata('page',$page);
 			
 		// echo "<pre>";
 		// var_dump($_data);
 		// echo "</pre>";
-		// echo "<pre>";
-		// var_dump($_shop_data);
-		// echo "</pre>";
-
+			// Function bar
 			$this->load->view('function-bar', [
 				"btn" => [
 					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=> base_url("invoices/donew/"), "style" => "", "show" => true, "extra" => ""]
 				]
 			]);
-
+			
 			$this->load->view("invoices/invoices-list-view", [
 				'data' => $_data, 
 				"url" => base_url("invoices/edit/"),
