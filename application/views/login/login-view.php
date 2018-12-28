@@ -1,8 +1,8 @@
-<section class="login-block">
+<!-- <section class="login-block"> -->
    <!-- <div class="container">-->
       <div class="row">
         <div class="col-md-4 login-sec">
-          <h2 class="text-center">Login Now</h2>
+          <h2 class="text-center"><img class="d-block img-fluid" src="<?=base_url('assets/img/logo-white.png');?>" alt="First slide" width="98%" height="100%"/></h2>
           <form class="login-form">
             <div class="form-group">
               <label for="exampleInputEmail1" class="text-uppercase">Username</label>
@@ -63,4 +63,4 @@
         </div>
     <!-- container 
     </div>-->
-</section>
+<!-- </section>-->

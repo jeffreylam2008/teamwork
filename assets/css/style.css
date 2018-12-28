@@ -116,8 +116,9 @@ a[aria-expanded="true"]::before {
 ----------------------------------------------------- */
 html, body {
         margin: auto;
-        width: 100%;
-        padding: 10px;
+        width: 97%;
+        height: 100%;
+        padding: 20px 0 0 0;
 } 
 .login-block{
     /*background: #DE6262;   fallback for old browsers */
@@ -125,8 +126,9 @@ html, body {
     /*background: linear-gradient(to bottom, #FFB88C, #DE6262); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     float:left;
     width:100%;
-
-
+}
+.row{
+    height: 100%;
 }
 /*.banner-sec{background:url(https://static.pexels.com/photos/33972/pexels-photo.jpg) no-repeat left bottom; background-size:cover; min-height:100%; border-radius: 0 0 0 0; padding:0;}*/
 /*.container{background:#fff; border-radius: 10px; box-shadow:15px 20px 0px rgba(0,0,0,0.1);}*/
