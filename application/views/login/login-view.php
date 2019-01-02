@@ -1,4 +1,4 @@
-<!-- <section class="login-block"> -->
+<section class="login-block">
    <!-- <div class="container">-->
       <div class="row">
         <div class="col-md-4 login-sec">
@@ -25,17 +25,17 @@
     
 
 
-        <div class="col-md-8 banner-sec">
-          <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-               <!-- <ol class="carousel-indicators">
+        <div class="col-md-8">
+          <!-- <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+               <ol class="carousel-indicators">
                   <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
                   <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
                   <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
                 </ol>
                       <div class="carousel-inner" role="listbox">-->
                                   <!-- <div class="carousel-item active"> -->
-                                    <img class="d-block img-fluid" src="<?=base_url('assets/img/twc-about.jpg');?>" alt="First slide" width="98%" height="100%"/>
-                                   
+                                    <img class=" img-fluid" src="<?=base_url('assets/img/sa-hotel.jpg');?>" alt="First slide" width="100%" />
+                                  
                                   <!-- </div> -->
                             <!--
                                   <div class="carousel-item">
@@ -58,9 +58,9 @@
                                     </div>
                                   </div>
 -->
-                      <!--</div>    -->
-            </div>
+                      <!--</div>-->
+            <!--</div>-->
         </div>
     <!-- container 
     </div>-->
-<!-- </section>-->
+</section>
