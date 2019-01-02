@@ -119,5 +119,7 @@ $route['customers/edit/(:any)'] = 'customers/edit/$1';
 
 // Login
 $route['login'] = 'login/index';
+$route['login/process'] = "login/dologin";
 /// payment Method
 //$route['invoices/'] = 'theprint/invoices'; 
+
