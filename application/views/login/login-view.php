@@ -13,13 +13,13 @@
               <input type="password" name="i-password" class="form-control" placeholder="">
             </div>
             <div class="form-group">
-              <label for="" class="text-uppercase">Password</label>
-              <select>
-                <?=foreach($shop as $k => $v):?>
-                <option>
-                  <?$shop?>
+              <label for="" class="text-uppercase">Companies</label>
+              <select name="i-shops" class="form-control">
+                <?php foreach($shop as $k => $v): ?>
+                <option name="<?=$v['shop_code']?>">
+                  <?=$v['name']?>
                 </option>
-                <?=endforeach;?>
+                <?php endforeach;?>
               </select>
             </div>
             <div class="form-check">
