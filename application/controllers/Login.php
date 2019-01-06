@@ -38,11 +38,21 @@ class Login extends CI_Controller
 	}
 	public function dologin()
 	{
+		$_api_body = [];
 		// Get user input here
-		$loginID = $this->input->post('login_id');
-		$password = $this->input->post('login_pwd');
-		$com_code = $this->input->post("com_code");
-		$rememberMe = $this->input->post("login_rem");
-		
+		$_loginID = $this->input->post('i-username');
+		$_password = $this->input->post('i-password');
+		$_shopcode = $this->input->post("i-shops");
+		$_rememberme = $this->input->post("i-rememberme");
+		$_api_body["loginid"] = $_loginID;
+		$_api_body["password"] = $_password;
+		$_api_body["shopcode"] = $_shopcode;
+		$_api_body = json_encode($_api_body, true);
+		echo $_api_body;
+		$this->component_api->SetConfig("body", $_api_body);
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/login/");
+		$this->component_api->CallPost();
+		$_result = json_decode($this->component_api->GetConfig("result"), true);
+		var_dump($_result);
 	}
 }
