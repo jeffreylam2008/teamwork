@@ -40,15 +40,16 @@ class Login extends CI_Controller
 	{
 		$_api_body = [];
 		// Get user input here
-		$_loginID = $this->input->post('i-username');
+		$_username = $this->input->post('i-username');
 		$_password = $this->input->post('i-password');
 		$_shopcode = $this->input->post("i-shops");
 		$_rememberme = $this->input->post("i-rememberme");
-		$_api_body["loginid"] = $_loginID;
+		$_api_body["username"] = $_username;
 		$_api_body["password"] = $_password;
 		$_api_body["shopcode"] = $_shopcode;
 		$_api_body = json_encode($_api_body, true);
 		echo $_api_body;
+		echo "<br>";
 		$this->component_api->SetConfig("body", $_api_body);
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/login/");
 		$this->component_api->CallPost();
