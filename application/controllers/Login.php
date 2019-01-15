@@ -38,15 +38,13 @@ class Login extends CI_Controller
 	}
 	public function dologin()
 	{
+		
 		$_api_body = [];
 		// Get user input here
-		$_username = $this->input->post('i-username');
-		$_password = $this->input->post('i-password');
-		$_shopcode = $this->input->post("i-shops");
 		$_rememberme = $this->input->post("i-rememberme");
-		$_api_body["username"] = $_username;
-		$_api_body["password"] = $_password;
-		$_api_body["shopcode"] = $_shopcode;
+		$_api_body["username"] = $this->input->post('i-username',true);
+		$_api_body["password"] = $this->input->post('i-password',true);
+		$_api_body["shopcode"] = $this->input->post('i-shops',true);
 		$_api_body = json_encode($_api_body, true);
 		echo $_api_body;
 		echo "<br>";
