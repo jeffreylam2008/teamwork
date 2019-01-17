@@ -71,7 +71,15 @@ class Items extends CI_Controller
 		// variable initial
 		$_default_per_page = 50;
 		$_data_categories = [];
-
+		if(!empty($page))
+		{
+			$_uri = $this->uri->uri_to_assoc(1);
+			$_page = $_uri["page"];
+		}
+		else
+		{
+			$_page = 1;
+		}
 
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
@@ -91,7 +99,7 @@ class Items extends CI_Controller
 			
 
 			// set user data
-			$this->session->set_userdata('page',$page);
+			$this->session->set_userdata('page',$_page);
 			$this->session->set_userdata('items_list',$_data);
 
 			// function bar with next, preview and save button
@@ -126,6 +134,7 @@ class Items extends CI_Controller
 	 */
 	public function delete($item_code="")
 	{
+		$_page = 1;
 		// user data
 		$_page = $this->session->userdata("page");
 		$_comfirm_show = true;
@@ -167,6 +176,7 @@ class Items extends CI_Controller
 		$_categories = [];
 		$_previous_disable = "";
 		$_next_disable = "";
+		$_page = 1;
 
 		// user data
 		$_page = $this->session->userdata("page");

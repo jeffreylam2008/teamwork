@@ -180,6 +180,7 @@ class Categories extends CI_Controller {
 	public function delete($cate_code="")
 	{
 		// user data
+		$_page = 1;
 		$_page = $this->session->userdata("page");
 		$_comfirm_show = true;
 		// API data
