@@ -180,9 +180,10 @@ class Categories extends CI_Controller {
 	public function delete($cate_code="")
 	{
 		// user data
-		$_page = 1;
 		$_page = $this->session->userdata("page");
 		$_comfirm_show = true;
+		$_page = 1;
+		
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/has/category/".$cate_code);
 		$this->component_api->CallGet();

@@ -71,6 +71,7 @@ class Items extends CI_Controller
 		// variable initial
 		$_default_per_page = 50;
 		$_data_categories = [];
+		// page initial
 		if(!empty($page))
 		{
 			$_uri = $this->uri->uri_to_assoc(1);
@@ -134,10 +135,11 @@ class Items extends CI_Controller
 	 */
 	public function delete($item_code="")
 	{
-		$_page = 1;
 		// user data
 		$_page = $this->session->userdata("page");
 		$_comfirm_show = true;
+		$_page = 1;
+		
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/transaction/d/".$item_code);
 		$this->component_api->CallGet();

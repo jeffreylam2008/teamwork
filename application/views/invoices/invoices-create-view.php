@@ -434,7 +434,7 @@
     {
         let _uSearch = itemcode
         let _recal = 0
-        if(cpAllItems[_uSearch].qty > 0){
+        if(cpAllItems[_uSearch].qty > 1){
             for(let i in cpAllItems){   
                 if(i == _uSearch){
                     cpAllItems[i].qty = parseFloat(cpAllItems[i].qty) - 1

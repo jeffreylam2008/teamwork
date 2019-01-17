@@ -414,16 +414,16 @@
     function doQtyPlus(itemcode)
     {
         let _uSearch = itemcode
-        let _recal = 0
+        let _recal = 0    
         if(cpAllItems[_uSearch].qty >= 0){
-            cpAllItems[_uSearch].qty = parseFloat(cpAllItems[_uSearch].qty) + 1
-                for(let i in cpAllItems){
-                //console.log("loop")
-                if(cpAllItems.hasOwnProperty(i)){
-                    _recal += parseFloat(cpAllItems[i].subtotal)
-                    
-                    cpTotal = _recal
+            for(let i in cpAllItems){   
+                if(i == _uSearch){
+                    cpAllItems[i].qty = parseFloat(cpAllItems[i].qty) + 1
+                    _subtotal = cpAllItems[i].qty * parseFloat(cpAllItems[i].price)
+                    cpAllItems[i].subtotal = _subtotal.toFixed(2)
                 }
+                _recal += parseFloat(cpAllItems[i].subtotal)
+                cpTotal = _recal
             }
             showItemsList(cpAllItems, cpTotal)
         }
@@ -433,14 +433,15 @@
     {
         let _uSearch = itemcode
         let _recal = 0
-        if(cpAllItems[_uSearch].qty > 0){
-            cpAllItems[_uSearch].qty = parseFloat(cpAllItems[_uSearch].qty) - 1
-            for(let i in cpAllItems){
-                //console.log("loop")
-                if(cpAllItems.hasOwnProperty(i)){
-                    _recal += parseFloat(cpAllItems[i].subtotal)
-                    cpTotal = _recal
+        if(cpAllItems[_uSearch].qty > 1){
+            for(let i in cpAllItems){   
+                if(i == _uSearch){
+                    cpAllItems[i].qty = parseFloat(cpAllItems[i].qty) - 1
+                    _subtotal = cpAllItems[i].qty * parseFloat(cpAllItems[i].price)
+                    cpAllItems[i].subtotal = _subtotal.toFixed(2)
                 }
+                _recal += parseFloat(cpAllItems[i].subtotal)
+                cpTotal = _recal
             }
             showItemsList(cpAllItems, cpTotal)
         }
