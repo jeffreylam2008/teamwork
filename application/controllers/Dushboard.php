@@ -14,10 +14,12 @@ class Dushboard extends CI_Controller
 		$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
 		
 		// fatch employee API
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
-		$this->component_api->CallGet();
-		$_employee = json_decode($this->component_api->GetConfig("result"),true);
+		// $this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
+		// $this->component_api->CallGet();
+		// $_employee = json_decode($this->component_api->GetConfig("result"),true);
 		//var_dump($_employee);
+		
+
 		$this->_inv_header_param["topNav"] = [
 			"isLogin" => true,
 			"username" => $username,

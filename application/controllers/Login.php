@@ -51,7 +51,7 @@ class Login extends CI_Controller
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/login/");
 		$this->component_api->CallPost();
 		$_result = json_decode($this->component_api->GetConfig("result"), true);
-		var_dump($_result);
+
 		// has token return from API
 		if(!empty($_result['query']))
 		{
@@ -65,14 +65,24 @@ class Login extends CI_Controller
 			];
 			if($_rememberme)
 			{
-				//$this->session->set_userdata('profile',$_profile['profile']);
+				echo "i am prem";
+				$this->session->set_userdata('profile',$_profile['profile']);
 			}
 			else
 			{
-				//$this->session->mark_as_temp($_profile['profile'], 3600);
+				echo "i am temp<br>";
+				$this->session->set_tempdata('profile',$_profile['profile'],5);
+			}
+			if($this->input->get('url'))
+			{
+				header("Refresh: 10; url='".$this->input->get('url')."/?token=".$_profile['token']."'");
+			}
+			else
+			{
+				//redirect(base_url("dushboard/?token=".$_profile['token']),"refresh");
 			}
 			
-			var_dump($_profile);
+			var_dump($_SESSION);
 		}
 		
 	}
