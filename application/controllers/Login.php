@@ -27,18 +27,21 @@ class Login extends CI_Controller
 
 	public function index()
 	{
+		
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
 		$this->component_api->CallGet();
 		$_shop = json_decode($this->component_api->GetConfig("result"), true);
 		$this->load->view('login/login-view', [
 			"shop" => $_shop['query'],
-			"submit"=>"login/process"
+			"submit"=>"login/process/?url=".urlencode("http://localhost/webapp/products/items/")
 		]);
+		
 		$this->load->view('footer');
 	}
 	public function dologin()
 	{
 		$_api_body = [];
+		echo $this->input->get('url');
 		// Get user input here
 		$_rememberme = $this->input->post("i-rememberme");
 		$_api_body["username"] = $this->input->post('i-username',true);
@@ -57,7 +60,6 @@ class Login extends CI_Controller
 		{
 			$_profile = [];
 			$_profile['token'] = $_result['query'];
-			
 			$_profile['profile'] = [
 				'username' => $this->input->post('i-username',true),
 				'password' => $this->input->post('i-password',true),
@@ -71,18 +73,18 @@ class Login extends CI_Controller
 			else
 			{
 				echo "i am temp<br>";
-				$this->session->set_tempdata('profile',$_profile['profile'],5);
+				$this->session->set_tempdata('profile',$_profile['profile'],10);
 			}
 			if($this->input->get('url'))
 			{
-				header("Refresh: 10; url='".$this->input->get('url')."/?token=".$_profile['token']."'");
+				redirect($this->input->get('url')."?token=".$_profile['token'],"refresh");
 			}
 			else
 			{
-				//redirect(base_url("dushboard/?token=".$_profile['token']),"refresh");
+				redirect(base_url("dushboard/?token=".$_profile['token']),"refresh");
 			}
 			
-			var_dump($_SESSION);
+			// var_dump($_SESSION);
 		}
 		
 	}
