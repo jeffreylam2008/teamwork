@@ -17,22 +17,25 @@ class Login extends CI_Controller
 		$_employee = json_decode($this->component_api->GetConfig("result"),true);
 		//var_dump($_employee);
 
+
 		//load header view
 		$this->load->view('login/login-header-view',[
 			'title'=>'Login'
 		]);
+
 	}
 
 	public function index()
 	{
+		
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
 		$this->component_api->CallGet();
 		$_shop = json_decode($this->component_api->GetConfig("result"), true);
 		$this->load->view('login/login-view', [
 			"shop" => $_shop['query'],
-			"submit"=>"login/process/?url=".urlencode($this->input->get('url'))
-			// "submit"=>"login/process"
+			"submit"=>"login/process/?url=".urlencode("http://localhost/webapp/products/items/")
 		]);
+		
 		$this->load->view('footer');
 	}
 	public function dologin()
@@ -62,17 +65,17 @@ class Login extends CI_Controller
 				'password' => $this->input->post('i-password',true),
 				'shopcode' => $this->input->post('i-shops',true)
 			];
-			// remember the password 
 			if($_rememberme)
 			{
+				echo "i am prem";
 				$this->session->set_userdata('profile',$_profile['profile']);
 			}
-			// will not remember the password
 			else
 			{
+				echo "i am temp<br>";
 				$this->session->set_tempdata('profile',$_profile['profile'],10);
 			}
-			if(!empty($this->input->get('url')))
+			if($this->input->get('url'))
 			{
 				redirect($this->input->get('url')."?token=".$_profile['token'],"refresh");
 			}

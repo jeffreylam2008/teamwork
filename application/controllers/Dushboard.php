@@ -7,20 +7,19 @@ class Dushboard extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		// dummy data
-
+		
 		$username = "iamadmin";
-		// sidebar session
 		$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
-		// $this->session->sess_destroy();
-		// unset($_SESSION);
-
+		var_dump($_SESSION);
 		// fatch employee API
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
-		$this->component_api->CallGet();
-		$_employee = json_decode($this->component_api->GetConfig("result"),true);
+		// $this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
+		// $this->component_api->CallGet();
+		// $_employee = json_decode($this->component_api->GetConfig("result"),true);
 		//var_dump($_employee);
+		
+
 		$this->_inv_header_param["topNav"] = [
 			"isLogin" => true,
 			"username" => $username,
@@ -35,11 +34,8 @@ class Dushboard extends CI_Controller
 		$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
 		$this->component_sidemenu->SetConfig("active", $_param);
 		$this->component_sidemenu->Proccess();
-		// echo "<pre>";
-		// var_dump( $this->component_sidemenu->GetConfig("slug"));
-		// echo "</pre>";
-		
-		// load header view
+
+		// render the view
 		$this->load->view('header',[
 			'title'=>'Dushboard',
 			'sideNav_view' => $this->load->view('side-nav', [
@@ -51,10 +47,12 @@ class Dushboard extends CI_Controller
 				"topNav" => $this->_inv_header_param["topNav"]
 			], TRUE)
 		]);
+
+		// load breadcrumb
+		$this->load->view('breadcrumb');
 	}
 	public function index()
 	{
-
 		$this->load->view('dushboard-view');
 		$this->load->view('footer');
 	}
