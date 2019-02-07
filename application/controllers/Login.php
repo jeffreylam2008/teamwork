@@ -9,12 +9,12 @@ class Login extends CI_Controller
 		parent::__construct();
 		
 		// dummy data
-		$username = "iamadmin";
+		// $username = "iamadmin";
 
-		// fatch employee API
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
-		$this->component_api->CallGet();
-		$_employee = json_decode($this->component_api->GetConfig("result"),true);
+		// // fatch employee API
+		// $this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
+		// $this->component_api->CallGet();
+		// $_employee = json_decode($this->component_api->GetConfig("result"),true);
 		//var_dump($_employee);
 
 		//load header view
@@ -25,6 +25,8 @@ class Login extends CI_Controller
 
 	public function index()
 	{
+		//$this->session->sess_destroy();
+		
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
 		$this->component_api->CallGet();
 		$_shop = json_decode($this->component_api->GetConfig("result"), true);
@@ -38,7 +40,9 @@ class Login extends CI_Controller
 	public function dologin()
 	{
 		$_api_body = [];
-		echo $this->input->get('url');
+
+		echo "process page ===> ";
+		//echo $this->input->get('url');
 		// Get user input here
 		$_rememberme = $this->input->post("i-rememberme");
 		$_api_body["username"] = $this->input->post('i-username',true);
@@ -51,7 +55,7 @@ class Login extends CI_Controller
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/login/");
 		$this->component_api->CallPost();
 		$_result = json_decode($this->component_api->GetConfig("result"), true);
-
+		var_dump($_result);
 		// has token return from API
 		if(!empty($_result['query']))
 		{
@@ -65,24 +69,23 @@ class Login extends CI_Controller
 			// remember the password 
 			if($_rememberme)
 			{
-				$this->session->set_userdata('profile',$_profile['profile']);
+				
+				$this->session->set_userdata('profile',$_profile);
 			}
 			// will not remember the password
 			else
 			{
-				$this->session->set_tempdata('profile',$_profile['profile'],10);
+				$this->session->set_tempdata('profile',$_profile,10);
 			}
 			if(!empty($this->input->get('url')))
 			{
 				redirect($this->input->get('url')."?token=".$_profile['token'],"refresh");
 			}
-			else
-			{
-				redirect(base_url("dushboard/?token=".$_profile['token']),"refresh");
-			}
-			
-			// var_dump($_SESSION);
+			redirect(base_url($this->config->item['default_home']."/?token=".$_profile['token']),"refresh");
 		}
-		
+		else
+		{
+			
+		}
 	}
 }

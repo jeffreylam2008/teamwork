@@ -9,13 +9,19 @@ class Dushboard extends CI_Controller
 		parent::__construct();
 		
 		// dummy data
+		var_dump($_SESSION);
+		$_profile = $this->session->userdata('profile');
+		$_token = $_profile['token'];
 
-		// sidebar session
-		$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
-		// $this->session->sess_destroy();
-		// unset($_SESSION);
-		if($_token = $this->input->get("token"))
+		if(!empty($_token))
 		{
+			// sidebar session
+			$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
+			// $this->session->sess_destroy();
+			// unset($_SESSION);
+			
+
+		
 			$username = "iamadmin";
 			// check token API
 			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/login/".$_token);

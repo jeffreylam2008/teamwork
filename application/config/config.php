@@ -532,3 +532,4 @@ $config['rewrite_short_tags'] = FALSE;
 */
 $config['proxy_ips'] = '';
 $config['api_url'] = 'http://localhost/erp_backend/api/v1';
+$config['default_home'] = 'dushboard';
