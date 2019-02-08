@@ -9,12 +9,20 @@ class Dushboard extends CI_Controller
 		parent::__construct();
 		
 		// dummy data
+
+		$_username = "iamadmin";
+
 		var_dump($_SESSION);
 		$_profile = $this->session->userdata('profile');
 		$_token = $_profile['token'];
 
 		if(!empty($_token))
 		{
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/login/".$_token);
+			$this->component_api->CallGet();
+			$_employee = json_decode($this->component_api->GetConfig("result"),true);
+
+
 			// sidebar session
 			$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
 			// $this->session->sess_destroy();
@@ -22,15 +30,13 @@ class Dushboard extends CI_Controller
 			
 
 		
-			$username = "iamadmin";
+			
 			// check token API
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/login/".$_token);
-			$this->component_api->CallGet();
-			$_employee = json_decode($this->component_api->GetConfig("result"),true);
+			
 			
 			$this->_inv_header_param["topNav"] = [
 				"isLogin" => true,
-				"username" => $username,
+				"username" => $_username,
 				"employee_code" => "110022",
 				"shop_code" => "0012",
 				"today" => date("Y-m-d")

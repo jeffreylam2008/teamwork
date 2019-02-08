@@ -63,13 +63,12 @@ class Login extends CI_Controller
 			$_profile['token'] = $_result['query'];
 			$_profile['profile'] = [
 				'username' => $this->input->post('i-username',true),
-				'password' => $this->input->post('i-password',true),
+				//'password' => $this->input->post('i-password',true),
 				'shopcode' => $this->input->post('i-shops',true)
 			];
 			// remember the password 
 			if($_rememberme)
 			{
-				
 				$this->session->set_userdata('profile',$_profile);
 			}
 			// will not remember the password
