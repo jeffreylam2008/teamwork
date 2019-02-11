@@ -13,12 +13,13 @@ class Dushboard extends CI_Controller
 		$_username = "iamadmin";
 
 		//var_dump($_SESSION);
+		// call token from session
 		$_profile = $this->session->userdata('profile');
 		$_token = $_profile['token'];
-
+		
 		if(!empty($_token))
 		{
-			// check validation token in Server side
+			// check validation token in Server side 
 			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/login/".$_token);
 			$this->component_api->CallGet();
 			$_api_result = json_decode($this->component_api->GetConfig("result"),true);
@@ -39,7 +40,7 @@ class Dushboard extends CI_Controller
 					"shop_code" => "0012",
 					"today" => date("Y-m-d")
 				];
-				// fatch side bar API
+				// fatch sidebar API
 				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
 				$this->component_api->CallGet();
 				$_nav_list = json_decode($this->component_api->GetConfig("result"), true);
