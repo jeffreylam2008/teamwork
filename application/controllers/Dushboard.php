@@ -17,22 +17,23 @@ class Dushboard extends CI_Controller
 		$_profile = $this->session->userdata('profile');
 		$_token = $_profile['token'];
 		
+		$this->load->library("component_login",[$_token]);
+		$this->component_login->check();
+
 		if(!empty($_token))
 		{
-			// check validation token in Server side 
+			// API Call: check validation token in Server side 
 			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/login/".$_token);
 			$this->component_api->CallGet();
 			$_api_result = json_decode($this->component_api->GetConfig("result"),true);
-			// echo "<pre>";
-			// var_dump($_api_result);
-			// echo "</pre>";
+
 			if(!empty($_api_result['query']))
 			{
 				// sidebar session
 				$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
 				// $this->session->sess_destroy();
 				// unset($_SESSION);
-				// check token API
+				
 				$this->_inv_header_param["topNav"] = [
 					"isLogin" => true,
 					"username" => $_username,
@@ -40,7 +41,7 @@ class Dushboard extends CI_Controller
 					"shop_code" => "0012",
 					"today" => date("Y-m-d")
 				];
-				// fatch sidebar API
+				// API Call: fatch sidebar API
 				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
 				$this->component_api->CallGet();
 				$_nav_list = json_decode($this->component_api->GetConfig("result"), true);
@@ -50,7 +51,6 @@ class Dushboard extends CI_Controller
 				// echo "<pre>";
 				// var_dump( $this->component_sidemenu->GetConfig("slug"));
 				// echo "</pre>";
-				
 				// load header view
 				$this->load->view('header',[
 					'title'=>'Dushboard',
