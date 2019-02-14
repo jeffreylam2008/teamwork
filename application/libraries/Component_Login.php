@@ -3,17 +3,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Component_Login 
 {
-    private $_token = "";
+    private $_args;
     protected $_CI;
     /**
      * Constructor
      * 
      * @param token Token input
      */
-    public function __construct($token)
+    public function __construct($args)
 	{
         $this->_CI =& get_instance();
-        $this->_token = $token;
+        $this->_args = $args;
     }
     /**
      * Check
@@ -22,18 +22,19 @@ class Component_Login
      */
     public function Check()
     {
-       if(!empty($this->_token))
+
+       if(!empty($this->_args[0]))
        {
             $this->_CI->load->library("component_api");
             // API Call: check validation token in Server side 
-            $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('api_url')."/systems/login/".$this->_token);
+            $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('api_url')."/systems/login/".$this->_args[0]);
             $this->_CI->component_api->CallGet();
             $_api_result = json_decode($this->_CI->component_api->GetConfig("result"),true);
 
             if(!empty($_api_result['query']))
             {
-                echo "done";
-                var_dump($_api_result);
+               
+                
             }
        }
     }
