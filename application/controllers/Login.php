@@ -55,7 +55,7 @@ class Login extends CI_Controller
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/login/");
 		$this->component_api->CallPost();
 		$_result = json_decode($this->component_api->GetConfig("result"), true);
-		var_dump($_result);
+		//var_dump($_result);
 		// has token return from API
 		if(!empty($_result['query']))
 		{
