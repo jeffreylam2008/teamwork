@@ -9,10 +9,8 @@ class Dushboard extends CI_Controller
 		parent::__construct();
 		
 		// dummy data
-
-		$_username = "iamadmin";
-
-		//var_dump($_SESSION);
+		//var_dump($_profile);
+		
 		// call token from session
 		$_profile = $this->session->userdata('profile');
 		$_token = $_profile['token'];
@@ -20,7 +18,7 @@ class Dushboard extends CI_Controller
 		// API call
 		$this->load->library("component_login",[$_token, "dushboard"]);
 
-		var_dump($this->component_login->CheckToken());
+		//var_dump($this->component_login->CheckToken());
 		// login session
 		if(!empty($this->component_login->CheckToken()))
 		{
@@ -31,7 +29,7 @@ class Dushboard extends CI_Controller
 			
 			$this->_inv_header_param["topNav"] = [
 				"isLogin" => true,
-				"username" => $_username,
+				"username" => $_profile['profile']['username'],
 				"employee_code" => "110022",
 				"shop_code" => "0012",
 				"today" => date("Y-m-d")
@@ -58,7 +56,6 @@ class Dushboard extends CI_Controller
 					"topNav" => $this->_inv_header_param["topNav"]
 				], TRUE)
 			]);
-			
 		}
 		else
 		{

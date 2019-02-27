@@ -25,7 +25,7 @@ class Login extends CI_Controller
 
 	public function index()
 	{
-		//$this->session->sess_destroy();
+		$this->session->sess_destroy();
 		
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
 		$this->component_api->CallGet();
@@ -69,22 +69,30 @@ class Login extends CI_Controller
 			// remember the password 
 			if($_rememberme)
 			{
+				// save cookie
 				$this->session->set_userdata('profile',$_profile);
 			}
 			// will not remember the password
 			else
 			{
+				// save temp cookie
 				$this->session->set_tempdata('profile',$_profile,10);
 			}
 			if(!empty($this->input->get('url')))
 			{
+				// have url already
 				redirect($this->input->get('url')."?token=".$_profile['token'],"refresh");
 			}
-			redirect(base_url($this->config->item['default_home']."/?token=".$_profile['token']),"refresh");
+			else
+			{
+				// No url perpare
+				redirect(base_url($this->config->item['default_home']."/?token=".$_profile['token']),"refresh");
+			}
 		}
 		else
 		{
-			
+			// No url perpare
+			redirect(base_url("login"),"refresh");
 		}
 	}
 }

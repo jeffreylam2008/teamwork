@@ -105,88 +105,100 @@ class Customers extends CI_Controller
 	}
 	public function edit($cust_code)
 	{
+		//$this->session->sess_destroy();
 		$_data = [];
-
-		var_dump($_SESSION);
+		
+		
 		// user data
 		$_page = $this->session->userdata("page");
 
-		// Call API here
-		// Get customer on list
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/");
-		$this->component_api->CallGet();
-		$_data = json_decode($this->component_api->GetConfig("result"), true);
-		// Get payment method
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
-		$this->component_api->CallGet();
-		$_paymethod = json_decode($this->component_api->GetConfig("result"),true);
 
-		// API data usage
-		if(!empty($_data["query"]) && !empty($_paymethod['query']))
+		if(!empty($cust_code))
 		{
-			$_all = array_column($_data['query'], "cust_code");
-
-			// search key
-			$_key = array_search(
-				$cust_code, array_column($_data['query'], "cust_code")
-			);
-		// echo "<pre>";
-		// var_dump($_all);
-		// echo "</pre>";
-			if($_key !== false)
+			// Call API here
+			// Get customer on list by cust_code
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/".$cust_code);
+			$this->component_api->CallGet();
+			$_customer = json_decode($this->component_api->GetConfig("result"), true);
+			// Get customer on list
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/");
+			$this->component_api->CallGet();
+			$_data = json_decode($this->component_api->GetConfig("result"), true);
+			// Get payment method
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
+			$this->component_api->CallGet();
+			$_paymethod = json_decode($this->component_api->GetConfig("result"),true);
+			echo "<pre>";
+			var_dump($_customer);
+			echo "</pre>";
+			// API data usage
+			if(!empty($_data["query"]) && !empty($_paymethod['query']))
 			{
-				$_cur = $_key;
-				$_next = $_key + 1;
-				$_previous = $_key - 1;
-				
-				if($_cur == (count($_all)-1))
+				$_all = array_column($_data['query'], "cust_code");
+
+				// search key
+				$_key = array_search(
+					$cust_code, array_column($_data['query'], "cust_code")
+				);
+			// echo "<pre>";
+			// var_dump($_all);
+			// echo "</pre>";
+				if($_key !== false)
 				{
-					$_next_disable = "disabled";
-					$_next = (count($_all)-1);
-				}
-				if($_cur <= 0)
-				{
-					$_previous_disable = "disabled";
-					$_previous = 0;
-				}
-				// echo "<pre>";
-				// var_dump ($_all);
-				// echo "</pre>";
-				// data for items type selection
-				if(!empty($_paymethod["query"]))
-				{
-					foreach($_data['query'] as $key => $val)
+					$_cur = $_key;
+					$_next = $_key + 1;
+					$_previous = $_key - 1;
+					
+					if($_cur == (count($_all)-1))
 					{
-						if(array_key_exists($val['pm_code'],$_paymethod['query']))
+						$_next_disable = "disabled";
+						$_next = (count($_all)-1);
+					}
+					if($_cur <= 0)
+					{
+						$_previous_disable = "disabled";
+						$_previous = 0;
+					}
+					// echo "<pre>";
+					// var_dump ($_all);
+					// echo "</pre>";
+					// data for items type selection
+					if(!empty($_paymethod["query"]))
+					{
+						foreach($_data['query'] as $key => $val)
 						{
-							$_pm_code = $_data['query'][$key]['pm_code'];
-							$_data['query'][$key]['payment_method'] = $_paymethod['query'][$_pm_code]['payment_method'];
-						}
-						else{
-							$_data['query'][$key]['payment_method'] = "";
+							if(array_key_exists($val['pm_code'],$_paymethod['query']))
+							{
+								$_pm_code = $_data['query'][$key]['pm_code'];
+								$_data['query'][$key]['payment_method'] = $_paymethod['query'][$_pm_code]['payment_method'];
+							}
+							else{
+								$_data['query'][$key]['payment_method'] = "";
+							}
 						}
 					}
-				}
-				// // function bar with next, preview and save button
-				// $this->load->view('function-bar', [
-				// 	"btn" => [
-				// 		["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers/page/'.$_page), "style" => "", "show" => true],
-				// 		["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "", "show" => true],
-				// 		["name" => "Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/customers/edit/".$_all[$_previous]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
-				// 		["name" => "Next", "type"=>"button", "id" => "next", "url"=> base_url("/customers/edit/".$_all[$_next]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
-				// 	]
-				// ]);
+					// // function bar with next, preview and save button
+					// $this->load->view('function-bar', [
+					// 	"btn" => [
+					// 		["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers/page/'.$_page), "style" => "", "show" => true],
+					// 		["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "", "show" => true],
+					// 		["name" => "Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/customers/edit/".$_all[$_previous]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
+					// 		["name" => "Next", "type"=>"button", "id" => "next", "url"=> base_url("/customers/edit/".$_all[$_next]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
+					// 	]
+					// ]);
 
-				// // load main view
-				// $this->load->view('customers/customers-edit-view', [
-				// 	"save_url" => base_url("customers/edit/save/"),
-				// 	'data' => $_data,
-				// 	'paymethod' => $_paymethod,
-					
-				// ]);
-				// $this->load->view('footer');
+					// // load main view
+					// $this->load->view('customers/customers-edit-view', [
+					// 	"save_url" => base_url("customers/edit/save/"),
+					// 	'data' => $_data,
+					// 	'paymethod' => $_paymethod,
+						
+					// ]);
+					// $this->load->view('footer');
+				}
 			}
 		}
+		
 		else
 		{
 			$alert = "danger";
