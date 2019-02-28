@@ -8,7 +8,7 @@ class Customers extends CI_Controller
 		parent::__construct();
 		
 		// dummy data
-		var_dump(array_keys($_SESSION));
+		//	var_dump(array_keys($_SESSION));
 		
 		
 		$username = "iamadmin";
