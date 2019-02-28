@@ -8,6 +8,8 @@ class Customers extends CI_Controller
 		parent::__construct();
 		
 		// dummy data
+		var_dump(array_keys($_SESSION));
+		
 		
 		$username = "iamadmin";
 		// read URI
@@ -117,22 +119,17 @@ class Customers extends CI_Controller
 		{
 			// Call API here
 			// Get customer on list by cust_code
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/".$cust_code);
-			$this->component_api->CallGet();
-			$_customer = json_decode($this->component_api->GetConfig("result"), true);
+
 			// Get customer on list
 			$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/");
 			$this->component_api->CallGet();
 			$_data = json_decode($this->component_api->GetConfig("result"), true);
-			// Get payment method
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
-			$this->component_api->CallGet();
-			$_paymethod = json_decode($this->component_api->GetConfig("result"),true);
-			echo "<pre>";
-			var_dump($_customer);
-			echo "</pre>";
+			
+			//echo "<pre>";
+			//var_dump($_data);
+			//echo "</pre>";
 			// API data usage
-			if(!empty($_data["query"]) && !empty($_paymethod['query']))
+			if(!empty($_data["query"]) && !empty($cust_code) )
 			{
 				$_all = array_column($_data['query'], "cust_code");
 
@@ -140,9 +137,7 @@ class Customers extends CI_Controller
 				$_key = array_search(
 					$cust_code, array_column($_data['query'], "cust_code")
 				);
-			// echo "<pre>";
-			// var_dump($_all);
-			// echo "</pre>";
+				
 				if($_key !== false)
 				{
 					$_cur = $_key;
@@ -163,20 +158,15 @@ class Customers extends CI_Controller
 					// var_dump ($_all);
 					// echo "</pre>";
 					// data for items type selection
-					if(!empty($_paymethod["query"]))
+
+					foreach($_data['query'] as $key => $val)
 					{
-						foreach($_data['query'] as $key => $val)
+						if($_data['query'][$key]['cust_code'] === $cust_code)
 						{
-							if(array_key_exists($val['pm_code'],$_paymethod['query']))
-							{
-								$_pm_code = $_data['query'][$key]['pm_code'];
-								$_data['query'][$key]['payment_method'] = $_paymethod['query'][$_pm_code]['payment_method'];
-							}
-							else{
-								$_data['query'][$key]['payment_method'] = "";
-							}
+							echo $key;
 						}
 					}
+
 					// // function bar with next, preview and save button
 					// $this->load->view('function-bar', [
 					// 	"btn" => [
@@ -187,18 +177,15 @@ class Customers extends CI_Controller
 					// 	]
 					// ]);
 
-					// // load main view
-					// $this->load->view('customers/customers-edit-view', [
-					// 	"save_url" => base_url("customers/edit/save/"),
-					// 	'data' => $_data,
-					// 	'paymethod' => $_paymethod,
-						
-					// ]);
-					// $this->load->view('footer');
+					// load main view
+					//$this->load->view('customers/customers-edit-view', [
+					//	"save_url" => base_url("customers/edit/save/"),
+					// 	'data' => $_data
+					//]);
+					//$this->load->view('footer');
 				}
 			}
 		}
-		
 		else
 		{
 			$alert = "danger";

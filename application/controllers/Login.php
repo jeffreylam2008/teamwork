@@ -92,7 +92,7 @@ class Login extends CI_Controller
 		else
 		{
 			// No url perpare
-			redirect(base_url("login"),"refresh");
+			redirect(base_url($this->config->item['default_home']."/"),"refresh");
 		}
 	}
 }
