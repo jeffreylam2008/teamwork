@@ -124,3 +124,5 @@ $route['login/process'] = "login/dologin";
 /// payment Method
 //$route['invoices/'] = 'theprint/invoices'; 
 
+// Master file load
+$route['master'] = 'master/index';

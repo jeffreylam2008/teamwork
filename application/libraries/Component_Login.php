@@ -13,11 +13,11 @@ class Component_Login
      * array[1] redirect URL
      * 
      */
-    public function __construct($token)
+    public function __construct($param)
 	{
         $this->_CI =& get_instance();
-        $this->_token = $token[0];
-        $this->_redirect_url = $token[1];
+        $this->_token = $param[0];
+        $this->_redirect_url = $param[1];
         // var_dump($token);
     }
     /**

@@ -4,14 +4,17 @@
         <div class="col-md-4 login-sec">
           <h2 class="text-center"><img class="d-block img-fluid" src="<?=base_url('assets/img/logo-white.png');?>" alt="First slide" width="98%" height="100%"/></h2>
           <form class="login-form" action="<?=$submit?>" method="POST">
+
             <div class="form-group">
               <label for="" class="text-uppercase">Username</label>
               <input type="text" name="i-username" class="form-control" placeholder="">
             </div>
+
             <div class="form-group">
               <label for="" class="text-uppercase">Password</label>
               <input type="password" name="i-password" class="form-control" placeholder="">
             </div>
+
             <div class="form-group">
               <label for="" class="text-uppercase">Companies</label>
               <select name="i-shops" class="form-control">
@@ -22,6 +25,7 @@
                 <?php endforeach;?>
               </select>
             </div>
+           
             <div class="form-check">
               <label class="form-check-label">
                 <input type="checkbox" name="i-rememberme" class="form-check-input">
@@ -29,7 +33,19 @@
               </label>
               <button type="submit" name="i-submit" class="btn btn-primary float-right">Submit</button>
             </div>
+            <?php 
+              if(isset($e_code) && !empty($e_code)):
+            ?>
+            <div class="input-group mb-5">
+                <label for="" class="text-uppercase text-danger"><?=$e_code?> - <?=$e_msg?> </label></label>
+                </div>
+            <?php
+              endif;
+            ?>
+          
+            
           </form>
+          
           <div class="copy-text"><a href="">link here</a></div>
         </div>
 

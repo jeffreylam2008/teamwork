@@ -30,10 +30,19 @@ class Login extends CI_Controller
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
 		$this->component_api->CallGet();
 		$_shop = json_decode($this->component_api->GetConfig("result"), true);
+		// error handling here 
+		$_e_code = "";
+		$_e_msg = "";
+		if(!empty($this->input->get("e_code")))
+		{
+			$_e_code = $this->input->get("e_code");
+			$_e_msg = $this->input->get("e_msg");
+		}
 		$this->load->view('login/login-view', [
 			"shop" => $_shop['query'],
-			"submit"=>"login/process/?url=".urlencode($this->input->get('url'))
-			// "submit"=>"login/process"
+			"submit"=>"login/process/?url=".urlencode($this->input->get('url')),
+			"e_code"=> $_e_code,
+			"e_msg" => $_e_msg
 		]);
 		$this->load->view('footer');
 	}
@@ -41,7 +50,7 @@ class Login extends CI_Controller
 	{
 		$_api_body = [];
 
-		echo "process page ===> ";
+		//echo "debug here ===> ";
 		//echo $this->input->get('url');
 		// Get user input here
 		$_rememberme = $this->input->post("i-rememberme");
@@ -63,7 +72,6 @@ class Login extends CI_Controller
 			$_profile['token'] = $_result['query'];
 			$_profile['profile'] = [
 				'username' => $this->input->post('i-username',true),
-				//'password' => $this->input->post('i-password',true),
 				'shopcode' => $this->input->post('i-shops',true)
 			];
 			// remember the password 
@@ -86,13 +94,18 @@ class Login extends CI_Controller
 			else
 			{
 				// No url perpare
-				redirect(base_url($this->config->item['default_home']."/?token=".$_profile['token']),"refresh");
+				redirect(base_url($this->config->item('default_home')."/?token=".$_profile['token']),"refresh");
 			}
 		}
 		else
 		{
+			// something wrong with login will go here
 			// No url perpare
-			redirect(base_url($this->config->item['default_home']."/"),"refresh");
+
+			$_e_code = urlencode($_result['error']['code']);
+			$_e_msg = urlencode($_result['error']['message']);
+			$_url = urlencode($this->input->get('url'));
+			redirect(base_url("login?url=".$_url."&e_code=".$_e_code."&e_msg=".$_e_msg),"refresh");
 		}
 	}
 }

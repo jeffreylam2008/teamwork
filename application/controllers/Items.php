@@ -10,10 +10,9 @@ class Items extends CI_Controller
 		
 		// dummy data
 
-		$username = "iamadmin";
+		
 		// call token from session
-		$_profile = $this->session->userdata('profile');
-		$_token = $_profile['token'];
+		$_token = $this->session->userdata['profile']['token'];
 		
 		// API call
 		$this->load->library("component_login",[$_token, "products/items"]);
@@ -21,6 +20,7 @@ class Items extends CI_Controller
 		// login session
 		if(!empty($this->component_login->CheckToken()))
 		{
+			$_username = $this->session->userdata['profile']['profile']['username'];
 			// sidebar session
 			$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
 			switch($_param)
@@ -34,13 +34,13 @@ class Items extends CI_Controller
 			}
 
 			// fatch employee API
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$_username);
 			$this->component_api->CallGet();
 			$_employee = json_decode($this->component_api->GetConfig("result"),true);
-			//var_dump($_employee);
+			var_dump($_employee);
 			$this->_inv_header_param["topNav"] = [
 				"isLogin" => true,
-				"username" => $username,
+				"username" => $_username,
 				"employee_code" => "110022",
 				"shop_code" => "0012",
 				"today" => date("Y-m-d")
@@ -116,7 +116,7 @@ class Items extends CI_Controller
 
 			// set user data
 			$this->session->set_userdata('page',$_page);
-			$this->session->set_userdata('items_list',$_data);
+			//$this->session->set_userdata('items_list',$_data);
 
 			// function bar with next, preview and save button
 			$this->load->view('function-bar', [
@@ -194,10 +194,11 @@ class Items extends CI_Controller
 		$_previous_disable = "";
 		$_next_disable = "";
 		$_page = 1;
-
+		$_items = [];
 		// user data
+
 		$_page = $this->session->userdata("page");
-		$_items = $this->session->userdata('items_list');
+		$_items = $this->session->userdata['master']["items"];
 
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
