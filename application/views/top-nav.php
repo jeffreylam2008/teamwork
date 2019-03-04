@@ -49,9 +49,7 @@
 
     <div class="mx-auto order-0">
         <a class="navbar-brand mx-auto" href="#"> </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
-
-        </button>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2"></button>
     </div>
 
     <div class="navbar-collapse collapse w-100 order-2 dual-collapse2">

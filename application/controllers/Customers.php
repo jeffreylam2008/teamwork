@@ -4,19 +4,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Customers extends CI_Controller 
 {
 	var $_inv_header_param = [];
+	var $_customer = [];
+	var $_token = "";
 	public function __construct()
 	{
 		parent::__construct();
 		
 		// dummy data
-		//	var_dump(array_keys($_SESSION));
+			var_dump(array_keys($_SESSION));
 
 		// call token from session
-		$_token = $this->session->userdata['profile']['token'];
-		
+
+		$this->_token = $this->session->userdata['profile']['token'];
+		$this->_customer = $_SESSION['master']['employee']['query'];
+
 		// API call
-		$this->load->library("component_login",[$_token, "products/items"]);
-		
+		$this->load->library("component_login",[$this->_token, "customers"]);
+
 		// login session
 		if(!empty($this->component_login->CheckToken()))
 		{
@@ -26,11 +30,11 @@ class Customers extends CI_Controller
 			
 			// fatch master
 			$this->_inv_header_param["topNav"] = [];
-			foreach($_SESSION['master']['employee']['query'] as $key => $val)
+			
+			foreach($this->_customer  as $key => $val)
 			{
 				if($val['username'] === $_username)
 				{
-
 					$this->_inv_header_param["topNav"] = [
 						"username" => $val['username'],
 						"employee_code" =>  $val['employee_code'],
@@ -42,7 +46,7 @@ class Customers extends CI_Controller
 			}
 			
 			// debug display
-			var_dump($this->_inv_header_param["topNav"]);
+			 var_dump($this->_inv_header_param["topNav"]);
 			
 			
 			// Call API here
@@ -67,6 +71,7 @@ class Customers extends CI_Controller
 			]);
 			// load breadcrumb
 			//$this->load->view('breadcrumb');
+			
 		}
 		else
 		{
@@ -83,9 +88,9 @@ class Customers extends CI_Controller
 
 		// Call API here
 		// Get customer on list
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/");
-		$this->component_api->CallGet();
-		$_data = json_decode($this->component_api->GetConfig("result"), true);
+		// $this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/");
+		// $this->component_api->CallGet();
+		$_data = $this->_customer;
 		// Get payment method
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
 		$this->component_api->CallGet();

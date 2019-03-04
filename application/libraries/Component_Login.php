@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Component_Login 
 {
     private $_token = "";
+    private $_redirect_url = "";
     protected $_CI;
     /**
      * Constructor
@@ -27,8 +28,8 @@ class Component_Login
      */
     public function CheckToken()
     {
-       if(!empty($this->_token))
-       {
+    //    if(!empty($this->_token))
+    //    {
             $this->_CI->load->library("component_api");
             // API Call: check validation token in Server side 
             $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('api_url')."/systems/login/".$this->_token);
@@ -43,7 +44,7 @@ class Component_Login
             {
                 return false;
             }
-       }
+    //    }
     }
     public function GetRedirectURL()
     {
