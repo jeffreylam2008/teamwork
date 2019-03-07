@@ -9,10 +9,11 @@ class Customers extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		
+		// $this->session->sess_destroy();
 		// dummy data
-			var_dump(array_keys($_SESSION));
-
+		// echo "<pre>";
+		// var_dump(array_keys($_SESSION));
+		// echo "</pre>";
 		// call token from session
 
 		$this->_token = $this->session->userdata['profile']['token'];
@@ -46,7 +47,10 @@ class Customers extends CI_Controller
 			}
 			
 			// debug display
-			 var_dump($this->_inv_header_param["topNav"]);
+			// echo "<pre>";
+			// var_dump($this->_inv_header_param["topNav"]);
+			// echo "</pre>";
+			 
 			
 			
 			// Call API here

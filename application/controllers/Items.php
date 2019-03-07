@@ -7,9 +7,10 @@ class Items extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
+
 		
 		// dummy data
-
+		//$this->session->sess_destroy();
 		
 		// call token from session
 		$_token = $this->session->userdata['profile']['token'];
@@ -37,7 +38,7 @@ class Items extends CI_Controller
 			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$_username);
 			$this->component_api->CallGet();
 			$_employee = json_decode($this->component_api->GetConfig("result"),true);
-			var_dump($_employee);
+
 			$this->_inv_header_param["topNav"] = [
 				"isLogin" => true,
 				"username" => $_username,

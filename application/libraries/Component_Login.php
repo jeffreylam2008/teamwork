@@ -30,20 +30,20 @@ class Component_Login
     {
     //    if(!empty($this->_token))
     //    {
-            $this->_CI->load->library("component_api");
-            // API Call: check validation token in Server side 
-            $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('api_url')."/systems/login/".$this->_token);
-            $this->_CI->component_api->CallGet();
-            $_api_result = json_decode($this->_CI->component_api->GetConfig("result"),true);
+        $this->_CI->load->library("component_api");
+        // API Call: check validation token in Server side 
+        $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('api_url')."/systems/login/".$this->_token);
+        $this->_CI->component_api->CallGet();
+        $_api_result = json_decode($this->_CI->component_api->GetConfig("result"),true);
 
-            if(!empty($_api_result['query']))
-            {
-                return $_api_result['query'];
-            }
-            else
-            {
-                return false;
-            }
+        if(!empty($_api_result['query']))
+        {
+            return $_api_result['query'];
+        }
+        else
+        {
+            return false;
+        }
     //    }
     }
     public function GetRedirectURL()
