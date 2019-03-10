@@ -531,6 +531,6 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
-$config['api_url'] = 'http://api.crazykworkshop.com/api/v1';
-//$config['api_url'] = 'http://localhost/erp_backend/api/v1';
+//$config['api_url'] = 'http://api.crazykworkshop.com/api/v1';
+$config['api_url'] = 'http://localhost/erp_backend/api/v1';
 $config['default_home'] = 'dushboard';

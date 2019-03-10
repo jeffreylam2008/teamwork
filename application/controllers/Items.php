@@ -4,78 +4,96 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Items extends CI_Controller
 {
 	var $_inv_header_param = [];
+	var $_token = "";
+	var $_param = "";
+
 	public function __construct()
 	{
 		parent::__construct();
-
-		
-		// dummy data
-		//$this->session->sess_destroy();
-		
-		// call token from session
-		$_token = $this->session->userdata['profile']['token'];
-		
-		// API call
-		$this->load->library("component_login",[$_token, "products/items"]);
-
-		// login session
-		if(!empty($this->component_login->CheckToken()))
+		if(isset($this->session->userdata['master']))
 		{
-			$_username = $this->session->userdata['profile']['profile']['username'];
-			// sidebar session
-			$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
-			switch($_param)
-			{
-				case "items/edit":
-					$_param = "items/index";
-				break;
-				case "items/delete":
-					$_param = "items/index";
-				break;
-			}
-
-			// fatch employee API
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$_username);
-			$this->component_api->CallGet();
-			$_employee = json_decode($this->component_api->GetConfig("result"),true);
-
-			$this->_inv_header_param["topNav"] = [
-				"isLogin" => true,
-				"username" => $_username,
-				"employee_code" => "110022",
-				"shop_code" => "0012",
-				"today" => date("Y-m-d")
-			];
-			// fatch side bar API
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
-			$this->component_api->CallGet();
-			$_nav_list = json_decode($this->component_api->GetConfig("result"), true);
-			$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
-			$this->component_sidemenu->SetConfig("active", $_param);
-			$this->component_sidemenu->Proccess();
+			// dummy data
+			// $this->session->sess_destroy();
 			// echo "<pre>";
-			// var_dump( $this->component_sidemenu->GetConfig("slug"));
+			// var_dump(($_SESSION['master']));
 			// echo "</pre>";
-			
-			// load header view
-			$this->load->view('header',[
-				'title'=>'Items',
-				'sideNav_view' => $this->load->view('side-nav', [
-					"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list"),
-					"path"=>$this->component_sidemenu->GetConfig("path"),
-					"param"=> $_param
-				], TRUE), 
-				'topNav_view' => $this->load->view('top-nav', [
-					"topNav" => $this->_inv_header_param["topNav"]
-				], TRUE)
-			]);
-			// load breadcrumb
-			//$this->load->view('breadcrumb');
+			// call token from session
+			if(isset($this->session->userdata['login']['token']))
+			{
+				$this->_token = $this->session->userdata['login']['token'];
+			}
+			// API call
+			$this->load->library("component_login",[$this->_token, "products/items"]);
+
+			// // login session
+			if(!empty($this->component_login->CheckToken()))
+			{
+				$this->_username = $this->session->userdata['login']['profile']['username'];
+				// sidebar session
+				$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
+				switch($this->_param)
+				{
+					case "items/edit":
+						$this->_param = "items/index";
+					break;
+					case "items/delete":
+						$this->_param = "items/index";
+					break;
+				}
+
+				// fatch employee API
+				$_employees = $this->session->userdata['master']['employees']['query'];
+				
+				// $this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$this->_username);
+				// $this->component_api->CallGet();
+				// $_employee = json_decode($this->component_api->GetConfig("result"),true);
+				echo "<pre>";
+				var_dump(($_SESSION['master']['employees']));
+				echo "</pre>";
+				
+				$this->_inv_header_param["topNav"] = [
+					"isLogin" => true,
+					"username" => $_employees[0]['username'],
+					"employee_code" => $_employees[0]['username'],
+					"shop_code" => $_employees[0]['default_shopcode'],
+					"today" => date("Y-m-d")
+				];
+				// fatch side bar API
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
+				$this->component_api->CallGet();
+				$_nav_list = json_decode($this->component_api->GetConfig("result"), true);
+				$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
+				$this->component_sidemenu->SetConfig("active", $this->_param);
+				$this->component_sidemenu->Proccess();
+				// echo "<pre>";
+				// var_dump( $this->component_sidemenu->GetConfig("slug"));
+				// echo "</pre>";
+				
+				// load header view
+				$this->load->view('header',[
+					'title'=>'Items',
+					'sideNav_view' => $this->load->view('side-nav', [
+						"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list"),
+						"path"=>$this->component_sidemenu->GetConfig("path"),
+						"param"=> $this->_param
+					], TRUE), 
+					'topNav_view' => $this->load->view('top-nav', [
+						"topNav" => $this->_inv_header_param["topNav"]
+					], TRUE)
+				]);
+				// load breadcrumb
+				//$this->load->view('breadcrumb');
+			}
+			else
+			{
+				redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
+			}
 		}
 		else
 		{
-			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
+			redirect(base_url("master"),"refresh");
 		}
+		
 	}
 
 	/** 

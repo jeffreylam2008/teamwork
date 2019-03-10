@@ -26,7 +26,7 @@ class Login extends CI_Controller
 	public function index()
 	{
 		$this->session->sess_destroy();
-		
+
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
 		$this->component_api->CallGet();
 		$_shop = json_decode($this->component_api->GetConfig("result"), true);
@@ -49,7 +49,7 @@ class Login extends CI_Controller
 	public function dologin()
 	{
 		$_api_body = [];
-
+		
 		//echo "debug here ===> ";
 		//echo $this->input->get('url');
 		// Get user input here
@@ -78,13 +78,13 @@ class Login extends CI_Controller
 			if($_rememberme)
 			{
 				// save cookie
-				$this->session->set_userdata('profile',$_profile);
+				$this->session->set_userdata('login',$_profile);
 			}
 			// will not remember the password
 			else
 			{
 				// save temp cookie
-				$this->session->set_tempdata('profile',$_profile,10);
+				$this->session->set_tempdata('login',$_profile,10);
 			}
 			if(!empty($this->input->get('url')))
 			{

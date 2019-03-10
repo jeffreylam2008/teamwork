@@ -16,8 +16,8 @@ class Customers extends CI_Controller
 		// echo "</pre>";
 		// call token from session
 
-		$this->_token = $this->session->userdata['profile']['token'];
-		$this->_customer = $_SESSION['master']['employee']['query'];
+		$this->_token = $this->session->userdata['login']['token'];
+		$this->_customer = $this->session->userdata['master']['employees']['query'];
 
 		// API call
 		$this->load->library("component_login",[$this->_token, "customers"]);
@@ -25,7 +25,7 @@ class Customers extends CI_Controller
 		// login session
 		if(!empty($this->component_login->CheckToken()))
 		{
-			$_username = $this->session->userdata['profile']['profile']['username'];
+			$_username = $this->session->userdata['login']['profile']['username'];
 			// read URI
 			$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
 			

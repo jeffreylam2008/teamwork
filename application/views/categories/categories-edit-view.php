@@ -40,7 +40,7 @@ $("#save").click(function(){
     if(isvalid){
         $("#form1").submit();
     }
-    console.log("clicked")
+    // console.log("clicked")
 });
 
 </script>
