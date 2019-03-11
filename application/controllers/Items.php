@@ -10,7 +10,12 @@ class Items extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		echo CI_VERSION; 
+
+		// echo "<pre>";
+		// var_dump(($_SESSION['master']['employees']));
+		// echo "</pre>";
+
+		$this->load->library("Component_Master");
 		if(isset($this->session->userdata['master']))
 		{
 			// dummy data
@@ -41,22 +46,23 @@ class Items extends CI_Controller
 						$this->_param = "items/index";
 					break;
 				}
+				
 
 				// fatch employee API
-				$_employees = $this->session->userdata['master']['employees']['query'];
+				$_employees = $this->component_master->FetchByKey("employees","username",$this->_username);
 				
 				// $this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$this->_username);
 				// $this->component_api->CallGet();
 				// $_employee = json_decode($this->component_api->GetConfig("result"),true);
 				echo "<pre>";
-				var_dump(($_SESSION['master']['employees']));
+				var_dump(($_employees));
 				echo "</pre>";
 				
 				$this->_inv_header_param["topNav"] = [
 					"isLogin" => true,
-					"username" => $_employees[0]['username'],
-					"employee_code" => $_employees[0]['username'],
-					"shop_code" => $_employees[0]['default_shopcode'],
+					"username" => $_employees['username'],
+					"employee_code" => $_employees['username'],
+					"shop_code" => $_employees['default_shopcode'],
 					"today" => date("Y-m-d")
 				];
 				// fatch side bar API

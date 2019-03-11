@@ -79,17 +79,21 @@ class Component_Master
         $this->_master = [];
         $this->_CI->session->set_userdata("master",$this->_master);
     }
-    public function FetchByKey($item = "", $name = "" ,$id = "")
+    public function FetchByKey($type = "", $name = "" ,$id = "")
     {
-        if(!empty($this->_master[$item]))
+        $_result = "";
+        $_ms = $this->_CI->session->userdata("master",$this->_master);
+        if(isset($_ms[$type]['query']) && !empty($_ms[$type]['query']))
         {
-            foreach($this->_master[$item] as $key => $val)
+            foreach($_ms[$type]['query'] as $key => $val)
 			{
+                // var_dump($val);
                 if($val[$name] === $id)
                 {
-                    return $this->_master[$item][$key];
+                    $_result = $val;
                 }
-            }
+            }   
         }
+        return $_result;
     }
 }
