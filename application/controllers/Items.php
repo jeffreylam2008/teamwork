@@ -10,6 +10,7 @@ class Items extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
+		echo CI_VERSION; 
 		if(isset($this->session->userdata['master']))
 		{
 			// dummy data
@@ -23,7 +24,7 @@ class Items extends CI_Controller
 				$this->_token = $this->session->userdata['login']['token'];
 			}
 			// API call
-			$this->load->library("component_login",[$this->_token, "products/items"]);
+			$this->load->library("Component_Login",[$this->_token, "products/items"]);
 
 			// // login session
 			if(!empty($this->component_login->CheckToken()))

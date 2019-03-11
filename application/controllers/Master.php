@@ -1,11 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Master extends CI_Controller
+class master extends CI_Controller
 {
     public function __construct()
 	{
+        
         parent::__construct();
+
         $this->load->library("component_master");
     }
     public function index()
