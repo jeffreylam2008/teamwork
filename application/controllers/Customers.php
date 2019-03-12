@@ -11,75 +11,86 @@ class Customers extends CI_Controller
 		parent::__construct();
 		// $this->session->sess_destroy();
 		// dummy data
-		// echo "<pre>";
-		// var_dump(array_keys($_SESSION));
-		// echo "</pre>";
+		//echo "<pre>";
+		//var_dump(array_keys($_SESSION));
+		//echo "</pre>";
 		// call token from session
-
-		$this->_token = $this->session->userdata['login']['token'];
-		$this->_customer = $this->session->userdata['master']['employees']['query'];
-
-		// API call
-		$this->load->library("component_login",[$this->_token, "customers"]);
-
-		// login session
-		if(!empty($this->component_login->CheckToken()))
+		
+		
+		$this->load->library("Component_Master");
+		if(isset($this->session->userdata['master']))
 		{
-			$_username = $this->session->userdata['login']['profile']['username'];
-			// read URI
-			$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
-			
-			// fatch master
-			$this->_inv_header_param["topNav"] = [];
-			
-			foreach($this->_customer  as $key => $val)
+			if(!empty($this->session->userdata['login']))
 			{
-				if($val['username'] === $_username)
-				{
-					$this->_inv_header_param["topNav"] = [
-						"username" => $val['username'],
-						"employee_code" =>  $val['employee_code'],
-						"shop_code" => $val['default_shopcode'],
-						"role" => $val['role'],
-						"today" => date("Y-m-d")
-					];
-				}
+				$this->_token = $this->session->userdata['login']['token'];
 			}
-			
-			// debug display
-			// echo "<pre>";
-			// var_dump($this->_inv_header_param["topNav"]);
-			// echo "</pre>";
-			 
-			
-			
-			// Call API here
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
-			$this->component_api->CallGet();
-			$_nav_list = json_decode($this->component_api->GetConfig("result"), true);
-			$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
-			$this->component_sidemenu->SetConfig("active", $_param);
-			$this->component_sidemenu->Proccess();
+			if(!empty($this->session->userdata['master']['employees']['query']))
+			{
+				$this->_customer = $this->session->userdata['master']['employees']['query'];
+			}
+			// API call
+			$this->load->library("component_login",[$this->_token, "customers"]);
 
-			// load header view
-			$this->load->view('header',[
-				'title'=>'Customers',
-				'sideNav_view' => $this->load->view('side-nav', [
-					"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list"),
-					"path"=>$this->component_sidemenu->GetConfig("path"),
-					"param"=> $_param
-				], TRUE), 
-				'topNav_view' => $this->load->view('top-nav', [
-					"topNav" => $this->_inv_header_param["topNav"]
-				], TRUE)
-			]);
-			// load breadcrumb
-			//$this->load->view('breadcrumb');
-			
-		}
-		else
-		{
-			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
+			// login session
+			if(!empty($this->component_login->CheckToken()))
+			{
+				
+				$_username = $this->session->userdata['login']['profile']['username'];
+				// read URI
+				$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
+				
+				// fatch master
+				$this->_inv_header_param["topNav"] = [];
+				
+				foreach($this->_customer as $key => $val)
+				{
+					if($val['username'] === $_username)
+					{
+						$this->_inv_header_param["topNav"] = [
+							"username" => $val['username'],
+							"employee_code" =>  $val['employee_code'],
+							"shop_code" => $val['default_shopcode'],
+							"role" => $val['role'],
+							"today" => date("Y-m-d")
+						];
+					}
+				}
+				
+				// debug display
+				// echo "<pre>";
+				// var_dump($this->_inv_header_param["topNav"]);
+				// echo "</pre>";
+				 
+				
+				
+				// Call API here
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
+				$this->component_api->CallGet();
+				$_nav_list = json_decode($this->component_api->GetConfig("result"), true);
+				$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
+				$this->component_sidemenu->SetConfig("active", $_param);
+				$this->component_sidemenu->Proccess();
+
+				// load header view
+				$this->load->view('header',[
+					'title'=>'Customers',
+					'sideNav_view' => $this->load->view('side-nav', [
+						"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list"),
+						"path"=>$this->component_sidemenu->GetConfig("path"),
+						"param"=> $_param
+					], TRUE), 
+					'topNav_view' => $this->load->view('top-nav', [
+						"topNav" => $this->_inv_header_param["topNav"]
+					], TRUE)
+				]);
+				// load breadcrumb
+				//$this->load->view('breadcrumb');
+				
+			}
+			else
+			{
+				redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
+			}
 		}
 	}
 	public function index($page=1)

@@ -11,9 +11,9 @@ class Items extends CI_Controller
 	{
 		parent::__construct();
 
-		// echo "<pre>";
-		// var_dump(($_SESSION['master']['employees']));
-		// echo "</pre>";
+		 echo "<pre>";
+		 var_dump(array_keys($_SESSION['master']));
+		 echo "</pre>";
 
 		$this->load->library("Component_Master");
 		if(isset($this->session->userdata['master']))
@@ -24,9 +24,13 @@ class Items extends CI_Controller
 			// var_dump(($_SESSION['master']));
 			// echo "</pre>";
 			// call token from session
-			if(isset($this->session->userdata['login']['token']))
+			if(!empty($this->session->userdata['login']))
 			{
 				$this->_token = $this->session->userdata['login']['token'];
+			}
+			if(!empty($this->session->userdata['master']['employees']['query']))
+			{
+				$this->_customer = $this->session->userdata['master']['employees']['query'];
 			}
 			// API call
 			$this->load->library("Component_Login",[$this->_token, "products/items"]);
@@ -54,9 +58,9 @@ class Items extends CI_Controller
 				// $this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$this->_username);
 				// $this->component_api->CallGet();
 				// $_employee = json_decode($this->component_api->GetConfig("result"),true);
-				echo "<pre>";
-				var_dump(($_employees));
-				echo "</pre>";
+				//echo "<pre>";
+				//var_dump(($_employees));
+				//echo "</pre>";
 				
 				$this->_inv_header_param["topNav"] = [
 					"isLogin" => true,
