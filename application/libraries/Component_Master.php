@@ -79,7 +79,7 @@ class Component_Master
         $this->_master = [];
         $this->_CI->session->set_userdata("master",$this->_master);
     }
-    public function FetchByKey($type = "", $name = "" ,$id = "")
+    public function SearchByKey($type = "", $name = "" ,$id = "")
     {
         $_result = "";
         $_ms = $this->_CI->session->userdata("master",$this->_master);

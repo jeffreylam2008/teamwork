@@ -11,12 +11,11 @@ class Customers extends CI_Controller
 		parent::__construct();
 		// $this->session->sess_destroy();
 		// dummy data
-		//echo "<pre>";
-		//var_dump(array_keys($_SESSION));
-		//echo "</pre>";
+		// echo "<pre>";
+		// var_dump(array_keys($_SESSION['master']));
+		// echo "</pre>";
 		// call token from session
-		
-		
+	
 		$this->load->library("Component_Master");
 		if(isset($this->session->userdata['master']))
 		{
@@ -24,49 +23,30 @@ class Customers extends CI_Controller
 			{
 				$this->_token = $this->session->userdata['login']['token'];
 			}
-			if(!empty($this->session->userdata['master']['employees']['query']))
-			{
-				$this->_customer = $this->session->userdata['master']['employees']['query'];
-			}
 			// API call
 			$this->load->library("component_login",[$this->_token, "customers"]);
 
 			// login session
 			if(!empty($this->component_login->CheckToken()))
 			{
-				
-				$_username = $this->session->userdata['login']['profile']['username'];
-				// read URI
-				$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
-				
+				$this->_username = $this->session->userdata['login']['profile']['username'];
 				// fatch master
-				$this->_inv_header_param["topNav"] = [];
-				
-				foreach($this->_customer as $key => $val)
-				{
-					if($val['username'] === $_username)
-					{
-						$this->_inv_header_param["topNav"] = [
-							"username" => $val['username'],
-							"employee_code" =>  $val['employee_code'],
-							"shop_code" => $val['default_shopcode'],
-							"role" => $val['role'],
-							"today" => date("Y-m-d")
-						];
-					}
-				}
-				
-				// debug display
-				// echo "<pre>";
-				// var_dump($this->_inv_header_param["topNav"]);
-				// echo "</pre>";
-				 
-				
-				
+				$_employees = $this->component_master->SearchByKey("employees","username",$this->_username);
+
+				// sidebar session
+				$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
+
+				// header data
+				$this->_inv_header_param["topNav"] = [
+					"isLogin" => true,
+					"username" => $_employees['username'],
+					"employee_code" => $_employees['username'],
+					"shop_code" => $_employees['default_shopcode'],
+					"today" => date("Y-m-d")
+				];
+
 				// Call API here
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
-				$this->component_api->CallGet();
-				$_nav_list = json_decode($this->component_api->GetConfig("result"), true);
+				$_nav_list = $this->session->userdata['master']['menu'];
 				$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
 				$this->component_sidemenu->SetConfig("active", $_param);
 				$this->component_sidemenu->Proccess();
@@ -83,15 +63,17 @@ class Customers extends CI_Controller
 						"topNav" => $this->_inv_header_param["topNav"]
 					], TRUE)
 				]);
-				// load breadcrumb
-				//$this->load->view('breadcrumb');
-				
 			}
 			else
 			{
 				redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
 			}
 		}
+		else
+		{
+			redirect(base_url("master"),"refresh");
+		}
+
 	}
 	public function index($page=1)
 	{
@@ -105,7 +87,7 @@ class Customers extends CI_Controller
 		// Get customer on list
 		// $this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/");
 		// $this->component_api->CallGet();
-		$_data = $this->_customer;
+		$_data = $this->session->userdata['master']['customers'];
 		// Get payment method
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
 		$this->component_api->CallGet();

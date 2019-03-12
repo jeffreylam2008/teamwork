@@ -11,10 +11,6 @@ class Items extends CI_Controller
 	{
 		parent::__construct();
 
-		 echo "<pre>";
-		 var_dump(array_keys($_SESSION['master']));
-		 echo "</pre>";
-
 		$this->load->library("Component_Master");
 		if(isset($this->session->userdata['master']))
 		{
@@ -28,10 +24,7 @@ class Items extends CI_Controller
 			{
 				$this->_token = $this->session->userdata['login']['token'];
 			}
-			if(!empty($this->session->userdata['master']['employees']['query']))
-			{
-				$this->_customer = $this->session->userdata['master']['employees']['query'];
-			}
+
 			// API call
 			$this->load->library("Component_Login",[$this->_token, "products/items"]);
 
@@ -39,6 +32,9 @@ class Items extends CI_Controller
 			if(!empty($this->component_login->CheckToken()))
 			{
 				$this->_username = $this->session->userdata['login']['profile']['username'];
+				// fatch employee API
+				$_employees = $this->component_master->SearchByKey("employees","username",$this->_username);
+
 				// sidebar session
 				$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
 				switch($this->_param)
@@ -51,17 +47,7 @@ class Items extends CI_Controller
 					break;
 				}
 				
-
-				// fatch employee API
-				$_employees = $this->component_master->FetchByKey("employees","username",$this->_username);
-				
-				// $this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$this->_username);
-				// $this->component_api->CallGet();
-				// $_employee = json_decode($this->component_api->GetConfig("result"),true);
-				//echo "<pre>";
-				//var_dump(($_employees));
-				//echo "</pre>";
-				
+				// header data
 				$this->_inv_header_param["topNav"] = [
 					"isLogin" => true,
 					"username" => $_employees['username'],
@@ -70,9 +56,10 @@ class Items extends CI_Controller
 					"today" => date("Y-m-d")
 				];
 				// fatch side bar API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
-				$this->component_api->CallGet();
-				$_nav_list = json_decode($this->component_api->GetConfig("result"), true);
+				// $this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
+				// $this->component_api->CallGet();
+				// $_nav_list = json_decode($this->component_api->GetConfig("result"), true);
+				$_nav_list = $this->session->userdata['master']['menu'];
 				$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
 				$this->component_sidemenu->SetConfig("active", $this->_param);
 				$this->component_sidemenu->Proccess();
@@ -143,7 +130,6 @@ class Items extends CI_Controller
 				$_data_categories[$val["cate_code"]] = $val["desc"];
 			}
 			
-
 			// set user data
 			$this->session->set_userdata('page',$_page);
 			//$this->session->set_userdata('items_list',$_data);
