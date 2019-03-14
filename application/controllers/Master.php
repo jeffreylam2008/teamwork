@@ -19,7 +19,7 @@ class Master extends CI_Controller
         echo "testbed";
         echo "<br>";
         echo "------------<br>";
-        $tt = $this->component_master->FetchByKey("employees","username","iamadmin");
+        $tt = $this->component_master->SearchByKey("employees","username","iamadmin");
         echo "<pre>"; 
         var_dump($tt);
         echo "</pre>";

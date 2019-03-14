@@ -71,21 +71,17 @@ class Quotations extends CI_Controller
 		{
 			$page = 1;
 		}
-
 		// fatch quotation API
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/quotations/");
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
-
 
 		if(!empty($_data))
 		{
 			// set user data
 			$this->session->set_userdata('page',$page);
 
-		// echo "<pre>";
-		// var_dump($_data);
-		// echo "</pre>";
+		
 		// echo "<pre>";
 		// var_dump($_shop_data);
 		// echo "</pre>";
@@ -418,12 +414,15 @@ class Quotations extends CI_Controller
 		]);
 		if(!empty($_cur_num))
 		{
-			// echo "<pre>";
-			// var_dump($_transaction[$_cur_num]);
-			// echo "</pre>";
+			 //echo "<pre>";
+			 //var_dump($_transaction[$_cur_num]);
+			 //echo "</pre>";
 			$_api_body = json_encode($_transaction[$_cur_num],true);
+			echo "<pre>";
+			echo ($_api_body);
+			echo "</pre>";
 
-			if($_api_body != "null")
+			if($_api_body != null)
 			{
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/quotations/");
@@ -449,7 +448,7 @@ class Quotations extends CI_Controller
 					$this->session->set_userdata('cur_quotationnum',"");
 					$this->session->set_userdata('transaction',$_transaction);
 					
-					header("Refresh: 10; url='donew/'");
+					//header("Refresh: 10; url='donew/'");
 				}
 			}
 		}
