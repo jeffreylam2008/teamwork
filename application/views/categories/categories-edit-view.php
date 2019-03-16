@@ -1,5 +1,5 @@
 <?php
-    extract($data["query"]);
+    extract($data);
 ?>
 
 <form id="form1" name="form1" method="POST" action="<?=$save_url.$cate_code?>">

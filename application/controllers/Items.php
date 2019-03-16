@@ -6,11 +6,9 @@ class Items extends CI_Controller
 	var $_inv_header_param = [];
 	var $_token = "";
 	var $_param = "";
-
 	public function __construct()
 	{
 		parent::__construct();
-
 		$this->load->library("Component_Master");
 		if(isset($this->session->userdata['master']))
 		{
@@ -46,7 +44,6 @@ class Items extends CI_Controller
 						$this->_param = "items/index";
 					break;
 				}
-				
 				// header data
 				$this->_inv_header_param["topNav"] = [
 					"isLogin" => true,
@@ -56,31 +53,23 @@ class Items extends CI_Controller
 					"today" => date("Y-m-d")
 				];
 				// fatch side bar API
-				// $this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
-				// $this->component_api->CallGet();
-				// $_nav_list = json_decode($this->component_api->GetConfig("result"), true);
-				$_nav_list = $this->session->userdata['master']['menu'];
-				$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
+				$_API_MENU = $this->session->userdata['master']['menu']['query'];
+				$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
 				$this->component_sidemenu->SetConfig("active", $this->_param);
 				$this->component_sidemenu->Proccess();
-				// echo "<pre>";
-				// var_dump( $this->component_sidemenu->GetConfig("slug"));
-				// echo "</pre>";
-				
+
 				// load header view
 				$this->load->view('header',[
 					'title'=>'Items',
 					'sideNav_view' => $this->load->view('side-nav', [
-						"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list"),
-						"path"=>$this->component_sidemenu->GetConfig("path"),
-						"param"=> $this->_param
+						"sideNav" => $this->component_sidemenu->GetConfig("nav_finished_list"),
+						"path" => $this->component_sidemenu->GetConfig("path"),
+						"param" => $this->_param
 					], TRUE), 
 					'topNav_view' => $this->load->view('top-nav', [
 						"topNav" => $this->_inv_header_param["topNav"]
 					], TRUE)
 				]);
-				// load breadcrumb
-				//$this->load->view('breadcrumb');
 			}
 			else
 			{
@@ -91,7 +80,6 @@ class Items extends CI_Controller
 		{
 			redirect(base_url("master"),"refresh");
 		}
-		
 	}
 
 	/** 
@@ -102,7 +90,8 @@ class Items extends CI_Controller
 	{	
 		// variable initial
 		$_default_per_page = 50;
-		$_data_categories = [];
+		$_API_ITEMS = [];
+		$_API_CATEGORIES = [];
 		// page initial
 		if(!empty($page))
 		{
@@ -115,19 +104,15 @@ class Items extends CI_Controller
 		}
 
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
-		$this->component_api->CallGet();
-		$_data = json_decode($this->component_api->GetConfig("result"), true);
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
-		$this->component_api->CallGet();
-		$_data_categories = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_ITEMS = $this->session->userdata['master']['items'];
+		$_API_CATEGORIES = $this->session->userdata['master']['categories'];
 		
 		// data for items type selection
-		if(!empty($_data_categories["query"]))
+		if(!empty($_API_CATEGORIES["query"]))
 		{
-			foreach($_data_categories["query"] as $key => $val)
+			foreach($_API_CATEGORIES["query"] as $key => $val)
 			{
-				$_data_categories[$val["cate_code"]] = $val["desc"];
+				$_API_CATEGORIES[$val["cate_code"]] = $val["desc"];
 			}
 			
 			// set user data
@@ -146,7 +131,7 @@ class Items extends CI_Controller
 				"edit_url" => base_url("/products/items/edit/"),
 				"del_url" => base_url("/products/items/delete/"),
 				"route_url" => base_url("/products/items/page/"),
-				"data" => $_data,
+				"data" => $_API_ITEMS,
 				"user_auth" => true,
 				"default_per_page" => $_default_per_page,
 				"page" => $page
@@ -154,7 +139,7 @@ class Items extends CI_Controller
 			$this->load->view("items/items-create-view",[
 				"save_url" => base_url("/products/items/save/"),
 				"categories_baseurl" => base_url("/products/categories/"),
-				"categories" => $_data_categories
+				"categories" => $_API_CATEGORIES
 			]);
 			$this->load->view('footer');
 		}

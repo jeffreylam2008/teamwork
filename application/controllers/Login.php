@@ -49,7 +49,6 @@ class Login extends CI_Controller
 	public function dologin()
 	{
 		$_api_body = [];
-		
 		//echo "debug here ===> ";
 		//echo $this->input->get('url');
 		// Get user input here
