@@ -6,14 +6,9 @@ class Dushboard extends CI_Controller
 	var $_inv_header_param = [];	
 	var $_token = "";
 	var $_param = "";
-
 	public function __construct()
 	{
 		parent::__construct();
-		// echo "<pre>";
-		// var_dump(array_keys($_SESSION['master']));
-		// echo "</pre>";
-
 		$this->load->library("Component_Master");
 		if(isset($this->session->userdata['master']))
 		{
@@ -38,7 +33,7 @@ class Dushboard extends CI_Controller
 				$_employees = $this->component_master->SearchByKey("employees","username",$this->_username);
 
 				// sidebar session
-				$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
+				$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
 				// $this->session->sess_destroy();
 				// unset($_SESSION);
 				
@@ -51,9 +46,9 @@ class Dushboard extends CI_Controller
 					"today" => date("Y-m-d")
 				];
 				// API Call: fatch sidebar API
-				$_nav_list = $_nav_list = $this->session->userdata['master']['menu'];
+				$_nav_list = $this->session->userdata['master']['menu']['query'];
 				$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
-				$this->component_sidemenu->SetConfig("active", $_param);
+				$this->component_sidemenu->SetConfig("active", $this->_param);
 				$this->component_sidemenu->Proccess();
 				// echo "<pre>";
 				// var_dump( $this->component_sidemenu->GetConfig("slug"));
@@ -64,7 +59,7 @@ class Dushboard extends CI_Controller
 					'sideNav_view' => $this->load->view('side-nav', [
 						"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list"),
 						"path"=>$this->component_sidemenu->GetConfig("path"),
-						"param"=> $_param
+						"param"=> $this->_param
 					], TRUE), 
 					'topNav_view' => $this->load->view('top-nav', [
 						"topNav" => $this->_inv_header_param["topNav"]

@@ -22,7 +22,6 @@ class Categories extends CI_Controller
 			{
 				$this->_token = $this->session->userdata['login']['token'];
 			}
-
 			// API call
 			$this->load->library("Component_Login",[$this->_token, "products/items"]);
 
@@ -141,11 +140,12 @@ class Categories extends CI_Controller
 
 		// set user data
 		$_page = $this->session->userdata("page");
-		$_cate = $this->session->userdata('cate_list');
+		//$_cate = $this->session->userdata('cate_list');
 
 		// API data
 		// $this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/".$cate_code);
 		// $this->component_api->CallGet();
+		$_cate =  $this->session->userdata['master']['categories'];
 		$_API_CATEGORIES = $this->component_master->SearchByKey("categories","cate_code",$cate_code);
 
 		// data convertion for items edit (next and previous functions)
@@ -154,7 +154,6 @@ class Categories extends CI_Controller
 			$_all = array_column($_cate['query'], "cate_code");
 			// echo "<pre>";
 			// var_dump($_items['query']);
-			
 			
 			// search key
 			$_key = array_search(
@@ -179,8 +178,7 @@ class Categories extends CI_Controller
 			// var_dump ($_all);
 			// echo "</pre>";
 		}
-
-
+		
 		// function bar with next, preview and save button
 		$this->load->view('function-bar', [
 			"btn" => [
@@ -210,6 +208,7 @@ class Categories extends CI_Controller
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/has/category/".$cate_code);
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
+		var_dump($_data);
 		if(isset($_data))
 		{	
 			if($_data['query'])
