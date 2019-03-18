@@ -43,8 +43,6 @@ class Items extends CI_Controller
 				$this->component_api->CallGet();
 				$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
 				$_API_ITEMS = $_API_ITEMS['query'];
-
-
 				
 
 				// sidebar session
@@ -194,7 +192,7 @@ class Items extends CI_Controller
 		// user data
 
 		$_page = $this->session->userdata("page");
-		$_items = $this->session->userdata['master']["items"]['query'];
+		$_items = $this->session->userdata['items_list'];
 
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");

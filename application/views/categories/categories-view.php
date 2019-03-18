@@ -23,9 +23,8 @@
                 // echo "<pre>";
                 // var_dump($data);
                 // echo "</pre>";
-                    extract($data);
 
-                    foreach($query as $key => $val)
+                    foreach($data as $key => $val)
                     {
                         echo "<tr>";
                         echo "<td>".($key+1)."</td>";

@@ -30,7 +30,11 @@ class Categories extends CI_Controller
 			{
 				$this->_username = $this->session->userdata['login']['profile']['username'];
 				// fatch employee API
-				$_employees = $this->component_master->SearchByKey("employees","username",$this->_username);
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employees/".$this->_username);
+				$this->component_api->CallGet();
+				$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+				$_API_EMP = $_API_EMP['query'];
+
 
 				// sidebar session
 				$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
@@ -46,9 +50,9 @@ class Categories extends CI_Controller
 				// header data
 				$this->_inv_header_param["topNav"] = [
 					"isLogin" => true,
-					"username" => $_employees['username'],
-					"employee_code" => $_employees['username'],
-					"shop_code" => $_employees['default_shopcode'],
+					"username" => $_API_EMP['username'],
+					"employee_code" => $_API_EMP['username'],
+					"shop_code" => $_API_EMP['default_shopcode'],
 					"today" => date("Y-m-d")
 				];
 				// fatch side bar API
@@ -96,10 +100,18 @@ class Categories extends CI_Controller
 		}
 		
 		// API data
-		// $this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
-		// $this->component_api->CallGet();
-		$_API_CATEGORIES =  $this->session->userdata['master']['categories'];
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
+		$this->component_api->CallGet();
+		$_API_CATEGORIES = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_CATEGORIES = $_API_CATEGORIES['query'];
 		
+		// data for ordering items in sequence
+		foreach($_API_CATEGORIES as $key => $val)
+		{
+			$_cate[]['cate_code'] = $val['cate_code'];
+		}
+
+		$this->session->set_userdata('cate_list',$_cate);
 		//set user data
 		$this->session->set_userdata('page',$_page);
 		//$this->session->set_userdata('cate_list',$_data);
@@ -143,21 +155,21 @@ class Categories extends CI_Controller
 		//$_cate = $this->session->userdata('cate_list');
 
 		// API data
-		// $this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/".$cate_code);
-		// $this->component_api->CallGet();
-		$_cate =  $this->session->userdata['master']['categories'];
-		$_API_CATEGORIES = $this->component_master->SearchByKey("categories","cate_code",$cate_code);
-
+		$_cate =  $this->session->userdata['cate_list'];
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/".$cate_code);
+		$this->component_api->CallGet();
+		$_API_CATEGORIES = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_CATEGORIES = $_API_CATEGORIES['query'];
 		// data convertion for items edit (next and previous functions)
 		if(!empty($_cate))
 		{
-			$_all = array_column($_cate['query'], "cate_code");
+			$_all = array_column($_cate, "cate_code");
 			// echo "<pre>";
 			// var_dump($_items['query']);
 			
 			// search key
 			$_key = array_search(
-				$cate_code, array_column($_cate['query'], "cate_code")
+				$cate_code, array_column($_cate, "cate_code")
 			);
 			// echo "</pre>"; 
 			$_cur = $_key;
