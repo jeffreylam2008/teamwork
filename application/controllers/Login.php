@@ -9,7 +9,7 @@ class Login extends CI_Controller
 		parent::__construct();
 		
 		// dummy data
-		// $username = "iamadmin";
+
 
 		// // fatch employee API
 		// $this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
@@ -24,9 +24,7 @@ class Login extends CI_Controller
 	}
 
 	public function index()
-	{
-		$this->session->sess_destroy();
-
+	{	
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
 		$this->component_api->CallGet();
 		$_shop = json_decode($this->component_api->GetConfig("result"), true);
@@ -42,7 +40,8 @@ class Login extends CI_Controller
 			"shop" => $_shop['query'],
 			"submit"=>"login/process/?url=".urlencode($this->input->get('url')),
 			"e_code"=> $_e_code,
-			"e_msg" => $_e_msg
+			"e_msg" => $_e_msg,
+			"s_status" => $_SESSION
 		]);
 		$this->load->view('footer');
 	}
@@ -98,7 +97,7 @@ class Login extends CI_Controller
 		}
 		else
 		{
-			// something wrong with login will go here
+			// something went wrong 
 			// No url perpare
 
 			$_e_code = urlencode($_result['error']['code']);

@@ -6,9 +6,11 @@ class Items extends CI_Controller
 	var $_inv_header_param = [];
 	var $_token = "";
 	var $_param = "";
+	var $_items = [];
 	public function __construct()
 	{
 		parent::__construct();
+		$_API_EMP = [];
 		$this->load->library("Component_Master");
 		if(isset($this->session->userdata['master']))
 		{
@@ -31,7 +33,19 @@ class Items extends CI_Controller
 			{
 				$this->_username = $this->session->userdata['login']['profile']['username'];
 				// fatch employee API
-				$_employees = $this->component_master->SearchByKey("employees","username",$this->_username);
+
+				// API data
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employees/".$this->_username);
+				$this->component_api->CallGet();
+				$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+				$_API_EMP = $_API_EMP['query'];
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
+				$this->component_api->CallGet();
+				$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+				$_API_ITEMS = $_API_ITEMS['query'];
+
+
+				
 
 				// sidebar session
 				$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
@@ -47,13 +61,16 @@ class Items extends CI_Controller
 				// header data
 				$this->_inv_header_param["topNav"] = [
 					"isLogin" => true,
-					"username" => $_employees['username'],
-					"employee_code" => $_employees['username'],
-					"shop_code" => $_employees['default_shopcode'],
+					"username" => $_API_EMP['username'],
+					"employee_code" => $_API_EMP['username'],
+					"shop_code" => $_API_EMP['default_shopcode'],
 					"today" => date("Y-m-d")
 				];
 				// fatch side bar API
-				$_API_MENU = $this->session->userdata['master']['menu']['query'];
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
+				$this->component_api->CallGet();
+				$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+				$_API_MENU = $_API_MENU['query'];
 				$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
 				$this->component_sidemenu->SetConfig("active", $this->_param);
 				$this->component_sidemenu->Proccess();
@@ -92,6 +109,7 @@ class Items extends CI_Controller
 		$_default_per_page = 50;
 		$_API_ITEMS = [];
 		$_API_CATEGORIES = [];
+
 		// page initial
 		if(!empty($page))
 		{
@@ -104,21 +122,36 @@ class Items extends CI_Controller
 		}
 
 		// API data
-		$_API_ITEMS = $this->session->userdata['master']['items'];
-		$_API_CATEGORIES = $this->session->userdata['master']['categories'];
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
+		$this->component_api->CallGet();
+		$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_ITEMS = $_API_ITEMS['query'];
+
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
+		$this->component_api->CallGet();
+		$_API_CATEGORIES = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_CATEGORIES = $_API_CATEGORIES['query'];
+		
+
+		// data for ordering items in sequence
+		foreach($_API_ITEMS as $key => $val)
+		{
+			$_items[]['item_code'] = $val['item_code'];
+		}
+		$this->session->set_userdata('items_list',$_items);
 		
 		// data for items type selection
-		if(!empty($_API_CATEGORIES["query"]))
+		if(!empty($_API_CATEGORIES))
 		{
-			foreach($_API_CATEGORIES["query"] as $key => $val)
+			// set user data
+			$this->session->set_userdata('page',$_page);
+
+
+			foreach($_API_CATEGORIES as $key => $val)
 			{
 				$_API_CATEGORIES[$val["cate_code"]] = $val["desc"];
 			}
 			
-			// set user data
-			$this->session->set_userdata('page',$_page);
-			//$this->session->set_userdata('items_list',$_data);
-
 			// function bar with next, preview and save button
 			$this->load->view('function-bar', [
 				"btn" => [
@@ -164,26 +197,21 @@ class Items extends CI_Controller
 		$_items = $this->session->userdata['master']["items"]['query'];
 
 		// API data
-		// $this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
-		// $this->component_api->CallGet();
-		// $_data_categories = json_decode($this->component_api->GetConfig("result"), true);
-		$_API_CATEGORIES = $this->session->userdata['master']['categories']['query'];
-		// $this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/".$item_code);
-		// $this->component_api->CallGet();
-		// $_data = json_decode($this->component_api->GetConfig("result"), true);
-		$_API_ITEMS = $this->component_master->SearchByKey("items","item_code",$item_code);
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
+		$this->component_api->CallGet();
+		$_API_CATEGORIES = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_CATEGORIES = $_API_CATEGORIES['query'];
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/".$item_code);
+		$this->component_api->CallGet();
+		$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_ITEMS = $_API_ITEMS['query'];
 		$_API_ITEMS['desc'] = trim($_API_ITEMS['desc']);
-// echo "<pre>";
-// var_dump($_API_ITEMS);
-// echo "</pre>";
+
 		
 		// data convertion for items edit (next and previous functions)
 		if(!empty($_items))
 		{
 			$_all = array_column($_items, "item_code");
-			// echo "<pre>";
-			// var_dump($_items['query']);
-			// echo "</pre>";
 			
 			// search key
 			$_key = array_search(

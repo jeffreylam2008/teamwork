@@ -208,7 +208,7 @@ class Categories extends CI_Controller
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/has/category/".$cate_code);
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
-		var_dump($_data);
+
 		if(isset($_data))
 		{	
 			if($_data['query'])
@@ -229,7 +229,41 @@ class Categories extends CI_Controller
 			]);
 		}
 	}
+	/** 
+	 * Process Save delete 
+	 * 
+	 */
+	public function savedel($cate_code = "")
+	{
+		// API data
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/".$cate_code);
+		$this->component_api->CallDelete();
+		$result = json_decode($this->component_api->GetConfig("result"),true);
+		if(isset($result['error']['message']) || isset($result['error']['code']))
+		{
 
+			$alert = "danger";
+			switch($result['error']['code'])
+			{
+				case "00000":
+					$alert = "success";
+				break;
+			}					
+			
+			$this->load->view('error-handle', [
+				'message' => $result['error']['message'], 
+				'code'=> $result['error']['code'], 
+				'alertstyle' => $alert
+			]);
+	
+			// callback initial page
+			header("Refresh: 5; url=".base_url("/products/categories/"));
+		}
+	}
+	/** 
+	 * Process Save create 
+	 * 
+	 */
 	public function savecreate()
 	{
 		if(isset($_POST) && !empty($_POST))
@@ -265,6 +299,10 @@ class Categories extends CI_Controller
 			}
 		}
 	}
+	/** 
+	 * Process Save edit 
+	 * 
+	 */
 	public function saveedit($cate_code = "")
 	{
 		if(isset($_POST) && !empty($_POST) && isset($cate_code) && !empty($cate_code))
@@ -302,31 +340,5 @@ class Categories extends CI_Controller
 			}
 		}
 	}
-	public function savedel($cate_code = "")
-	{
-		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/".$cate_code);
-		$this->component_api->CallDelete();
-		$result = json_decode($this->component_api->GetConfig("result"),true);
-		if(isset($result['error']['message']) || isset($result['error']['code']))
-		{
-
-			$alert = "danger";
-			switch($result['error']['code'])
-			{
-				case "00000":
-					$alert = "success";
-				break;
-			}					
-			
-			$this->load->view('error-handle', [
-				'message' => $result['error']['message'], 
-				'code'=> $result['error']['code'], 
-				'alertstyle' => $alert
-			]);
 	
-			// callback initial page
-			header("Refresh: 5; url=".base_url("/products/categories/"));
-		}
-	}
 }
