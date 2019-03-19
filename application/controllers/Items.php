@@ -15,9 +15,9 @@ class Items extends CI_Controller
 		if(isset($this->session->userdata['master']))
 		{
 			// dummy data
-			// $this->session->sess_destroy();
+			//$this->session->sess_destroy();
 			// echo "<pre>";
-			// var_dump(($_SESSION['master']));
+			// var_dump(($_SESSION['login']));
 			// echo "</pre>";
 			// call token from session
 			if(!empty($this->session->userdata['login']))
@@ -143,7 +143,6 @@ class Items extends CI_Controller
 		{
 			// set user data
 			$this->session->set_userdata('page',$_page);
-
 
 			foreach($_API_CATEGORIES as $key => $val)
 			{

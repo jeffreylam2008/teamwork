@@ -74,9 +74,9 @@ class Master extends CI_Controller
                 echo "(customers) = ".count($this->session->userdata['master']['customers']['query'])." Record loaded.<br>";
             }
         }
-        echo "<pre>"; 
-        var_dump(($this->session->userdata['master']['categories']['query']));
-        echo "</pre>";
+        // echo "<pre>"; 
+        // var_dump(($this->session->userdata['master']['categories']['query']));
+        // echo "</pre>";
         // echo "testbed";
         // echo "<br>";
         // echo "------------<br>";

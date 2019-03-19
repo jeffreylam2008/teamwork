@@ -23,7 +23,7 @@ class Categories extends CI_Controller
 				$this->_token = $this->session->userdata['login']['token'];
 			}
 			// API call
-			$this->load->library("Component_Login",[$this->_token, "products/items"]);
+			$this->load->library("Component_Login",[$this->_token, "products/categories"]);
 
 			// // login session
 			if(!empty($this->component_login->CheckToken()))
@@ -88,7 +88,9 @@ class Categories extends CI_Controller
 	{
 		// variable initial
 		$_default_per_page = 50;
-	
+		$_API_ITEMS = [];
+		$_API_CATEGORIES = [];
+		
 		if(!empty($page))
 		{
 			$_uri = $this->uri->uri_to_assoc(1);

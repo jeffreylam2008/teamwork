@@ -54,7 +54,7 @@
             },
             "iDisplayLength": <?=$default_per_page?>,
         });
-        table.page(<?=$page-1?>).draw('page');
+        table.page(<?=$page - 1?>).draw('page');
 
         $('#tbl').on( 'page.dt', function () {
             var info = table.page.info();
