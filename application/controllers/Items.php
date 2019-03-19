@@ -359,10 +359,10 @@ class Items extends CI_Controller
 				$this->component_api->CallPost();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
 
-				if(isset($result['message']) || isset($result['code']))
+				if(isset($result['error']['message']) || isset($result['error']['code']))
 				{
 					$alert = "danger";
-					switch($result['code'])
+					switch($result['error']['code'])
 					{
 						case "00000":
 							$alert = "success";
@@ -370,8 +370,8 @@ class Items extends CI_Controller
 					}					
 					
 					$this->load->view('error-handle', [
-						'message' => $result['message'], 
-						'code'=> $result['code'], 
+						'message' => $result['error']['message'], 
+						'code'=> $result['error']['code'], 
 						'alertstyle' => $alert
 					]);
 			
@@ -397,7 +397,6 @@ class Items extends CI_Controller
 
 			if($_api_body != "null")
 			{
-
 				// API data
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/".$item_code);

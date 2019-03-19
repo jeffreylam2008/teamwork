@@ -110,11 +110,10 @@ class Categories extends CI_Controller
 		{
 			$_cate[]['cate_code'] = $val['cate_code'];
 		}
-
 		$this->session->set_userdata('cate_list',$_cate);
 		//set user data
 		$this->session->set_userdata('page',$_page);
-		//$this->session->set_userdata('cate_list',$_data);
+
 
 		// function bar with next, preview and save button
 		$this->load->view('function-bar', [
@@ -219,11 +218,11 @@ class Categories extends CI_Controller
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/has/category/".$cate_code);
 		$this->component_api->CallGet();
-		$_data = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_CATEGORIES = json_decode($this->component_api->GetConfig("result"), true);
 
-		if(isset($_data))
+		if(isset($_API_CATEGORIES))
 		{	
-			if($_data['query'])
+			if($_API_CATEGORIES['query'])
 			{
 				$_comfirm_show = false;	
 			}
@@ -237,7 +236,7 @@ class Categories extends CI_Controller
 			// main view loaded
 			$this->load->view("categories/categories-del-view",[
 				"cate_code" => $cate_code,
-				"data" => $_data,
+				"data" => $_API_CATEGORIES,
 			]);
 		}
 	}
@@ -281,6 +280,7 @@ class Categories extends CI_Controller
 		if(isset($_POST) && !empty($_POST))
 		{
 			$_api_body = json_encode($_POST,true);
+
 			if($_api_body != "null")
 			{
 				// API data
@@ -289,10 +289,10 @@ class Categories extends CI_Controller
 				$this->component_api->CallPost();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
 				
-				if(isset($result['message']) || isset($result['code']))
+				if(isset($result['error']['message']) || isset($result['error']['code']))
 				{
 					$alert = "danger";
-					switch($result['code'])
+					switch($result['error']['code'])
 					{
 						case "00000":
 							$alert = "success";
@@ -300,8 +300,8 @@ class Categories extends CI_Controller
 					}					
 					
 					$this->load->view('error-handle', [
-						'message' => $result['message'], 
-						'code'=> $result['code'], 
+						'message' => $result['error']['message'], 
+						'code'=> $result['error']['code'], 
 						'alertstyle' => $alert
 					]);
 			
