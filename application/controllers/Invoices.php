@@ -181,19 +181,19 @@ class Invoices extends CI_Controller
 			// fatch items API
 			$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
 			$this->component_api->CallGet();
-			$_items_list = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
 			// fatch shop code and shop detail API
 			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
 			$this->component_api->CallGet();
-			$_shopcode_list = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
 			// fatch customer API
 			$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/");
 			$this->component_api->CallGet();
-			$_cust_list = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
 			// fatch payment method API
 			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
 			$this->component_api->CallGet();
-			$_tender = json_decode($this->component_api->GetConfig("result"),true);
+			$_API_PAYMENT = json_decode($this->component_api->GetConfig("result"),true);
 
 			
 			// var_dump($_theprint_data);
@@ -226,10 +226,10 @@ class Invoices extends CI_Controller
 				],
 				"total" => 0,
 				"ajax" => [
-					"items" => $_items_list['query'],
-					"shop_code" => $_shopcode_list['query'],
-					"customers" => $_cust_list['query'],
-					"tender" => $_tender['query']
+					"items" => $_API_ITEMS['query'],
+					"shop_code" => $_API_SHOPS['query'],
+					"customers" => $_API_CUSTOMERS['query'],
+					"tender" => $_API_PAYMENT['query']
 				],
 				"theprint_data" => $_show_transaction_data,
 				"default_per_page" => $_default_per_page
