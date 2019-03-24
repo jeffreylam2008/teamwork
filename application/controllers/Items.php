@@ -60,7 +60,7 @@ class Items extends CI_Controller
 				$this->_inv_header_param["topNav"] = [
 					"isLogin" => true,
 					"username" => $_API_EMP['username'],
-					"employee_code" => $_API_EMP['username'],
+					"employee_code" => $_API_EMP['employee_code'],
 					"shop_code" => $_API_EMP['default_shopcode'],
 					"today" => date("Y-m-d")
 				];

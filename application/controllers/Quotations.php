@@ -57,7 +57,7 @@ class Quotations extends CI_Controller
 				$this->_inv_header_param["topNav"] = [
 					"isLogin" => true,
 					"username" => $_API_EMP['username'],
-					"employee_code" => $_API_EMP['username'],
+					"employee_code" => $_API_EMP['employee_code'],
 					"shop_code" => $_API_EMP['default_shopcode'],
 					"today" => date("Y-m-d"),
 					"prefix" => "QTA"
@@ -115,11 +115,6 @@ class Quotations extends CI_Controller
 		{
 			// set user data
 			$this->session->set_userdata('page',$page);
-
-		
-		// echo "<pre>";
-		// var_dump($_shop_data);
-		// echo "</pre>";
 
 			$this->load->view('function-bar', [
 				"btn" => [
@@ -453,9 +448,9 @@ class Quotations extends CI_Controller
 			 //var_dump($_transaction[$_cur_num]);
 			 //echo "</pre>";
 			$_api_body = json_encode($_transaction[$_cur_num],true);
-			echo "<pre>";
-			echo ($_api_body);
-			echo "</pre>";
+			// echo "<pre>";
+			// echo ($_api_body);
+			// echo "</pre>";
 
 			if($_api_body != null)
 			{
@@ -464,10 +459,11 @@ class Quotations extends CI_Controller
 				$this->component_api->CallPost();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
 
-				if(isset($result['message']) || isset($result['code']))
+				if(isset($result["error"]['code']))
 				{
+					
 					$alert = "danger";
-					switch($result['code'])
+					switch($result["error"]['code'])
 					{
 						case "00000":
 							$alert = "success";
@@ -475,15 +471,15 @@ class Quotations extends CI_Controller
 					}					
 					
 					$this->load->view('error-handle', [
-						'message' => $result['message'], 
-						'code'=> $result['code'], 
+						'message' => $result["error"]['message'], 
+						'code'=> $result["error"]['code'], 
 						'alertstyle' => $alert
 					]);
 					unset($_transaction[$_cur_num]);
 					$this->session->set_userdata('cur_quotationnum',"");
 					$this->session->set_userdata('transaction',$_transaction);
 					
-					//header("Refresh: 10; url='donew/'");
+					header("Refresh: 10; url='donew/'");
 				}
 			}
 		}
@@ -512,17 +508,14 @@ class Quotations extends CI_Controller
 			if($_api_body != "null")
 			{
 				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/".$_cur_num);
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/quotations/".$_cur_num);
 				$this->component_api->CallPatch();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
-			
-			// echo "<pre>";
-			// var_dump($result);
-			// echo "</pre>";
-				if(isset($result['message']) || isset($result['code']))
+
+				if(isset($result["error"]['code']))
 				{
 					$alert = "danger";
-					switch($result['code'])
+					switch($result["error"]['code'])
 					{
 						case "00000":
 							$alert = "success";
@@ -530,12 +523,12 @@ class Quotations extends CI_Controller
 					}					
 					
 					$this->load->view('error-handle', [
-						'message' => $result['message'], 
-						'code'=> $result['code'], 
+						'message' => $result["error"]['message'], 
+						'code'=> $result["error"]['code'], 
 						'alertstyle' => $alert
 					]);
 
-					header("Refresh: 2; url='list/'");
+					header("Refresh: 10; url='list/'");
 					// unset($_transaction[$_cur_invoicenum]);
 					// $this->session->set_userdata('cur_invoicenum',"");
 					// $this->session->set_userdata('transaction',$_transaction);

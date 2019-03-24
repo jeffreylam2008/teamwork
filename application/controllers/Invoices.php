@@ -59,7 +59,7 @@ class Invoices extends CI_Controller
 				$this->_inv_header_param["topNav"] = [
 					"isLogin" => true,
 					"username" => $_API_EMP['username'],
-					"employee_code" => $_API_EMP['username'],
+					"employee_code" => $_API_EMP['employee_code'],
 					"shop_code" => $_API_EMP['default_shopcode'],
 					"today" => date("Y-m-d"),
 					"prefix" => "INV"
@@ -481,14 +481,11 @@ class Invoices extends CI_Controller
 		]);
 		if(!empty($_cur_invoicenum))
 		{
-			// echo "<pre>";
-			// var_dump($_transaction[$_cur_invoicenum]);
-			// echo "</pre>";
 			$_api_body = json_encode($_transaction[$_cur_invoicenum],true);
-			// echo $_cur_invoicenum;
-		// echo "<pre>";
-		// var_dump($_api_body);
-		// echo "</pre>";
+	// echo $_cur_invoicenum;
+	// echo "<pre>";
+	// var_dump($_api_body);
+	// echo "</pre>";
 			if($_api_body != null)
 			{
 
@@ -497,27 +494,25 @@ class Invoices extends CI_Controller
 				$this->component_api->CallPost();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
 				
-			// echo "<pre>";
-			// var_dump($result);
-			// echo "</pre>";
-
-				if(isset($result['message']) || isset($result['code']))
+	// echo "<pre>";
+	// var_dump($result);
+	// echo "</pre>";
+				if(isset($result["error"]['code']))
 				{
 					$alert = "danger";
-					switch($result['code'])
+					switch($result["error"]['code'])
 					{
 						case "00000":
 							$alert = "success";
 						break;
-					}					
-					
+					}
 					$this->load->view('error-handle', [
-						'message' => $result['message'], 
-						'code'=> $result['code'], 
+						'message' => $result["error"]['message'], 
+						'code'=> $result["error"]['code'], 
 						'alertstyle' => $alert
 					]);
 					unset($_transaction[$_cur_invoicenum]);
-					$this->session->set_userdata('cur_invoicenum',"");
+					$this->session->set_userdata('cur_quotationnum',"");
 					$this->session->set_userdata('transaction',$_transaction);
 					
 					header("Refresh: 10; url='donew/'");

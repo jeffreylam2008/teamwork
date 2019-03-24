@@ -40,7 +40,7 @@ class Customers extends CI_Controller
 				$this->_inv_header_param["topNav"] = [
 					"isLogin" => true,
 					"username" => $_employees['username'],
-					"employee_code" => $_employees['username'],
+					"employee_code" => $_employees['employee_code'],
 					"shop_code" => $_employees['default_shopcode'],
 					"today" => date("Y-m-d")
 				];
