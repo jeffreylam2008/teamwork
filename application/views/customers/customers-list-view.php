@@ -16,8 +16,8 @@
         // echo "<pre>";
         // var_dump($paymethod);
         // echo "</pre>";
-            extract($data);
-            foreach($query as $key => $val)
+           
+            foreach($data as $key => $val)
             {
                 echo "<tr>";
                 echo "<td><a href='".$url.$val['cust_code']."'>".$val['cust_code']."</a></td>";

@@ -25,7 +25,7 @@ class Categories extends CI_Controller
 			// API call
 			$this->load->library("Component_Login",[$this->_token, "products/categories"]);
 
-			// // login session
+			// login session
 			if(!empty($this->component_login->CheckToken()))
 			{
 				$this->_username = $this->session->userdata['login']['profile']['username'];
@@ -34,7 +34,6 @@ class Categories extends CI_Controller
 				$this->component_api->CallGet();
 				$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
 				$_API_EMP = $_API_EMP['query'];
-
 
 				// sidebar session
 				$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();

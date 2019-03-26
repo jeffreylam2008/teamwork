@@ -4,51 +4,60 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Customers extends CI_Controller 
 {
 	var $_inv_header_param = [];
-	var $_customer = [];
 	var $_token = "";
+	var $_param = "";
+	var $_customers = [];
 	public function __construct()
 	{
 		parent::__construct();
-		// $this->session->sess_destroy();
-		// dummy data
-		// echo "<pre>";
-		// var_dump(array_keys($_SESSION['master']));
-		// echo "</pre>";
-		// call token from session
-	
 		$this->load->library("Component_Master");
 		if(isset($this->session->userdata['master']))
 		{
+			// $this->session->sess_destroy();
+			// dummy data
+			// echo "<pre>";
+			// var_dump(array_keys($_SESSION['master']));
+			// echo "</pre>";
+			// call token from session
 			if(!empty($this->session->userdata['login']))
 			{
 				$this->_token = $this->session->userdata['login']['token'];
 			}
 			// API call
-			$this->load->library("component_login",[$this->_token, "customers"]);
+			$this->load->library("Component_Login",[$this->_token, "customers"]);
 
 			// login session
 			if(!empty($this->component_login->CheckToken()))
 			{
 				$this->_username = $this->session->userdata['login']['profile']['username'];
 				// fatch master
-				$_employees = $this->component_master->SearchByKey("employees","username",$this->_username);
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employees/".$this->_username);
+				$this->component_api->CallGet();
+				$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+				$_API_EMP = $_API_EMP['query'];
+
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/");
+				$this->component_api->CallGet();
+				$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
+				$this->_customers = $_API_CUSTOMERS['query'];
+		
 
 				// sidebar session
-				$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
+				$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
 
 				// header data
 				$this->_inv_header_param["topNav"] = [
 					"isLogin" => true,
-					"username" => $_employees['username'],
-					"employee_code" => $_employees['employee_code'],
-					"shop_code" => $_employees['default_shopcode'],
+					"username" => $_API_EMP['username'],
+					"employee_code" => $_API_EMP['employee_code'],
+					"shop_code" => $_API_EMP['default_shopcode'],
 					"today" => date("Y-m-d")
 				];
 
 				// Call API here
-				$_nav_list = $this->session->userdata['master']['menu'];
+				$_nav_list = $this->session->userdata['master']['menu']['query'];
 				$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
-				$this->component_sidemenu->SetConfig("active", $_param);
+				$this->component_sidemenu->SetConfig("active", $this->_param);
 				$this->component_sidemenu->Proccess();
 
 				// load header view
@@ -57,7 +66,7 @@ class Customers extends CI_Controller
 					'sideNav_view' => $this->load->view('side-nav', [
 						"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list"),
 						"path"=>$this->component_sidemenu->GetConfig("path"),
-						"param"=> $_param
+						"param"=> $this->_param
 					], TRUE), 
 					'topNav_view' => $this->load->view('top-nav', [
 						"topNav" => $this->_inv_header_param["topNav"]
@@ -75,8 +84,9 @@ class Customers extends CI_Controller
 		}
 
 	}
-	public function index($page=1)
+	public function index($page = "")
 	{
+		// variable initial
 		$_default_per_page = 50;
 		$data = [];
 
@@ -87,25 +97,30 @@ class Customers extends CI_Controller
 		// Get customer on list
 		// $this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/");
 		// $this->component_api->CallGet();
-		$_data = $this->session->userdata['master']['customers'];
+		
+
+		// API data
+		$_API_CUSTOMERS = $this->_customers;
+
 		// Get payment method
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
 		$this->component_api->CallGet();
-		$_paymethod = json_decode($this->component_api->GetConfig("result"),true);
+		$_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
+		$_API_PAYMENTS = $_API_PAYMENTS['query'];
 
 		// API data usage
-		if(!empty($_data["query"]) && !empty($_paymethod['query']))
+		if(!empty($_API_CUSTOMERS) && !empty($_API_PAYMENTS))
 		{
 			// join different table into one array	
-			foreach($_data['query'] as $key => $val)
+			foreach($_API_CUSTOMERS as $key => $val)
 			{
-				if(array_key_exists($val['pm_code'],$_paymethod['query']))
+				if(array_key_exists($val['pm_code'],$_API_PAYMENTS))
 				{
-					$_pm_code = $_data['query'][$key]['pm_code'];
-					$_data['query'][$key]['payment_method'] = $_paymethod['query'][$_pm_code]['payment_method'];
+					$_pm_code = $_API_CUSTOMERS[$key]['pm_code'];
+					$_API_CUSTOMERS[$key]['payment_method'] = $_API_PAYMENTS[$_pm_code]['payment_method'];
 				}
 				else{
-					$_data['query'][$key]['payment_method'] = "";
+					$_API_CUSTOMERS[$key]['payment_method'] = "";
 				}
 			}
 		
@@ -121,8 +136,8 @@ class Customers extends CI_Controller
 
 			// load main view
 			$this->load->view('customers/customers-list-view', [
-				'data' => $_data,
-				'paymethod' => $_paymethod,
+				'data' => $_API_CUSTOMERS,
+				'paymethod' => $_API_PAYMENTS,
 				"url" => base_url("customers/edit/"),
 				"default_per_page" => $_default_per_page,
 				"page" => $page
@@ -145,21 +160,25 @@ class Customers extends CI_Controller
 			// Get customer on list by cust_code
 
 			// Get customer on list
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/");
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/".$cust_code);
 			$this->component_api->CallGet();
-			$_data = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_CUSTOMERS = $_API_CUSTOMERS['query'];
 			
-			//echo "<pre>";
-			//var_dump($_data);
-			//echo "</pre>";
-			// API data usage
-			if(!empty($_data["query"]) && !empty($cust_code) )
+
+			foreach($this->_customers as $key => $val)
 			{
-				$_all = array_column($_data['query'], "cust_code");
+				$_new_customer[$val['cust_code']] = "";
+			}
+
+			// API data usage
+			if(!empty($_API_CUSTOMERS) && !empty($cust_code) )
+			{
+				$_all = array_column($_API_CUSTOMERS, "cust_code");
 
 				// search key
 				$_key = array_search(
-					$cust_code, array_column($_data['query'], "cust_code")
+					$cust_code, array_column($_API_CUSTOMERS, "cust_code")
 				);
 				
 				if($_key !== false)
@@ -183,9 +202,9 @@ class Customers extends CI_Controller
 					// echo "</pre>";
 					// data for items type selection
 
-					foreach($_data['query'] as $key => $val)
+					foreach($_API_CUSTOMERS as $key => $val)
 					{
-						if($_data['query'][$key]['cust_code'] === $cust_code)
+						if($val['cust_code'] === $cust_code)
 						{
 							echo $key;
 						}
