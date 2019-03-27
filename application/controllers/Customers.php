@@ -84,14 +84,24 @@ class Customers extends CI_Controller
 		}
 
 	}
-	public function index($page = "")
+	public function index($_page = "")
 	{
 		// variable initial
 		$_default_per_page = 50;
 		$data = [];
 
+		if(!empty($page))
+		{
+			$_uri = $this->uri->uri_to_assoc(1);
+			$_page = $_uri["page"];
+		}
+		else
+		{
+			$_page = 1;
+		}
+
 		// set user data
-		$this->session->set_userdata('page',$page);
+		$this->session->set_userdata('page',$_page);
 
 		// Call API here
 		// Get customer on list
@@ -140,7 +150,7 @@ class Customers extends CI_Controller
 				'paymethod' => $_API_PAYMENTS,
 				"url" => base_url("customers/edit/"),
 				"default_per_page" => $_default_per_page,
-				"page" => $page
+				"page" => $_page
 			]);
 			$this->load->view('footer');
 		}
@@ -159,10 +169,6 @@ class Customers extends CI_Controller
 		if(!empty($cust_code))
 		{
 			// Call API here
-			// Get customer on list by cust_code
-
-			// Get customer on list
-
 		
 			// API data usage
 			if(!empty($this->_customers) && !empty($cust_code) )
@@ -190,11 +196,11 @@ class Customers extends CI_Controller
 						$_previous_disable = "disabled";
 						$_previous = 0;
 					}
-					 //echo "<pre>";
-					 //var_dump ($_all);
-					 //echo "</pre>";
+	// echo "<pre>";
+	// var_dump($this->_customers[$_key]);
+	// echo "</pre>";
 					// data for items type selection
-
+					
 					
 
 					// function bar with next, preview and save button

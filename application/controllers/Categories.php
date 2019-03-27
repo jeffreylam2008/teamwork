@@ -83,14 +83,14 @@ class Categories extends CI_Controller
 			redirect(base_url("master"),"refresh");
 		}
 	}
-	public function index($page = "")
+	public function index($_page = "")
 	{
 		// variable initial
 		$_default_per_page = 50;
 		$_API_ITEMS = [];
 		$_API_CATEGORIES = [];
 		
-		if(!empty($page))
+		if(!empty($_page))
 		{
 			$_uri = $this->uri->uri_to_assoc(1);
 			$_page = $_uri["page"];

@@ -95,16 +95,16 @@ class Quotations extends CI_Controller
 		}			
 	}
 
-	public function qualist($page="")
+	public function qualist($_page="")
 	{
 		// variable initial
 		$_default_per_page = 50;
 		$_API_QUOTA = [];
 		$_shopcode_list = [];
 		// set page
-		if(empty($page))
+		if(empty($_page))
 		{
-			$page = 1;
+			$_page = 1;
 		}
 		// fatch quotation API
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/quotations/");
@@ -114,7 +114,7 @@ class Quotations extends CI_Controller
 		if(!empty($_API_QUOTA))
 		{
 			// set user data
-			$this->session->set_userdata('page',$page);
+			$this->session->set_userdata('page',$_page);
 
 			$this->load->view('function-bar', [
 				"btn" => [
@@ -126,7 +126,7 @@ class Quotations extends CI_Controller
 				'data' => $_API_QUOTA, 
 				"url" => base_url("quotations/edit/"),
 				"default_per_page" => $_default_per_page,
-				"page" => $page
+				"page" => $_page
 			]);
 		}
 	}

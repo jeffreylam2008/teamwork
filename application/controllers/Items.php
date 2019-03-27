@@ -101,7 +101,7 @@ class Items extends CI_Controller
 	 * Item page display 
 	 * 
 	 */
-	public function index($page="")
+	public function index($_page="")
 	{	
 		// variable initial
 		$_default_per_page = 50;
@@ -109,7 +109,7 @@ class Items extends CI_Controller
 		$_API_CATEGORIES = [];
 
 		// page initial
-		if(!empty($page))
+		if(!empty($_page))
 		{
 			$_uri = $this->uri->uri_to_assoc(1);
 			$_page = $_uri["page"];
