@@ -149,9 +149,11 @@ class Customers extends CI_Controller
 	{
 		//$this->session->sess_destroy();
 		$_data = [];
-		
+		$_new_customer = [];
+		$_previous_disable = "";
+		$_next_disable = "";
 		// user data
-		$_page = $this->session->userdata("page");
+		$_page = 1;
 
 		
 		if(!empty($cust_code))
@@ -160,25 +162,16 @@ class Customers extends CI_Controller
 			// Get customer on list by cust_code
 
 			// Get customer on list
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/".$cust_code);
-			$this->component_api->CallGet();
-			$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_CUSTOMERS = $_API_CUSTOMERS['query'];
-			
 
-			foreach($this->_customers as $key => $val)
-			{
-				$_new_customer[$val['cust_code']] = "";
-			}
-
+		
 			// API data usage
-			if(!empty($_API_CUSTOMERS) && !empty($cust_code) )
+			if(!empty($this->_customers) && !empty($cust_code) )
 			{
-				$_all = array_column($_API_CUSTOMERS, "cust_code");
-
+				$_all = array_column($this->_customers, "cust_code");
+				
 				// search key
 				$_key = array_search(
-					$cust_code, array_column($_API_CUSTOMERS, "cust_code")
+					$cust_code, array_column($this->_customers, "cust_code")
 				);
 				
 				if($_key !== false)
@@ -197,28 +190,22 @@ class Customers extends CI_Controller
 						$_previous_disable = "disabled";
 						$_previous = 0;
 					}
-					// echo "<pre>";
-					// var_dump ($_all);
-					// echo "</pre>";
+					 //echo "<pre>";
+					 //var_dump ($_all);
+					 //echo "</pre>";
 					// data for items type selection
 
-					foreach($_API_CUSTOMERS as $key => $val)
-					{
-						if($val['cust_code'] === $cust_code)
-						{
-							echo $key;
-						}
-					}
+					
 
-					// // function bar with next, preview and save button
-					// $this->load->view('function-bar', [
-					// 	"btn" => [
-					// 		["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers/page/'.$_page), "style" => "", "show" => true],
-					// 		["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "", "show" => true],
-					// 		["name" => "Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/customers/edit/".$_all[$_previous]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
-					// 		["name" => "Next", "type"=>"button", "id" => "next", "url"=> base_url("/customers/edit/".$_all[$_next]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
-					// 	]
-					// ]);
+					// function bar with next, preview and save button
+					$this->load->view('function-bar', [
+						"btn" => [
+							["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers/page/'.$_page), "style" => "", "show" => true],
+							["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "", "show" => true],
+					 		["name" => "Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/customers/edit/".$_all[$_previous]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
+					 		["name" => "Next", "type"=>"button", "id" => "next", "url"=> base_url("/customers/edit/".$_all[$_next]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
+					 	]
+					]);
 
 					// load main view
 					//$this->load->view('customers/customers-edit-view', [
