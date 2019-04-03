@@ -164,7 +164,7 @@ class Items extends CI_Controller
 				"data" => $_API_ITEMS,
 				"user_auth" => true,
 				"default_per_page" => $_default_per_page,
-				"page" => $page
+				"page" => $_page
 			]);
 			$this->load->view("items/items-create-view",[
 				"save_url" => base_url("/products/items/save/"),

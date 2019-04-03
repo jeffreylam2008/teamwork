@@ -196,9 +196,9 @@ class Customers extends CI_Controller
 						$_previous_disable = "disabled";
 						$_previous = 0;
 					}
-	// echo "<pre>";
-	// var_dump($this->_customers[$_key]);
-	// echo "</pre>";
+	echo "<pre>";
+	var_dump($this->_customers[$_key]);
+	echo "</pre>";
 					// data for items type selection
 					
 					
@@ -214,11 +214,11 @@ class Customers extends CI_Controller
 					]);
 
 					// load main view
-					//$this->load->view('customers/customers-edit-view', [
-					//	"save_url" => base_url("customers/edit/save/"),
-					// 	'data' => $_data
-					//]);
-					//$this->load->view('footer');
+					$this->load->view('customers/customers-edit-view', [
+						"save_url" => base_url("customers/edit/save/"),
+						'data' => $this->_customers[$_key]
+					]);
+					$this->load->view('footer');
 				}
 			}
 		}
