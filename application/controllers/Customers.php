@@ -196,9 +196,9 @@ class Customers extends CI_Controller
 						$_previous_disable = "disabled";
 						$_previous = 0;
 					}
-	echo "<pre>";
-	var_dump($this->_customers[$_key]);
-	echo "</pre>";
+	// echo "<pre>";
+	// var_dump($this->_customers[$_key]);
+	// echo "</pre>";
 					// data for items type selection
 					
 					

@@ -126,3 +126,7 @@ $route['login/process'] = "login/dologin";
 
 // Master file load
 $route['master'] = 'master/index';
+
+
+// Master file load
+$route['testbed'] = 'testbed/index';
