@@ -7,12 +7,14 @@ class Customers extends CI_Controller
 	var $_token = "";
 	var $_param = "";
 	var $_customers = [];
+	var $_pm = [];
+	var $_pt = [];
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->library("Component_Master");
-		if(isset($this->session->userdata['master']))
-		{
+		// $this->load->library("Component_Master");
+		// if(isset($this->session->userdata['master']))
+		// {
 			// $this->session->sess_destroy();
 			// dummy data
 			// echo "<pre>";
@@ -41,6 +43,15 @@ class Customers extends CI_Controller
 				$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
 				$this->_customers = $_API_CUSTOMERS['query'];
 		
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/method/");
+				$this->component_api->CallGet();
+				$_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
+				$this->_pm = $_PAYMENT_METHOD['query'];
+
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/term/");
+				$this->component_api->CallGet();
+				$_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
+				$this->_pt = $_PAYMENT_TERM['query'];
 
 				// sidebar session
 				$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
@@ -77,14 +88,14 @@ class Customers extends CI_Controller
 			{
 				redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
 			}
-		}
-		else
-		{
-			redirect(base_url("master"),"refresh");
-		}
+		// }
+		// else
+		// {
+		// 	redirect(base_url("master"),"refresh");
+		// }
 
 	}
-	public function index($_page = "")
+	public function index($_page = 1)
 	{
 		// variable initial
 		$_default_per_page = 50;
@@ -199,10 +210,6 @@ class Customers extends CI_Controller
 	// echo "<pre>";
 	// var_dump($this->_customers[$_key]);
 	// echo "</pre>";
-					// data for items type selection
-					
-					
-
 					// function bar with next, preview and save button
 					$this->load->view('function-bar', [
 						"btn" => [
@@ -216,7 +223,9 @@ class Customers extends CI_Controller
 					// load main view
 					$this->load->view('customers/customers-edit-view', [
 						"save_url" => base_url("customers/edit/save/"),
-						'data' => $this->_customers[$_key]
+						'data' => $this->_customers[$_key],
+						'payment_method' => $this->_pm,
+						'payment_term' => $this->_pt
 					]);
 					$this->load->view('footer');
 				}

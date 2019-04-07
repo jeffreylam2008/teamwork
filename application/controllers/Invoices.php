@@ -10,9 +10,9 @@ class Invoices extends CI_Controller
 	{
 		parent::__construct();
 		$_API_EMP = [];
-		$this->load->library("Component_Master");
-		if(isset($this->session->userdata['master']))
-		{
+		// $this->load->library("Component_Master");
+		// if(isset($this->session->userdata['master']))
+		// {
 			// dummy data
 			// $this->session->sess_destroy();
 			// echo "<pre>";
@@ -91,11 +91,11 @@ class Invoices extends CI_Controller
 			{
 				redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
 			}
-		}
-		else
-		{
-			redirect(base_url("master"),"refresh");
-		}			
+		// }
+		// else
+		// {
+		// 	redirect(base_url("master"),"refresh");
+		// }			
 	}
 	public function index()
 	{

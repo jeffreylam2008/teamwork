@@ -13,7 +13,7 @@
     <div class="card-body">
 
         <div class="form-row">
-            <div class="col-2">
+            <div class="col-6">
                 <label for="t1">Customer Shop</label>
                 <input type="text" class="form-control form-control-sm" name="i-name" placeholder="Name" value="<?=$name?>">
             </div>
@@ -22,11 +22,11 @@
         <div class="form-row">
             <div class="col-2">
                 <label for="t1">Primary Attn </label>
-                <input type="text" class="form-control form-control-sm" name="i-attn_1" placeholder="Attn" value="<?=$attn_1?>">
+                <input type="text" class="form-control form-control-sm" name="i-attn_1" placeholder="Primary Attn" value="<?=$attn_1?>">
             </div>
             <div class="col-2">
                 <label for="t1">Secondary Attn </label>
-                <input type="text" class="form-control form-control-sm" name="i-attn_2" placeholder="Attn" value="<?=$attn_2?>">
+                <input type="text" class="form-control form-control-sm" name="i-attn_2" placeholder="Secondary Attn" value="<?=$attn_2?>">
             </div>
         </div>
 
@@ -77,9 +77,20 @@
           <div class="col-3">
                 <label for="t1">Payment Method</label>
                 <select class="custom-select custom-select-sm" id="i-paymentmethod" >
-                    <option value="-1">Choose...</option>
                     <?php 
-                        foreach($ajax["tender"] as $k => $v):
+                        if(!empty($pm_code)):
+                    ?>
+                        <option value="<?=$pm_code?>"><?=$payment_method[$pm_code]["payment_method"]?></option>
+                    <?php
+                        else:
+                    ?>
+                        <option value="-1">Choose...</option>
+                    <?php
+                        endif;
+                    ?>
+                    
+                    <?php 
+                        foreach($payment_method as $k => $v):
                     ?>
                             <option value="<?=$v['pm_code']?>"><?=$v['payment_method']?></option>
                     <?php
@@ -88,21 +99,16 @@
                 </select>
             </div>
         </div>
-
-
+        <?php 
+            $pt = "";
+            if(!empty($payment_term[$pt_code]['term'])){
+                $pt = $payment_term[$pt_code]['term'];
+            }
+        ?>
         <div class="form-row">
             <div class="col-6">
-                <label>Category</label>                
-                <a class='btn btn-outline-primary btn-sm' href='' type='button'>New</a>
-                <select class="form-control" name="i-category">
-                
-                </select>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="col-6">
-                <label>Unit</label>
-                <input type="text" class="form-control form-control-sm" name="i-unit" placeholder="i.e. pack, 4x3L etc" value="">
+                <label for="t1">Payment Term</label>
+                <textarea class="form-control form-control-sm" placeholder="Type Something" name="i-payment_term" rows="2"><?= trim($pt)?></textarea>
             </div>
         </div>
     </div>

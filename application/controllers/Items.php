@@ -11,9 +11,9 @@ class Items extends CI_Controller
 	{
 		parent::__construct();
 		$_API_EMP = [];
-		$this->load->library("Component_Master");
-		if(isset($this->session->userdata['master']))
-		{
+		// $this->load->library("Component_Master");
+		// if(isset($this->session->userdata['master']))
+		// {
 			// dummy data
 			//$this->session->sess_destroy();
 			// echo "<pre>";
@@ -90,34 +90,23 @@ class Items extends CI_Controller
 			{
 				redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
 			}
-		}
-		else
-		{
-			redirect(base_url("master"),"refresh");
-		}
+		// }
+		// else
+		// {
+		// 	redirect(base_url("master"),"refresh");
+		// }
 	}
 
 	/** 
 	 * Item page display 
 	 * 
 	 */
-	public function index($_page="")
+	public function index($_page = 1)
 	{	
 		// variable initial
 		$_default_per_page = 50;
 		$_API_ITEMS = [];
 		$_API_CATEGORIES = [];
-
-		// page initial
-		if(!empty($_page))
-		{
-			$_uri = $this->uri->uri_to_assoc(1);
-			$_page = $_uri["page"];
-		}
-		else
-		{
-			$_page = 1;
-		}
 
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");

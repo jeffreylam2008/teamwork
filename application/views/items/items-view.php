@@ -40,7 +40,6 @@
                     echo "</tr>";
                 }
             }
-            echo $page;
         ?>
     </tbody>
 </table>

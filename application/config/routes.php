@@ -116,6 +116,7 @@ $route['administration/payments'] = 'payments';
 // customers
 $route['customers'] = 'customers/index';
 $route['customers/edit/(:any)'] = 'customers/edit/$1';
+$route['customers/page/(:any)'] = 'customers/index/$1';
 
 // Login
 $route['login'] = 'login/index';
