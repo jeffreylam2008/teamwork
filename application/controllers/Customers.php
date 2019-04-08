@@ -66,10 +66,14 @@ class Customers extends CI_Controller
 				];
 
 				// Call API here
-				$_nav_list = $this->session->userdata['master']['menu']['query'];
-				$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
+				$this->component_api->CallGet();
+				$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+				$_API_MENU = $_API_MENU['query'];
+				$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
 				$this->component_sidemenu->SetConfig("active", $this->_param);
 				$this->component_sidemenu->Proccess();
+
 
 				// load header view
 				$this->load->view('header',[
@@ -99,17 +103,16 @@ class Customers extends CI_Controller
 	{
 		// variable initial
 		$_default_per_page = 50;
-		$data = [];
-
-		if(!empty($page))
-		{
-			$_uri = $this->uri->uri_to_assoc(1);
-			$_page = $_uri["page"];
-		}
-		else
-		{
-			$_page = 1;
-		}
+		$_API_CUSTOMERS = [];
+		// if(!empty($page))
+		// {
+		// 	$_uri = $this->uri->uri_to_assoc(1);
+		// 	$_page = $_uri["page"];
+		// }
+		// else
+		// {
+		// 	$_page = 1;
+		// }
 
 		// set user data
 		$this->session->set_userdata('page',$_page);
@@ -123,15 +126,17 @@ class Customers extends CI_Controller
 		// API data
 		$_API_CUSTOMERS = $this->_customers;
 
+		
 		// Get payment method
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/method/");
 		$this->component_api->CallGet();
 		$_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
 		$_API_PAYMENTS = $_API_PAYMENTS['query'];
-
+		
 		// API data usage
-		if(!empty($_API_CUSTOMERS) && !empty($_API_PAYMENTS))
+		if(!empty($_API_CUSTOMERS) >= 1 && !empty($_API_PAYMENTS))
 		{
+
 			// join different table into one array	
 			foreach($_API_CUSTOMERS as $key => $val)
 			{
@@ -145,9 +150,7 @@ class Customers extends CI_Controller
 				}
 			}
 		
-		// echo "<pre>";
-		// var_dump($_data);
-		// echo "</pre>";
+		
 			// load function bar view
 			$this->load->view('function-bar', [
 				"btn" => [

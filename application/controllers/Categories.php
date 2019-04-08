@@ -55,8 +55,11 @@ class Categories extends CI_Controller
 					"today" => date("Y-m-d")
 				];
 				// fatch side bar API
-				$_nav_list = $this->session->userdata['master']['menu']['query'];
-				$this->component_sidemenu->SetConfig("nav_list", $_nav_list);
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
+				$this->component_api->CallGet();
+				$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+				$_API_MENU = $_API_MENU['query'];
+				$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
 				$this->component_sidemenu->SetConfig("active", $this->_param);
 				$this->component_sidemenu->Proccess();
 
@@ -83,22 +86,22 @@ class Categories extends CI_Controller
 		// 	redirect(base_url("master"),"refresh");
 		// }
 	}
-	public function index($_page = "")
+	public function index($_page = 1)
 	{
 		// variable initial
 		$_default_per_page = 50;
 		$_API_ITEMS = [];
 		$_API_CATEGORIES = [];
 		
-		if(!empty($_page))
-		{
-			$_uri = $this->uri->uri_to_assoc(1);
-			$_page = $_uri["page"];
-		}
-		else
-		{
-			$_page = 1;
-		}
+		// if(!empty($_page))
+		// {
+		// 	$_uri = $this->uri->uri_to_assoc(1);
+		// 	$_page = $_uri["page"];
+		// }
+		// else
+		// {
+		// 	$_page = 1;
+		// }
 		
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
