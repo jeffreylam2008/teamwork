@@ -1,7 +1,7 @@
 <?php
-    echo "<pre>";
-    var_dump($data);
-    echo "</pre>";
+    // echo "<pre>";
+    // var_dump($data);
+    // echo "</pre>";
     extract($data);
 ?>
 
@@ -45,6 +45,16 @@
             </div>
         </div>
 
+        <div class="form-row">
+            <div class="col-3">
+                <label for="t1">Primary Email</label>
+                <input type="text" class="form-control form-control-sm" name="i-email_1" placeholder="Primary Email" value="<?=$email_2?>">
+            </div>
+            <div class="col-3">
+                <label for="t1">Secondary Email</label>
+                <input type="text" class="form-control form-control-sm" name="i-email_2" placeholder="Secondary Email" value="<?=$email_2?>">
+            </div>
+        </div>
         <div class="form-row">
             <div class="col-3">
                 <label for="t1">Phone 1</label>
@@ -101,12 +111,12 @@
         </div>
         <?php 
             $pt = "";
-            if(!empty($payment_term[$pt_code]['term'])){
-                $pt = $payment_term[$pt_code]['term'];
+            if(!empty($payment_term[$pt_code]['terms'])){
+                $pt = $payment_term[$pt_code]['terms'];
             }
         ?>
         <div class="form-row">
-            <div class="col-6">
+            <div class="col-3">
                 <label for="t1">Payment Term</label>
                 <textarea class="form-control form-control-sm" placeholder="Type Something" name="i-payment_term" rows="2"><?= trim($pt)?></textarea>
             </div>
