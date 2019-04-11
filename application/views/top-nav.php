@@ -5,21 +5,21 @@
         <div class="navbar-header">
             <a class="navbar-brand" href="#"><img src="<?=base_url('assets/img/logo-ex-4.png');?>" width="50" height="50" alt=""></a>
         </div>
-        <!-- <button type="button" id="sidebarCollapse" class="btn btn-primary navbar-btn">
+ <button type="button" id="sidebarCollapse" class="btn btn-primary navbar-btn">
             <i class="fas fa-bars"></i>
         </button> 
-         -->
-        <!-- <ul class="navbar-nav mr-auto">
+
+     <ul class="navbar-nav mr-auto">
             <li>
             <form class="form-inline">
                 <input class="form-control form-control-sm" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success btn-sm" type="submit"><i class="fas fa-search"></i></button>
         </form>
             </li>
-        </ul> -->
+        </ul> 
 
 
-        <!-- <ul class="nav navbar-nav navbar-right">
+         <ul class="nav navbar-nav navbar-right">
 
             <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -56,6 +56,7 @@
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
             <div class="nav-item dropdown">
+                <?=$topNav['username']?>
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class="far fa-user-circle fa-2x"></i>
                 </a>

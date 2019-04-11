@@ -25,13 +25,19 @@ class Customers extends CI_Controller
 			{
 				$this->_token = $this->session->userdata['login']['token'];
 			}
-			// API call
+			
 			$this->load->library("Component_Login",[$this->_token, "customers"]);
 
 			// login session
 			if(!empty($this->component_login->CheckToken()))
 			{
+				echo "<pre>";
+				var_dump($this->session->userdata['login']);
+				echo "</pre>";
+				
 				$this->_username = $this->session->userdata['login']['profile']['username'];
+
+				// API call
 				// fatch master
 				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employees/".$this->_username);
 				$this->component_api->CallGet();
