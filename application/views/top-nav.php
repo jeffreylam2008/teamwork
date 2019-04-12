@@ -54,16 +54,17 @@
 
     <div class="navbar-collapse collapse w-100 order-2 dual-collapse2">
         <ul class="navbar-nav ml-auto">
+           
             <li class="nav-item">
             <div class="nav-item dropdown">
-                <?=$topNav['username']?>
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="far fa-user-circle fa-2x"></i>
+                    <i class="far fa-user-circle fa-2x"></i>
                 </a>
-                <div class="dropdown-menu  dropdown-menu-right" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="#">Profile</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">Logout</a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                    <span class="dropdown-header"><?=$topNav['username']?></span>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Profile</a>
+                    <a class="dropdown-item" href="#">Logout</a>
                 </div>
             </div>
             </li>
