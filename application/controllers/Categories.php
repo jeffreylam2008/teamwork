@@ -93,16 +93,6 @@ class Categories extends CI_Controller
 		$_API_ITEMS = [];
 		$_API_CATEGORIES = [];
 		
-		// if(!empty($_page))
-		// {
-		// 	$_uri = $this->uri->uri_to_assoc(1);
-		// 	$_page = $_uri["page"];
-		// }
-		// else
-		// {
-		// 	$_page = 1;
-		// }
-		
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
 		$this->component_api->CallGet();

@@ -197,7 +197,7 @@ class Quotations extends CI_Controller
 				$this->component_api->CallGet();
 				$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
 				// fatch payment method API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/method/");
 				$this->component_api->CallGet();
 				$_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
 				
@@ -308,7 +308,7 @@ class Quotations extends CI_Controller
 				$this->component_api->CallGet();
 				$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
 				// fatch payment method API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/");
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/method/");
 				$this->component_api->CallGet();
 				$_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
 

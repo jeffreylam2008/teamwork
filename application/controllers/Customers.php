@@ -31,9 +31,9 @@ class Customers extends CI_Controller
 			// login session
 			if(!empty($this->component_login->CheckToken()))
 			{
-				echo "<pre>";
-				var_dump($this->session->userdata['login']);
-				echo "</pre>";
+				// echo "<pre>";
+				// var_dump($this->session->userdata['login']);
+				// echo "</pre>";
 				
 				$this->_username = $this->session->userdata['login']['profile']['username'];
 
@@ -110,29 +110,13 @@ class Customers extends CI_Controller
 		// variable initial
 		$_default_per_page = 50;
 		$_API_CUSTOMERS = [];
-		// if(!empty($page))
-		// {
-		// 	$_uri = $this->uri->uri_to_assoc(1);
-		// 	$_page = $_uri["page"];
-		// }
-		// else
-		// {
-		// 	$_page = 1;
-		// }
 
 		// set user data
 		$this->session->set_userdata('page',$_page);
 
-		// Call API here
-		// Get customer on list
-		// $this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/");
-		// $this->component_api->CallGet();
-		
-
 		// API data
 		$_API_CUSTOMERS = $this->_customers;
 
-		
 		// Get payment method
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/method/");
 		$this->component_api->CallGet();
@@ -160,17 +144,22 @@ class Customers extends CI_Controller
 			// load function bar view
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=>"", "style" => "", "show" => true, "extra" => ""]
+					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => true, "extra" => "data-toggle='modal' data-target='#modal01'"]
 				]
 			]);
 
 			// load main view
 			$this->load->view('customers/customers-list-view', [
 				'data' => $_API_CUSTOMERS,
-				'paymethod' => $_API_PAYMENTS,
+				//'payment_method' => $this->_pm,
 				"url" => base_url("customers/edit/"),
 				"default_per_page" => $_default_per_page,
 				"page" => $_page
+			]);
+			$this->load->view("customers/customers-create-view",[
+				"save_url" => base_url("/products/customers/save/"),
+				'payment_method' => $this->_pm,
+				'payment_term' => $this->_pt
 			]);
 			$this->load->view('footer');
 		}
@@ -216,9 +205,9 @@ class Customers extends CI_Controller
 						$_previous_disable = "disabled";
 						$_previous = 0;
 					}
-	// echo "<pre>";
-	// var_dump($this->_customers[$_key]);
-	// echo "</pre>";
+	echo "<pre>";
+	var_dump($this->_customers[$_key]);
+	echo "</pre>";
 					// function bar with next, preview and save button
 					$this->load->view('function-bar', [
 						"btn" => [
@@ -249,5 +238,9 @@ class Customers extends CI_Controller
 				'alertstyle' => $alert
 			]);
 		}
+	}
+	public function saveedit()
+	{
+
 	}
 }
