@@ -15,14 +15,14 @@
             <div class="form-row">
                 <div class="col-6">
                     <label for="t1">Customer Shop</label>
-                    <input type="text" class="form-control form-control-sm" name="i-name" placeholder="Name" value="<?=$name?>">
+                    <input type="text" class="form-control form-control-sm" name="i-name" id="i-name" placeholder="Name" value="<?=$name?>">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="col-2">
                     <label for="t1">Primary Attn </label>
-                    <input type="text" class="form-control form-control-sm" name="i-attn_1" placeholder="Primary Attn" value="<?=$attn_1?>">
+                    <input type="text" class="form-control form-control-sm" name="i-attn_1" id="i-attn_1" placeholder="Primary Attn" value="<?=$attn_1?>">
                 </div>
                 <div class="col-2">
                     <label for="t1">Secondary Attn </label>
@@ -33,7 +33,7 @@
             <div class="form-row">
                 <div class="col-4">
                     <label for="">Mail Address</label>
-                    <input type="text" class="form-control form-control-sm" name="i-mail_addr" placeholder="Type Something" value="<?=$mail_addr?>">
+                    <input type="text" class="form-control form-control-sm" name="i-mail_addr" id="i-mail_addr" placeholder="Type Something" value="<?=$mail_addr?>">
                 </div>
                 <div class="col-4">
                     <label for="">Shop Address</label>
@@ -145,6 +145,14 @@
     </div>
 </form>
 <script>
+ $( "#form1" ).sisyphus( {
+    locationBased: false,
+    timeout: 5,
+    autoRelease: true,
+    onSave: function(){
+        console.log("saved")
+    }
+});
 $("#save").click(function(){
     $.validator.addMethod("selectValid", function(value, element, arg){
         return arg !== value;
@@ -153,23 +161,14 @@ $("#save").click(function(){
     var isvalid = $("#form1").validate({
         rules: {
             // simple rule, converted to {required:true}
-            "i-itemcode": {
-                required: true,
-                minlength: 2
-            },
-            "i-chiname": {
+            "i-name": {
                 required: true
             },
-            "i-price" : {
-                required: true,
-                number: true
+            "i-attn_1": {
+                required: true
             },
-            "i-specialprice" : {
-                required: true,
-                number: true
-            },
-            "i-category": {
-                selectValid : "null"
+            "i-mail_addr" : {
+                required: true
             }
         }
     });
