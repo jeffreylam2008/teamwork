@@ -234,7 +234,8 @@ class Items extends CI_Controller
 				$this->load->view('function-bar', [
 					"btn" => [
 						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/products/items/page/'.$_page), "style" => "", "show" => true],
-						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "", "show" => true],
+						["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "" , "style" => "btn btn-outline-secondary", "show" => true],
+						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
 						["name" => "Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/products/items/edit/".$_all[$_previous]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
 						["name" => "Next", "type"=>"button", "id" => "next", "url"=> base_url("/products/items/edit/".$_all[$_next]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
 					]

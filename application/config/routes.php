@@ -118,6 +118,8 @@ $route['customers'] = 'customers/index';
 $route['customers/edit/(:any)'] = 'customers/edit/$1';
 $route['customers/page/(:any)'] = 'customers/index/$1';
 
+$route[] = '';
+
 // Login
 $route['login'] = 'login/index';
 $route['login/process'] = "login/dologin";
@@ -131,3 +133,5 @@ $route['master'] = 'master/index';
 
 // Master file load
 $route['testbed'] = 'testbed/index';
+
+

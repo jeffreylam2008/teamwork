@@ -109,12 +109,6 @@
                     </select>
                 </div>
             </div>
-            <?php 
-                // $pt = "";
-                // if(!empty($payment_term[$pt_code]['terms'])){
-                //     $pt = $payment_term[$pt_code]['terms'];
-                // }
-            ?>
             <div class="form-row">
                 <div class="col-3">
                     <label for="t1">Payment Terms</label>
@@ -145,14 +139,13 @@
     </div>
 </form>
 <script>
- $( "#form1" ).sisyphus( {
-    locationBased: false,
-    timeout: 5,
-    autoRelease: true,
-    onSave: function(){
-        console.log("saved")
-    }
+
+$(function() {
+    $("#reset").click(function(){
+        $("#form1").trigger("reset");
+    });
 });
+// form validation
 $("#save").click(function(){
     $.validator.addMethod("selectValid", function(value, element, arg){
         return arg !== value;
