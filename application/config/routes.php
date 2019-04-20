@@ -117,8 +117,8 @@ $route['administration/payments'] = 'payments';
 $route['customers'] = 'customers/index';
 $route['customers/edit/(:any)'] = 'customers/edit/$1';
 $route['customers/page/(:any)'] = 'customers/index/$1';
-
-$route[] = '';
+$route['customers/edit/save/(:any)'] = 'customers/saveedit/$1';
+$route['customers/edit'] = 'error_404';
 
 // Login
 $route['login'] = 'login/index';

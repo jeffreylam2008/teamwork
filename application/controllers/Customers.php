@@ -157,7 +157,7 @@ class Customers extends CI_Controller
 				"page" => $_page
 			]);
 			$this->load->view("customers/customers-create-view",[
-				"save_url" => base_url("/products/customers/save/"),
+				"save_url" => base_url("customers/save/"),
 				'payment_method' => $this->_pm,
 				'payment_term' => $this->_pt
 			]);
@@ -221,7 +221,7 @@ class Customers extends CI_Controller
 
 					// load main view
 					$this->load->view('customers/customers-edit-view', [
-						"save_url" => base_url("customers/edit/save/"),
+						"save_url" => base_url("customers/edit/save/".$cust_code),
 						'data' => $this->_customers[$_key],
 						'payment_method' => $this->_pm,
 						'payment_term' => $this->_pt
@@ -242,6 +242,8 @@ class Customers extends CI_Controller
 	}
 	public function saveedit()
 	{
-
+		echo "<pre>";
+		var_dump($_POST);
+		echo "</pre>";
 	}
 }

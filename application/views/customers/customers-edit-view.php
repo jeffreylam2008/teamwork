@@ -5,7 +5,7 @@
     extract($data);
 ?>
 
-<form id="form1" name="form1" method="POST" action="">
+<form id="form1" name="form1" method="POST" action="<?=$save_url?>">
     <div class="card">
         <div class="card-header">
             <h2> Customer: <u><?=$cust_code?></u></h2>
@@ -14,14 +14,14 @@
 
             <div class="form-row">
                 <div class="col-6">
-                    <label for="t1">Customer Shop</label>
+                    <label for="t1">Customer Shop *</label>
                     <input type="text" class="form-control form-control-sm" name="i-name" id="i-name" placeholder="Name" value="<?=$name?>">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="col-2">
-                    <label for="t1">Primary Attn </label>
+                    <label for="t1">Primary Attn *</label>
                     <input type="text" class="form-control form-control-sm" name="i-attn_1" id="i-attn_1" placeholder="Primary Attn" value="<?=$attn_1?>">
                 </div>
                 <div class="col-2">
@@ -32,7 +32,7 @@
 
             <div class="form-row">
                 <div class="col-4">
-                    <label for="">Mail Address</label>
+                    <label for="">Mail Address *</label>
                     <input type="text" class="form-control form-control-sm" name="i-mail_addr" id="i-mail_addr" placeholder="Type Something" value="<?=$mail_addr?>">
                 </div>
                 <div class="col-4">
@@ -57,8 +57,8 @@
             </div>
             <div class="form-row">
                 <div class="col-3">
-                    <label for="t1">Phone 1</label>
-                    <input type="text" class="form-control form-control-sm" name="i-phone_1" placeholder="0000 0000" value="<?=$phone_1?>">
+                    <label for="t1">Phone 1 *</label>
+                    <input type="text" class="form-control form-control-sm" name="i-phone_1" id="i-phone_1" placeholder="0000 0000" value="<?=$phone_1?>">
                 </div>
                 <div class="col-3">
                     <label for="t1">Fax 1</label>
@@ -162,6 +162,10 @@ $("#save").click(function(){
             },
             "i-mail_addr" : {
                 required: true
+            },
+            "i-phone_1" : {
+                required: true,
+                minlength: 8
             }
         }
     });
