@@ -86,7 +86,7 @@
             <div class="form-row">
                 <div class="col-3">
                     <label for="t1">Payment Method</label>
-                    <select class="custom-select custom-select-sm" id="i-paymentmethod" >
+                    <select class="custom-select custom-select-sm" id="i-paymentmethod" name="i-pm_code">
                         <?php 
                             if(!empty($pm_code)):
                         ?>
@@ -112,7 +112,7 @@
             <div class="form-row">
                 <div class="col-3">
                     <label for="t1">Payment Terms</label>
-                    <select class="custom-select custom-select-sm" id="i-paymentterms" >
+                    <select class="custom-select custom-select-sm" id="i-paymentterms" name="i-pt_code">
                         <?php 
                             if(!empty($pt_code)):
                         ?>
@@ -135,6 +135,7 @@
                     </select>
                 </div>
             </div>
+            <input type="hidden" name="i-group_name" value="" />
         </div>
     </div>
 </form>
@@ -165,7 +166,8 @@ $("#save").click(function(){
             },
             "i-phone_1" : {
                 required: true,
-                minlength: 8
+                minlength: 8,
+                maxlength: 9
             }
         }
     });

@@ -240,10 +240,42 @@ class Customers extends CI_Controller
 			]);
 		}
 	}
-	public function saveedit()
+	public function saveedit($cust_code = "")
 	{
-		echo "<pre>";
-		var_dump($_POST);
-		echo "</pre>";
+		if(isset($_POST) && !empty($_POST) && isset($cust_code) && !empty($cust_code))
+		{
+
+			$_api_body = json_encode($_POST,true);
+			// echo "<pre>";
+			// var_dump($_api_body);
+			// echo "</pre>";
+			if($_api_body != "")
+			{
+				// API data
+				$this->component_api->SetConfig("body", $_api_body);
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/".$cust_code);
+				$this->component_api->CallPatch();
+				$result = json_decode($this->component_api->GetConfig("result"),true);
+				
+				if(isset($result['error']['message']) || isset($result['error']['code']))
+				{
+					$alert = "danger";
+					switch($result['error']['code'])
+					{
+						case "00000":
+							$alert = "success";
+						break;
+					}		
+					$this->load->view('error-handle', [
+						'message' => $result['error']['message'], 
+						'code'=> $result['error']['code'], 
+						'alertstyle' => $alert
+					]);
+					
+					// callback initial page
+					header("Refresh: 5; url=".base_url("/customers/"));
+				}
+			}
+		}
 	}
 }
