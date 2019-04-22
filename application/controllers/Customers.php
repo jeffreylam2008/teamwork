@@ -31,10 +31,6 @@ class Customers extends CI_Controller
 			// login session
 			if(!empty($this->component_login->CheckToken()))
 			{
-				// echo "<pre>";
-				// var_dump($this->session->userdata['login']);
-				// echo "</pre>";
-				
 				$this->_username = $this->session->userdata['login']['profile']['username'];
 
 				// API call
@@ -244,7 +240,6 @@ class Customers extends CI_Controller
 	{
 		if(isset($_POST) && !empty($_POST) && isset($cust_code) && !empty($cust_code))
 		{
-
 			$_api_body = json_encode($_POST,true);
 			// echo "<pre>";
 			// var_dump($_api_body);
@@ -277,5 +272,10 @@ class Customers extends CI_Controller
 				}
 			}
 		}
+	}
+
+	public function save()
+	{
+		
 	}
 }
