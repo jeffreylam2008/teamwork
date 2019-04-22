@@ -147,13 +147,13 @@ class Customers extends CI_Controller
 			// load main view
 			$this->load->view('customers/customers-list-view', [
 				'data' => $_API_CUSTOMERS,
-				//'payment_method' => $this->_pm,
-				"url" => base_url("customers/edit/"),
+				"del_url" => base_url("/customers/delete/"),
+				"url" => base_url("/customers/edit/"),
 				"default_per_page" => $_default_per_page,
 				"page" => $_page
 			]);
 			$this->load->view("customers/customers-create-view",[
-				"save_url" => base_url("customers/save/"),
+				"save_url" => base_url("/customers/save/"),
 				'payment_method' => $this->_pm,
 				'payment_term' => $this->_pt
 			]);
