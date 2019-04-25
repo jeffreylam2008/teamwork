@@ -146,13 +146,21 @@ class Customers extends CI_Controller
 
 			// load main view
 			$this->load->view('customers/customers-list-view', [
-				'data' => $_API_CUSTOMERS,
+				"base_url" => base_url("/customers/edit/"),
 				"del_url" => base_url("/customers/delete/"),
-				"url" => base_url("/customers/edit/"),
+				'data' => $_API_CUSTOMERS,
+				"user_auth" => true,
 				"default_per_page" => $_default_per_page,
 				"page" => $_page
 			]);
 			$this->load->view("customers/customers-create-view",[
+				"function_bar" => $this->load->view('function-bar', [
+					"btn" => [
+						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers/page/'.$_page), "style" => "", "show" => true],
+						["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
+						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
+					 ]
+					],true),
 				"save_url" => base_url("/customers/save/"),
 				'payment_method' => $this->_pm,
 				'payment_term' => $this->_pt
