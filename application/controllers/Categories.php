@@ -127,6 +127,13 @@ class Categories extends CI_Controller
 		]);
 
 		$this->load->view("categories/categories-create-view",[
+			"function_bar" => $this->load->view('function-bar', [
+				"btn" => [
+					["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/products/categories/page/'.$_page), "style" => "", "show" => true],
+					["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
+					["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
+				 ]
+			],true),
 			"save_url" => base_url("/products/categories/save/")
 		]);
 		$this->load->view('footer');

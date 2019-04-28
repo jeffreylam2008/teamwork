@@ -12,11 +12,8 @@
                 <!-- Modal Head End -->
             </div>
             <div class="modal-body">
+                <?php echo $function_bar; ?>
 
-                <button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Back</button>
-                <button type="button" id="reset" class="btn btn-outline-secondary btn-sm">Reset</button>
-                <button type="button" id="save" class="btn btn-outline-primary btn-sm">Save</button>
-                <!-- Modal Content -->
                 <form id="form1" name="form1" method="POST" action="<?=$save_url?>">
                     <div class="card-body">
                         <div class="form-row">
@@ -67,11 +64,13 @@
                             </div>
                         </div>
 
+
                         <div class="form-row">
                             <div class="col-6">
-                                <label>Items Categories</label> <a href='<?=$categories_baseurl?>'>New</a>
+                                <label>Categories</label>                
+                                <a class='btn btn-outline-primary btn-sm' href='<?=$categories_baseurl?>' type='button'>New</a>
                                 <select class="form-control" name="i-category">
-                                    <option value="null">-- Select --</option>
+                                <option value="null">-- Select --</option>
                                     <?php 
                                             foreach($categories as $k => $v):
                                     ?>
@@ -82,6 +81,7 @@
                                 </select>
                             </div>
                         </div>
+
                         <div class="form-row">
                             <div class="col-6">
                                 <label>Unit</label>

@@ -160,7 +160,7 @@ class Customers extends CI_Controller
 						["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
 						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
 					 ]
-					],true),
+				],true),
 				"save_url" => base_url("/customers/save/"),
 				'payment_method' => $this->_pm,
 				'payment_term' => $this->_pt
@@ -244,6 +244,21 @@ class Customers extends CI_Controller
 			]);
 		}
 	}
+
+	/**
+	 * 
+	 */
+	public function delete()
+	{
+
+	}
+
+	/**
+	 * Save Edit
+	 *
+	 * To save edit configuration
+	 * @param cust_code
+	 */
 	public function saveedit($cust_code = "")
 	{
 		if(isset($_POST) && !empty($_POST) && isset($cust_code) && !empty($cust_code))
