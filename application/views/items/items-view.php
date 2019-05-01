@@ -1,15 +1,22 @@
+<form name="form1" id="form1" action="" method="GET" > 
+Categories: 
+<div class='btn-group-toggle' data-toggle='buttons'>
+
 <?php
-// echo "<pre>";
-// var_dump($categories);
-// echo "</pre>";
-$d = [1,2,3,4,5,6,7];
-foreach($d as $v)
+
+foreach($categories as $k => $v)
 {
-    echo "<a href='?where=".$v."' class='btn btn-sm btn-primary' > ".$v."</a> ";
+    
+    echo "<label class='btn btn-info'>";   
+    echo "<input type='checkbox' name='".$k."' value='1' autocomplete='off' /> ";
+    echo $v;
+    echo "</label>&nbsp;";
 }
 
-
 ?>
+</div>
+
+</form>
 
 
 <table id="tbl" class="table table-striped table-borderedNO" style="width:100%">
@@ -61,6 +68,7 @@ foreach($d as $v)
 <script>
 $(document).ready(function() {  
     var table = $('#tbl').DataTable({
+        "order" : [[0, "asc"]],
         "select": {
             items: 'column'
         },
@@ -71,6 +79,10 @@ $(document).ready(function() {
     $('#tbl').on( 'page.dt', function () {
         var info = table.page.info();
         $(location).attr('href', '<?=$route_url?>'+(info.page+1))
+    });
+
+    $("#search").click(function(){
+        $("#form1").submit();
     });
     
 });

@@ -109,6 +109,19 @@ class Items extends CI_Controller
 		$_API_ITEMS = [];
 		$_API_CATEGORIES = [];
 
+		if($_get = $this->input->get())
+		{
+			foreach($_get as $k => $v)
+			{
+				
+			}
+		}
+
+
+		//var_dump($this->input->get());
+
+
+
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
 		$this->component_api->CallGet();
@@ -142,12 +155,11 @@ class Items extends CI_Controller
 				}
 			}
 			
-
-			
 			// function bar with next, preview and save button
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=> "#", "style" => "", "show" => true, "extra" => "data-toggle='modal' data-target='#modal01'"]
+					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=> "#", "style" => "", "show" => true, "extra" => "data-toggle='modal' data-target='#modal01'"],
+					["name" => "<i class='fas fa-search'></i> Search", "type"=>"button", "id" => "search", "url"=> "#", "style" => "", "show" => true, "extra" => ""]
 				]
 			]);
 
