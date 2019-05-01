@@ -1,3 +1,17 @@
+<?php
+// echo "<pre>";
+// var_dump($categories);
+// echo "</pre>";
+$d = [1,2,3,4,5,6,7];
+foreach($d as $v)
+{
+    echo "<a href='?where=".$v."' class='btn btn-sm btn-primary' > ".$v."</a> ";
+}
+
+
+?>
+
+
 <table id="tbl" class="table table-striped table-borderedNO" style="width:100%">
     <thead>
         <tr>
@@ -53,10 +67,11 @@ $(document).ready(function() {
         "iDisplayLength": <?=$default_per_page?>,
     });
     table.page(<?=($page-1)?>).draw('page');
-
+    
     $('#tbl').on( 'page.dt', function () {
         var info = table.page.info();
         $(location).attr('href', '<?=$route_url?>'+(info.page+1))
     });
+    
 });
 </script>

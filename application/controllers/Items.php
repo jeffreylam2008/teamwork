@@ -7,6 +7,7 @@ class Items extends CI_Controller
 	var $_token = "";
 	var $_param = "";
 	var $_items = [];
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -140,6 +141,7 @@ class Items extends CI_Controller
 					$_categories[$val["cate_code"]] = $val["desc"];
 				}
 			}
+			
 
 			
 			// function bar with next, preview and save button
@@ -157,7 +159,8 @@ class Items extends CI_Controller
 				"data" => $_API_ITEMS,
 				"user_auth" => true,
 				"default_per_page" => $_default_per_page,
-				"page" => $_page
+				"page" => $_page,
+				"categories" => $_categories
 			]);
 			$this->load->view("items/items-create-view",[
 				"function_bar" => $this->load->view('function-bar', [
