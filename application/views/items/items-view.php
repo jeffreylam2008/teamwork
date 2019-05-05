@@ -4,10 +4,19 @@ Categories:
 
 <?php
 
+
 foreach($categories as $k => $v)
 {
-    
-    echo "<label class='btn btn-info'>";   
+    $active = "";
+
+    if(in_array($k, $where))
+    {
+        $active = "active";
+
+    }
+        
+
+    echo "<label class='btn btn-info ".$active."'>";
     echo "<input type='checkbox' name='".$k."' value='1' autocomplete='off' /> ";
     echo $v;
     echo "</label>&nbsp;";

@@ -109,24 +109,33 @@ class Items extends CI_Controller
 		$_API_ITEMS = [];
 		$_API_CATEGORIES = [];
 
+
+		$_where = "";
 		if($_get = $this->input->get())
 		{
 			foreach($_get as $k => $v)
 			{
-				
+				$_where .= "/".$k;	
 			}
 		}
 
-
-		//var_dump($this->input->get());
-
-
-
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
-		$this->component_api->CallGet();
-		$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
-		$_API_ITEMS = $_API_ITEMS['query'];
+		if(!empty($_where))
+		{
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/where/".$_where);
+			$this->component_api->CallGet();
+			$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_ITEMS = $_API_ITEMS['query'];
+			
+		}
+		else{
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
+			$this->component_api->CallGet();
+			$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_ITEMS = $_API_ITEMS['query'];	
+		}
+		
+		$_where_arr = explode("/", $_where);
 
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
 		$this->component_api->CallGet();
@@ -172,7 +181,8 @@ class Items extends CI_Controller
 				"user_auth" => true,
 				"default_per_page" => $_default_per_page,
 				"page" => $_page,
-				"categories" => $_categories
+				"categories" => $_categories,
+				"where" => $_where_arr
 			]);
 			$this->load->view("items/items-create-view",[
 				"function_bar" => $this->load->view('function-bar', [
