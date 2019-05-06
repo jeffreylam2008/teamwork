@@ -511,7 +511,7 @@ class Invoices extends CI_Controller
 						'code'=> $result["error"]['code'], 
 						'alertstyle' => $alert
 					]);
-					unset($_transaction[$_cur_num]);
+					unset($_transaction[$_cur_invoicenum]);
 					$this->session->set_userdata('cur_quotationnum',"");
 					$this->session->set_userdata('transaction',$_transaction);
 					

@@ -6,7 +6,6 @@ class Items extends CI_Controller
 	var $_inv_header_param = [];
 	var $_token = "";
 	var $_param = "";
-	var $_items = [];
 
 	public function __construct()
 	{
@@ -108,7 +107,7 @@ class Items extends CI_Controller
 		$_default_per_page = 50;
 		$_API_ITEMS = [];
 		$_API_CATEGORIES = [];
-
+		$_items = [];
 
 		$_where = "";
 		if($_get = $this->input->get())
