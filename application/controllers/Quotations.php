@@ -278,7 +278,7 @@ class Quotations extends CI_Controller
 			// echo "<pre>";
 			// var_dump($_show_transaction_data);
 			// echo "</pre>";
-				if($_quotation['query']['is_convert'] === 0)
+				if($_quotation['query']['is_convert'] === 1)
 				{
 					$_show_convert_btn = true;
 					$_show_void_btn = true;

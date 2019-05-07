@@ -14,7 +14,7 @@ class Dushboard extends CI_Controller
 			$this->_token = $this->session->userdata['login']['token'];
 		}
 		
-		$this->load->library("Component_Login",[$this->_token, "customers"]);
+		$this->load->library("Component_Login",[$this->_token, "dushboard"]);
 
 		// login session
 		if(!empty($this->component_login->CheckToken()))
