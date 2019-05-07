@@ -71,10 +71,56 @@ class Employees extends CI_Controller
 			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
 		}
 	}
-	public function index()
+	public function index($_page = 1)
 	{
-		// load shops view
-		$this->load->view('employees/employees-view');
-		$this->load->view('footer');
+		// variable initial
+		$_default_per_page = 50;
+		$_API_EMPLOYEES = [];
+
+		// set user data
+		$this->session->set_userdata('page',$_page);
+
+		// API data
+
+
+		// Get payment method
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employees/");
+		$this->component_api->CallGet();
+		$_API_EMPLOYEES = json_decode($this->component_api->GetConfig("result"),true);
+		$_API_EMPLOYEES = $_API_EMPLOYEES['query'];
+		
+		// API data usage
+		if(!empty($_API_EMPLOYEES))
+		{
+			// load function bar view
+			$this->load->view('function-bar', [
+				"btn" => [
+					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => true, "extra" => "data-toggle='modal' data-target='#modal01'"]
+				]
+			]);
+
+			// load main view
+			$this->load->view('/employees/employees-view', [
+				"base_url" => base_url("/employees/edit/"),
+				"del_url" => base_url(""),
+				'data' => $_API_EMPLOYEES,
+				"user_auth" => true,
+				"default_per_page" => $_default_per_page,
+				"page" => $_page
+			]);
+			// $this->load->view("customers/customers-create-view",[
+			// 	"function_bar" => $this->load->view('function-bar', [
+			// 		"btn" => [
+			// 			["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers/page/'.$_page), "style" => "", "show" => true],
+			// 			["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
+			// 			["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
+			// 		 ]
+			// 	],true),
+			// 	"save_url" => base_url("/customers/save/"),
+			// 	'payment_method' => $this->_pm,
+			// 	'payment_term' => $this->_pt
+			// ]);
+			$this->load->view('footer');
+		}
 	}
 }
