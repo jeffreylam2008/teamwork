@@ -33,7 +33,15 @@ class Employees extends CI_Controller
 
 			// sidebar session
 			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
-
+			switch($this->_param)
+			{
+				case "administration/employees/edit":
+					$this->_param = "administration/employees/index";
+				break;
+				case "administration/employees/delete":
+					$this->_param = "administration/employees/index";
+				break;
+			}
 			// header data
 			$this->_inv_header_param["topNav"] = [
 				"isLogin" => true,
@@ -81,17 +89,20 @@ class Employees extends CI_Controller
 		$this->session->set_userdata('page',$_page);
 
 		// API data
-
-
-		// Get payment method
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employees/");
 		$this->component_api->CallGet();
 		$_API_EMPLOYEES = json_decode($this->component_api->GetConfig("result"),true);
 		$_API_EMPLOYEES = $_API_EMPLOYEES['query'];
+
 		
+		// echo "<pre>";
+		// var_dump($_API_EMPLOYEES);
+		// echo "</pre>";
+
 		// API data usage
 		if(!empty($_API_EMPLOYEES))
 		{
+			
 			// load function bar view
 			$this->load->view('function-bar', [
 				"btn" => [
@@ -101,7 +112,7 @@ class Employees extends CI_Controller
 
 			// load main view
 			$this->load->view('/employees/employees-view', [
-				"base_url" => base_url("/employees/edit/"),
+				"edit_url" => base_url("/administration/employees/edit/"),
 				"del_url" => base_url(""),
 				'data' => $_API_EMPLOYEES,
 				"user_auth" => true,
@@ -122,5 +133,9 @@ class Employees extends CI_Controller
 			// ]);
 			$this->load->view('footer');
 		}
+	}
+	public function edit()
+	{
+		
 	}
 }

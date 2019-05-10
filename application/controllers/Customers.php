@@ -57,6 +57,15 @@ class Customers extends CI_Controller
 
 				// sidebar session
 				$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
+				switch($this->_param)
+				{
+					case "customers/edit":
+						$this->_param = "customers/index";
+					break;
+					case "customers/delete":
+						$this->_param = "customers/index";
+					break;
+				}
 
 				// header data
 				$this->_inv_header_param["topNav"] = [
@@ -146,7 +155,7 @@ class Customers extends CI_Controller
 
 			// load main view
 			$this->load->view('customers/customers-list-view', [
-				"base_url" => base_url("/customers/edit/"),
+				"edit_url" => base_url("/customers/edit/"),
 				"del_url" => base_url("/customers/delete/"),
 				'data' => $_API_CUSTOMERS,
 				"user_auth" => true,
@@ -171,8 +180,8 @@ class Customers extends CI_Controller
 	public function edit($cust_code)
 	{
 		//$this->session->sess_destroy();
-		$_data = [];
-		$_new_customer = [];
+		// $_data = [];
+		// $_new_customer = [];
 		$_previous_disable = "";
 		$_next_disable = "";
 		// user data
@@ -299,6 +308,6 @@ class Customers extends CI_Controller
 
 	public function save()
 	{
-		
+		echo "customer save";
 	}
 }

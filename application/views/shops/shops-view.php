@@ -12,15 +12,19 @@
     <thead>
     <tbody>
         <?php
+            $edit_auth = "";
             foreach($data as $k => $v): 
         ?>
         <tr>
             <td><?=($k + 1)?></td>
-            <td><?=$v['shop_code']?></td>
+            <?php
+            if($user_auth):
+                $edit_auth = "href=".$edit_url.$v['shop_code'];
+            endif;
+            ?>
+            <td><a <?=$edit_auth?> ><?=$v['shop_code']?></a></td>
             <td><?=$v['name']?></td>
             <td><?=preg_replace("/(\d{4})(\d{4})/", "$1-$2", $v['phone']);?></td>
-
-            
             <td><?=$v['address1']?></td>
             <td><?=$v['address2']?></td>
         </tr>

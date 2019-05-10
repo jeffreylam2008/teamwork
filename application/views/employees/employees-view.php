@@ -9,37 +9,34 @@
                     <?php
                         endif;
                     ?>   
-                <th>Customer Code</th>
-                <th>Name</th>
-                <th>Delivery Address</th>
-                <th>Contact Number</th>
-                <th>Payment Method</th>
-                
+                <th>Employee Code</th>
+                <th>Username</th>
+                <th>Default Shop</th>
+                <th>Access Level</th>
+                <th>Role</th>
+                <th>Status</th>
             </tr>
         <thead>
         <tbody>
     <?php
         if(!empty($data))
-        {
-        // echo "<pre>";
-        // var_dump($paymethod);
-        // echo "</pre>";
-           
-            // foreach($data as $key => $val)
-            // {
-            //     echo "<tr>";
-            //     echo "<td>".($key+1)."</td>";
-            //     if($user_auth)
-            //     {
-            //         echo "<td><a href='".$del_url.$val['cust_code']."'><i class='fas fa-trash-alt'></i></a></td>";
-            //     }
-            //     echo "<td><a href='".$base_url.$val['cust_code']."'>".$val['cust_code']."</a></td>";
-            //     echo "<td>".$val['name']."</td>";
-            //     echo "<td>".$val['delivery_addr']."</td>";
-            //     echo "<td>".$val['phone_1']."</td>";
-            //     echo "<td>".$val['payment_method']."</td>";
-            //     echo "</tr>";
-            // }
+        {  
+            foreach($data as $key => $val)
+            {
+                echo "<tr>";
+                echo "<td>".($key+1)."</td>";
+                if($user_auth)
+                {
+                    echo "<td><a href='".$del_url.$val['employee_code']."'><i class='fas fa-trash-alt'></i></a></td>";
+                }
+                echo "<td><a href='".$edit_url.$val['employee_code']."'>".$val['employee_code']."</a></td>";
+                echo "<td>".$val['username']."</td>";
+                echo "<td>".$val['shop_name']."</td>";
+                echo "<td>".$val['access_level']."</td>";
+                echo "<td>".$val['role']."</td>";
+                echo "<td>".$val['status']."</td>";
+                echo "</tr>";
+            }
         }
     ?>
     </tbody>

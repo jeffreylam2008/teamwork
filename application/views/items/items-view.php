@@ -1,29 +1,28 @@
 <form name="form1" id="form1" action="" method="GET" > 
 Categories: 
-<div class='btn-group-toggle' data-toggle='buttons'>
+<div class='btn-group-toggle' id='cate_search' data-toggle='buttons'>
 
 <?php
-
+$index = 0;
 
 foreach($categories as $k => $v)
 {
     $active = "";
-
-
     if(in_array($k, $where))
     {
         $active = "active";
-
     }
-
-    echo "<label class='btn btn-info ".$active."'>";
-    
-    echo "<input type='checkbox' name='".$k."' value='1' autocomplete='off' /> ";
+    if($index % 5 == 0)
+        echo "<br>";
+    echo "<label class='btn btn-outline-secondary ".$active."'>";
+    echo "<input type='checkbox' name='' value='".$k."' autocomplete='off' /> ";
     echo $v;
     echo "</label>&nbsp;";
+    $index++;
 }
 
 ?>
+<input type="hidden" value="" id="i-all-cate" name="i-all-cate">
 </div>
 
 </form>
@@ -32,14 +31,8 @@ foreach($categories as $k => $v)
 <table id="tbl" class="table table-striped table-borderedNO" style="width:100%">
     <thead>
         <tr>
-            <th>#</td>
-            <?php 
-                if($user_auth):
-            ?>          
+            <th>#</td>      
             <th></th>
-            <?php
-                endif;
-            ?>
             <th>Code</th>
             <th>English Name</th>
             <th>Chinese Name</th>
@@ -53,15 +46,17 @@ foreach($categories as $k => $v)
         <?php
             if(!empty($data))
             {
+                $edit_auth = "";
                 foreach($data as $key => $val)
                 {
                     echo "<tr>";
                     echo "<td>".($key+1)."</td>";
                     if($user_auth)
                     {
-                        echo "<td><a href='".$del_url.$val['item_code']."'><i class='fas fa-trash-alt'></i></a></td>";
+                        $edit_auth = "href=".$edit_url.$val['item_code'];
                     }
-                    echo "<td><a href='".$edit_url.$val['item_code']."'>".$val['item_code']."</a></td>";
+                    echo "<td><a href='".$del_url.$val['item_code']."'><i class='fas fa-trash-alt'></i></a></td>";
+                    echo "<td><a ".$edit_auth.">".$val['item_code']."</a></td>";
                     echo "<td>".$val['eng_name']."</td>";
                     echo "<td>".$val['chi_name']."</td>";
                     echo "<td>".$val['desc']."</td>";
@@ -92,6 +87,12 @@ $(document).ready(function() {
     });
 
     $("#search").click(function(){
+        var cate = ""
+        $("#cate_search").children().each(function(i){
+            if($(this).hasClass('active'))
+                cate += "/" +$(this).children().val();
+        });
+        $("#i-all-cate").val(cate);
         $("#form1").submit();
     });
     

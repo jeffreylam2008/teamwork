@@ -22,7 +22,16 @@ class Payments extends CI_Controller
 			$this->_username = $this->session->userdata['login']['profile']['username'];
 
 			$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
-
+			echo $_param;
+			switch($this->_param)
+			{
+				case "administration/edit":
+					$this->_param = "payments/paymentmethod";
+				break;
+				case "administration/delete":
+					$this->_param = "payments/paymentterm";
+				break;
+			}
 			// fatch master
 			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employees/".$this->_username);
 			$this->component_api->CallGet();
@@ -71,6 +80,14 @@ class Payments extends CI_Controller
     }
     public function index()
     {
-        $this->load->view('payments/payments-view');
-    }
+        
+	}
+	public function paymentmethod()
+	{
+		$this->load->view('payments/payment-method-view');
+	}
+	public function paymentterm()
+	{
+		$this->load->view('payments/payment-term-view');
+	}
 }

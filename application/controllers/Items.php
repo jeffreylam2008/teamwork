@@ -108,24 +108,21 @@ class Items extends CI_Controller
 		$_API_ITEMS = [];
 		$_API_CATEGORIES = [];
 		$_items = [];
-
 		$_where = "";
-		if($_get = $this->input->get())
-		{
-			foreach($_get as $k => $v)
-			{
-				$_where .= "/".$k;	
-			}
-		}
+		$_where_arr = [];
 
+		// input GET from previous page with name i-all-cate
+		
+		$_where = $this->input->get();
+		
 		// API data
-		if(!empty($_where))
+		if(!empty($_where['i-all-cate']))
 		{
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/where/".$_where);
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/where".$_where['i-all-cate']);
 			$this->component_api->CallGet();
 			$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_ITEMS = $_API_ITEMS['query'];
-			
+			$_API_ITEMS = $_API_ITEMS['query'];			
+			$_where_arr = explode("/", $_where['i-all-cate']);
 		}
 		else{
 			$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
@@ -133,9 +130,6 @@ class Items extends CI_Controller
 			$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
 			$_API_ITEMS = $_API_ITEMS['query'];	
 		}
-		
-		$_where_arr = explode("/", $_where);
-
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
 		$this->component_api->CallGet();
 		$_API_CATEGORIES = json_decode($this->component_api->GetConfig("result"), true);

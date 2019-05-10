@@ -104,11 +104,10 @@ class Categories extends CI_Controller
 		{
 			$_cate[]['cate_code'] = $val['cate_code'];
 		}
-		$this->session->set_userdata('cate_list',$_cate);
 		//set user data
+		$this->session->set_userdata('cate_list',$_cate);
 		$this->session->set_userdata('page',$_page);
-
-
+		
 		// function bar with next, preview and save button
 		$this->load->view('function-bar', [
 			"btn" => [

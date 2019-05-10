@@ -104,28 +104,31 @@ $route['quotations/list/edit'] = 'error_404';
 $route['quotations/edit'] = 'error_404';
 
 // Shops
-$route['administration/shops/page/(:any)'] = 'shops/index/page/$1';
-$route['administration/shops'] = 'shops';
+$route['administration/shops'] = 'shops/index';
+$route['administration/shops/page/(:any)'] = 'shops/index/$1';
+$route['administration/shops/edit/(:any)'] = 'shops/edit/$1';
+$route['administration/shops/edit/save/(:any)'] = 'shops/saveedit/$1';
+$route['administration/shops/edit'] = 'error_404';
 
 // Employees
 $route['administration/employees'] = 'employees';
+$route['administration/employees/edit/(:any)'] = 'employees/edit/$1';
+$route['administration/employees/edit/save/(:any)'] = 'employees/saveedit/$1';
 
 // Payment Method
-$route['administration/payments'] = 'payments';
+$route['administration/payments/method'] = 'payments/paymentmethod';
+$route['administration/payments/term'] = 'payments/paymentterm';
 
 // customers
 $route['customers'] = 'customers/index';
-$route['customers/edit/(:any)'] = 'customers/edit/$1';
 $route['customers/page/(:any)'] = 'customers/index/$1';
+$route['customers/edit/(:any)'] = 'customers/edit/$1';
 $route['customers/edit/save/(:any)'] = 'customers/saveedit/$1';
 $route['customers/edit'] = 'error_404';
 
 // Login
 $route['login'] = 'login/index';
 $route['login/process'] = "login/dologin";
-
-/// payment Method
-//$route['invoices/'] = 'theprint/invoices'; 
 
 // Master file load
 $route['master'] = 'master/index';
