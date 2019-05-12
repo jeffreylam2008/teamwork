@@ -186,7 +186,7 @@ class Items extends CI_Controller
 					 ]
 				],true),
 				"save_url" => base_url("/products/items/save/"),
-				"categories_baseurl" => base_url("/products/categories/"),
+				"categories_baseurl" => base_url("/products/categories/?new=1"),
 				"categories" => $_categories
 			]);
 			$this->load->view('footer');

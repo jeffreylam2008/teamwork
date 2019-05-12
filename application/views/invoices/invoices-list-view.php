@@ -45,7 +45,8 @@
                 select: {
                     items: 'column'
                 },
-                "iDisplayLength": <?=$default_per_page?>
+                "iDisplayLength": <?=$default_per_page?>,
+                order : [6,"desc"]
             });
             table.page(<?=$page-1?>).draw('page');
         //console.log(table);

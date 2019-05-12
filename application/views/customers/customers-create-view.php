@@ -13,18 +13,15 @@
             </div>
             <div class="modal-body">
                 <?php echo $function_bar; ?>
-                <!-- <button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Back</button>
-                <button type="button" id="reset" class="btn btn-outline-secondary btn-sm">Reset</button>
-                <button type="button" id="save" class="btn btn-outline-primary btn-sm">Save</button> -->
                 <!-- Modal Content -->
-                
                 <form id="form1" name="form1" method="POST" action="<?=$save_url?>">
                     <div class="card">
                         <div class="card-body">
                              <div class="form-row">
                                 <div class="col-2">
                                     <label for="t1">Customer Code</label>
-                                    <input type="text" class="form-control form-control-sm" name="i-cust_code" placeholder="Customer Code" value="">
+                                    <a href="#" class="btn btn-outline-primary btn-sm" id="gen-id" >Generate</a>
+                                    <input type="text" class="form-control form-control-sm" name="i-cust_code" id="i-cust_code" placeholder="Customer Code" value="">
                                 </div>
                             </div>
                             <div class="form-row">
@@ -101,6 +98,7 @@
                             <div class="form-row">
                                 <div class="col-3">
                                     <label for="t1">Payment Method</label>
+                                    <a class='btn btn-outline-primary btn-sm' href='<?=$categories_baseurl?>' type='button'>New</a>
                                     <select class="custom-select custom-select-sm" id="i-paymentmethod">
                                         <option value="-1">Choose...</option>
                                         <?php 
@@ -122,6 +120,7 @@
                             <div class="form-row">
                                 <div class="col-3">
                                     <label for="t1">Payment Term</label>
+                                    <a class='btn btn-outline-primary btn-sm' href='<?=$categories_baseurl?>' type='button'>New</a>
                                     <select class="custom-select custom-select-sm" id="i-paymentmethod">
                                         <option value="-1">Choose...</option>
                                         <?php 
@@ -161,6 +160,11 @@
         $("#modal01").on('hidden.bs.modal', function(){
             $("#form1").trigger("reset");
         });
+        $("#gen-id").on("click", function(){
+            var r = Math.floor(Math.random() * Date.now())
+            var p = r.toString().substr(1,6)
+            $("#i-cust_code").val("C"+p)
+        });
     });
     // configure your validation
     $("#save").click(function(){
@@ -171,9 +175,11 @@
         var isvalid = $("#form1").validate({
             rules: {
                 // simple rule, converted to {required:true}
-                "i-catecode": {
-                    required: true,
-                    minlength: 2
+                "i-cust_code": {
+                    required: true
+                },
+                "i-name": {
+                    required: true
                 }
             }
         });

@@ -212,6 +212,11 @@ class Quotations extends CI_Controller
 				]);
 				// present form view
 				$this->load->view('quotations/quotations-create-view', [
+					"function_bar" => $this->load->view('function-bar', [
+						"btn" => [
+							["name" => "New", "type"=>"button", "id" => "back", "url"=>base_url('/customers/?new=1'), "style" => "", "show" => true]
+						 ]
+					],true),
 					"submit_to" => base_url("/quotations/tender"),
 					"prefix" => $this->_inv_header_param['topNav']['prefix'],
 					"employee_code" => $this->_inv_header_param['topNav']['employee_code'],

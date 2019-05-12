@@ -232,7 +232,12 @@ class Invoices extends CI_Controller
 					"tender" => $_API_PAYMENT['query']
 				],
 				"theprint_data" => $_show_transaction_data,
-				"default_per_page" => $_default_per_page
+				"default_per_page" => $_default_per_page,
+				"function_bar" => $this->load->view('function-bar', [
+					"btn" => [
+						["name" => "New", "type"=>"button", "id" => "new", "url"=>base_url('/customers/?new=1'), "style" => "", "show" => true]
+					 ]
+				],true),
 			]);
 			// persent footer view
 			$this->load->view('footer');

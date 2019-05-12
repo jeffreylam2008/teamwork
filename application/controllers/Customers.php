@@ -110,11 +110,18 @@ class Customers extends CI_Controller
 		// }
 
 	}
-	public function index($_page = 1)
+	public function index($_page = 1, $new = false)
 	{
 		// variable initial
 		$_default_per_page = 50;
 		$_API_CUSTOMERS = [];
+		$_modalshow = 0;
+
+		// set create new modal pop up on initial
+		if($this->input->get("new") == 1)
+		{
+			$_modalshow = 1;
+		}
 
 		// set user data
 		$this->session->set_userdata('page',$_page);
@@ -160,7 +167,8 @@ class Customers extends CI_Controller
 				'data' => $_API_CUSTOMERS,
 				"user_auth" => true,
 				"default_per_page" => $_default_per_page,
-				"page" => $_page
+				"page" => $_page,
+				"modalshow" => $_modalshow
 			]);
 			$this->load->view("customers/customers-create-view",[
 				"function_bar" => $this->load->view('function-bar', [
@@ -308,6 +316,40 @@ class Customers extends CI_Controller
 
 	public function save()
 	{
-		echo "customer save";
+
+		if(isset($_POST) && !empty($_POST) && isset($cust_code) && !empty($cust_code))
+		{
+			$_api_body = json_encode($_POST,true);
+			echo "<pre>";
+			var_dump($_api_body);
+			echo "</pre>";
+			if($_api_body != "")
+			{
+				// API data
+				// $this->component_api->SetConfig("body", $_api_body);
+				// $this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/".$cust_code);
+				// $this->component_api->CallPatch();
+				// $result = json_decode($this->component_api->GetConfig("result"),true);
+				
+				// if(isset($result['error']['message']) || isset($result['error']['code']))
+				// {
+				// 	$alert = "danger";
+				// 	switch($result['error']['code'])
+				// 	{
+				// 		case "00000":
+				// 			$alert = "success";
+				// 		break;
+				// 	}		
+				// 	$this->load->view('error-handle', [
+				// 		'message' => $result['error']['message'], 
+				// 		'code'=> $result['error']['code'], 
+				// 		'alertstyle' => $alert
+				// 	]);
+					
+				// 	// callback initial page
+				// 	header("Refresh: 5; url=".base_url("/customers/"));
+				// }
+			}
+		}
 	}
 }

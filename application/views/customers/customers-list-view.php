@@ -1,25 +1,25 @@
 
 <table id="tbl" class="table table-striped table-borderedNO" style="width:100%">
-        <thead>
-            <tr>
-                <th>#</td>
-                <th></th>
-                <th>Customer Code</th>
-                <th>Name</th>
-                <th>Delivery Address</th>
-                <th>Contact Number</th>
-                <th>Payment Method</th>
-                
-            </tr>
-        <thead>
-        <tbody>
+    <thead>
+        <tr>
+            <th>#</td>
+            <th></th>
+            <th>Customer Code</th>
+            <th>Name</th>
+            <th>Delivery Address</th>
+            <th>Contact Number</th>
+            <th>Payment Method</th>
+            
+        </tr>
+    <thead>
+    <tbody>
     <?php
         if(!empty($data))
         {
         // echo "<pre>";
         // var_dump($paymethod);
         // echo "</pre>";
-           $edit_auth = "";
+        $edit_auth = "";
             foreach($data as $key => $val)
             {
                 echo "<tr>";
@@ -40,7 +40,7 @@
     ?>
     </tbody>
     
-    </table>
+</table>
 
     <script>
     $(document).ready(function() { 
@@ -52,5 +52,7 @@
             });
             table.page(<?=$page-1?>).draw('page');
         //console.log(table);
+        if(<?=$modalshow?>)
+            $('#modal01').modal('show');
     });
     </script>

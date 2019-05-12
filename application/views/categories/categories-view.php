@@ -60,6 +60,9 @@
             var info = table.page.info();
             $(location).attr('href', '<?=$route_url?>'+(info.page+1))
         });
+
+        if(<?=$modalshow?>)
+            $('#modal01').modal('show');
     });
 
     

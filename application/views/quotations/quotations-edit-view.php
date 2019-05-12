@@ -31,15 +31,13 @@
             </select>
         </div>
         
-        
-        
         <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
         <div class="input-group mb-2 input-group-sm">
-            <input type="text" class="form-control" placeholder="Customers" />
+            <!-- <input type="text" class="form-control" placeholder="Customers" />
             <div class="input-group-append">
                 <button class="btn btn-outline-secondary btn-sm" type="button" id="cust-search">Search</button>
-            </div>
-            <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#customers_modal">More...</button>
+            </div> -->
+            
             <!-- customer Modal -->
             <div class="modal fade" id="customers_modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -98,8 +96,9 @@
             </div>
             <input type="text" class="form-control" value="" id="i-customer" disabled="" />
             <input type="text" class="form-control" value="" id="i-customer-name" disabled="">
-            
+            <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#customers_modal">More...</button>
         </div>
+        
 
         <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 

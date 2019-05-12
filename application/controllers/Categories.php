@@ -92,6 +92,13 @@ class Categories extends CI_Controller
 		$_default_per_page = 50;
 		$_API_ITEMS = [];
 		$_API_CATEGORIES = [];
+		$_modalshow = 0;
+
+		// set create new modal pop up on initial
+		if($this->input->get("new") == 1)
+		{
+			$_modalshow = 1;
+		}
 		
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
@@ -122,7 +129,8 @@ class Categories extends CI_Controller
 			"data" => $_API_CATEGORIES,
 			"user_auth" => true,
 			"default_per_page" => $_default_per_page,
-			"page" => $_page
+			"page" => $_page,
+			"modalshow" => $_modalshow
 		]);
 
 		$this->load->view("categories/categories-create-view",[
