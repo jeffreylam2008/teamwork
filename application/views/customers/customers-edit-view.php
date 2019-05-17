@@ -161,9 +161,6 @@ $("#save").click(function(){
             "i-attn_1": {
                 required: true
             },
-            "i-mail_addr" : {
-                required: true
-            },
             "i-phone_1" : {
                 required: true,
                 minlength: 8,

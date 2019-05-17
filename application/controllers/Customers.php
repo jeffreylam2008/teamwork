@@ -179,6 +179,8 @@ class Customers extends CI_Controller
 					 ]
 				],true),
 				"save_url" => base_url("/customers/save/"),
+				"new_pm_url" => base_url("/administration/payments/method/"),
+				"new_pt_url" => base_url("/administration/payments/term/"),
 				'payment_method' => $this->_pm,
 				'payment_term' => $this->_pt
 			]);
@@ -316,8 +318,10 @@ class Customers extends CI_Controller
 
 	public function save()
 	{
-
-		if(isset($_POST) && !empty($_POST) && isset($cust_code) && !empty($cust_code))
+		echo "<pre>";
+		var_dump($_POST);
+		echo "</pre>";
+		if(isset($_POST) && !empty($_POST))
 		{
 			$_api_body = json_encode($_POST,true);
 			echo "<pre>";

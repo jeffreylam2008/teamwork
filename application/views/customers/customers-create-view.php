@@ -18,10 +18,14 @@
                     <div class="card">
                         <div class="card-body">
                              <div class="form-row">
-                                <div class="col-2">
-                                    <label for="t1">Customer Code</label>
-                                    <a href="#" class="btn btn-outline-primary btn-sm" id="gen-id" >Generate</a>
-                                    <input type="text" class="form-control form-control-sm" name="i-cust_code" id="i-cust_code" placeholder="Customer Code" value="">
+                                <div class="col-12">
+                                    <label for="t1">Customer Code *</label>
+                                    <div class="form-inline">
+                                        <div class="input-group my-1 mr-sm-2">
+                                            <input type="text" class="form-control form-control-sm" name="i-cust_code" id="i-cust_code" placeholder="Customer Code" value="">
+                                            <a href="#" class="btn btn-outline-primary btn-sm" id="gen-id" >Generate</a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -33,7 +37,7 @@
 
                             <div class="form-row">
                                 <div class="col-2">
-                                    <label for="t1">Primary Attn </label>
+                                    <label for="t1">Primary Attn *</label>
                                     <input type="text" class="form-control form-control-sm" name="i-attn_1" placeholder="Primary Attn" value="">
                                 </div>
                                 <div class="col-2">
@@ -69,7 +73,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="col-3">
-                                    <label for="t1">Phone 1</label>
+                                    <label for="t1">Phone 1 *</label>
                                     <input type="text" class="form-control form-control-sm" name="i-phone_1" placeholder="0000 0000" value="">
                                 </div>
                                 <div class="col-3">
@@ -96,19 +100,23 @@
                             </div>
 
                             <div class="form-row">
-                                <div class="col-3">
+                                <div class="col-12">
                                     <label for="t1">Payment Method</label>
-                                    <a class='btn btn-outline-primary btn-sm' href='<?=$categories_baseurl?>' type='button'>New</a>
-                                    <select class="custom-select custom-select-sm" id="i-paymentmethod">
-                                        <option value="-1">Choose...</option>
-                                        <?php 
-                                            foreach($payment_method as $k => $v):
-                                        ?>
-                                                <option value="<?=$v['pm_code']?>"><?=$v['payment_method']?></option>
-                                        <?php
-                                            endforeach;
-                                        ?>
-                                    </select>
+                                    <div class="form-inline">
+                                        <div class="input-group my-1 mr-sm-2">             
+                                            <select class="custom-select custom-select-sm" name="i-paymentmethod" id="i-paymentmethod">
+                                                <option value="-1">Choose...</option>
+                                                <?php 
+                                                    foreach($payment_method as $k => $v):
+                                                ?>
+                                                        <option value="<?=$v['pm_code']?>"><?=$v['payment_method']?></option>
+                                                <?php
+                                                    endforeach;
+                                                ?>
+                                            </select>
+                                            <a class='btn btn-outline-primary btn-sm' href='<?=$new_pm_url?>' type='button'>New</a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <?php 
@@ -118,19 +126,23 @@
                                 // }
                             ?>
                             <div class="form-row">
-                                <div class="col-3">
+                                <div class="col-12">
                                     <label for="t1">Payment Term</label>
-                                    <a class='btn btn-outline-primary btn-sm' href='<?=$categories_baseurl?>' type='button'>New</a>
-                                    <select class="custom-select custom-select-sm" id="i-paymentmethod">
-                                        <option value="-1">Choose...</option>
-                                        <?php 
-                                            foreach($payment_term as $k => $v):
-                                        ?>
-                                                <option value="<?=$v["pt_code"]?>"><?=$v['terms']?></option>
-                                        <?php
-                                            endforeach;
-                                        ?>
-                                    </select>
+                                    <div class="form-inline">
+                                        <div class="input-group my-1 mr-sm-2">
+                                            <select class="custom-select custom-select-sm" name="i-paymentterm" id="i-paymentterm">
+                                                <option value="-1">Choose...</option>
+                                                <?php 
+                                                    foreach($payment_term as $k => $v):
+                                                ?>
+                                                        <option value="<?=$v["pt_code"]?>"><?=$v['terms']?></option>
+                                                <?php
+                                                    endforeach;
+                                                ?>
+                                            </select>
+                                            <a class='btn btn-outline-primary btn-sm' href='<?=$new_pt_url?>' type='button'>New</a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -178,8 +190,13 @@
                 "i-cust_code": {
                     required: true
                 },
-                "i-name": {
+                "i-attn_1": {
                     required: true
+                },
+                "i-phone_1": {
+                    required: true,
+                    minlength: 8,
+                    maxlength: 9
                 }
             }
         });
