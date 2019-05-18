@@ -34,7 +34,12 @@
                                     <input type="text" class="form-control form-control-sm" name="i-name" placeholder="Name" value="">
                                 </div>
                             </div>
-
+                            <div class="form-row">
+                                <div class="col-6">
+                                    <label for="t1">Group Name</label>
+                                    <input type="text" class="form-control form-control-sm" name="i-group_name" placeholder="Group" value="">
+                                </div>
+                            </div>
                             <div class="form-row">
                                 <div class="col-2">
                                     <label for="t1">Primary Attn *</label>
@@ -94,8 +99,14 @@
 
                             <div class="form-row">
                                 <div class="col-6">
-                                    <label for="t1">Remark</label>
+                                    <label for="t1">Statement Remark</label>
                                     <textarea class="form-control form-control-sm" placeholder="Type Something" name="i-statement_remark" rows="2"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-6">
+                                    <label for="t1">Remark</label>
+                                    <textarea class="form-control form-control-sm" placeholder="Type Something" name="i-remark" rows="2"></textarea>
                                 </div>
                             </div>
 
@@ -104,7 +115,7 @@
                                     <label for="t1">Payment Method</label>
                                     <div class="form-inline">
                                         <div class="input-group my-1 mr-sm-2">             
-                                            <select class="custom-select custom-select-sm" name="i-paymentmethod" id="i-paymentmethod">
+                                            <select class="custom-select custom-select-sm" name="i-pm_code" id="i-pm_code">
                                                 <option value="-1">Choose...</option>
                                                 <?php 
                                                     foreach($payment_method as $k => $v):
@@ -130,7 +141,7 @@
                                     <label for="t1">Payment Term</label>
                                     <div class="form-inline">
                                         <div class="input-group my-1 mr-sm-2">
-                                            <select class="custom-select custom-select-sm" name="i-paymentterm" id="i-paymentterm">
+                                            <select class="custom-select custom-select-sm" name="i-pt_code" id="i-pt_code">
                                                 <option value="-1">Choose...</option>
                                                 <?php 
                                                     foreach($payment_term as $k => $v):
@@ -195,6 +206,7 @@
                 },
                 "i-phone_1": {
                     required: true,
+                    digits:true,
                     minlength: 8,
                     maxlength: 9
                 }

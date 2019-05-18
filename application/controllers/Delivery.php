@@ -162,8 +162,8 @@ class Customers extends CI_Controller
 
 			// load main view
 			$this->load->view('customers/customers-list-view', [
-				"edit_url" => base_url("/customers/customers/edit/"),
-				"del_url" => base_url("/customers/customers/delete/"),
+				"edit_url" => base_url("/customers/edit/"),
+				"del_url" => base_url("/customers/delete/"),
 				'data' => $_API_CUSTOMERS,
 				"user_auth" => true,
 				"default_per_page" => $_default_per_page,
@@ -173,12 +173,12 @@ class Customers extends CI_Controller
 			$this->load->view("customers/customers-create-view",[
 				"function_bar" => $this->load->view('function-bar', [
 					"btn" => [
-						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers/customers/page/'.$_page), "style" => "", "show" => true],
+						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers/page/'.$_page), "style" => "", "show" => true],
 						["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
 						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
 					 ]
 				],true),
-				"save_url" => base_url("/customers/customers/save/"),
+				"save_url" => base_url("/customers/save/"),
 				"new_pm_url" => base_url("/administration/payments/method/"),
 				"new_pt_url" => base_url("/administration/payments/term/"),
 				'payment_method' => $this->_pm,
@@ -189,175 +189,33 @@ class Customers extends CI_Controller
 	}
 	public function edit($cust_code)
 	{
-		//$this->session->sess_destroy();
-		// $_data = [];
-		// $_new_customer = [];
-		$_previous_disable = "";
-		$_next_disable = "";
-		// user data
-		$_page = 1;
-
 		
-		if(!empty($cust_code))
-		{
-			// Call API here
-		
-			// API data usage
-			if(!empty($this->_customers) && !empty($cust_code) )
-			{
-				$_all = array_column($this->_customers, "cust_code");
-				
-				// search key
-				$_key = array_search(
-					$cust_code, array_column($this->_customers, "cust_code")
-				);
-				
-				if($_key !== false)
-				{
-					$_cur = $_key;
-					$_next = $_key + 1;
-					$_previous = $_key - 1;
-					
-					if($_cur == (count($_all)-1))
-					{
-						$_next_disable = "disabled";
-						$_next = (count($_all)-1);
-					}
-					if($_cur <= 0)
-					{
-						$_previous_disable = "disabled";
-						$_previous = 0;
-					}
-	// echo "<pre>";
-	// var_dump($this->_customers[$_key]);
-	// echo "</pre>";
-					// function bar with next, preview and save button
-					$this->load->view('function-bar', [
-						"btn" => [
-							["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers/customers/page/'.$_page), "style" => "", "show" => true],
-							["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "" , "style" => "btn btn-outline-secondary", "show" => true],
-							["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
-							["name" => "Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/customers/customers/edit/".$_all[$_previous]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
-					 		["name" => "Next", "type"=>"button", "id" => "next", "url"=> base_url("/customers/customers/edit/".$_all[$_next]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
-					 	]
-					]);
-
-					// load main view
-					$this->load->view('customers/customers-edit-view', [
-						"save_url" => base_url("customers/customers/edit/save/".$cust_code),
-						'data' => $this->_customers[$_key],
-						'payment_method' => $this->_pm,
-						'payment_term' => $this->_pt
-					]);
-					$this->load->view('footer');
-				}
-			}
-		}
-		else
-		{
-			$alert = "danger";
-			$this->load->view('error-handle', [
-				'message' => "Data not Ready Yet!", 
-				'code'=> "", 
-				'alertstyle' => $alert
-			]);
-		}
 	}
 
 	/**
-	 * 
+     * Delete 
+     * 
+     * To delete
+     * 
 	 */
 	public function delete()
 	{
-
+        
 	}
 
 	/**
 	 * Save Edit
 	 *
 	 * To save edit configuration
-	 * @param cust_code
+	 * @param ID
 	 */
-	public function saveedit($cust_code = "")
+	public function saveedit($id = "")
 	{
-		// echo "<pre>";
-		// var_dump($_POST);
-		// echo "</pre>";
-		if(isset($_POST) && !empty($_POST) && isset($cust_code) && !empty($cust_code))
-		{
-			
-			$_api_body = json_encode($_POST,true);
-			// echo "<pre>";
-			// var_dump($_api_body);
-			// echo "</pre>";
-			if($_api_body != "")
-			{
-				// API data
-				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/".$cust_code);
-				$this->component_api->CallPatch();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
-				
-				if(isset($result['error']['message']) || isset($result['error']['code']))
-				{
-					$alert = "danger";
-					switch($result['error']['code'])
-					{
-						case "00000":
-							$alert = "success";
-						break;
-					}		
-					$this->load->view('error-handle', [
-						'message' => $result['error']['message'], 
-						'code'=> $result['error']['code'], 
-						'alertstyle' => $alert
-					]);
-					
-					// callback initial page
-					header("Refresh: 5; url=".base_url("/customers/customers/"));
-				}
-			}
-		}
+	
 	}
 
 	public function save()
 	{
-		// echo "<pre>";
-		// var_dump($_POST);
-		// echo "</pre>";
-		if(isset($_POST) && !empty($_POST))
-		{
-			$_api_body = json_encode($_POST,true);
-			// echo "<pre>";
-			// var_dump($_api_body);
-			// echo "</pre>";
-			if($_api_body != "")
-			{
-				// API data
-				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/");
-				$this->component_api->CallPost();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
-				
-				if(isset($result['error']['message']) || isset($result['error']['code']))
-				{
-					$alert = "danger";
-					switch($result['error']['code'])
-					{
-						case "00000":
-							$alert = "success";
-						break;
-					}		
-					$this->load->view('error-handle', [
-						'message' => $result['error']['message'], 
-						'code'=> $result['error']['code'], 
-						'alertstyle' => $alert
-					]);
-					
-					// callback initial page
-					header("Refresh: 5; url=".base_url("/customers/customers/"));
-				}
-			}
-		}
+		
 	}
 }

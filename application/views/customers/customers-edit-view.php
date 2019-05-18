@@ -18,7 +18,12 @@
                     <input type="text" class="form-control form-control-sm" name="i-name" id="i-name" placeholder="Name" value="<?=$name?>">
                 </div>
             </div>
-
+            <div class="form-row">
+                <div class="col-6">
+                    <label for="t1">Group Name</label>
+                    <input type="text" class="form-control form-control-sm" name="i-group_name" placeholder="Group" value="<?=$group_name?>">
+                </div>
+            </div>
             <div class="form-row">
                 <div class="col-2">
                     <label for="t1">Primary Attn *</label>
@@ -78,8 +83,14 @@
 
             <div class="form-row">
                 <div class="col-6">
-                    <label for="t1">Remark</label>
+                    <label for="t1">Statement Remark</label>
                     <textarea class="form-control form-control-sm" placeholder="Type Something" name="i-statement_remark" rows="2"><?=$statement_remark?></textarea>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-6">
+                    <label for="t1">Remark</label>
+                    <textarea class="form-control form-control-sm" placeholder="Type Something" name="i-remark" rows="2"><?=$remark?></textarea>
                 </div>
             </div>
 
@@ -88,7 +99,7 @@
                     <label for="t1">Payment Method</label>
                     <select class="custom-select custom-select-sm" id="i-paymentmethod" name="i-pm_code">
                         <?php 
-                            if(!empty($pm_code)):
+                            if(!empty($pm_code) && $pm_code != "-1"):
                         ?>
                             <option value="<?=$pm_code?>"><?=$payment_method[$pm_code]["payment_method"]?></option>
                         <?php
@@ -114,7 +125,7 @@
                     <label for="t1">Payment Terms</label>
                     <select class="custom-select custom-select-sm" id="i-paymentterms" name="i-pt_code">
                         <?php 
-                            if(!empty($pt_code)):
+                            if(!empty($pt_code) && $pt_code != "-1"):
                         ?>
                             <option value="<?=$pt_code?>"><?=$payment_term[$pt_code]["terms"]?></option>
                         <?php
@@ -155,14 +166,12 @@ $("#save").click(function(){
     var isvalid = $("#form1").validate({
         rules: {
             // simple rule, converted to {required:true}
-            "i-name": {
-                required: true
-            },
             "i-attn_1": {
                 required: true
             },
-            "i-phone_1" : {
+            "i-phone_1": {
                 required: true,
+                digits:true,
                 minlength: 8,
                 maxlength: 9
             }

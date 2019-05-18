@@ -120,11 +120,12 @@ $route['administration/payments/method'] = 'payments/paymentmethod';
 $route['administration/payments/term'] = 'payments/paymentterm';
 
 // customers
-$route['customers'] = 'customers/index';
-$route['customers/page/(:any)'] = 'customers/index/$1';
-$route['customers/edit/(:any)'] = 'customers/edit/$1';
-$route['customers/edit/save/(:any)'] = 'customers/saveedit/$1';
-$route['customers/edit'] = 'error_404';
+$route['customers/customers'] = 'customers/index';
+$route['customers/customers/page/(:any)'] = 'customers/index/$1';
+$route['customers/customers/edit/(:any)'] = 'customers/edit/$1';
+$route['customers/customers/edit/save/(:any)'] = 'customers/saveedit/$1';
+$route['customers/customers/edit'] = 'error_404';
+$route['customers/customers/save'] = 'customers/save';
 
 // Login
 $route['login'] = 'login/index';

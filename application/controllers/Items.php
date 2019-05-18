@@ -274,6 +274,7 @@ class Items extends CI_Controller
 				$this->load->view("items/items-edit-view",[
 					"categories_baseurl" => base_url("/products/categories/"),
 					"save_url" => base_url("/products/items/edit/save/"),
+					"categories_baseurl" => base_url("/products/categories/?new=1"),
 					"data" => $_API_ITEMS,
 					"categories" => $_categories
 				]);
