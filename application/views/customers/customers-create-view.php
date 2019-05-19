@@ -130,12 +130,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <?php 
-                                // $pt = "";
-                                // if(!empty($payment_term[$pt_code]['terms'])){
-                                //     $pt = $payment_term[$pt_code]['terms'];
-                                // }
-                            ?>
+                            
                             <div class="form-row">
                                 <div class="col-12">
                                     <label for="t1">Payment Term</label>
