@@ -126,6 +126,7 @@ $route['customers/customers/edit/(:any)'] = 'customers/edit/$1';
 $route['customers/customers/edit/save/(:any)'] = 'customers/saveedit/$1';
 $route['customers/customers/edit'] = 'error_404';
 $route['customers/customers/save'] = 'customers/save';
+$route['customers/customers/detail/(:any)'] = 'customers/detail/$1';
 
 // Login
 $route['login'] = 'login/index';

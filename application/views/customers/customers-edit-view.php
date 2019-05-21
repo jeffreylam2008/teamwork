@@ -103,19 +103,7 @@
                         ?>
                             <option value="<?=$pm_code?>"><?=$payment_method[$pm_code]["payment_method"]?></option>
                         <?php
-                            else:
-                        ?>
-                            <option value="-1">Choose...</option>
-                        <?php
                             endif;
-                        ?>
-                        
-                        <?php 
-                            foreach($payment_method as $k => $v):
-                        ?>
-                                <option value="<?=$v['pm_code']?>"><?=$v['payment_method']?></option>
-                        <?php
-                            endforeach;
                         ?>
                     </select>
                 </div>
@@ -129,20 +117,8 @@
                         ?>
                             <option value="<?=$pt_code?>"><?=$payment_term[$pt_code]["terms"]?></option>
                         <?php
-                            else:
-                        ?>
-                            <option value="-1">Choose...</option>
-                        <?php
                             endif;
-                        ?>
-                        
-                        <?php 
-                            foreach($payment_term as $k => $v):
-                        ?>
-                                <option value="<?=$v['pt_code']?>"><?=$v['terms']?></option>
-                        <?php
-                            endforeach;
-                        ?>
+                        ?>    
                     </select>
                 </div>
             </div>

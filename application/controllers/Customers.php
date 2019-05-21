@@ -163,6 +163,7 @@ class Customers extends CI_Controller
 			// load main view
 			$this->load->view('customers/customers-list-view', [
 				"edit_url" => base_url("/customers/customers/edit/"),
+				"detail_url" => base_url("/customers/customers/detail/"),
 				"del_url" => base_url("/customers/customers/delete/"),
 				'data' => $_API_CUSTOMERS,
 				"user_auth" => true,
@@ -263,7 +264,82 @@ class Customers extends CI_Controller
 			]);
 		}
 	}
+	/** 
+	 * Show the detail customer data
+	 */
+	public function detail($cust_code)
+	{
+		$_previous_disable = "";
+		$_next_disable = "";
+		// user data
+		$_page = 1;
 
+		
+		if(!empty($cust_code))
+		{
+			// Call API here
+		
+			// API data usage
+			if(!empty($this->_customers) && !empty($cust_code) )
+			{
+				$_all = array_column($this->_customers, "cust_code");
+				
+				// search key
+				$_key = array_search(
+					$cust_code, array_column($this->_customers, "cust_code")
+				);
+				
+				if($_key !== false)
+				{
+					$_cur = $_key;
+					$_next = $_key + 1;
+					$_previous = $_key - 1;
+					
+					if($_cur == (count($_all)-1))
+					{
+						$_next_disable = "disabled";
+						$_next = (count($_all)-1);
+					}
+					if($_cur <= 0)
+					{
+						$_previous_disable = "disabled";
+						$_previous = 0;
+					}
+	// echo "<pre>";
+	// var_dump($this->_customers[$_key]);
+	// echo "</pre>";
+					// function bar with next, preview and save button
+					$this->load->view('function-bar', [
+						"btn" => [
+							["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers/customers/page/'.$_page), "style" => "", "show" => true],
+							["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "" , "style" => "btn btn-outline-secondary", "show" => true],
+							["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
+							["name" => "Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/customers/customers/edit/".$_all[$_previous]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
+					 		["name" => "Next", "type"=>"button", "id" => "next", "url"=> base_url("/customers/customers/edit/".$_all[$_next]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
+					 	]
+					]);
+
+					// load main view
+					$this->load->view('customers/customers-detail-view', [
+						"save_url" => base_url("customers/customers/edit/save/".$cust_code),
+						'data' => $this->_customers[$_key],
+						'payment_method' => $this->_pm,
+						'payment_term' => $this->_pt
+					]);
+					$this->load->view('footer');
+				}
+			}
+		}
+		else
+		{
+			$alert = "danger";
+			$this->load->view('error-handle', [
+				'message' => "Data not Ready Yet!", 
+				'code'=> "", 
+				'alertstyle' => $alert
+			]);
+		}
+	}
 	/**
 	 * 
 	 */
