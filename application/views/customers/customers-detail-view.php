@@ -1,7 +1,7 @@
 <?php
-    echo "<pre>";
-    var_dump($data);
-    echo "</pre>";
+    //echo "<pre>";
+    //var_dump($data);
+    //echo "</pre>";
     extract($data);
 ?>
 
@@ -16,6 +16,7 @@
             <div class="col">
                 <ul class="list-group">
                     <li class="list-group-item">
+						<span class="badge badge-pill badge-secondary">General</span> 
                         <div class="form-row">
                             <div class="col-8">
                                 <label for="t1">Customer Shop</label>
@@ -48,10 +49,7 @@
                                 <label for="">Shop Address</label>
                                 <input type="text" class="form-control form-control-sm" name="i-shop_addr" placeholder="Type Something" value="<?=$shop_addr?>">
                             </div>
-                            <div class="col-12">
-                                <label for="">Delivery Address</label>
-                                <input type="text" class="form-control form-control-sm" name="i-delivery_addr" placeholder="Type Something" value="<?=$delivery_addr?>">
-                            </div>
+                            
                         </div>
 
                         <div class="form-row">
@@ -133,26 +131,33 @@
             <div class="col">
                 <ul class="list-group">
                     <li class="list-group-item">
-                        <div class="form-row">
-                            <div class="col-8">
-                                <label for="t1">Customer Shop *</label>
-                                <input type="text" class="form-control form-control-sm" name="i-name" id="i-name" placeholder="Name" value="<?=$name?>">
+						<span class="badge badge-pill badge-secondary">Delivery</span>
+						<div class="form-row">
+                            <div class="col-3">
+                                <label for="t1">District</label>
+                                <input type="text" class="form-control form-control-sm" name="i-district" placeholder="District" value="<?=$attn_2?>">
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="col-8">
-                                <label for="t1">Group Name</label>
-                                <input type="text" class="form-control form-control-sm" name="i-group_name" placeholder="Group" value="<?=$group_name?>">
+                            <div class="col-12">
+                                <label for="">Delivery Address</label>
+                                <input type="text" class="form-control form-control-sm" name="i-delivery_addr" placeholder="Type Something" value="<?=$delivery_addr?>">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-3">
-                                <label for="t1">Primary Attn *</label>
-                                <input type="text" class="form-control form-control-sm" name="i-attn_1" id="i-attn_1" placeholder="Primary Attn" value="<?=$attn_1?>">
+                                <label for="t1">From</label>
+                                <input type="text" class="form-control form-control-sm" name="i-from_time" placeholder="From" value="">
                             </div>
-                            <div class="col-3">
-                                <label for="t1">Secondary Attn </label>
-                                <input type="text" class="form-control form-control-sm" name="i-attn_2" placeholder="Secondary Attn" value="<?=$attn_2?>">
+							<div class="col-3">
+                                <label for="t1">To</label>
+                                <input type="text" class="form-control form-control-sm" name="i-to_time" placeholder="To" value="">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-12">
+                                <label for="t1">Delivery Remark</label>
+                                <textarea class="form-control form-control-sm" placeholder="Type Something" name="i-delivery_remark" rows="3"></textarea>
                             </div>
                         </div>
                     </li>
@@ -160,25 +165,22 @@
                         <span class="badge badge-pill badge-secondary">Account</span>    
                         <div class="form-row">
                             <div class="col-8">
-                                <label for="t1">Customer Shop *</label>
-                                <input type="text" class="form-control form-control-sm" name="i-name" id="i-name" placeholder="Name" value="<?=$name?>">
+                                <label for="t1">Company BR Number</label>
+                                <input type="text" class="form-control form-control-sm" name="i-name" id="i-br" placeholder="BR Number" value="">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-8">
                                 <label for="t1">Group Name</label>
-                                <input type="text" class="form-control form-control-sm" name="i-group_name" placeholder="Group" value="<?=$group_name?>">
+                                <input type="text" class="form-control form-control-sm" name="i-group_name" placeholder="Group" value="">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-3">
-                                <label for="t1">Primary Attn *</label>
-                                <input type="text" class="form-control form-control-sm" name="i-attn_1" id="i-attn_1" placeholder="Primary Attn" value="<?=$attn_1?>">
+                                <label for="t1">Accountant</label>
+                                <input type="text" class="form-control form-control-sm" name="i-attn_1" id="i-attn_1" placeholder="" value="">
                             </div>
-                            <div class="col-3">
-                                <label for="t1">Secondary Attn </label>
-                                <input type="text" class="form-control form-control-sm" name="i-attn_2" placeholder="Secondary Attn" value="<?=$attn_2?>">
-                            </div>
+
                         </div>
                     </li>
                 </ul>
