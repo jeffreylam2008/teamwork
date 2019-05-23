@@ -1,11 +1,13 @@
 <?php
-    //echo "<pre>";
-    //var_dump($data);
-    //echo "</pre>";
+    echo "<pre>";
+    var_dump($data);
+    echo "</pre>";
+    echo "<pre>";
+    var_dump($data_payment_method);
+    echo "</pre>";
+
     extract($data);
 ?>
-
-<form id="form1" name="form1" method="POST" action="<?=$save_url?>">
     <div class="card">
         <div class="card-header">
             <h2> Customer: <u><?=$cust_code?></u></h2>
@@ -21,12 +23,6 @@
                             <div class="col-8">
                                 <label for="t1">Customer Shop</label>
                                 <input type="text" class="form-control form-control-sm" name="i-name" id="i-name" placeholder="Name" value="<?=$name?>">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="col-8">
-                                <label for="t1">Group Name</label>
-                                <input type="text" class="form-control form-control-sm" name="i-group_name" placeholder="Group" value="<?=$group_name?>">
                             </div>
                         </div>
                         <div class="form-row">
@@ -103,7 +99,7 @@
                                     <?php 
                                         if(!empty($pm_code) && $pm_code != "-1"):
                                     ?>
-                                        <option value="<?=$pm_code?>"><?=$payment_method[$pm_code]["payment_method"]?></option>
+                                        <option value="<?=$pm_code?>"><?=$data_payment_method[$pm_code]["payment_method"]?></option>
                                     <?php
                                         endif;
                                     ?>
@@ -117,7 +113,7 @@
                                     <?php 
                                         if(!empty($pt_code) && $pt_code != "-1"):
                                     ?>
-                                        <option value="<?=$pt_code?>"><?=$payment_term[$pt_code]["terms"]?></option>
+                                        <option value="<?=$pt_code?>"><?=$data_payment_term[$pt_code]["terms"]?></option>
                                     <?php
                                         endif;
                                     ?>    
@@ -133,9 +129,17 @@
                     <li class="list-group-item">
 						<span class="badge badge-pill badge-secondary">Delivery</span>
 						<div class="form-row">
-                            <div class="col-3">
-                                <label for="t1">District</label>
-                                <input type="text" class="form-control form-control-sm" name="i-district" placeholder="District" value="<?=$attn_2?>">
+                            <div class="col-2">
+                                <label for="t1">District</label> 
+                            </div>
+                            <div class="col-2">    
+                                <input type="text" class="form-control form-control-sm" name="i-district_code" placeholder="District" value="<?=$district_code?>" disabled>
+                            </div>
+                            <div class="col-4">
+                                <input type="text" class="form-control form-control-sm" name="i-district_chi" placeholder="District" value="<?=$district_chi?>" disabled>
+                            </div>
+                            <div class="col-4">
+                                <input type="text" class="form-control form-control-sm" name="i-district_eng" placeholder="District" value="<?=$district_eng?>" disabled>
                             </div>
                         </div>
                         <div class="form-row">
@@ -176,7 +180,7 @@
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="col-3">
+                            <div class="col-4">
                                 <label for="t1">Accountant</label>
                                 <input type="text" class="form-control form-control-sm" name="i-attn_1" id="i-attn_1" placeholder="" value="">
                             </div>
@@ -189,4 +193,3 @@
         </div>                      
         <!-- end card body -->
     </div>
-</form>

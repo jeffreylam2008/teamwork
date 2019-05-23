@@ -162,7 +162,6 @@ class Customers extends CI_Controller
 
 			// load main view
 			$this->load->view('customers/customers-list-view', [
-				"edit_url" => base_url("/customers/customers/edit/"),
 				"detail_url" => base_url("/customers/customers/detail/"),
 				"del_url" => base_url("/customers/customers/delete/"),
 				'data' => $_API_CUSTOMERS,
@@ -235,7 +234,8 @@ class Customers extends CI_Controller
 					// function bar with next, preview and save button
 					$this->load->view('function-bar', [
 						"btn" => [
-							["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers/customers/page/'.$_page), "style" => "", "show" => true],
+							["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers/customers/detail/'.$cust_code), "style" => "", "show" => true],
+							["name" => "Home", "type"=>"button", "id" => "home", "url"=>base_url('/customers/customers/page/'.$_page), "style" => "", "show" => true],
 							["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "" , "style" => "btn btn-outline-secondary", "show" => true],
 							["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
 							["name" => "Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/customers/customers/edit/".$_all[$_previous]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
@@ -312,19 +312,17 @@ class Customers extends CI_Controller
 					$this->load->view('function-bar', [
 						"btn" => [
 							["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers/customers/page/'.$_page), "style" => "", "show" => true],
-							["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "" , "style" => "btn btn-outline-secondary", "show" => true],
-							["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
-							["name" => "Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/customers/customers/edit/".$_all[$_previous]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
-					 		["name" => "Next", "type"=>"button", "id" => "next", "url"=> base_url("/customers/customers/edit/".$_all[$_next]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
+							["name" => "Edit", "type"=>"button", "id" => "Edit", "url"=>base_url('/customers/customers/edit/'.$cust_code), "style" => "btn btn-primary", "show" => true],
+							["name" => "Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/customers/customers/detail/".$_all[$_previous]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
+					 		["name" => "Next", "type"=>"button", "id" => "next", "url"=> base_url("/customers/customers/detail/".$_all[$_next]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
 					 	]
 					]);
 
 					// load main view
 					$this->load->view('customers/customers-detail-view', [
-						"save_url" => base_url("customers/customers/edit/save/".$cust_code),
 						'data' => $this->_customers[$_key],
-						'payment_method' => $this->_pm,
-						'payment_term' => $this->_pt
+						'data_payment_method' => $this->_pm,
+						'data_payment_term' => $this->_pt
 					]);
 					$this->load->view('footer');
 				}

@@ -19,17 +19,17 @@
         // echo "<pre>";
         // var_dump($paymethod);
         // echo "</pre>";
-        $edit_auth = "";
+        $detail_auth = "";
             foreach($data as $key => $val)
             {
                 echo "<tr>";
                 echo "<td>".($key+1)."</td>";
                 if($user_auth)
                 {
-                    $edit_auth = "href=".$edit_url.$val['cust_code'];
+                    $detail_auth = "href=".$detail_url.$val['cust_code'];
                 }
                 echo "<td><a href='".$del_url.$val['cust_code']."'><i class='fas fa-trash-alt'></i></a></td>";
-                echo "<td><a ".$edit_auth.">".$val['cust_code']."</a></td>";
+                echo "<td><a ".$detail_auth.">".$val['cust_code']."</a></td>";
                 echo "<td>".$val['name']."</td>";
                 echo "<td>".$val['delivery_addr']."</td>";
                 echo "<td>".$val['phone_1']."</td>";
