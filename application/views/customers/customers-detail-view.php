@@ -129,16 +129,16 @@
                     <li class="list-group-item">
 						<span class="badge badge-pill badge-secondary">Delivery</span>
 						<div class="form-row">
-                            <div class="col-2">
-                                <label for="t1">District</label> 
-                            </div>
-                            <div class="col-2">    
+                            <div class="col-3">
+                                <label for="t1">District Code</label> 
                                 <input type="text" class="form-control form-control-sm" name="i-district_code" placeholder="District" value="<?=$district_code?>" disabled>
-                            </div>
-                            <div class="col-4">
+							</div>
+							<div class="col-3">
+								<label for="t1">District</label>
                                 <input type="text" class="form-control form-control-sm" name="i-district_chi" placeholder="District" value="<?=$district_chi?>" disabled>
-                            </div>
-                            <div class="col-4">
+							</div>
+							<div class="col-6">
+								<label for="t1">District</label>
                                 <input type="text" class="form-control form-control-sm" name="i-district_eng" placeholder="District" value="<?=$district_eng?>" disabled>
                             </div>
                         </div>
@@ -151,11 +151,11 @@
                         <div class="form-row">
                             <div class="col-3">
                                 <label for="t1">From</label>
-                                <input type="text" class="form-control form-control-sm" name="i-from_time" placeholder="From" value="">
+                                <input type="text" class="form-control form-control-sm" name="i-from_time" placeholder="From" value="<?=$from_time?>">
                             </div>
 							<div class="col-3">
                                 <label for="t1">To</label>
-                                <input type="text" class="form-control form-control-sm" name="i-to_time" placeholder="To" value="">
+                                <input type="text" class="form-control form-control-sm" name="i-to_time" placeholder="To" value="<?=$to_time?>">
                             </div>
                         </div>
                         <div class="form-row">

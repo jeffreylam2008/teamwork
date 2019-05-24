@@ -7,8 +7,8 @@ class Customers extends CI_Controller
 	var $_token = "";
 	var $_param = "";
 	var $_customers = [];
-	var $_pm = [];
-	var $_pt = [];
+	//var $_pm = [];
+	//var $_pt = [];
 	public function __construct()
 	{
 		parent::__construct();
@@ -45,15 +45,15 @@ class Customers extends CI_Controller
 				$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
 				$this->_customers = $_API_CUSTOMERS['query'];
 		
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/method/");
-				$this->component_api->CallGet();
-				$_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
-				$this->_pm = $_PAYMENT_METHOD['query'];
+				//$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/method/");
+				//$this->component_api->CallGet();
+				//$_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
+				//$this->_pm = $_PAYMENT_METHOD['query'];
 
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/term/");
-				$this->component_api->CallGet();
-				$_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
-				$this->_pt = $_PAYMENT_TERM['query'];
+				//$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/term/");
+				//$this->component_api->CallGet();
+				//$_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
+				//$this->_pt = $_PAYMENT_TERM['query'];
 
 				// sidebar session
 				$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
@@ -127,31 +127,38 @@ class Customers extends CI_Controller
 		$this->session->set_userdata('page',$_page);
 
 		// API data
-		$_API_CUSTOMERS = $this->_customers;
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/");
+		$this->component_api->CallGet();
+		$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_CUSTOMERS = $_API_CUSTOMERS['query'];
 
 		// Get payment method
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/method/");
 		$this->component_api->CallGet();
-		$_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
-		$_API_PAYMENTS = $_API_PAYMENTS['query'];
+		$_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
+		$_PAYMENT_METHOD = $_PAYMENT_METHOD['query'];
 		
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/term/");
+		$this->component_api->CallGet();
+		$_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
+		$_PAYMENT_TERM = $_PAYMENT_TERM['query'];
+
 		// API data usage
-		if(!empty($_API_CUSTOMERS) >= 1 && !empty($_API_PAYMENTS))
+		if(!empty($_API_CUSTOMERS) >= 1 && !empty($_PAYMENT_METHOD))
 		{
 
 			// join different table into one array	
 			foreach($_API_CUSTOMERS as $key => $val)
 			{
-				if(array_key_exists($val['pm_code'],$_API_PAYMENTS))
+				if(array_key_exists($val['pm_code'],$_PAYMENT_METHOD))
 				{
 					$_pm_code = $_API_CUSTOMERS[$key]['pm_code'];
-					$_API_CUSTOMERS[$key]['payment_method'] = $_API_PAYMENTS[$_pm_code]['payment_method'];
+					$_API_CUSTOMERS[$key]['payment_method'] = $_PAYMENT_METHOD[$_pm_code]['payment_method'];
 				}
 				else{
 					$_API_CUSTOMERS[$key]['payment_method'] = "";
 				}
 			}
-		
 		
 			// load function bar view
 			$this->load->view('function-bar', [
@@ -181,8 +188,8 @@ class Customers extends CI_Controller
 				"save_url" => base_url("/customers/customers/save/"),
 				"new_pm_url" => base_url("/administration/payments/method/"),
 				"new_pt_url" => base_url("/administration/payments/term/"),
-				'payment_method' => $this->_pm,
-				'payment_term' => $this->_pt
+				'payment_method' => $_PAYMENT_METHOD,
+				'payment_term' => $_PAYMENT_TERM
 			]);
 			$this->load->view('footer');
 		}
@@ -196,6 +203,18 @@ class Customers extends CI_Controller
 		$_next_disable = "";
 		// user data
 		$_page = 1;
+
+		// API Call
+		// Get payment method
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/method/");
+		$this->component_api->CallGet();
+		$_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
+		$_PAYMENT_METHOD = $_PAYMENT_METHOD['query'];
+		
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/term/");
+		$this->component_api->CallGet();
+		$_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
+		$_PAYMENT_TERM = $_PAYMENT_TERM['query'];
 
 		
 		if(!empty($cust_code))
@@ -247,8 +266,8 @@ class Customers extends CI_Controller
 					$this->load->view('customers/customers-edit-view', [
 						"save_url" => base_url("customers/customers/edit/save/".$cust_code),
 						'data' => $this->_customers[$_key],
-						'payment_method' => $this->_pm,
-						'payment_term' => $this->_pt
+						'payment_method' => $_PAYMENT_METHOD,
+						'payment_term' => $_PAYMENT_TERM
 					]);
 					$this->load->view('footer');
 				}
@@ -273,7 +292,18 @@ class Customers extends CI_Controller
 		$_next_disable = "";
 		// user data
 		$_page = 1;
-
+		
+		// API
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/method/");
+		$this->component_api->CallGet();
+		$_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
+		$_PAYMENT_METHOD = $_PAYMENT_METHOD['query'];
+		
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/term/");
+		$this->component_api->CallGet();
+		$_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
+		$_PAYMENT_TERM = $_PAYMENT_TERM['query'];
+		
 		
 		if(!empty($cust_code))
 		{
@@ -321,8 +351,8 @@ class Customers extends CI_Controller
 					// load main view
 					$this->load->view('customers/customers-detail-view', [
 						'data' => $this->_customers[$_key],
-						'data_payment_method' => $this->_pm,
-						'data_payment_term' => $this->_pt
+						'data_payment_method' => $_PAYMENT_METHOD,
+						'data_payment_term' => $_PAYMENT_TERM
 					]);
 					$this->load->view('footer');
 				}
