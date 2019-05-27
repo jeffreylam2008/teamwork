@@ -101,7 +101,7 @@
                         <?php 
                             if(!empty($pm_code) && $pm_code != "-1"):
                         ?>
-                            <option value="<?=$pm_code?>"><?=$data_payment_method[$pm_code]["payment_method"]?></option>
+                            <option value="<?=$pm_code?>"><?=$payment_method[$pm_code]["payment_method"]?></option>
                         <?php
                             endif;
                         ?>
@@ -115,7 +115,7 @@
                         <?php 
                             if(!empty($pt_code) && $pt_code != "-1"):
                         ?>
-                            <option value="<?=$pt_code?>"><?=$data_payment_term[$pt_code]["terms"]?></option>
+                            <option value="<?=$pt_code?>"><?=$payment_term[$pt_code]["terms"]?></option>
                         <?php
                             endif;
                         ?>    

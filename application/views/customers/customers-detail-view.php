@@ -68,16 +68,7 @@
                                 <input type="text" class="form-control form-control-sm" name="i-fax_1" placeholder="0000 0000" value="<?=$fax_1?>">
                             </div>
                         </div>
-                        <div class="form-row">
-                            <div class="col-4">
-                                <label for="t1">Phone 2</label>
-                                <input type="text" class="form-control form-control-sm" name="i-phone_2" placeholder="0000 0000" value="<?=$phone_2?>">
-                            </div>
-                            <div class="col-4">
-                                <label for="t1">Fax 2</label>
-                                <input type="text" class="form-control form-control-sm" name="i-fax_2" placeholder="0000 0000" value="<?=$fax_2?>">
-                            </div>
-                        </div>
+                       
 
                         <div class="form-row">
                             <div class="col-12">
@@ -134,43 +125,55 @@
                                 <input type="text" class="form-control form-control-sm" name="i-district_code" placeholder="District" value="<?=$district_code?>" disabled>
 							</div>
 							<div class="col-3">
-								<label for="t1">District</label>
-                                <input type="text" class="form-control form-control-sm" name="i-district_chi" placeholder="District" value="<?=$district_chi?>" disabled>
+								<label for="t1">District ZH</label>
+                                <input type="text" class="form-control form-control-sm" name="i-district_zh" placeholder="District ZH" value="<?=$district_chi?>" disabled>
 							</div>
 							<div class="col-6">
-								<label for="t1">District</label>
-                                <input type="text" class="form-control form-control-sm" name="i-district_eng" placeholder="District" value="<?=$district_eng?>" disabled>
+								<label for="t1">District EN</label>
+                                <input type="text" class="form-control form-control-sm" name="i-district_en" placeholder="District EN" value="<?=$district_eng?>" disabled>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-12">
                                 <label for="">Delivery Address</label>
-                                <input type="text" class="form-control form-control-sm" name="i-delivery_addr" placeholder="Type Something" value="<?=$delivery_addr?>">
+                                <input type="text" class="form-control form-control-sm" name="i-delivery_addr" placeholder="Type Something" value="<?=$delivery_addr?>" disabled>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-3">
                                 <label for="t1">From</label>
-                                <input type="text" class="form-control form-control-sm" name="i-from_time" placeholder="From" value="<?=$from_time?>">
+                                <input type="text" class="form-control form-control-sm" name="i-from_time" placeholder="From" value="<?=$from_time?>" disabled>
                             </div>
 							<div class="col-3">
                                 <label for="t1">To</label>
-                                <input type="text" class="form-control form-control-sm" name="i-to_time" placeholder="To" value="<?=$to_time?>">
+                                <input type="text" class="form-control form-control-sm" name="i-to_time" placeholder="To" value="<?=$to_time?>" disabled>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-4">
+                                <label for="t1">Phone</label>
+                                <input type="text" class="form-control form-control-sm" name="i-delivery_phonn" placeholder="0000 0000" value="<?=$phone_2?>" disabled>
+                            </div>
+                            <div class="col-4">
+                                <label for="t1">Fax</label>
+                                <input type="text" class="form-control form-control-sm" name="i-delivery_fax" placeholder="0000 0000" value="<?=$fax_2?>" disabled>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-12">
                                 <label for="t1">Delivery Remark</label>
-                                <textarea class="form-control form-control-sm" placeholder="Type Something" name="i-delivery_remark" rows="3"></textarea>
+                                <textarea class="form-control form-control-sm" placeholder="Type Something" name="i-delivery_remark" rows="3" disabled></textarea>
                             </div>
                         </div>
+                       
+
                     </li>
                     <li class="list-group-item">
                         <span class="badge badge-pill badge-secondary">Account</span>    
                         <div class="form-row">
                             <div class="col-8">
                                 <label for="t1">Company BR Number</label>
-                                <input type="text" class="form-control form-control-sm" name="i-name" id="i-br" placeholder="BR Number" value="">
+                                <input type="text" class="form-control form-control-sm" name="i-company_br" id="i-br" placeholder="BR Number" value="">
                             </div>
                         </div>
                         <div class="form-row">
@@ -182,9 +185,18 @@
                         <div class="form-row">
                             <div class="col-4">
                                 <label for="t1">Accountant</label>
-                                <input type="text" class="form-control form-control-sm" name="i-attn_1" id="i-attn_1" placeholder="" value="">
+                                <input type="text" class="form-control form-control-sm" name="i-acc_attn" id="i-acc_attn" placeholder="" value="">
                             </div>
-
+                        </div>
+                        <div class="form-row">
+                            <div class="col-4">
+                                <label for="t1">Phone</label>
+                                <input type="text" class="form-control form-control-sm" name="i-acc_phone" placeholder="0000 0000" value="">
+                            </div>
+                            <div class="col-4">
+                                <label for="t1">Fax</label>
+                                <input type="text" class="form-control form-control-sm" name="i-acc_fax" placeholder="0000 0000" value="">
+                            </div>
                         </div>
                     </li>
                 </ul>
