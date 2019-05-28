@@ -1,7 +1,7 @@
 <?php
-    // echo "<pre>";
-    // var_dump($data);
-    // echo "</pre>";
+    echo "<pre>";
+    var_dump($data_payment_method);
+    echo "</pre>";
     extract($data);
 ?>
 
@@ -20,28 +20,28 @@
 							<div class="form-row">
 								<div class="col-8">
 									<label for="t1">Customer Shop</label>
-									<input type="text" class="form-control form-control-sm" name="i-name" id="i-name" placeholder="Name" value="<?=$name?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-name" id="i-name" placeholder="Name" value="<?=$name?>" >
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Primary Attn</label>
-									<input type="text" class="form-control form-control-sm" name="i-attn_1" id="i-attn_1" placeholder="Primary Attn" value="<?=$attn_1?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-attn_1" id="i-attn_1" placeholder="Primary Attn" value="<?=$attn_1?>" >
 								</div>
 								<div class="col-4">
 									<label for="t1">Secondary Attn </label>
-									<input type="text" class="form-control form-control-sm" name="i-attn_2" placeholder="Secondary Attn" value="<?=$attn_2?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-attn_2" placeholder="Secondary Attn" value="<?=$attn_2?>" >
 								</div>
 							</div>
 
 							<div class="form-row">
 								<div class="col-12">
 									<label for="">Mail Address</label>
-									<input type="text" class="form-control form-control-sm" name="i-mail_addr" id="i-mail_addr" placeholder="Type Something" value="<?=$mail_addr?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-mail_addr" id="i-mail_addr" placeholder="Type Something" value="<?=$mail_addr?>" >
 								</div>
 								<div class="col-12">
 									<label for="">Shop Address</label>
-									<input type="text" class="form-control form-control-sm" name="i-shop_addr" placeholder="Type Something" value="<?=$shop_addr?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-shop_addr" placeholder="Type Something" value="<?=$shop_addr?>" >
 								</div>
 								
 							</div>
@@ -49,21 +49,21 @@
 							<div class="form-row">
 								<div class="col-6">
 									<label for="t1">Primary Email</label>
-									<input type="text" class="form-control form-control-sm" name="i-email_1" placeholder="Primary Email" value="<?=$email_2?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-email_1" placeholder="Primary Email" value="<?=$email_2?>" >
 								</div>
 								<div class="col-6">
 									<label for="t1">Secondary Email</label>
-									<input type="text" class="form-control form-control-sm" name="i-email_2" placeholder="Secondary Email" value="<?=$email_2?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-email_2" placeholder="Secondary Email" value="<?=$email_2?>" >
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Phone 1</label>
-									<input type="text" class="form-control form-control-sm" name="i-phone_1" id="i-phone_1" placeholder="0000 0000" value="<?=$phone_1?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-phone_1" id="i-phone_1" placeholder="0000 0000" value="<?=$phone_1?>" >
 								</div>
 								<div class="col-4">
 									<label for="t1">Fax 1</label>
-									<input type="text" class="form-control form-control-sm" name="i-fax_1" placeholder="0000 0000" value="<?=$fax_1?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-fax_1" placeholder="0000 0000" value="<?=$fax_1?>" >
 								</div>
 							</div>
 						   
@@ -71,41 +71,51 @@
 							<div class="form-row">
 								<div class="col-12">
 									<label for="t1">Statement Remark</label>
-									<textarea class="form-control form-control-sm" placeholder="Type Something" name="i-statement_remark" rows="2" disabled><?=$statement_remark?></textarea>
+									<textarea class="form-control form-control-sm" placeholder="Type Something" name="i-statement_remark" rows="2" ><?=$statement_remark?></textarea>
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-12">
 									<label for="t1">Remark</label>
-									<textarea class="form-control form-control-sm" placeholder="Type Something" name="i-remark" rows="2" disabled><?=$remark?></textarea>
+									<textarea class="form-control form-control-sm" placeholder="Type Something" name="i-remark" rows="2" ><?=$remark?></textarea>
 								</div>
 							</div>
 
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Payment Method</label>
-									<select class="custom-select custom-select-sm" id="i-paymentmethod" name="i-pm_code" disabled>
+									<select class="custom-select custom-select-sm" id="i-paymentmethod" name="i-pm_code" >
 										<?php 
 											if(!empty($pm_code) && $pm_code != "-1"):
 										?>
 											<option value="<?=$pm_code?>"><?=$data_payment_method[$pm_code]["payment_method"]?></option>
 										<?php
-											endif;
+                                            endif;
+                                            foreach($data_payment_method as $k => $v):
 										?>
+                                            <option value="<?=$k?>"><?=$v['payment_method']?></option>
+                                        <?php
+                                            endforeach;
+                                        ?>
 									</select>
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Payment Terms</label>
-									<select class="custom-select custom-select-sm" id="i-paymentterms" name="i-pt_code" disabled>
+									<select class="custom-select custom-select-sm" id="i-paymentterms" name="i-pt_code" >
 										<?php 
 											if(!empty($pt_code) && $pt_code != "-1"):
 										?>
 											<option value="<?=$pt_code?>"><?=$data_payment_term[$pt_code]["terms"]?></option>
-										<?php
-											endif;
-										?>    
+                                        <?php
+                                            endif;
+                                            foreach($data_payment_term as $k => $v):
+										?>
+                                            <option value="<?=$k?>"><?=$v['terms']?></option>
+                                        <?php
+                                            endforeach;
+                                        ?>
 									</select>
 								</div>
 							</div>
@@ -120,80 +130,78 @@
 							<div class="form-row">
 								<div class="col-3">
 									<label for="t1">District Code</label> 
-									<input type="text" class="form-control form-control-sm" name="i-district_code" placeholder="District" value="<?=$district_code?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-district_code" placeholder="District" value="<?=$district_code?>" >
 								</div>
 								<div class="col-3">
 									<label for="t1">District ZH</label>
-									<input type="text" class="form-control form-control-sm" name="i-district_zh" placeholder="District ZH" value="<?=$district_chi?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-district_zh" placeholder="District ZH" value="<?=$district_chi?>" >
 								</div>
 								<div class="col-6">
 									<label for="t1">District EN</label>
-									<input type="text" class="form-control form-control-sm" name="i-district_en" placeholder="District EN" value="<?=$district_eng?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-district_en" placeholder="District EN" value="<?=$district_eng?>" >
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-12">
 									<label for="">Delivery Address</label>
-									<input type="text" class="form-control form-control-sm" name="i-delivery_addr" placeholder="Type Something" value="<?=$delivery_addr?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-delivery_addr" placeholder="Type Something" value="<?=$delivery_addr?>" >
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-3">
 									<label for="t1">From</label>
-									<input type="text" class="form-control form-control-sm" name="i-from_time" placeholder="From" value="<?=$from_time?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-from_time" placeholder="From" value="<?=$from_time?>" >
 								</div>
 								<div class="col-3">
 									<label for="t1">To</label>
-									<input type="text" class="form-control form-control-sm" name="i-to_time" placeholder="To" value="<?=$to_time?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-to_time" placeholder="To" value="<?=$to_time?>" >
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Phone</label>
-									<input type="text" class="form-control form-control-sm" name="i-delivery_phonn" placeholder="0000 0000" value="<?=$phone_2?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-delivery_phonn" placeholder="0000 0000" value="<?=$phone_2?>" >
 								</div>
 								<div class="col-4">
 									<label for="t1">Fax</label>
-									<input type="text" class="form-control form-control-sm" name="i-delivery_fax" placeholder="0000 0000" value="<?=$fax_2?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-delivery_fax" placeholder="0000 0000" value="<?=$fax_2?>" >
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-12">
 									<label for="t1">Delivery Remark</label>
-									<textarea class="form-control form-control-sm" placeholder="Type Something" name="i-delivery_remark" rows="3" disabled></textarea>
+									<textarea class="form-control form-control-sm" placeholder="Type Something" name="i-delivery_remark" rows="3" ></textarea>
 								</div>
 							</div>
-						   
-
 						</li>
 						<li class="list-group-item">
 							<span class="badge badge-pill badge-secondary">Account</span>    
 							<div class="form-row">
 								<div class="col-8">
 									<label for="t1">Company BR Number</label>
-									<input type="text" class="form-control form-control-sm" name="i-company_br" id="i-br" placeholder="BR Number" value="" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-company_br" id="i-br" placeholder="BR Number" value="" >
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-8">
 									<label for="t1">Group Name</label>
-									<input type="text" class="form-control form-control-sm" name="i-group_name" placeholder="Group" value="" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-group_name" placeholder="Group" value="" >
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Accountant</label>
-									<input type="text" class="form-control form-control-sm" name="i-acc_attn" id="i-acc_attn" placeholder="Account Attn" value="" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-acc_attn" id="i-acc_attn" placeholder="Account Attn" value="" >
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Phone</label>
-									<input type="text" class="form-control form-control-sm" name="i-acc_phone" placeholder="0000 0000" value="" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-acc_phone" placeholder="0000 0000" value="" >
 								</div>
 								<div class="col-4">
 									<label for="t1">Fax</label>
-									<input type="text" class="form-control form-control-sm" name="i-acc_fax" placeholder="0000 0000" value="" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-acc_fax" placeholder="0000 0000" value="" >
 								</div>
 							</div>
 						</li>

@@ -266,8 +266,8 @@ class Customers extends CI_Controller
 					$this->load->view('customers/customers-edit-view', [
 						"save_url" => base_url("customers/customers/edit/save/".$cust_code),
 						'data' => $this->_customers[$_key],
-						'payment_method' => $_PAYMENT_METHOD,
-						'payment_term' => $_PAYMENT_TERM
+						'data_payment_method' => $_PAYMENT_METHOD,
+						'data_payment_term' => $_PAYMENT_TERM
 					]);
 					$this->load->view('footer');
 				}
