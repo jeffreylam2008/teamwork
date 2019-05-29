@@ -1,6 +1,6 @@
 <?php
     echo "<pre>";
-    var_dump($data_payment_method);
+    var_dump($data_district);
     echo "</pre>";
     extract($data);
 ?>
@@ -129,17 +129,23 @@
 							<span class="badge badge-pill badge-secondary">Delivery</span>
 							<div class="form-row">
 								<div class="col-3">
-									<label for="t1">District Code</label> 
-									<input type="text" class="form-control form-control-sm" name="i-district_code" placeholder="District" value="<?=$district_code?>" >
+									<label for="t1">District</label> 
+									<select class="custom-select custom-select-sm" id="i-district" name="i-district" >
+										<?php 
+											if(!empty($district_code) && $district_code != "-1"):
+										?>
+											<option value="<?=$district_code?>"><?=$data_district[$district_code]["district_chi"]?></option>
+										<?php
+                                            endif;
+                                            foreach($data_district as $k => $v):
+										?>
+                                            <option value="<?=$k?>"><?=$v['district_chi']?></option>
+                                        <?php
+                                            endforeach;
+                                        ?>
+									</select>
 								</div>
-								<div class="col-3">
-									<label for="t1">District ZH</label>
-									<input type="text" class="form-control form-control-sm" name="i-district_zh" placeholder="District ZH" value="<?=$district_chi?>" >
-								</div>
-								<div class="col-6">
-									<label for="t1">District EN</label>
-									<input type="text" class="form-control form-control-sm" name="i-district_en" placeholder="District EN" value="<?=$district_eng?>" >
-								</div>
+								
 							</div>
 							<div class="form-row">
 								<div class="col-12">

@@ -216,6 +216,10 @@ class Customers extends CI_Controller
 		$_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
 		$_PAYMENT_TERM = $_PAYMENT_TERM['query'];
 
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/district/");
+		$this->component_api->CallGet();
+		$_DISTRICT = json_decode($this->component_api->GetConfig("result"), true);
+		$_DISTRICT = $_DISTRICT['query'];
 		
 		if(!empty($cust_code))
 		{
@@ -247,9 +251,7 @@ class Customers extends CI_Controller
 						$_previous_disable = "disabled";
 						$_previous = 0;
 					}
-	// echo "<pre>";
-	// var_dump($this->_customers[$_key]);
-	// echo "</pre>";
+
 					// function bar with next, preview and save button
 					$this->load->view('function-bar', [
 						"btn" => [
@@ -267,7 +269,8 @@ class Customers extends CI_Controller
 						"save_url" => base_url("customers/customers/edit/save/".$cust_code),
 						'data' => $this->_customers[$_key],
 						'data_payment_method' => $_PAYMENT_METHOD,
-						'data_payment_term' => $_PAYMENT_TERM
+						'data_payment_term' => $_PAYMENT_TERM,
+						'data_district' => $_DISTRICT
 					]);
 					$this->load->view('footer');
 				}
