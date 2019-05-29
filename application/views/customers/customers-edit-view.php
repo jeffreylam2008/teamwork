@@ -1,7 +1,7 @@
 <?php
-    echo "<pre>";
-    var_dump($data_district);
-    echo "</pre>";
+    // echo "<pre>";
+    // var_dump($data_district);
+    // echo "</pre>";
     extract($data);
 ?>
 

@@ -65,6 +65,9 @@ class Customers extends CI_Controller
 					case "customers/delete":
 						$this->_param = "customers/index";
 					break;
+					case "customers/detail":
+						$this->_param = "customers/index";
+					break;
 				}
 
 				// header data

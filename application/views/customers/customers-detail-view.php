@@ -1,7 +1,7 @@
 <?php
-    //echo "<pre>";
-    //var_dump($data);
-    //echo "</pre>";
+    echo "<pre>";
+    var_dump($data);
+    echo "</pre>";
     //echo "<pre>";
     //var_dump($data_payment_method);
     //echo "</pre>";
@@ -120,18 +120,11 @@
 						<li class="list-group-item">
 							<span class="badge badge-pill badge-secondary">Delivery</span>
 							<div class="form-row">
-								<div class="col-3">
-									<label for="t1">District Code</label> 
-									<input type="text" class="form-control form-control-sm" name="i-district_code" placeholder="District" value="<?=$district_code?>" disabled>
-								</div>
-								<div class="col-3">
-									<label for="t1">District ZH</label>
-									<input type="text" class="form-control form-control-sm" name="i-district_zh" placeholder="District ZH" value="<?=$district_chi?>" disabled>
-								</div>
 								<div class="col-6">
-									<label for="t1">District EN</label>
-									<input type="text" class="form-control form-control-sm" name="i-district_en" placeholder="District EN" value="<?=$district_eng?>" disabled>
+									<label for="t1">District Code</label> 
+									<input type="text" class="form-control form-control-sm" name="i-district_code" placeholder="District" value="<?=$district_code?> <?=$district_chi?> <?=$district_eng?>" disabled>
 								</div>
+
 							</div>
 							<div class="form-row">
 								<div class="col-12">
