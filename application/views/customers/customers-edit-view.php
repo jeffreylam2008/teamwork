@@ -18,6 +18,22 @@
 						<li class="list-group-item">
 							<span class="badge badge-pill badge-secondary">General</span> 
 							<div class="form-row">
+								<div class="col-3">
+									<label for="t1">Status</label>
+									<select class="custom-select custom-select-sm" id="i-status" name="i-status">
+										<?php 
+											if(!empty($status)):
+										?>
+											<option value="<?=$status?>"><?=$status?></option>
+										<?php
+											endif;
+										?>
+										<option value="Active">Active</option>
+										<option value="Closed">Closed</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-row">
 								<div class="col-8">
 									<label for="t1">Customer Shop</label>
 									<input type="text" class="form-control form-control-sm" name="i-name" id="i-name" placeholder="Name" value="<?=$name?>" >

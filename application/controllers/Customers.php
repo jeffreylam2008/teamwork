@@ -207,6 +207,8 @@ class Customers extends CI_Controller
 		// user data
 		$_page = 1;
 
+
+		
 		// API Call
 		// Get payment method
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/method/");
@@ -223,11 +225,15 @@ class Customers extends CI_Controller
 		$this->component_api->CallGet();
 		$_DISTRICT = json_decode($this->component_api->GetConfig("result"), true);
 		$_DISTRICT = $_DISTRICT['query'];
-		
+
 		if(!empty($cust_code))
 		{
 			// Call API here
-		
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/".$cust_code);
+			$this->component_api->CallGet();
+			$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_CUSTOMERS = $_API_CUSTOMERS['query'];
+
 			// API data usage
 			if(!empty($this->_customers) && !empty($cust_code) )
 			{
@@ -270,7 +276,7 @@ class Customers extends CI_Controller
 					// load main view
 					$this->load->view('customers/customers-edit-view', [
 						"save_url" => base_url("customers/customers/edit/save/".$cust_code),
-						'data' => $this->_customers[$_key],
+						'data' => $_API_CUSTOMERS,
 						'data_payment_method' => $_PAYMENT_METHOD,
 						'data_payment_term' => $_PAYMENT_TERM,
 						'data_district' => $_DISTRICT

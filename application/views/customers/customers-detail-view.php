@@ -20,6 +20,20 @@
 						<li class="list-group-item">
 							<span class="badge badge-pill badge-secondary">General</span> 
 							<div class="form-row">
+								<div class="col-3">
+									<label for="t1">Status</label>
+									<select class="custom-select custom-select-sm" id="i-status" name="i-status" disabled>
+										<?php 
+											if(!empty($status) && $status == "Active"):
+										?>
+											<option value="<?=$status?>"><?=$status?></option>
+										<?php
+											endif;
+										?>
+									</select>
+								</div>
+							</div>
+							<div class="form-row">
 								<div class="col-8">
 									<label for="t1">Customer Shop</label>
 									<input type="text" class="form-control form-control-sm" name="i-name" id="i-name" placeholder="Name" value="<?=$name?>" disabled>
@@ -159,36 +173,35 @@
 								</div>
 							</div>
 						   
-
 						</li>
 						<li class="list-group-item">
 							<span class="badge badge-pill badge-secondary">Account</span>    
 							<div class="form-row">
 								<div class="col-8">
 									<label for="t1">Company BR Number</label>
-									<input type="text" class="form-control form-control-sm" name="i-company_br" id="i-br" placeholder="BR Number" value="" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-company_br" id="i-br" placeholder="BR Number" value="<?=$company_BR?>" disabled>
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-8">
 									<label for="t1">Group Name</label>
-									<input type="text" class="form-control form-control-sm" name="i-group_name" placeholder="Group" value="" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-group_name" placeholder="Group" value="<?=$group_name?>" disabled>
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Accountant</label>
-									<input type="text" class="form-control form-control-sm" name="i-acc_attn" id="i-acc_attn" placeholder="Account Attn" value="" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-acc_attn" id="i-acc_attn" placeholder="Account Attn" value="<?=$attn?>" disabled>
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Phone</label>
-									<input type="text" class="form-control form-control-sm" name="i-acc_phone" placeholder="0000 0000" value="" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-acc_phone" placeholder="0000 0000" value="<?=$tel?>" disabled>
 								</div>
 								<div class="col-4">
 									<label for="t1">Fax</label>
-									<input type="text" class="form-control form-control-sm" name="i-acc_fax" placeholder="0000 0000" value="" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-acc_fax" placeholder="0000 0000" value="<?=$fax?>" disabled>
 								</div>
 							</div>
 						</li>
