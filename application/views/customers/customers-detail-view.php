@@ -169,7 +169,7 @@
 							<div class="form-row">
 								<div class="col-12">
 									<label for="t1">Delivery Remark</label>
-									<textarea class="form-control form-control-sm" placeholder="Type Something" name="i-delivery_remark" rows="3" disabled></textarea>
+									<textarea class="form-control form-control-sm" placeholder="Type Something" name="i-delivery_remark" rows="3" disabled><?=$delivery_remark?></textarea>
 								</div>
 							</div>
 						   
@@ -202,6 +202,12 @@
 								<div class="col-4">
 									<label for="t1">Fax</label>
 									<input type="text" class="form-control form-control-sm" name="i-acc_fax" placeholder="0000 0000" value="<?=$fax?>" disabled>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="col-6">
+									<label for="t1">Email</label>
+									<input type="text" class="form-control form-control-sm" name="i-acc_email" placeholder="Email" value="<?=$email?>" disabled>
 								</div>
 							</div>
 						</li>

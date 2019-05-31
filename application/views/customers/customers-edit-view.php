@@ -192,7 +192,7 @@
 							<div class="form-row">
 								<div class="col-12">
 									<label for="t1">Delivery Remark</label>
-									<textarea class="form-control form-control-sm" placeholder="Type Something" name="i-delivery_remark" rows="3" ></textarea>
+									<textarea class="form-control form-control-sm" placeholder="Type Something" name="i-delivery_remark" rows="3" ><?=$delivery_remark?></textarea>
 								</div>
 							</div>
 						</li>
@@ -201,29 +201,35 @@
 							<div class="form-row">
 								<div class="col-8">
 									<label for="t1">Company BR Number</label>
-									<input type="text" class="form-control form-control-sm" name="i-company_br" id="i-br" placeholder="BR Number" value="" >
+									<input type="text" class="form-control form-control-sm" name="i-company_br" id="i-br" placeholder="BR Number" value="<?=$company_BR?>" >
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-8">
 									<label for="t1">Group Name</label>
-									<input type="text" class="form-control form-control-sm" name="i-group_name" placeholder="Group" value="" >
+									<input type="text" class="form-control form-control-sm" name="i-group_name" placeholder="Group" value="<?=$group_name?>" >
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Accountant</label>
-									<input type="text" class="form-control form-control-sm" name="i-acc_attn" id="i-acc_attn" placeholder="Account Attn" value="" >
+									<input type="text" class="form-control form-control-sm" name="i-acc_attn" id="i-acc_attn" placeholder="Account Attn" value="<?=$attn?>" >
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Phone</label>
-									<input type="text" class="form-control form-control-sm" name="i-acc_phone" placeholder="0000 0000" value="" >
+									<input type="text" class="form-control form-control-sm" name="i-acc_phone" placeholder="0000 0000" value="<?=$tel?>" >
 								</div>
 								<div class="col-4">
 									<label for="t1">Fax</label>
-									<input type="text" class="form-control form-control-sm" name="i-acc_fax" placeholder="0000 0000" value="" >
+									<input type="text" class="form-control form-control-sm" name="i-acc_fax" placeholder="0000 0000" value="<?=$fax?>" >
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="col-6">
+									<label for="t1">Email</label>
+									<input type="text" class="form-control form-control-sm" name="i-acc_email" placeholder="Email" value="<?=$email?>" >
 								</div>
 							</div>
 						</li>
