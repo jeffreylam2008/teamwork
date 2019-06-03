@@ -182,7 +182,7 @@
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Phone</label>
-									<input type="text" class="form-control form-control-sm" name="i-delivery_phonn" placeholder="0000 0000" value="<?=$phone_2?>" >
+									<input type="text" class="form-control form-control-sm" name="i-delivery_phone" placeholder="0000 0000" value="<?=$phone_2?>" >
 								</div>
 								<div class="col-4">
 									<label for="t1">Fax</label>
@@ -201,13 +201,19 @@
 							<div class="form-row">
 								<div class="col-8">
 									<label for="t1">Company BR Number</label>
-									<input type="text" class="form-control form-control-sm" name="i-company_br" id="i-br" placeholder="BR Number" value="<?=$company_BR?>" >
+									<input type="text" class="form-control form-control-sm" name="i-acc_company_br" id="i-br" placeholder="BR Number" value="<?=$company_BR?>" >
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="col-8">
+									<label for="t1">Company Sign</label>
+									<input type="text" class="form-control form-control-sm" name="i-acc_company_sign" placeholder="Company Sign" value="<?=$company_sign?>">
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-8">
 									<label for="t1">Group Name</label>
-									<input type="text" class="form-control form-control-sm" name="i-group_name" placeholder="Group" value="<?=$group_name?>" >
+									<input type="text" class="form-control form-control-sm" name="i-acc_group_name" placeholder="Group" value="<?=$group_name?>" >
 								</div>
 							</div>
 							<div class="form-row">

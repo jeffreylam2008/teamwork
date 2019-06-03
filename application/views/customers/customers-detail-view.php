@@ -1,7 +1,7 @@
 <?php
-    echo "<pre>";
-    var_dump($data);
-    echo "</pre>";
+    // echo "<pre>";
+    // var_dump($data);
+    // echo "</pre>";
     //echo "<pre>";
     //var_dump($data_payment_method);
     //echo "</pre>";
@@ -24,10 +24,15 @@
 									<label for="t1">Status</label>
 									<select class="custom-select custom-select-sm" id="i-status" name="i-status" disabled>
 										<?php 
-											if(!empty($status) && $status == "Active"):
-										?>
-											<option value="<?=$status?>"><?=$status?></option>
-										<?php
+											if(!empty($status)):
+												switch($status):
+													case "Active":
+														echo "<option value='Active'>Active</option>";
+													break;
+													case "Closed":
+														echo "<option value='Closed'>Closed</option>";
+													break;
+												endswitch;
 											endif;
 										?>
 									</select>
@@ -125,7 +130,6 @@
 									</select>
 								</div>
 							</div>
-							<input type="hidden" name="i-group_name" value="" />
 						</li>
 					</ul>
 				</div>
@@ -179,13 +183,19 @@
 							<div class="form-row">
 								<div class="col-8">
 									<label for="t1">Company BR Number</label>
-									<input type="text" class="form-control form-control-sm" name="i-company_br" id="i-br" placeholder="BR Number" value="<?=$company_BR?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-acc_company_br" id="i-br" placeholder="BR Number" value="<?=$company_BR?>" disabled>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="col-8">
+									<label for="t1">Company Sign</label>
+									<input type="text" class="form-control form-control-sm" name="i-acc_company_sign" placeholder="Company Sign" value="<?=$company_sign?>" disabled>
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-8">
 									<label for="t1">Group Name</label>
-									<input type="text" class="form-control form-control-sm" name="i-group_name" placeholder="Group" value="<?=$group_name?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-acc_group_name" placeholder="Group" value="<?=$group_name?>" disabled>
 								</div>
 							</div>
 							<div class="form-row">

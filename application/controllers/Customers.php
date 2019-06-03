@@ -413,7 +413,7 @@ class Customers extends CI_Controller
 				$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/".$cust_code);
 				$this->component_api->CallPatch();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
-				
+
 				if(isset($result['error']['message']) || isset($result['error']['code']))
 				{
 					$alert = "danger";
