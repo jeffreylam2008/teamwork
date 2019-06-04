@@ -73,11 +73,11 @@
                                             <div class="form-row">
                                                 <div class="col-4">
                                                     <label for="t1">Phone 1</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-phone_1" id="i-phone_1" placeholder="0000 0000" value="" >
+                                                    <input type="text" class="form-control form-control-sm" name="i-phone_1" id="i-phone_1" placeholder="00000000" value="" >
                                                 </div>
                                                 <div class="col-4">
                                                     <label for="t1">Fax 1</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-fax_1" placeholder="0000 0000" value="" >
+                                                    <input type="text" class="form-control form-control-sm" name="i-fax_1" placeholder="00000000" value="" >
                                                 </div>
                                             </div>
                                         
@@ -157,21 +157,21 @@
                                             <div class="form-row">
                                                 <div class="col-3">
                                                     <label for="t1">From</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-from_time" placeholder="From" value="" >
+                                                    <input type="text" class="form-control form-control-sm" name="i-from_time" placeholder="00:00:00" value="" >
                                                 </div>
                                                 <div class="col-3">
                                                     <label for="t1">To</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-to_time" placeholder="To" value="" >
+                                                    <input type="text" class="form-control form-control-sm" name="i-to_time" placeholder="00:00:00" value="" >
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="col-4">
                                                     <label for="t1">Phone</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-delivery_phone" placeholder="0000 0000" value="" >
+                                                    <input type="text" class="form-control form-control-sm" name="i-delivery_phone" placeholder="00000000" value="" >
                                                 </div>
                                                 <div class="col-4">
                                                     <label for="t1">Fax</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-delivery_fax" placeholder="0000 0000" value="" >
+                                                    <input type="text" class="form-control form-control-sm" name="i-delivery_fax" placeholder="00000000" value="" >
                                                 </div>
                                             </div>
                                             <div class="form-row">
@@ -210,11 +210,11 @@
                                             <div class="form-row">
                                                 <div class="col-4">
                                                     <label for="t1">Phone</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-acc_phone" placeholder="0000 0000" value="" >
+                                                    <input type="text" class="form-control form-control-sm" name="i-acc_phone" placeholder="00000000" value="" >
                                                 </div>
                                                 <div class="col-4">
                                                     <label for="t1">Fax</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-acc_fax" placeholder="0000 0000" value="" >
+                                                    <input type="text" class="form-control form-control-sm" name="i-acc_fax" placeholder="00000000" value="" >
                                                 </div>
                                             </div>
                                             <div class="form-row">

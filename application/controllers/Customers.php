@@ -444,9 +444,9 @@ class Customers extends CI_Controller
 
 	public function save()
 	{
-		// echo "<pre>";
-		// var_dump($_POST);
-		// echo "</pre>";
+		echo "<pre>";
+		var_dump($_POST);
+		echo "</pre>";
 		if(isset($_POST) && !empty($_POST))
 		{
 			$_api_body = json_encode($_POST,true);
