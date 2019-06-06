@@ -139,8 +139,16 @@
 							<span class="badge badge-pill badge-secondary">Delivery</span>
 							<div class="form-row">
 								<div class="col-6">
-									<label for="t1">District Code</label> 
-									<input type="text" class="form-control form-control-sm" name="i-district_code" placeholder="District" value="<?=$district_code?> <?=$district_chi?> <?=$district_eng?>" disabled>
+									<label for="t1">District Code</label>
+									<?php 
+										if(!empty($district_code) && $district_code != "-1"):
+											$_dc = $district_code;
+										else:
+											$_dc = "N/A";
+										endif;
+									?>
+									<input type="text" class="form-control form-control-sm" name="i-district_code" placeholder="District" value="<?=$_dc?> <?=$district_chi?> <?=$district_eng?>" disabled>
+
 								</div>
 
 							</div>

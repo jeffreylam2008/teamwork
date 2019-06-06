@@ -152,8 +152,15 @@
 										?>
 											<option value="<?=$district_code?>"><?=$data_district[$district_code]["district_chi"]?></option>
 										<?php
-                                            endif;
-                                            foreach($data_district as $k => $v):
+											else:
+										?>
+											<option value="-1">Select...</option>
+										<?php
+											endif;
+										?>
+											
+                                        <?php 
+											foreach($data_district as $k => $v):
 										?>
                                             <option value="<?=$k?>"><?=$v['district_chi']?></option>
                                         <?php

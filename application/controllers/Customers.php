@@ -213,8 +213,6 @@ class Customers extends CI_Controller
 		// user data
 		$_page = 1;
 
-
-		
 		// API Call
 		// Get payment method
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/method/");
@@ -241,7 +239,7 @@ class Customers extends CI_Controller
 			$_API_CUSTOMERS = $_API_CUSTOMERS['query'];
 
 			// API data usage
-			if(!empty($this->_customers) && !empty($cust_code) )
+			if(!empty($this->_customers) )
 			{
 				$_all = array_column($this->_customers, "cust_code");
 				
@@ -322,16 +320,24 @@ class Customers extends CI_Controller
 		$_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
 		$_PAYMENT_TERM = $_PAYMENT_TERM['query'];
 		
-		
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/district/");
+		$this->component_api->CallGet();
+		$_DISTRICT = json_decode($this->component_api->GetConfig("result"), true);
+		$_DISTRICT = $_DISTRICT['query'];
+
 		if(!empty($cust_code))
 		{
 			// Call API here
-		
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/".$cust_code);
+			$this->component_api->CallGet();
+			$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_CUSTOMERS = $_API_CUSTOMERS['query'];
+
 			// API data usage
-			if(!empty($this->_customers) && !empty($cust_code) )
+			if(!empty($this->_customers))
 			{
-				$_all = array_column($this->_customers, "cust_code");
 				
+				$_all = array_column($this->_customers, "cust_code");
 				// search key
 				$_key = array_search(
 					$cust_code, array_column($this->_customers, "cust_code")
@@ -353,9 +359,7 @@ class Customers extends CI_Controller
 						$_previous_disable = "disabled";
 						$_previous = 0;
 					}
-	// echo "<pre>";
-	// var_dump($this->_customers[$_key]);
-	// echo "</pre>";
+
 					// function bar with next, preview and save button
 					$this->load->view('function-bar', [
 						"btn" => [
@@ -368,9 +372,10 @@ class Customers extends CI_Controller
 
 					// load main view
 					$this->load->view('customers/customers-detail-view', [
-						'data' => $this->_customers[$_key],
+						'data' => $_API_CUSTOMERS,
 						'data_payment_method' => $_PAYMENT_METHOD,
-						'data_payment_term' => $_PAYMENT_TERM
+						'data_payment_term' => $_PAYMENT_TERM,
+						'data_district' => $_DISTRICT
 					]);
 					$this->load->view('footer');
 				}
@@ -391,7 +396,7 @@ class Customers extends CI_Controller
 	 */
 	public function delete()
 	{
-
+		echo "this is customer delete page";
 	}
 
 	/**
@@ -450,9 +455,7 @@ class Customers extends CI_Controller
 		if(isset($_POST) && !empty($_POST))
 		{
 			$_api_body = json_encode($_POST,true);
-			echo "<pre>";
-			var_dump($_api_body);
-			echo "</pre>";
+
 			if($_api_body != "")
 			{
 				// API data
