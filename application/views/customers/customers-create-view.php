@@ -16,9 +16,6 @@
                 <!-- Modal Content -->
                 <form id="form1" name="form1" method="POST" action="<?=$save_url?>">
                     <div class="card">
-                        <div class="card-header">
-                            <h2> Customer: <u><?=$data_cust_code?></u></h2>
-                        </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col">
