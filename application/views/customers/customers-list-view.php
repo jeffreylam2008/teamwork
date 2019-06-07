@@ -44,14 +44,18 @@
 
     <script>
     $(document).ready(function() { 
+        // init data table 
         var table = $('#tbl').DataTable({
-                select: {
-                    items: 'column'
-                },
-                "iDisplayLength": <?=$default_per_page?>
-            });
-            table.page(<?=$page-1?>).draw('page');
-        //console.log(table);
+            "order" : [[2, "desc"]],
+            select : {
+                items : 'column'
+            },
+            "iDisplayLength": <?=$default_per_page?>
+        });
+        // set table current page
+        table.page(<?=$page-1?>).draw('page');
+
+        // Show create modal page if $_GET _NEW value = 1
         if(<?=$modalshow?>)
             $('#modal01').modal('show');
     });
