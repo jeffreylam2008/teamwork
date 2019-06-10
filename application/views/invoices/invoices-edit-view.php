@@ -1,3 +1,5 @@
+
+
 <div class="container-fluid">
     <form class="" method="POST" id="this-form" action="<?=$submit_to?>">
         <div class="input-group mb-2 input-group-sm">
@@ -61,7 +63,6 @@
                         <div class="modal-body-600">
                         <!-- content -->
                             <div class="container-fluid">
-                                <?=$function_bar?>
                                 <table class="table table-sm table-striped" id="cust-list">
                                     <thead>
                                         <tr>
