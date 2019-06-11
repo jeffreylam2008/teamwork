@@ -392,13 +392,13 @@ class Customers extends CI_Controller
 		$_page = 1;
 
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/transaction/d/".$item_code);
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/transaction/h/INV/".$item_code);
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
 		if(isset($_data))
 		{
 			// configure message 
-			if($_data['query'])
+			if(empty($_data['query']))
 			{
 				$_comfirm_show = false;
 			}
@@ -410,8 +410,7 @@ class Customers extends CI_Controller
 				]
 			]);
 			// main view loaded
-			$this->load->view("items/items-del-view",[
-				"item_code" => $item_code,
+			$this->load->view("customers/customers-del-view",[
 				"trans_url" => base_url("/invoices/edit/".$_data['query']['trans_code']),
 				"data" => $_data,
 			]);
