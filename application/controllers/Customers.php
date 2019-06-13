@@ -384,34 +384,39 @@ class Customers extends CI_Controller
 	/**
 	 * 
 	 */
-	public function delete()
+	public function delete($cust_code)
 	{
 		// user data
 		$_page = $this->session->userdata("page");
 		$_comfirm_show = true;
 		$_page = 1;
+		$_data = [];
 
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/transaction/h/INV/".$item_code);
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/transaction/h/INV/".$cust_code);
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
+		echo "<pre>";
+		var_dump($_data);
+		echo "</pre>";
 		if(isset($_data))
 		{
 			// configure message 
-			if(empty($_data['query']))
+			if($_data['query']['count'] <= 0)
 			{
 				$_comfirm_show = false;
 			}
 			// function bar with next, preview and save button
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "Back", "url"=>base_url('/products/items/page/'.$_page), "style" => "", "show" => true],
-					["name" => "Yes", "type"=>"button", "id" => "yes", "url"=>base_url('/products/items/delete/confirmed/'.$item_code), "style" => "btn btn-outline-danger", "show" => $_comfirm_show],
+					["name" => "Back", "type"=>"button", "id" => "Back", "url"=>base_url('/customers/customers/page/'.$_page), "style" => "", "show" => true],
+					["name" => "Yes", "type"=>"button", "id" => "yes", "url"=>base_url('/customers/customers/delete/confirmed/'.$cust_code), "style" => "btn btn-outline-danger", "show" => $_comfirm_show],
 				]
 			]);
 			// main view loaded
 			$this->load->view("customers/customers-del-view",[
 				"trans_url" => base_url("/invoices/edit/".$_data['query']['trans_code']),
+				"cust_code" => $cust_code,
 				"data" => $_data,
 			]);
 		}
@@ -465,6 +470,44 @@ class Customers extends CI_Controller
 		}
 	}
 
+	/** 
+	 * Process Save delete 
+	 * 
+	 * To save delete configuration
+	 * @param cust_code
+	 */
+	public function savedel($cust_code="")
+	{
+		// API data
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/".$cust_code);
+		$this->component_api->CallDelete();
+		$result = json_decode($this->component_api->GetConfig("result"),true);
+		if(isset($result['error']['message']) || isset($result['error']['code']))
+		{
+
+			$alert = "danger";
+			switch($result['error']['code'])
+			{
+				case "00000":
+					$alert = "success";
+				break;
+			}					
+			
+			$this->load->view('error-handle', [
+				'message' => $result['error']['message'], 
+				'code'=> $result['error']['code'], 
+				'alertstyle' => $alert
+			]);
+	
+			// callback initial page
+			header("Refresh: 5; url=".base_url("/customers/customers/"));
+		}
+	}
+
+	/**
+	 * Process save create
+	 * 
+	 */
 	public function save()
 	{
 		// echo "<pre>";
