@@ -388,7 +388,7 @@ class Customers extends CI_Controller
 	{
 		// user data
 		$_page = $this->session->userdata("page");
-		$_comfirm_show = true;
+		$_comfirm_show = false;
 		$_page = 1;
 		$_data = [];
 
@@ -396,15 +396,15 @@ class Customers extends CI_Controller
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/transaction/h/INV/".$cust_code);
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
-		echo "<pre>";
-		var_dump($_data);
-		echo "</pre>";
+		// echo "<pre>";
+		// var_dump($_data);
+		// echo "</pre>";
 		if(isset($_data))
 		{
 			// configure message 
-			if($_data['query']['count'] <= 0)
+			if(!($_data['query']['has']))
 			{
-				$_comfirm_show = false;
+				$_comfirm_show = true;
 			}
 			// function bar with next, preview and save button
 			$this->load->view('function-bar', [
@@ -415,7 +415,7 @@ class Customers extends CI_Controller
 			]);
 			// main view loaded
 			$this->load->view("customers/customers-del-view",[
-				"trans_url" => base_url("/invoices/edit/".$_data['query']['trans_code']),
+				//"trans_url" => base_url("/invoices/edit/".$_data['query']['trans_code']),
 				"cust_code" => $cust_code,
 				"data" => $_data,
 			]);
