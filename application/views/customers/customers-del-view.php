@@ -13,18 +13,20 @@
         ?>
             <h2> Transaction : 
         <?php
-         foreach($data['query']['data'] as $k => $v):
-        ?>
-            <a href="">
-                <?=$v['trans_code']?>
-            </a>
-        <?php
-        endforeach;
-        ?>
-             has this item. Cannot delete item code: 
-            <u><?=$cust_code?></u>
+        $i = 0;
+        foreach($data['query']['data'] as $k => $v):
 
-        
+            if($k % 2 == 0):
+
+        ?>
+                <a href="<?=$trans_url?><?=$v['trans_code']?>"><?=$v['trans_code']?></a>
+        <?php
+            endif;
+            $i++;
+        endforeach;
+        $total = $k >= 2 ? $i - 2 : 0;
+        ?>
+            (<?=$total?> transaction) contain this customer. Cannot delete this customer:  <u><?=$cust_code?></u>
             </h2>
         <?php
         }

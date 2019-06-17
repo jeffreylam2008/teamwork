@@ -415,7 +415,7 @@ class Customers extends CI_Controller
 			]);
 			// main view loaded
 			$this->load->view("customers/customers-del-view",[
-				//"trans_url" => base_url("/invoices/edit/".$_data['query']['trans_code']),
+				"trans_url" => base_url("/invoices/edit/"),
 				"cust_code" => $cust_code,
 				"data" => $_data,
 			]);
