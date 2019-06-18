@@ -119,23 +119,46 @@ class Employees extends CI_Controller
 				"default_per_page" => $_default_per_page,
 				"page" => $_page
 			]);
-			// $this->load->view("customers/customers-create-view",[
-			// 	"function_bar" => $this->load->view('function-bar', [
-			// 		"btn" => [
-			// 			["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers/page/'.$_page), "style" => "", "show" => true],
-			// 			["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
-			// 			["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
-			// 		 ]
-			// 	],true),
-			// 	"save_url" => base_url("/customers/save/"),
-			// 	'payment_method' => $this->_pm,
-			// 	'payment_term' => $this->_pt
-			// ]);
+			$this->load->view("/employees/employees-create-view",[
+				"function_bar" => $this->load->view('function-bar', [
+					"btn" => [
+						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/administration/employees/page/'.$_page), "style" => "", "show" => true],
+						["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
+						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
+					 ]
+				],true),
+				"save_url" => base_url("/administration/employees/save"),
+			]);
 			$this->load->view('footer');
 		}
 	}
-	public function edit()
+	/**
+	 * Edit employee configure 
+	 * 
+	 */
+	public function edit($_employee_code)
 	{
-		
+
+		$_page = 1;
+		// function bar here
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/administration/employees/page/'.$_page), "style" => "", "show" => true],
+				["name" => "Edit", "type"=>"button", "id" => "Edit", "url"=>base_url('/administration/employees/edit/'.$_employee_code), "style" => "btn btn-primary", "show" => true],
+			]
+		]);
+		// load view here
+		$this->load->view('/employees/employees-edit-view', [
+			"save_url" => base_url("administration/employees/edit/save/".$_employee_code)
+		]);
+
+	}
+	/**
+	 * save employees configure setting
+	 *
+	 */
+	public function save()
+	{
+		echo "employee save";
 	}
 }

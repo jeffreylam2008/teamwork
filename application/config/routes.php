@@ -111,8 +111,10 @@ $route['administration/shops/edit/save/(:any)'] = 'shops/saveedit/$1';
 $route['administration/shops/edit'] = 'error_404';
 
 // Employees
-$route['administration/employees'] = 'employees';
+$route['administration/employees'] = 'employees/index';
+$route['administration/employees/page/(:any)'] = 'employees/index/$1';
 $route['administration/employees/edit/(:any)'] = 'employees/edit/$1';
+$route['administration/employees/save'] = 'employees/save';
 $route['administration/employees/edit/save/(:any)'] = 'employees/saveedit/$1';
 
 // Payment Method
@@ -122,10 +124,10 @@ $route['administration/payments/term'] = 'payments/paymentterm';
 // customers
 $route['customers/customers'] = 'customers/index';
 $route['customers/customers/page/(:any)'] = 'customers/index/$1';
+$route['customers/customers/save'] = 'customers/save';
+$route['customers/customers/edit'] = 'error_404';
 $route['customers/customers/edit/(:any)'] = 'customers/edit/$1';
 $route['customers/customers/edit/save/(:any)'] = 'customers/saveedit/$1';
-$route['customers/customers/edit'] = 'error_404';
-$route['customers/customers/save'] = 'customers/save';
 $route['customers/customers/detail/(:any)'] = 'customers/detail/$1';
 $route['customers/customers/delete/(:any)'] = 'customers/delete/$1';
 $route['customers/customers/delete/confirmed/(:any)'] = 'customers/savedel/$1';
