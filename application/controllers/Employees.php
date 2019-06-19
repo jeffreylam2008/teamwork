@@ -138,20 +138,34 @@ class Employees extends CI_Controller
 	 */
 	public function edit($_employee_code)
 	{
-
+		// variable initial
+		$_API_EMPLOYEES = [];
 		$_page = 1;
-		// function bar here
-		$this->load->view('function-bar', [
-			"btn" => [
-				["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/administration/employees/page/'.$_page), "style" => "", "show" => true],
-				["name" => "Edit", "type"=>"button", "id" => "Edit", "url"=>base_url('/administration/employees/edit/'.$_employee_code), "style" => "btn btn-primary", "show" => true],
-			]
-		]);
-		// load view here
-		$this->load->view('/employees/employees-edit-view', [
-			"save_url" => base_url("administration/employees/edit/save/".$_employee_code)
-		]);
 
+		if(!empty($_employee_code))
+		{
+			//API call here
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employees/code/".$_employee_code);
+			$this->component_api->CallGet();
+			$_API_EMPLOYEES = json_decode($this->component_api->GetConfig("result"),true);
+			$_API_EMPLOYEES = $_API_EMPLOYEES['query'];
+			echo "<pre>";
+			var_dump($_API_EMPLOYEES);
+			echo "</pre>";
+
+			// function bar here
+			$this->load->view('function-bar', [
+				"btn" => [
+					["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/administration/employees/page/'.$_page), "style" => "", "show" => true],
+					["name" => "Save", "type"=>"button", "id" => "Save", "url"=>base_url('/administration/employees/save/'.$_employee_code), "style" => "btn btn-primary", "show" => true],
+				]
+			]);
+			// load view here
+			$this->load->view('/employees/employees-edit-view', [
+				"save_url" => base_url("administration/employees/edit/save/".$_employee_code),
+				"data" => 
+			]);
+		}
 	}
 	/**
 	 * save employees configure setting
