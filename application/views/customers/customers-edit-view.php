@@ -11,7 +11,6 @@
             <h2> Customer: <u><?=$cust_code?></u></h2>
         </div>
         <div class="card-body">
-			
 			<div class="row">
 				<div class="col">
 					<ul class="list-group">

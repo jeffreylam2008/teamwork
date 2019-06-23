@@ -2,16 +2,25 @@
     // echo "<pre>";
     // var_dump($data);
     // echo "</pre>";
-
+    extract($data);
 ?>
 
 <form id="form1" name="form1" method="POST" action="<?=$save_url?>">
     <div class="card">
         <div class="card-header">
-            <h2> Employee: <u></u></h2>
+            <h2> Employee: <input type="text" class="form-control form-control-sm" name="i-emp-code" placeholder="Type Something" value="<?=$employee_code?>"></h2>
         </div>
         <div class="card-body">
-
+            <div class="form-row">
+                <div class="col-3">
+                    <label for="">Username</label>
+                    <input type="text" class="form-control form-control-sm" name="i-emp-code" placeholder="Type Something" value="<?=$username?>" disabled>
+                </div>
+                <div class="col-3">
+                    <label for="">Default Shop Code</label>
+                    
+                </div>
+            </div>
         </div>
     </div>
 </form>

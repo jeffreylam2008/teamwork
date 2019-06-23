@@ -372,7 +372,7 @@ class Invoices extends CI_Controller
 			//$session = json_encode($this->session->userdata('theprint'),true);
 			// combine customer data from API to main array. * it must be only one reoard retrieve 
 			$_data['customer'] = $result['query'][0];
-
+			
 			
 			$_transaction[$_cur_invoicenum] = $_data;
 

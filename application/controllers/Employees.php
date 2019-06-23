@@ -152,6 +152,7 @@ class Employees extends CI_Controller
 			echo "<pre>";
 			var_dump($_API_EMPLOYEES);
 			echo "</pre>";
+		
 
 			// function bar here
 			$this->load->view('function-bar', [
@@ -163,7 +164,7 @@ class Employees extends CI_Controller
 			// load view here
 			$this->load->view('/employees/employees-edit-view', [
 				"save_url" => base_url("administration/employees/edit/save/".$_employee_code),
-				"data" => 
+				"data" => $_API_EMPLOYEES
 			]);
 		}
 	}
