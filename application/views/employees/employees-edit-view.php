@@ -1,24 +1,34 @@
 <?php
-    // echo "<pre>";
-    // var_dump($data);
-    // echo "</pre>";
+    echo "<pre>";
+    var_dump($data);
+    echo "</pre>";
     extract($data);
 ?>
 
 <form id="form1" name="form1" method="POST" action="<?=$save_url?>">
     <div class="card">
         <div class="card-header">
-            <h2> Employee: <input type="text" class="form-control form-control-sm" name="i-emp-code" placeholder="Type Something" value="<?=$employee_code?>"></h2>
+            <div class="col-2">
+                <h2> Employee: <input type="text" class="form-control form-control-sm" name="i-emp-code" placeholder="Type Something" value="<?=$employees['employee_code']?>"></h2>
+            </div>
         </div>
         <div class="card-body">
             <div class="form-row">
                 <div class="col-3">
                     <label for="">Username</label>
-                    <input type="text" class="form-control form-control-sm" name="i-emp-code" placeholder="Type Something" value="<?=$username?>" disabled>
+                    <input type="text" class="form-control form-control-sm" name="i-emp-code" placeholder="Type Something" value="<?=$employees['username']?>" >
                 </div>
                 <div class="col-3">
                     <label for="">Default Shop Code</label>
-                    
+                    <select class="custom-select custom-select-sm" id="i-shops" name="i-shops" >
+                        <?php 
+                        foreach($shops as $key => $val):
+                        ?>
+                        <option value="<?=$val['shop_code']?>"><?=$val['name']?></option>
+                        <?php
+                        endforeach;
+                        ?>
+                    </select>
                 </div>
             </div>
         </div>

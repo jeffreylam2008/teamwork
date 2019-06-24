@@ -368,12 +368,10 @@ class Invoices extends CI_Controller
 			$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/".$_data['customer']);
 			$this->component_api->CallGet();
 			$result = json_decode($this->component_api->GetConfig("result"),true);
-
+			
 			//$session = json_encode($this->session->userdata('theprint'),true);
 			// combine customer data from API to main array. * it must be only one reoard retrieve 
-			$_data['customer'] = $result['query'][0];
-			
-			
+			$_data['customer'] = $result['query'];
 			$_transaction[$_cur_invoicenum] = $_data;
 
 			// save print data to session

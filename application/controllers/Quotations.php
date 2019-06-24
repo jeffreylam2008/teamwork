@@ -384,7 +384,7 @@ class Quotations extends CI_Controller
 			$customer = json_decode($this->component_api->GetConfig("result"),true);
 
 			// marge customer data from API to main array. * it must be only one reoard retrieve 
-			$_data['customer'] = $customer['query'][0];
+			$_data['customer'] = $customer['query'];
 			$_transaction[$_cur_num] = $_data;
 
 			// save print data to session

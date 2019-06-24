@@ -141,7 +141,7 @@ class Employees extends CI_Controller
 		// variable initial
 		$_API_EMPLOYEES = [];
 		$_page = 1;
-
+		$_data = [];
 		if(!empty($_employee_code))
 		{
 			//API call here
@@ -149,10 +149,13 @@ class Employees extends CI_Controller
 			$this->component_api->CallGet();
 			$_API_EMPLOYEES = json_decode($this->component_api->GetConfig("result"),true);
 			$_API_EMPLOYEES = $_API_EMPLOYEES['query'];
-			echo "<pre>";
-			var_dump($_API_EMPLOYEES);
-			echo "</pre>";
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
+			$this->component_api->CallGet();
+			$_API_SHOPS = json_decode($this->component_api->GetConfig("result"),true);
+			$_API_SHOPS = $_API_SHOPS['query'];
 		
+			$_data["employees"] = $_API_EMPLOYEES;
+			$_data['shops'] = $_API_SHOPS;
 
 			// function bar here
 			$this->load->view('function-bar', [
@@ -164,7 +167,7 @@ class Employees extends CI_Controller
 			// load view here
 			$this->load->view('/employees/employees-edit-view', [
 				"save_url" => base_url("administration/employees/edit/save/".$_employee_code),
-				"data" => $_API_EMPLOYEES
+				"data" => $_data
 			]);
 		}
 	}
