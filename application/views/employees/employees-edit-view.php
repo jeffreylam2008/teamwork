@@ -1,6 +1,6 @@
 <?php
     echo "<pre>";
-    var_dump($data);
+    var_dump($data['employees']);
     echo "</pre>";
     extract($data);
 ?>
@@ -8,9 +8,7 @@
 <form id="form1" name="form1" method="POST" action="<?=$save_url?>">
     <div class="card">
         <div class="card-header">
-            <div class="col-2">
-                <h2> Employee: <input type="text" class="form-control form-control-sm" name="i-emp-code" placeholder="Type Something" value="<?=$employees['employee_code']?>"></h2>
-            </div>
+            <h2> Employee: <u><?=$employees['employee_code']?></u></h2>
         </div>
         <div class="card-body">
             <div class="form-row">
@@ -21,6 +19,7 @@
                 <div class="col-3">
                     <label for="">Default Shop Code</label>
                     <select class="custom-select custom-select-sm" id="i-shops" name="i-shops" >
+                        <option value=""><?=$employees['name']?></option>
                         <?php 
                         foreach($shops as $key => $val):
                         ?>
@@ -29,6 +28,24 @@
                         endforeach;
                         ?>
                     </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-3">
+                    <label for="">Username</label>
+                    <input type="text" class="form-control form-control-sm" name="i-emp-code" placeholder="Type Something" value="<?=$employees['username']?>" >
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-3">
+                    <label for="">Username</label>
+                    <input type="text" class="form-control form-control-sm" name="i-emp-code" placeholder="Type Something" value="<?=$employees['username']?>" >
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-3">
+                    <label for="">Username</label>
+                    <input type="text" class="form-control form-control-sm" name="i-emp-code" placeholder="Type Something" value="<?=$employees['username']?>" >
                 </div>
             </div>
         </div>
