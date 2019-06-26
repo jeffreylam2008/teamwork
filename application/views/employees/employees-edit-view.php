@@ -19,7 +19,7 @@
                 <div class="col-3">
                     <label for="">Default Shop Code</label>
                     <select class="custom-select custom-select-sm" id="i-shops" name="i-shops" >
-                        <option value=""><?=$employees['name']?></option>
+                        <option value=""><?=$employees['shop_name']?></option>
                         <?php 
                         foreach($shops as $key => $val):
                         ?>
@@ -33,19 +33,41 @@
             <div class="form-row">
                 <div class="col-3">
                     <label for="">Username</label>
-                    <input type="text" class="form-control form-control-sm" name="i-emp-code" placeholder="Type Something" value="<?=$employees['username']?>" >
+                    <select class="custom-select custom-select-sm" id="i-shops" name="i-shops" >
+                        <option value=""><?=$employees['shop_name']?></option>
+                        <?php 
+                        foreach($shops as $key => $val):
+                        ?>
+                        <option value="<?=$val['shop_code']?>"><?=$val['name']?></option>
+                        <?php
+                        endforeach;
+                        ?>
+                    </select>
                 </div>
             </div>
             <div class="form-row">
                 <div class="col-3">
                     <label for="">Username</label>
-                    <input type="text" class="form-control form-control-sm" name="i-emp-code" placeholder="Type Something" value="<?=$employees['username']?>" >
+                    <select class="custom-select custom-select-sm" id="i-shops" name="i-shops" >
+                        <option value=""><?=$employees['shop_name']?></option>
+                        <?php 
+                        foreach($shops as $key => $val):
+                        ?>
+                        <option value="<?=$val['shop_code']?>"><?=$val['name']?></option>
+                        <?php
+                        endforeach;
+                        ?>
+                    </select>
                 </div>
             </div>
             <div class="form-row">
-                <div class="col-3">
+                <div class="col-2">
                     <label for="">Username</label>
-                    <input type="text" class="form-control form-control-sm" name="i-emp-code" placeholder="Type Something" value="<?=$employees['username']?>" >
+                    <select class="custom-select custom-select-sm" id="i-shops" name="i-shops" >
+                        <option value="<?=$employees['status']?>"><?=$employees['status'] ? "Active" : "Disable"?></option>
+                        <option value="1">Active</option>
+                        <option value="1">Disable</option>
+                    </select>
                 </div>
             </div>
         </div>

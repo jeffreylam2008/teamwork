@@ -33,7 +33,7 @@
                 echo "<td>".$val['username']."</td>";
                 echo "<td>".$val['shop_name']."</td>";
                 echo "<td>".$val['access_level']."</td>";
-                echo "<td>".$val['role']."</td>";
+                echo "<td>".$val['role_code']."</td>";
                 echo "<td>".$val['status']."</td>";
                 echo "</tr>";
             }
