@@ -32,7 +32,6 @@
                 echo "<td><a href='".$edit_url.$val['employee_code']."'>".$val['employee_code']."</a></td>";
                 echo "<td>".$val['username']."</td>";
                 echo "<td>".$val['shop_name']."</td>";
-                echo "<td>".$val['access_level']."</td>";
                 echo "<td>".$val['role_code']."</td>";
                 echo "<td>".$val['status']."</td>";
                 echo "</tr>";
