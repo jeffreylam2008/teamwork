@@ -52,7 +52,8 @@ class Categories extends CI_Controller
 					"username" => $_API_EMP['username'],
 					"employee_code" => $_API_EMP['employee_code'],
 					"shop_code" => $_API_EMP['default_shopcode'],
-					"today" => date("Y-m-d")
+					"today" => date("Y-m-d"),
+					"privilege" => []
 				];
 				// fatch side bar API
 				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
@@ -88,11 +89,13 @@ class Categories extends CI_Controller
 	}
 	public function index($_page = 1)
 	{
+
 		// variable initial
 		$_default_per_page = 50;
 		$_API_ITEMS = [];
 		$_API_CATEGORIES = [];
 		$_modalshow = 0;
+		$_user_auth = ['create' => true, 'edit' => false, 'delete' => true];
 
 		// set create new modal pop up on initial
 		if($this->input->get("new") == 1)
@@ -118,7 +121,7 @@ class Categories extends CI_Controller
 		// function bar with next, preview and save button
 		$this->load->view('function-bar', [
 			"btn" => [
-				["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => true, "extra" => "data-toggle='modal' data-target='#modal01'"]
+				["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => $_user_auth['create'], "extra" => "data-toggle='modal' data-target='#modal01'"]
 			]
 		]);
 		// Main view loaded
@@ -127,7 +130,7 @@ class Categories extends CI_Controller
 			"del_url" => base_url("/products/categories/delete/"),
 			"route_url" => base_url("/products/categories/page/"),
 			"data" => $_API_CATEGORIES,
-			"user_auth" => true,
+			"user_auth" => $_user_auth,
 			"default_per_page" => $_default_per_page,
 			"page" => $_page,
 			"modalshow" => $_modalshow

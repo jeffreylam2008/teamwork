@@ -4,7 +4,7 @@
             <tr>
                 <th>#</td>
                 <?php 
-                    if($user_auth):
+                    if($user_auth['delete']):
                 ?>          
                 <th></th>
                 <?php
@@ -28,11 +28,20 @@
                     {
                         echo "<tr>";
                         echo "<td>".($key+1)."</td>";
-                        if($user_auth)
+                        if($user_auth['delete'])
                         {
                             echo "<td><a href='".$del_url.$val['cate_code']."'><i class='fas fa-trash-alt'></i></a></td>";
                         }
-                        echo "<td><a href='".$base_url.$val['cate_code']."'>".$val['cate_code']."</a></td>";
+                        echo "<td>";
+                        if($user_auth['edit'])
+                        {
+                            echo "<a href='".$base_url.$val['cate_code']."'>".$val['cate_code']."</a>";
+                        }
+                        else
+                        {
+                            echo $val['cate_code'];
+                        }
+                        echo "</td>";
                         echo "<td>".$val['desc']."</td>";
                         echo "<td>".substr($val['create_date'],0,10)."</td>";
                         echo "<td>".substr($val['modify_date'],0,10)."</td>";
