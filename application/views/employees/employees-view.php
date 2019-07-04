@@ -3,8 +3,8 @@
             <tr>
                 <th>#</td>
                     <?php 
-                        if($user_auth):
-                    ?>          
+                        if($user_auth['delete']):
+                    ?>                 
                     <th></th>
                     <?php
                         endif;
@@ -25,13 +25,22 @@
             {
                 echo "<tr>";
                 echo "<td>".($key+1)."</td>";
-                if($user_auth)
+                if($user_auth['delete'])
                 {
                     echo "<td><a href='".$del_url.$val['employee_code']."'><i class='fas fa-trash-alt'></i></a></td>";
                 }
-                echo "<td><a href='".$edit_url.$val['employee_code']."'>".$val['employee_code']."</a></td>";
+                echo "<td>";
+                if($user_auth['edit'])
+                {
+                    echo "<a href='".$edit_url.$val['employee_code']."'>".$val['employee_code']."</a>";
+                }
+                else
+                {
+                    echo $val['employee_code'];
+                }
                 echo "<td>".$val['username']."</td>";
                 echo "<td>".$val['shop_name']."</td>";
+                echo "<td>".$val['access_level']."</td>";
                 echo "<td>".$val['role_code']."</td>";
                 echo "<td>".$val['status']."</td>";
                 echo "</tr>";

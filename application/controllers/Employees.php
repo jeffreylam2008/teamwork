@@ -6,6 +6,7 @@ class Employees extends CI_Controller
 	var $_inv_header_param = [];
 	var $_token = "";
 	var $_param = "";
+	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
 	public function __construct()
 	{
 		parent::__construct();
@@ -60,7 +61,6 @@ class Employees extends CI_Controller
 			$this->component_sidemenu->SetConfig("active", $this->_param);
 			$this->component_sidemenu->Proccess();
 
-
 			// load header view
 			$this->load->view('header',[
 				'title'=>'Customers',
@@ -73,6 +73,7 @@ class Employees extends CI_Controller
 					"topNav" => $this->_inv_header_param["topNav"]
 				], TRUE)
 			]);
+			$this->_user_auth = ['create' => true, 'edit' => false, 'delete' => false];
 		}
 		else
 		{
@@ -106,7 +107,7 @@ class Employees extends CI_Controller
 			// load function bar view
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => true, "extra" => "data-toggle='modal' data-target='#modal01'"]
+					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => $this->_user_auth['create'], "extra" => "data-toggle='modal' data-target='#modal01'"]
 				]
 			]);
 
@@ -115,7 +116,7 @@ class Employees extends CI_Controller
 				"edit_url" => base_url("/administration/employees/edit/"),
 				"del_url" => base_url(""),
 				'data' => $_API_EMPLOYEES,
-				"user_auth" => true,
+				"user_auth" => $this->_user_auth,
 				"default_per_page" => $_default_per_page,
 				"page" => $_page
 			]);

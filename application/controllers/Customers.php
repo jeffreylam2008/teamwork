@@ -70,7 +70,7 @@ class Customers extends CI_Controller
 					"today" => date("Y-m-d")
 				];
 				// initial Access rule
-				$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
+				//$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
 
 				// Call API here
 				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
@@ -164,7 +164,7 @@ class Customers extends CI_Controller
 			// load function bar view
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => true, "extra" => "data-toggle='modal' data-target='#modal01'"]
+					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => $this->_user_auth['create'], "extra" => "data-toggle='modal' data-target='#modal01'"]
 				]
 			]);
 
