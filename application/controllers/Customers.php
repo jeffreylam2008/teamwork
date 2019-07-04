@@ -7,6 +7,7 @@ class Customers extends CI_Controller
 	var $_token = "";
 	var $_param = "";
 	var $_customers = [];
+	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
 	//var $_pm = [];
 	//var $_pt = [];
 	public function __construct()
@@ -68,6 +69,8 @@ class Customers extends CI_Controller
 					"shop_code" => $_API_EMP['default_shopcode'],
 					"today" => date("Y-m-d")
 				];
+				// initial Access rule
+				$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
 
 				// Call API here
 				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
@@ -170,7 +173,7 @@ class Customers extends CI_Controller
 				"detail_url" => base_url("/customers/customers/detail/"),
 				"del_url" => base_url("/customers/customers/delete/"),
 				'data' => $_API_CUSTOMERS,
-				"user_auth" => true,
+				"user_auth" => $this->_user_auth,
 				"default_per_page" => $_default_per_page,
 				"page" => $_page,
 				"modalshow" => $_modalshow

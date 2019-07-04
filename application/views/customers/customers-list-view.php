@@ -3,7 +3,13 @@
     <thead>
         <tr>
             <th>#</td>
+            <?php 
+                if($user_auth['delete']):
+            ?>   
             <th></th>
+            <?php
+                endif;
+            ?>   
             <th>Customer Code</th>
             <th>Name</th>
             <th>Delivery Address</th>
@@ -24,12 +30,20 @@
             {
                 echo "<tr>";
                 echo "<td>".($key+1)."</td>";
-                if($user_auth)
+                if($user_auth['delete'])
                 {
-                    $detail_auth = "href=".$detail_url.$val['cust_code'];
+                    echo "<td><a href='".$del_url.$val['cust_code']."'><i class='fas fa-trash-alt'></i></a></td>";
                 }
-                echo "<td><a href='".$del_url.$val['cust_code']."'><i class='fas fa-trash-alt'></i></a></td>";
-                echo "<td><a ".$detail_auth.">".$val['cust_code']."</a></td>";
+                echo "<td>";
+                if($user_auth['edit'])
+                {
+                    echo "<a href='".$detail_url.$val['cust_code']."'>".$val['cust_code']."</a>";
+                }
+                else
+                {
+                    echo $val['cust_code'];
+                }
+                echo "</td>";
                 echo "<td>".$val['name']."</td>";
                 echo "<td>".$val['delivery_addr']."</td>";
                 echo "<td>".$val['phone_1']."</td>";
