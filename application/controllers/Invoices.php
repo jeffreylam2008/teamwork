@@ -6,6 +6,8 @@ class Invoices extends CI_Controller
 	var $_inv_header_param = [];
 	var $_token = "";
 	var $_param = "";
+	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -435,9 +437,9 @@ class Invoices extends CI_Controller
 		{
 			$_api_body = json_encode($_transaction[$_cur_invoicenum],true);
 			// echo $_cur_invoicenum;
-			//echo "<pre>";
-			//echo ($_api_body);
-			//echo "</pre>";
+			echo "<pre>";
+			echo ($_api_body);
+			echo "</pre>";
 			if($_api_body != null)
 			{
 				$this->component_api->SetConfig("body", $_api_body);
