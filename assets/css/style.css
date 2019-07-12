@@ -26,7 +26,7 @@
 }
 
 #diy-sidebar a, #diy-sidebar a:hover, #diy-sidebar a:focus {
-    color: #000;
+    color: #fff;
     text-decoration: none;
     transition: all 0.3s;
 }
@@ -34,8 +34,8 @@
 #diy-sidebar {
     min-width: 250px;
     max-width: 250px;
-    background: #fff;
-    color: #000;
+    background: #000;
+    color: #fff;
     transition: all 0.3s;
     
 }
@@ -45,24 +45,26 @@
 }
 #diy-sidebar .sidebar-header {
     padding: 20px;
-    background: #fff;
+    background: #000;
 }
 
 #diy-sidebar ul li a {
     padding: 5px;
-    margin: 5px;
+    margin: 1px 0px;
     font-size: 1.0em;
     display: block;
 }
 
 #diy-sidebar ul li a:hover {
-    color: #000;
+    color: #fff;
     background: rgb(48, 120, 255);
 }
 
-#diy-sidebar li.active  {
-    color: #000;
+#diy-sidebar ul li.active  {
+    color: #fff;
     background: #007bff;
+    padding: 0px;
+    margin: 10px 10px;
 }
 a[data-toggle="collapse"] {
     position: relative;

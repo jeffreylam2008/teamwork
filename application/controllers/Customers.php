@@ -70,7 +70,7 @@ class Customers extends CI_Controller
 					"today" => date("Y-m-d")
 				];
 				// initial Access rule
-				//$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
+				$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
 
 				// Call API here
 				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");

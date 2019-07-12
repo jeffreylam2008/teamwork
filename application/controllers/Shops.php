@@ -31,7 +31,18 @@ class Shops extends CI_Controller
 			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
 			$_API_EMP = $_API_EMP['query'];
 
+			// sidebar session
 			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
+			switch($this->_param)
+			{
+				case "shops/edit":
+					$this->_param = "shops/index";
+				break;
+				case "shops/delete":
+					$this->_param = "shops/index";
+				break;
+			}
+
 
 			// header data
 			$this->_inv_header_param["topNav"] = [
