@@ -73,7 +73,7 @@ class Employees extends CI_Controller
 					"topNav" => $this->_inv_header_param["topNav"]
 				], TRUE)
 			]);
-			$this->_user_auth = ['create' => true, 'edit' => false, 'delete' => false];
+			$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
 		}
 		else
 		{

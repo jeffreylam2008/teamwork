@@ -16,5 +16,6 @@ class Logout extends CI_Controller
     public function index()
     {
         echo "load logout";
+        redirect(base_url("login"));
     }
 }
