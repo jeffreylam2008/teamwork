@@ -10,12 +10,18 @@ class Logout extends CI_Controller
 		* ******Cation******
 		* All session delete at this point
 		*/
+        // for debug
+        // echo "<pre>";
+        // var_dump( $_SESSION);
+        // echo "</pre>";
 
-        $this->session->sess_destroy();
     }
     public function index()
-    {
-        echo "load logout";
+    {  
+        unset($_SESSION['cur_invoicenum']);
+        unset($_SESSION['cur_quotationnum']);
+        unset($_SESSION['transaction']);
+        unset($_SESSION['login']);
         redirect(base_url("login"));
     }
 }

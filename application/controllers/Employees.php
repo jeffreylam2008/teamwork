@@ -25,7 +25,7 @@ class Employees extends CI_Controller
 			$this->_username = $this->session->userdata['login']['profile']['username'];
 
 			$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
-
+			
 			// fatch master
 			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employees/".$this->_username);
 			$this->component_api->CallGet();
@@ -34,13 +34,14 @@ class Employees extends CI_Controller
 
 			// sidebar session
 			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
+			
 			switch($this->_param)
 			{
-				case "administration/employees/edit":
-					$this->_param = "administration/employees/index";
+				case "employees/edit":
+					$this->_param = "employees/index";
 				break;
-				case "administration/employees/delete":
-					$this->_param = "administration/employees/index";
+				case "employees/delete":
+					$this->_param = "employees/index";
 				break;
 			}
 			// header data
