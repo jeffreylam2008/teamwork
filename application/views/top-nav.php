@@ -64,7 +64,7 @@
                     <span class="dropdown-header"><?=$topNav['username']?></span>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#">Profile</a>
-                    <a class="dropdown-item" href="<?=base_url("logout")?>">Logout</a>
+                    <a class="dropdown-item" href="#">Logout</a>
                 </div>
             </div>
             </li>
