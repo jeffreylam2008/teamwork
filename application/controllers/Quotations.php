@@ -11,88 +11,79 @@ class Quotations extends CI_Controller
 	{
 		parent::__construct();
 		$_API_EMP = [];
-		// $this->load->library("Component_Master");
-		// if(isset($this->session->userdata['master']))
-		// {
+
+		// call token from session
+		if(!empty($this->session->userdata['login']))
+		{
+			$this->_token = $this->session->userdata['login']['token'];
+			$this->_profile = $this->session->userdata['login']['profile'];
+			$this->_username = $this->session->userdata['login']['profile']['username'];
+		}
+
+		// API call
+		$this->load->library("Component_Login",[$this->_token, "quotations/list"]);
+
+		// // login session
+		if(!empty($this->component_login->CheckToken()))
+		{
+			$this->_username = $this->session->userdata['login']['profile']['username'];
+			// fatch employee API
+
+			// API data
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employees/".$this->_username);
+			$this->component_api->CallGet();
+			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_EMP = $_API_EMP['query'];
 			// dummy data
-			// $this->session->sess_destroy();
-			// echo "<pre>";
-			// var_dump(($_SESSION['master']));
-			// echo "</pre>";
-			// call token from session
-			if(!empty($this->session->userdata['login']))
+
+			
+			// sidebar session
+			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
+			switch($this->_param)
 			{
-				$this->_token = $this->session->userdata['login']['token'];
+				case "quotations/edit":
+					$this->_param = "quotations/qualist";
+				break;
+				case "quotations/tender":
+					$this->_param = "quotations/qualist";
+				break;
 			}
+			// header data
+			$this->_inv_header_param["topNav"] = [
+				"isLogin" => true,
+				"username" => $_API_EMP['username'],
+				"employee_code" => $_API_EMP['employee_code'],
+				"shop_code" => $_API_EMP['default_shopcode'],
+				"shop_name" => $_API_EMP['name'],
+				"today" => date("Y-m-d"),
+				"prefix" => "QTA"
+			];
+			// fatch side bar API
+			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
+			$this->component_api->CallGet();
+			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_MENU = $_API_MENU['query'];
+			$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
+			$this->component_sidemenu->SetConfig("active", $this->_param);
+			$this->component_sidemenu->Proccess();
 
-			// API call
-			$this->load->library("Component_Login",[$this->_token, "quotations/list"]);
-
-			// // login session
-			if(!empty($this->component_login->CheckToken()))
-			{
-				$this->_username = $this->session->userdata['login']['profile']['username'];
-				// fatch employee API
-
-				// API data
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employees/".$this->_username);
-				$this->component_api->CallGet();
-				$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
-				$_API_EMP = $_API_EMP['query'];
-				// dummy data
-
-				
-				// sidebar session
-				$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
-				switch($this->_param)
-				{
-					case "quotations/edit":
-						$this->_param = "quotations/qualist";
-					break;
-					case "quotations/tender":
-						$this->_param = "quotations/qualist";
-					break;
-				}
-				// header data
-				$this->_inv_header_param["topNav"] = [
-					"isLogin" => true,
-					"username" => $_API_EMP['username'],
-					"employee_code" => $_API_EMP['employee_code'],
-					"shop_code" => $_API_EMP['default_shopcode'],
-					"today" => date("Y-m-d"),
-					"prefix" => "QTA"
-				];
-				// fatch side bar API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
-				$this->component_api->CallGet();
-				$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
-				$_API_MENU = $_API_MENU['query'];
-				$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
-				$this->component_sidemenu->SetConfig("active", $this->_param);
-				$this->component_sidemenu->Proccess();
-
-				// render the view
-				$this->load->view('header',[
-					'title'=>'Quotations',
-					'sideNav_view' => $this->load->view('side-nav', [
-						"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list"),
-						"path"=>$this->component_sidemenu->GetConfig("path"),
-						"param"=> $this->_param
-					], TRUE), 
-					'topNav_view' => $this->load->view('top-nav', [
-						"topNav" => $this->_inv_header_param["topNav"]
-					], TRUE)
-				]);
-			}
-			else
-			{
-				redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
-			}
-		// }
-		// else
-		// {
-		// 	redirect(base_url("master"),"refresh");
-		// }			
+			// render the view
+			$this->load->view('header',[
+				'title'=>'Quotations',
+				'sideNav_view' => $this->load->view('side-nav', [
+					"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list"),
+					"path"=>$this->component_sidemenu->GetConfig("path"),
+					"param"=> $this->_param
+				], TRUE), 
+				'topNav_view' => $this->load->view('top-nav', [
+					"topNav" => $this->_inv_header_param["topNav"]
+				], TRUE)
+			]);
+		}
+		else
+		{
+			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
+		}		
 	}
 
 	public function qualist($_page="")
@@ -147,11 +138,7 @@ class Quotations extends CI_Controller
 		$_show_transaction_data = [];
 		$_cur_quotationnum = "";
 		$_transaction = [];
-		$_items_list = [];
-		$_shopcode_list = [];
-		$_cust_list = [];
-		$_tender_list = [];
-				
+
 		if(!empty($_num))
 		{
 			if(substr($_num , 0 , 3) === $this->_inv_header_param["topNav"]['prefix'] 
@@ -197,7 +184,7 @@ class Quotations extends CI_Controller
 				$this->component_api->CallGet();
 				$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
 				// fatch payment method API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/method/");
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/methods/");
 				$this->component_api->CallGet();
 				$_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
 				
@@ -256,10 +243,6 @@ class Quotations extends CI_Controller
 		$_show_convert_btn = false;
 		$_show_next_btn = false;
 		$_show_transaction_data = [];
-		$_items_list = [];
-		$_shopcode_list = [];
-		$_cust_list = [];
-		$_tender_list = [];
 		$_quotation = [];
 
 		if(!empty($_num))
@@ -313,7 +296,7 @@ class Quotations extends CI_Controller
 				$this->component_api->CallGet();
 				$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
 				// fatch payment method API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/method/");
+				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/methods/");
 				$this->component_api->CallGet();
 				$_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
 

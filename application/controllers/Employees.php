@@ -5,8 +5,15 @@ class Employees extends CI_Controller
 {
 	var $_inv_header_param = [];
 	var $_token = "";
+	var $_profile = "";
+	var $_username = "";
 	var $_param = "";
 	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
+	/**
+	 * Payment method and term constructor
+	 * 
+	 *	
+	 */
 	public function __construct()
 	{
 		parent::__construct();
@@ -15,32 +22,38 @@ class Employees extends CI_Controller
 		if(!empty($this->session->userdata['login']))
 		{
 			$this->_token = $this->session->userdata['login']['token'];
+			$this->_profile = $this->session->userdata['login']['profile'];
+			$this->_username = $this->session->userdata['login']['profile']['username'];
 		}
 		
-		$this->load->library("Component_Login",[$this->_token, "customers"]);
+		$this->load->library("Component_Login",[$this->_token, "employees"]);
 
 		// login session
 		if(!empty($this->component_login->CheckToken()))
 		{
-			$this->_username = $this->session->userdata['login']['profile']['username'];
-
-			$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
-
 			// fatch master
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employees/".$this->_username);
+			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_username);
 			$this->component_api->CallGet();
 			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
 			$_API_EMP = $_API_EMP['query'];
+			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
+			$this->component_api->CallGet();
+			$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SHOP = $_API_SHOP['query'];
+			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
+			$this->component_api->CallGet();
+			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_MENU = $_API_MENU['query'];
 
 			// sidebar session
 			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
 			switch($this->_param)
 			{
-				case "administration/employees/edit":
-					$this->_param = "administration/employees/index";
+				case "employees/edit":
+					$this->_param = "employees/index";
 				break;
-				case "administration/employees/delete":
-					$this->_param = "administration/employees/index";
+				case "employees/delete":
+					$this->_param = "employees/index";
 				break;
 			}
 			// header data
@@ -48,15 +61,12 @@ class Employees extends CI_Controller
 				"isLogin" => true,
 				"username" => $_API_EMP['username'],
 				"employee_code" => $_API_EMP['employee_code'],
-				"shop_code" => $_API_EMP['default_shopcode'],
+				"shop_code" => $_API_SHOP['shop_code'],
+				"shop_name" => $_API_SHOP['name'],
 				"today" => date("Y-m-d")
 			];
 
 			// Call API here
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
-			$this->component_api->CallGet();
-			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_MENU = $_API_MENU['query'];
 			$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
 			$this->component_sidemenu->SetConfig("active", $this->_param);
 			$this->component_sidemenu->Proccess();
@@ -73,7 +83,7 @@ class Employees extends CI_Controller
 					"topNav" => $this->_inv_header_param["topNav"]
 				], TRUE)
 			]);
-			$this->_user_auth = ['create' => true, 'edit' => false, 'delete' => false];
+			$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => false];
 		}
 		else
 		{
@@ -90,11 +100,16 @@ class Employees extends CI_Controller
 		$this->session->set_userdata('page',$_page);
 
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employees/");
+		$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES'));
 		$this->component_api->CallGet();
 		$_API_EMPLOYEES = json_decode($this->component_api->GetConfig("result"),true);
 		$_API_EMPLOYEES = $_API_EMPLOYEES['query'];
+		$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
+		$this->component_api->CallGet();
+		$_API_SHOPS = json_decode($this->component_api->GetConfig("result"),true);
+		$_API_SHOPS = $_API_SHOPS['query'];
 
+		$_data['shops'] = $_API_SHOPS;
 		
 		// echo "<pre>";
 		// var_dump($_API_EMPLOYEES);
@@ -103,7 +118,6 @@ class Employees extends CI_Controller
 		// API data usage
 		if(!empty($_API_EMPLOYEES))
 		{
-			
 			// load function bar view
 			$this->load->view('function-bar', [
 				"btn" => [
@@ -129,6 +143,7 @@ class Employees extends CI_Controller
 					 ]
 				],true),
 				"save_url" => base_url("/administration/employees/save"),
+				"data" => $_data
 			]);
 			$this->load->view('footer');
 		}
@@ -146,11 +161,11 @@ class Employees extends CI_Controller
 		if(!empty($_employee_code))
 		{
 			//API call here
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employees/code/".$_employee_code);
+			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES_CODE').$_employee_code);
 			$this->component_api->CallGet();
 			$_API_EMPLOYEES = json_decode($this->component_api->GetConfig("result"),true);
 			$_API_EMPLOYEES = $_API_EMPLOYEES['query'];
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
+			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
 			$this->component_api->CallGet();
 			$_API_SHOPS = json_decode($this->component_api->GetConfig("result"),true);
 			$_API_SHOPS = $_API_SHOPS['query'];
@@ -158,11 +173,12 @@ class Employees extends CI_Controller
 			$_data["employees"] = $_API_EMPLOYEES;
 			$_data['shops'] = $_API_SHOPS;
 
+
 			// function bar here
 			$this->load->view('function-bar', [
 				"btn" => [
 					["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/administration/employees/page/'.$_page), "style" => "", "show" => true],
-					["name" => "Save", "type"=>"button", "id" => "Save", "url"=>base_url('/administration/employees/save/'.$_employee_code), "style" => "btn btn-primary", "show" => true],
+					["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
 				]
 			]);
 			// load view here
@@ -173,11 +189,92 @@ class Employees extends CI_Controller
 		}
 	}
 	/**
-	 * save employees configure setting
+	 * save employees crete configure setting
 	 *
 	 */
 	public function save()
+	{	
+		// echo "<pre>";
+		// var_dump($_POST);
+		// echo "</pre>";
+
+		$_api_body = "";
+		if(!empty($_POST))
+		{
+			$_api_body = json_encode($_POST,true);
+			// echo $_api_body;
+			// API data
+			$this->component_api->SetConfig("body", $_api_body);
+			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES'));
+			$this->component_api->CallPost();
+			$result = json_decode($this->component_api->GetConfig("result"),true);
+
+			if(isset($result['error']['message']) || isset($result['error']['code']))
+			{
+				$alert = "danger";
+				switch($result['error']['code'])
+				{
+					case "00000":
+						$alert = "success";
+					break;
+				}		
+				$this->load->view('error-handle', [
+					'message' => $result['error']['message'], 
+					'code'=> $result['error']['code'], 
+					'alertstyle' => $alert
+				]);
+				
+				// callback initial page
+				header("Refresh: 5; url=".base_url("/administration/employees"));
+			}
+		}
+	}
+
+	/**
+	 * save employees configure setting
+	 *
+	 */
+	public function saveedit($_employee_code = "")
 	{
-		echo "employee save";
+		$_api_body = "";
+		if(!empty($_POST))
+		{
+			if(empty($_POST['i-pwd']))
+			{
+				// do change pwd
+				unset($_POST["i-pwd"]);
+				unset($_POST["i-confirm-pwd"]);
+			}
+			$_api_body = json_encode($_POST,true);
+			// echo $_api_body;
+			// API data
+			$this->component_api->SetConfig("body", $_api_body);
+			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$_employee_code);
+			$this->component_api->CallPatch();
+			$result = json_decode($this->component_api->GetConfig("result"),true);
+
+			if(isset($result['error']['message']) || isset($result['error']['code']))
+			{
+				$alert = "danger";
+				switch($result['error']['code'])
+				{
+					case "00000":
+						$alert = "success";
+					break;
+				}		
+				$this->load->view('error-handle', [
+					'message' => $result['error']['message'], 
+					'code'=> $result['error']['code'], 
+					'alertstyle' => $alert
+				]);
+				
+				// callback initial page
+				header("Refresh: 5; url=".base_url("/administration/employees"));
+			}
+		}
+
+		// echo "<pre>";
+		// var_dump($_POST);
+		// echo "</pre>";
 	}
 }

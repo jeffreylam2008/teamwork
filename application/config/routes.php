@@ -59,6 +59,7 @@ $route['translate_uri_dashes'] = FALSE;
 
 // items
 $route['products/items/page/(:any)'] = 'items/index/$1';
+$route['products/items/page/(:any)/show/(:any)'] = 'items/index/$1/$2';
 $route['products/items/edit/(:any)'] = 'items/edit/$1';
 $route['products/items/edit/save/(:any)'] = 'items/saveedit/$1';
 $route['products/items/delete/(:any)'] = 'items/delete/$1';
@@ -70,7 +71,8 @@ $route['products/items/new'] = 'items/create';
 $route['products/items/save'] = 'items/savecreate';
 
 // categories
-$route['products/categories/page/(:any)'] = 'categories/index/page/$1';
+$route['products/categories/page/(:any)'] = 'categories/index/$1';
+$route['products/categories/page/(:any)/show/(:any)'] = 'categories/index/$1/$2';
 $route['products/categories/edit/(:any)'] = 'categories/edit/$1';
 $route['products/categories/delete/(:any)'] = 'categories/delete/$1';
 $route['products/categories/delete/confirmed/(:any)'] = 'categories/savedel/$1';
@@ -119,7 +121,17 @@ $route['administration/employees/edit/save/(:any)'] = 'employees/saveedit/$1';
 
 // Payment Method
 $route['administration/payments/method'] = 'payments/paymentmethod';
+$route['administration/payments/method/page/(:any)'] = 'payments/paymentmethod/$1';
+$route['administration/payments/method/edit/(:any)'] = 'payments/paymentmethodedit/$1';
+$route['administration/payments/method/edit/save/(:any)'] = 'payments/paymentmethodsaveedit/$1';
+$route['administration/payments/method/save'] = 'payments/paymentmethodsave';
+
+// Payment Term
 $route['administration/payments/term'] = 'payments/paymentterm';
+$route['administration/payments/term/page/(:any)'] = 'payments/paymentterm/$1';
+$route['administration/payments/term/edit/(:any)'] = 'payments/paymenttermedit/$1';
+$route['administration/payments/term/edit/save/(:any)'] = 'payments/paymenttermsaveedit/$1';
+$route['administration/payments/term/save'] = 'payments/paymenttermsave';
 
 // customers
 $route['customers/customers'] = 'customers/index';

@@ -25,7 +25,7 @@ class Login extends CI_Controller
 
 	public function index()
 	{	
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/shops/");
+		$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
 		$this->component_api->CallGet();
 		$_shop = json_decode($this->component_api->GetConfig("result"), true);
 		// error handling here 
@@ -56,7 +56,7 @@ class Login extends CI_Controller
 		$_api_body["password"] = $this->input->post('i-password',true);
 		$_api_body["shopcode"] = $this->input->post('i-shops',true);
 		$_api_body = json_encode($_api_body, true);
-		// echo $_api_body;
+		//echo $_api_body;
 		// echo "<br>";
 		$this->component_api->SetConfig("body", $_api_body);
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/login/");
@@ -82,7 +82,7 @@ class Login extends CI_Controller
 			else
 			{
 				// save temp cookie
-				$this->session->set_tempdata('login',$_profile,10);
+				$this->session->set_tempdata('login',$_profile,3600);
 			}
 			if(!empty($this->input->get('url')))
 			{

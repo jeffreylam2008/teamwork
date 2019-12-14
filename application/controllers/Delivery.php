@@ -73,6 +73,7 @@ class Customers extends CI_Controller
 					"username" => $_API_EMP['username'],
 					"employee_code" => $_API_EMP['employee_code'],
 					"shop_code" => $_API_EMP['default_shopcode'],
+					"shop_name" => $_API_EMP['name'],
 					"today" => date("Y-m-d")
 				];
 

@@ -44,6 +44,9 @@
             <li class="nav-item active">
                 <a class="nav-link" href="#"><img src="<?=base_url('assets/img/logo-ex-4.png');?>" width="30" height="30" alt=""></a>
             </li>
+            <li class="nav-item active">
+                <h2><?=$topNav['shop_name'];?></h2>
+            </li>
         </ul>
     </div>
 
@@ -64,7 +67,7 @@
                     <span class="dropdown-header"><?=$topNav['username']?></span>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#">Profile</a>
-                    <a class="dropdown-item" href="#">Logout</a>
+                    <a class="dropdown-item" href="<?=base_url('logout');?>">Logout</a>
                 </div>
             </div>
             </li>

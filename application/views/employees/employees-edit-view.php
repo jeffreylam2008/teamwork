@@ -1,7 +1,7 @@
 <?php
-    echo "<pre>";
-    var_dump($data['employees']);
-    echo "</pre>";
+    // echo "<pre>";
+    // var_dump($data['employees']);
+    // echo "</pre>";
     extract($data);
 ?>
 
@@ -13,45 +13,42 @@
         <div class="card-body">
             <div class="form-row">
                 <div class="col-3">
-                    <label for="">Username</label>
-                    <input type="text" class="form-control form-control-sm" name="i-emp-code" placeholder="Type Something" value="<?=$employees['username']?>" >
+                    <label for="">* Employee ID</label>
+                    <input type="text" class="form-control form-control-sm" name="i-emp-code" placeholder="Employee ID" value="<?=$employees['employee_code']?>" >
                 </div>
+            </div>
+            <div class="form-row">
+                <div class="col-3">
+                    <label for="">* Username</label>
+                    <input type="text" class="form-control form-control-sm" name="i-username" placeholder="Username" value="<?=$employees['username']?>" >
+                    
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-12">
+                    <input type="button" href="#pwd" class="btn-primary btn-sm" data-toggle='collapse' aria-expanded='true' value="Change Password" />
+                    <div class="collapse" id="pwd">
+                        <div class="form-row">
+                            <div class="col-3">
+                                <label for="">* Password</label>
+                                <input type="password" class="form-control form-control-sm" name="i-pwd" id="i-pwd" placeholder="Password" value="" >
+                            </div>
+                            <div class="col-3">
+                                <label for="">* Comfirm Password</label>
+                                <input type="password" class="form-control form-control-sm" name="i-confirm-pwd" placeholder="Confirm Password" value="" >
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-row">
                 <div class="col-3">
                     <label for="">Default Shop Code</label>
                     <select class="custom-select custom-select-sm" id="i-shops" name="i-shops" >
-                        <option value=""><?=$employees['shop_name']?></option>
+                        <option value="<?=$employees['default_shopcode']?>"><?=$employees['shop_name']?></option>
                         <?php 
-                        foreach($shops as $key => $val):
-                        ?>
-                        <option value="<?=$val['shop_code']?>"><?=$val['name']?></option>
-                        <?php
-                        endforeach;
-                        ?>
-                    </select>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="col-3">
-                    <label for="">Username</label>
-                    <select class="custom-select custom-select-sm" id="i-shops" name="i-shops" >
-                        <option value=""><?=$employees['shop_name']?></option>
-                        <?php 
-                        foreach($shops as $key => $val):
-                        ?>
-                        <option value="<?=$val['shop_code']?>"><?=$val['name']?></option>
-                        <?php
-                        endforeach;
-                        ?>
-                    </select>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="col-3">
-                    <label for="">Username</label>
-                    <select class="custom-select custom-select-sm" id="i-shops" name="i-shops" >
-                        <option value=""><?=$employees['shop_name']?></option>
-                        <?php 
-                        foreach($shops as $key => $val):
+                        foreach($data['shops'] as $key => $val):
                         ?>
                         <option value="<?=$val['shop_code']?>"><?=$val['name']?></option>
                         <?php
@@ -62,11 +59,11 @@
             </div>
             <div class="form-row">
                 <div class="col-2">
-                    <label for="">Username</label>
-                    <select class="custom-select custom-select-sm" id="i-shops" name="i-shops" >
+                    <label for="">Status</label>
+                    <select class="custom-select custom-select-sm" id="i-status" name="i-status" >
                         <option value="<?=$employees['status']?>"><?=$employees['status'] ? "Active" : "Disable"?></option>
                         <option value="1">Active</option>
-                        <option value="1">Disable</option>
+                        <option value="0">Disable</option>
                     </select>
                 </div>
             </div>
@@ -89,22 +86,22 @@ $("#save").click(function(){
     var isvalid = $("#form1").validate({
         rules: {
             // simple rule, converted to {required:true}
-            "i-name": {
+            "i-emp-code": {
                 required: true
             },
-            "i-attn_1": {
+            "i-username": {
                 required: true
             },
-            "i-mail_addr" : {
+            "i-pwd": {
                 required: true
             },
-            "i-phone_1" : {
+            "i-confirm-pwd": {
                 required: true,
-                minlength: 8,
-                maxlength: 9
+                equalTo: "#i-pwd"
             }
         }
     });
+
     if(isvalid){
         $("#form1").submit();
     }

@@ -1,6 +1,6 @@
 <?php
     // echo "<pre>";
-    // var_dump($data_district);
+    // var_dump($data);
     // echo "</pre>";
     extract($data);
 ?>
@@ -64,7 +64,7 @@
 							<div class="form-row">
 								<div class="col-6">
 									<label for="t1">Primary Email</label>
-									<input type="text" class="form-control form-control-sm" name="i-email_1" placeholder="Primary Email" value="<?=$email_2?>" >
+									<input type="text" class="form-control form-control-sm" name="i-email_1" placeholder="Primary Email" value="<?=$email_1?>" >
 								</div>
 								<div class="col-6">
 									<label for="t1">Secondary Email</label>
@@ -74,11 +74,11 @@
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Phone 1</label>
-									<input type="text" class="form-control form-control-sm" name="i-phone_1" id="i-phone_1" placeholder="0000 0000" value="<?=$phone_1?>" >
+									<input type="text" class="form-control form-control-sm" name="i-phone_1" id="i-phone_1" placeholder="00000000" value="<?=$phone_1?>" >
 								</div>
 								<div class="col-4">
 									<label for="t1">Fax 1</label>
-									<input type="text" class="form-control form-control-sm" name="i-fax_1" placeholder="0000 0000" value="<?=$fax_1?>" >
+									<input type="text" class="form-control form-control-sm" name="i-fax_1" placeholder="00000000" value="<?=$fax_1?>" >
 								</div>
 							</div>
 						   
@@ -102,8 +102,9 @@
 									<select class="custom-select custom-select-sm" id="i-paymentmethod" name="i-pm_code" >
 										<?php 
 											if(!empty($pm_code) && $pm_code != "-1"):
+												$key = array_search($pm_code, array_column($data_payment_method,"pm_code"));
 										?>
-											<option value="<?=$pm_code?>"><?=$data_payment_method[$pm_code]["payment_method"]?></option>
+											<option value="<?=$pm_code?>"><?=$data_payment_method[$key]["payment_method"]?></option>
 										<?php
                                             endif;
                                             foreach($data_payment_method as $k => $v):
@@ -121,8 +122,9 @@
 									<select class="custom-select custom-select-sm" id="i-paymentterms" name="i-pt_code" >
 										<?php 
 											if(!empty($pt_code) && $pt_code != "-1"):
+												$key = array_search($pt_code, array_column($data_payment_term,"pt_code"));
 										?>
-											<option value="<?=$pt_code?>"><?=$data_payment_term[$pt_code]["terms"]?></option>
+											<option value="<?=$pt_code?>"><?=$data_payment_term[$key]["terms"]?></option>
                                         <?php
                                             endif;
                                             foreach($data_payment_term as $k => $v):
@@ -188,11 +190,11 @@
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Phone</label>
-									<input type="text" class="form-control form-control-sm" name="i-delivery_phone" placeholder="0000 0000" value="<?=$phone_2?>" >
+									<input type="text" class="form-control form-control-sm" name="i-delivery_phone" placeholder="00000000" value="<?=$phone_2?>" >
 								</div>
 								<div class="col-4">
 									<label for="t1">Fax</label>
-									<input type="text" class="form-control form-control-sm" name="i-delivery_fax" placeholder="0000 0000" value="<?=$fax_2?>" >
+									<input type="text" class="form-control form-control-sm" name="i-delivery_fax" placeholder="00000000" value="<?=$fax_2?>" >
 								</div>
 							</div>
 							<div class="form-row">
@@ -231,19 +233,20 @@
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Phone</label>
-									<input type="text" class="form-control form-control-sm" name="i-acc_phone" placeholder="0000 0000" value="<?=$tel?>" >
+									<input type="text" class="form-control form-control-sm" name="i-acc_phone" placeholder="00000000" value="<?=$tel?>" >
 								</div>
 								<div class="col-4">
 									<label for="t1">Fax</label>
-									<input type="text" class="form-control form-control-sm" name="i-acc_fax" placeholder="0000 0000" value="<?=$fax?>" >
+									<input type="text" class="form-control form-control-sm" name="i-acc_fax" placeholder="00000000" value="<?=$fax?>" >
 								</div>
 							</div>
-							<div class="form-row">
+							<!-- <div class="form-row">
 								<div class="col-6">
 									<label for="t1">Email</label>
-									<input type="text" class="form-control form-control-sm" name="i-acc_email" placeholder="Email" value="<?=$email?>" >
+									<input type="text" class="form-control form-control-sm" name="i-acc_email" placeholder="Email" value="<?=$email_1?>" >
 								</div>
 							</div>
+							-->
 						</li>
 					</ul>
 				</div>

@@ -72,7 +72,7 @@
                                             </div>
                                             <div class="form-row">
                                                 <div class="col-4">
-                                                    <label for="t1">Phone 1</label>
+                                                    <label for="t1">Phone 1 *</label>
                                                     <input type="text" class="form-control form-control-sm" name="i-phone_1" id="i-phone_1" placeholder="00000000" value="" >
                                                 </div>
                                                 <div class="col-4">
@@ -215,12 +215,6 @@
                                                 <div class="col-4">
                                                     <label for="t1">Fax</label>
                                                     <input type="text" class="form-control form-control-sm" name="i-acc_fax" placeholder="00000000" value="" >
-                                                </div>
-                                            </div>
-                                            <div class="form-row">
-                                                <div class="col-6">
-                                                    <label for="t1">Email</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-acc_email" placeholder="Email" value="" >
                                                 </div>
                                             </div>
                                         </li>

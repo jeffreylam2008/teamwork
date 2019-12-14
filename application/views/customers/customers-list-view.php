@@ -23,7 +23,7 @@
         if(!empty($data))
         {
         // echo "<pre>";
-        // var_dump($paymethod);
+        // var_dump($data);
         // echo "</pre>";
         $detail_auth = "";
             foreach($data as $key => $val)
@@ -68,6 +68,7 @@
         });
         // set table current page
         table.page(<?=$page-1?>).draw('page');
+
 
         // Show create modal page if $_GET _NEW value = 1
         if(<?=$modalshow?>)

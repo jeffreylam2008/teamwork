@@ -32,9 +32,6 @@
             </div>
             <div class="modal-body">
                 <?php echo $function_bar; ?>
-                <!-- <button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Back</button>
-                <button type="button" id="reset" class="btn btn-outline-secondary btn-sm">Reset</button>
-                <button type="button" id="save" class="btn btn-outline-primary btn-sm">Save</button> -->
                 <!-- Modal Content -->
                 <form id="form1" name="form1" method="POST" action="<?=$save_url?>">
                     <div class="card">

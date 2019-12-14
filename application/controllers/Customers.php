@@ -5,6 +5,8 @@ class Customers extends CI_Controller
 {
 	var $_inv_header_param = [];
 	var $_token = "";
+	var $_profile = "";
+	var $_username = "";
 	var $_param = "";
 	var $_customers = [];
 	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
@@ -25,6 +27,8 @@ class Customers extends CI_Controller
 			if(!empty($this->session->userdata['login']))
 			{
 				$this->_token = $this->session->userdata['login']['token'];
+				$this->_profile = $this->session->userdata['login']['profile'];
+				$this->_username = $this->session->userdata['login']['profile']['username'];
 			}
 			
 			$this->load->library("Component_Login",[$this->_token, "customers"]);
@@ -32,19 +36,24 @@ class Customers extends CI_Controller
 			// login session
 			if(!empty($this->component_login->CheckToken()))
 			{
-				$this->_username = $this->session->userdata['login']['profile']['username'];
-
 				// API call
 				// fatch master
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employees/".$this->_username);
+				$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_username);
 				$this->component_api->CallGet();
 				$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
 				$_API_EMP = $_API_EMP['query'];
-
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/");
+				$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
+				$this->component_api->CallGet();
+				$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
+				$_API_SHOP = $_API_SHOP['query'];
+				$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
 				$this->component_api->CallGet();
 				$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
 				$this->_customers = $_API_CUSTOMERS['query'];
+				$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
+				$this->component_api->CallGet();
+				$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+				$_API_MENU = $_API_MENU['query'];
 
 				// sidebar session
 				$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
@@ -66,21 +75,17 @@ class Customers extends CI_Controller
 					"isLogin" => true,
 					"username" => $_API_EMP['username'],
 					"employee_code" => $_API_EMP['employee_code'],
-					"shop_code" => $_API_EMP['default_shopcode'],
+					"shop_code" => $_API_SHOP['shop_code'],
+					"shop_name" => $_API_SHOP['name'],
 					"today" => date("Y-m-d")
 				];
 				// initial Access rule
 				$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
 
 				// Call API here
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
-				$this->component_api->CallGet();
-				$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
-				$_API_MENU = $_API_MENU['query'];
 				$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
 				$this->component_sidemenu->SetConfig("active", $this->_param);
 				$this->component_sidemenu->Proccess();
-
 
 				// load header view
 				$this->load->view('header',[
@@ -123,38 +128,38 @@ class Customers extends CI_Controller
 		$this->session->set_userdata('page',$_page);
 
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/");
+		$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
 		$this->component_api->CallGet();
 		$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
 		$_API_CUSTOMERS = $_API_CUSTOMERS['query'];
 
 		// Get payment method
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/method/");
+		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
 		$this->component_api->CallGet();
-		$_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
-		$_PAYMENT_METHOD = $_PAYMENT_METHOD['query'];
+		$_API_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_PAYMENT_METHOD = $_API_PAYMENT_METHOD['query'];
 		
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/term/");
+		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_TERMS'));
 		$this->component_api->CallGet();
-		$_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
-		$_PAYMENT_TERM = $_PAYMENT_TERM['query'];
+		$_API_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_PAYMENT_TERM = $_API_PAYMENT_TERM['query'];
 
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/district/");
+		$this->component_api->SetConfig("url", $this->config->item('URL_DISTRICT'));
 		$this->component_api->CallGet();
-		$_DISTRICT = json_decode($this->component_api->GetConfig("result"), true);
-		$_DISTRICT = $_DISTRICT['query'];
+		$_API_DISTRICT = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_DISTRICT = $_API_DISTRICT['query'];
 
 		// API data usage
-		if(!empty($_API_CUSTOMERS) >= 1 && !empty($_PAYMENT_METHOD))
+		if(!empty($_API_CUSTOMERS) >= 1 && !empty($_API_PAYMENT_METHOD))
 		{
 
 			// join different table into one array	
 			foreach($_API_CUSTOMERS as $key => $val)
 			{
-				if(array_key_exists($val['pm_code'],$_PAYMENT_METHOD))
+				if(in_array($val['pm_code'],array_column($_API_PAYMENT_METHOD,"pm_code")))
 				{
-					$_pm_code = $_API_CUSTOMERS[$key]['pm_code'];
-					$_API_CUSTOMERS[$key]['payment_method'] = $_PAYMENT_METHOD[$_pm_code]['payment_method'];
+					$k = array_search($val['pm_code'], array_column($_API_PAYMENT_METHOD,"pm_code")); 
+					$_API_CUSTOMERS[$key]['payment_method'] = $_API_PAYMENT_METHOD[$k]['payment_method'];
 				}
 				else{
 					$_API_CUSTOMERS[$key]['payment_method'] = "";
@@ -189,9 +194,9 @@ class Customers extends CI_Controller
 				"save_url" => base_url("/customers/customers/save/"),
 				"new_pm_url" => base_url("/administration/payments/method/"),
 				"new_pt_url" => base_url("/administration/payments/term/"),
-				'data_payment_method' => $_PAYMENT_METHOD,
-				'data_payment_term' => $_PAYMENT_TERM,
-				'data_district' => $_DISTRICT
+				'data_payment_method' => $_API_PAYMENT_METHOD,
+				'data_payment_term' => $_API_PAYMENT_TERM,
+				'data_district' => $_API_DISTRICT
 			]);
 			$this->load->view('footer');
 		}
@@ -208,25 +213,25 @@ class Customers extends CI_Controller
 
 		// API Call
 		// Get payment method
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/method/");
+		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
 		$this->component_api->CallGet();
-		$_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
-		$_PAYMENT_METHOD = $_PAYMENT_METHOD['query'];
-		
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/term/");
-		$this->component_api->CallGet();
-		$_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
-		$_PAYMENT_TERM = $_PAYMENT_TERM['query'];
+		$_API_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_PAYMENT_METHOD = $_API_PAYMENT_METHOD['query'];
 
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/district/");
+		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_TERMS'));
 		$this->component_api->CallGet();
-		$_DISTRICT = json_decode($this->component_api->GetConfig("result"), true);
-		$_DISTRICT = $_DISTRICT['query'];
+		$_API_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_PAYMENT_TERM = $_API_PAYMENT_TERM['query'];
+
+		$this->component_api->SetConfig("url", $this->config->item('URL_DISTRICT'));
+		$this->component_api->CallGet();
+		$_API_DISTRICT = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_DISTRICT = $_API_DISTRICT['query'];
 
 		if(!empty($cust_code))
 		{
 			// Call API here
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/".$cust_code);
+			$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS').$cust_code);
 			$this->component_api->CallGet();
 			$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
 			$_API_CUSTOMERS = $_API_CUSTOMERS['query'];
@@ -274,9 +279,9 @@ class Customers extends CI_Controller
 					$this->load->view('customers/customers-edit-view', [
 						"save_url" => base_url("customers/customers/edit/save/".$cust_code),
 						'data' => $_API_CUSTOMERS,
-						'data_payment_method' => $_PAYMENT_METHOD,
-						'data_payment_term' => $_PAYMENT_TERM,
-						'data_district' => $_DISTRICT
+						'data_payment_method' => $_API_PAYMENT_METHOD,
+						'data_payment_term' => $_API_PAYMENT_TERM,
+						'data_district' => $_API_DISTRICT
 					]);
 					$this->load->view('footer');
 				}
@@ -303,25 +308,26 @@ class Customers extends CI_Controller
 		$_page = 1;
 		
 		// API
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/method/");
+		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
 		$this->component_api->CallGet();
-		$_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
-		$_PAYMENT_METHOD = $_PAYMENT_METHOD['query'];
+		$_API_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_PAYMENT_METHOD = $_API_PAYMENT_METHOD['query'];
 		
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/payments/term/");
+		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_TERMS'));
 		$this->component_api->CallGet();
-		$_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
-		$_PAYMENT_TERM = $_PAYMENT_TERM['query'];
-		
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/district/");
-		$this->component_api->CallGet();
-		$_DISTRICT = json_decode($this->component_api->GetConfig("result"), true);
-		$_DISTRICT = $_DISTRICT['query'];
+		$_API_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_PAYMENT_TERM = $_API_PAYMENT_TERM['query'];
 
+		$this->component_api->SetConfig("url", $this->config->item('URL_DISTRICT'));
+		$this->component_api->CallGet();
+		$_API_DISTRICT = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_DISTRICT = $_API_DISTRICT['query'];
+
+		//var_dump($_API_PAYMENT_METHOD);
 		if(!empty($cust_code))
 		{
 			// Call API here
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/".$cust_code);
+			$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS').$cust_code);
 			$this->component_api->CallGet();
 			$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
 			$_API_CUSTOMERS = $_API_CUSTOMERS['query'];
@@ -366,9 +372,9 @@ class Customers extends CI_Controller
 					// load main view
 					$this->load->view('customers/customers-detail-view', [
 						'data' => $_API_CUSTOMERS,
-						'data_payment_method' => $_PAYMENT_METHOD,
-						'data_payment_term' => $_PAYMENT_TERM,
-						'data_district' => $_DISTRICT
+						'data_payment_method' => $_API_PAYMENT_METHOD,
+						'data_payment_term' => $_API_PAYMENT_TERM,
+						'data_district' => $_API_DISTRICT
 					]);
 					$this->load->view('footer');
 				}
@@ -396,7 +402,7 @@ class Customers extends CI_Controller
 		$_data = [];
 
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/transaction/h/INV/".$cust_code);
+		$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY_HAS_TRANSACTION').$cust_code);
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
 		// echo "<pre>";
@@ -447,7 +453,7 @@ class Customers extends CI_Controller
 			{
 				// API data
 				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/".$cust_code);
+				$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS').$cust_code);
 				$this->component_api->CallPatch();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
 
@@ -482,7 +488,7 @@ class Customers extends CI_Controller
 	public function savedel($cust_code="")
 	{
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/".$cust_code);
+		$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS').$cust_code);
 		$this->component_api->CallDelete();
 		$result = json_decode($this->component_api->GetConfig("result"),true);
 		if(isset($result['error']['message']) || isset($result['error']['code']))
@@ -524,7 +530,7 @@ class Customers extends CI_Controller
 			{
 				// API data
 				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/customers/");
+				$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
 				$this->component_api->CallPost();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
 				

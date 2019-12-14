@@ -5,132 +5,133 @@ class Items extends CI_Controller
 {
 	var $_inv_header_param = [];
 	var $_token = "";
+	var $_profile = "";
+	var $_username = "";
 	var $_param = "";
-
+	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
 	public function __construct()
 	{
 		parent::__construct();
 		$_API_EMP = [];
-		// $this->load->library("Component_Master");
-		// if(isset($this->session->userdata['master']))
-		// {
-			// dummy data
-			//$this->session->sess_destroy();
-			// echo "<pre>";
-			// var_dump(($_SESSION['login']));
-			// echo "</pre>";
-			// call token from session
-			if(!empty($this->session->userdata['login']))
+
+		// dummy data
+		//$this->session->sess_destroy();
+		// echo "<pre>";
+		// var_dump(($_SESSION['login']));
+		// echo "</pre>";
+		// call token from session
+		if(!empty($this->session->userdata['login']))
+		{
+			$this->_token = $this->session->userdata['login']['token'];
+			$this->_profile = $this->session->userdata['login']['profile'];
+			$this->_username = $this->session->userdata['login']['profile']['username'];
+		}
+
+		// API call
+		$this->load->library("Component_Login",[$this->_token, "products/items"]);
+
+		// // login session
+		if(!empty($this->component_login->CheckToken()))
+		{
+			// API data
+			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_username);
+			$this->component_api->CallGet();
+			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_EMP = $_API_EMP['query'];
+			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
+			$this->component_api->CallGet();
+			$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SHOP = $_API_SHOP['query'];
+			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
+			$this->component_api->CallGet();
+			$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_ITEMS = $_API_ITEMS['query'];
+			$this->component_api->SetConfig("url", $this->config->item('URL_MENU'));
+			$this->component_api->CallGet();
+			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_MENU = $_API_MENU['query'];
+
+			// sidebar session
+			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
+			switch($this->_param)
 			{
-				$this->_token = $this->session->userdata['login']['token'];
+				case "items/edit":
+					$this->_param = "items/index";
+				break;
+				case "items/delete":
+					$this->_param = "items/index";
+				break;
 			}
+			// header data
+			$this->_inv_header_param["topNav"] = [
+				"isLogin" => true,
+				"username" => $_API_EMP['username'],
+				"employee_code" => $_API_EMP['employee_code'],
+				"shop_code" => $_API_SHOP['shop_code'],
+				"shop_name" => $_API_SHOP['name'],
+				"today" => date("Y-m-d")
+			];
+			// initial Access rule
+			$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
+			// Navigator
+			$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
+			$this->component_sidemenu->SetConfig("active", $this->_param);
+			$this->component_sidemenu->Proccess();
 
-			// API call
-			$this->load->library("Component_Login",[$this->_token, "products/items"]);
-
-			// // login session
-			if(!empty($this->component_login->CheckToken()))
-			{
-				$this->_username = $this->session->userdata['login']['profile']['username'];
-				// fatch employee API
-
-				// API data
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employees/".$this->_username);
-				$this->component_api->CallGet();
-				$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
-				$_API_EMP = $_API_EMP['query'];
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
-				$this->component_api->CallGet();
-				$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
-				$_API_ITEMS = $_API_ITEMS['query'];
-				
-
-				// sidebar session
-				$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
-				switch($this->_param)
-				{
-					case "items/edit":
-						$this->_param = "items/index";
-					break;
-					case "items/delete":
-						$this->_param = "items/index";
-					break;
-				}
-				// header data
-				$this->_inv_header_param["topNav"] = [
-					"isLogin" => true,
-					"username" => $_API_EMP['username'],
-					"employee_code" => $_API_EMP['employee_code'],
-					"shop_code" => $_API_EMP['default_shopcode'],
-					"today" => date("Y-m-d")
-				];
-				// fatch side bar API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
-				$this->component_api->CallGet();
-				$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
-				$_API_MENU = $_API_MENU['query'];
-				$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
-				$this->component_sidemenu->SetConfig("active", $this->_param);
-				$this->component_sidemenu->Proccess();
-
-				// load header view
-				$this->load->view('header',[
-					'title'=>'Items',
-					'sideNav_view' => $this->load->view('side-nav', [
-						"sideNav" => $this->component_sidemenu->GetConfig("nav_finished_list"),
-						"path" => $this->component_sidemenu->GetConfig("path"),
-						"param" => $this->_param
-					], TRUE), 
-					'topNav_view' => $this->load->view('top-nav', [
-						"topNav" => $this->_inv_header_param["topNav"]
-					], TRUE)
-				]);
-			}
-			else
-			{
-				redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
-			}
-		// }
-		// else
-		// {
-		// 	redirect(base_url("master"),"refresh");
-		// }
+			// load header view
+			$this->load->view('header',[
+				'title'=>'Items',
+				'sideNav_view' => $this->load->view('side-nav', [
+					"sideNav" => $this->component_sidemenu->GetConfig("nav_finished_list"),
+					"path" => $this->component_sidemenu->GetConfig("path"),
+					"param" => $this->_param
+				], TRUE), 
+				'topNav_view' => $this->load->view('top-nav', [
+					"topNav" => $this->_inv_header_param["topNav"]
+				], TRUE)
+			]);
+		}
+		else
+		{
+			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
+		}
 	}
 
 	/** 
 	 * Item page display 
 	 * 
 	 */
-	public function index($_page = 1)
+	public function index($_page = 1, $_default_per_page = 50)
 	{	
+
 		// variable initial
-		$_default_per_page = 50;
 		$_API_ITEMS = [];
 		$_API_CATEGORIES = [];
 		$_items = [];
 		$_where = "";
 		$_where_arr = [];
 
+		
 		// input GET from previous page with name i-all-cate
 		
 		$_where = $this->input->get();
-		
+
 		// API data
 		if(!empty($_where['i-all-cate']))
 		{
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/where".$_where['i-all-cate']);
+			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS_WHERE').$_where['i-all-cate']);
 			$this->component_api->CallGet();
 			$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
 			$_API_ITEMS = $_API_ITEMS['query'];			
 			$_where_arr = explode("/", $_where['i-all-cate']);
 		}
 		else{
-			$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
+			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
 			$this->component_api->CallGet();
 			$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
 			$_API_ITEMS = $_API_ITEMS['query'];	
 		}
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
+		$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES'));
 		$this->component_api->CallGet();
 		$_API_CATEGORIES = json_decode($this->component_api->GetConfig("result"), true);
 		$_API_CATEGORIES = $_API_CATEGORIES['query'];
@@ -141,6 +142,7 @@ class Items extends CI_Controller
 		{
 			$_items[]['item_code'] = $val['item_code'];
 		}
+		// set user data
 		$this->session->set_userdata('items_list',$_items);
 		
 		// data for items type selection
@@ -148,6 +150,7 @@ class Items extends CI_Controller
 		{
 			// set user data
 			$this->session->set_userdata('page',$_page);
+			$this->session->set_userdata('default_per_page', $_default_per_page);
 
 			if(!empty($_API_CATEGORIES))
 			{
@@ -169,7 +172,7 @@ class Items extends CI_Controller
 			$this->load->view("items/items-view",[
 				"edit_url" => base_url("/products/items/edit/"),
 				"del_url" => base_url("/products/items/delete/"),
-				"route_url" => base_url("/products/items/page/"),
+				"route_url" => base_url("/products/items/"),
 				"data" => $_API_ITEMS,
 				"user_auth" => true,
 				"default_per_page" => $_default_per_page,
@@ -180,7 +183,7 @@ class Items extends CI_Controller
 			$this->load->view("items/items-create-view",[
 				"function_bar" => $this->load->view('function-bar', [
 					"btn" => [
-						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/products/items/page/'.$_page), "style" => "", "show" => true],
+						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/products/items/page/'.$_page.'/show/'.$_default_per_page), "style" => "", "show" => true],
 						["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
 						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
 					 ]
@@ -205,18 +208,20 @@ class Items extends CI_Controller
 		$_previous_disable = "";
 		$_next_disable = "";
 		$_page = 1;
+		$_default_per_page = 50;
 		$_items = [];
 		// user data
 
 		$_page = $this->session->userdata("page");
+		$_default_per_page = $this->session->userdata("default_per_page");
 		$_items = $this->session->userdata['items_list'];
 
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
+		$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES'));
 		$this->component_api->CallGet();
 		$_API_CATEGORIES = json_decode($this->component_api->GetConfig("result"), true);
 		$_API_CATEGORIES = $_API_CATEGORIES['query'];
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/".$item_code);
+		$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS').$item_code);
 		$this->component_api->CallGet();
 		$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
 		$_API_ITEMS = $_API_ITEMS['query'];
@@ -262,7 +267,7 @@ class Items extends CI_Controller
 				// function bar with next, preview and save button
 				$this->load->view('function-bar', [
 					"btn" => [
-						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/products/items/page/'.$_page), "style" => "", "show" => true],
+						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/products/items/page/'.$_page.'/show/'.$_default_per_page), "style" => "", "show" => true],
 						["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
 						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
 						["name" => "Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/products/items/edit/".$_all[$_previous]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
@@ -297,13 +302,18 @@ class Items extends CI_Controller
 	 */
 	public function delete($item_code="")
 	{
+		// variable initial
+		$_page = 1;
+		$_default_per_page = 50;
+
 		// user data
 		$_page = $this->session->userdata("page");
+		$_default_per_page = $this->session->userdata("default_per_page");
 		$_comfirm_show = true;
 		$_page = 1;
 		
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/inventory/invoices/transaction/d/".$item_code);
+		$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY_HAS_TRANSACTION_D').$item_code);
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
 		if(isset($_data))
@@ -316,7 +326,7 @@ class Items extends CI_Controller
 			// function bar with next, preview and save button
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "Back", "url"=>base_url('/products/items/page/'.$_page), "style" => "", "show" => true],
+					["name" => "Back", "type"=>"button", "id" => "Back", "url"=>base_url('/products/items/page/'.$_page.'/show/'.$_default_per_page), "style" => "", "show" => true],
 					["name" => "Yes", "type"=>"button", "id" => "yes", "url"=>base_url('/products/items/delete/confirmed/'.$item_code), "style" => "btn btn-outline-danger", "show" => $_comfirm_show],
 				]
 			]);
@@ -336,7 +346,7 @@ class Items extends CI_Controller
 	public function savedel($item_code="")
 	{
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/".$item_code);
+		$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS').$item_code);
 		$this->component_api->CallDelete();
 		$result = json_decode($this->component_api->GetConfig("result"),true);
 		if(isset($result['error']['message']) || isset($result['error']['code']))
@@ -374,7 +384,7 @@ class Items extends CI_Controller
 			{
 				// API data
 				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/");
+				$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
 				$this->component_api->CallPost();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
 
@@ -418,7 +428,7 @@ class Items extends CI_Controller
 			{
 				// API data
 				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/".$item_code);
+				$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS').$item_code);
 				$this->component_api->CallPatch();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
 

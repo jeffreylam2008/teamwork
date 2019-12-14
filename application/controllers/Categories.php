@@ -5,95 +5,94 @@ class Categories extends CI_Controller
 {
 	var $_inv_header_param = [];
 	var $_token = "";
+	var $_profile = "";
+	var $_username = "";
 	var $_param = "";
 	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
 	public function __construct()
 	{
 		parent::__construct();
-		// $this->load->library("Component_Master");
-		// if(isset($this->session->userdata['master']))
-		// {
-			// dummy data
-			// $this->session->sess_destroy();
-			// echo "<pre>";
-			// var_dump(($_SESSION['master']));
-			// echo "</pre>";
-			// call token from session
-			if(!empty($this->session->userdata['login']))
+		// dummy data
+		// $this->session->sess_destroy();
+		// echo "<pre>";
+		// var_dump(($_SESSION['master']));
+		// echo "</pre>";
+		// call token from session
+		if(!empty($this->session->userdata['login']))
+		{
+			$this->_token = $this->session->userdata['login']['token'];
+			$this->_profile = $this->session->userdata['login']['profile'];
+			$this->_username = $this->session->userdata['login']['profile']['username'];
+		}
+		// API call
+		$this->load->library("Component_Login",[$this->_token, "products/categories"]);
+
+		// login session
+		if(!empty($this->component_login->CheckToken()))
+		{
+			// fatch employee API
+			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_username);
+			$this->component_api->CallGet();
+			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_EMP = $_API_EMP['query'];
+			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
+			$this->component_api->CallGet();
+			$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SHOP = $_API_SHOP['query'];
+			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
+			$this->component_api->CallGet();
+			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_MENU = $_API_MENU['query'];
+
+			// sidebar session
+			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
+			switch($this->_param)
 			{
-				$this->_token = $this->session->userdata['login']['token'];
+				case "categories/edit":
+					$this->_param = "categories/index";
+				break;
+				case "categories/delete":
+					$this->_param = "categories/index";
+				break;
 			}
-			// API call
-			$this->load->library("Component_Login",[$this->_token, "products/categories"]);
+			// header data
+			$this->_inv_header_param["topNav"] = [
+				"isLogin" => true,
+				"username" => $_API_EMP['username'],
+				"employee_code" => $_API_EMP['employee_code'],
+				"shop_code" => $_API_SHOP['shop_code'],
+				"shop_name" => $_API_SHOP['name'],
+				"today" => date("Y-m-d")
+			];
+			// initial Access rule
+			$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
 
-			// login session
-			if(!empty($this->component_login->CheckToken()))
-			{
-				$this->_username = $this->session->userdata['login']['profile']['username'];
-				// fatch employee API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employees/".$this->_username);
-				$this->component_api->CallGet();
-				$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
-				$_API_EMP = $_API_EMP['query'];
+			// fatch side bar 
+			$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
+			$this->component_sidemenu->SetConfig("active", $this->_param);
+			$this->component_sidemenu->Proccess();
 
-				// sidebar session
-				$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
-				switch($this->_param)
-				{
-					case "categories/edit":
-						$this->_param = "categories/index";
-					break;
-					case "categories/delete":
-						$this->_param = "categories/index";
-					break;
-				}
-				// header data
-				$this->_inv_header_param["topNav"] = [
-					"isLogin" => true,
-					"username" => $_API_EMP['username'],
-					"employee_code" => $_API_EMP['employee_code'],
-					"shop_code" => $_API_EMP['default_shopcode'],
-					"today" => date("Y-m-d")
-				];
-				// initial Access rule
-				$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
-
-				// fatch side bar API
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/menu/side");
-				$this->component_api->CallGet();
-				$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
-				$_API_MENU = $_API_MENU['query'];
-				$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
-				$this->component_sidemenu->SetConfig("active", $this->_param);
-				$this->component_sidemenu->Proccess();
-
-				// load header view
-				$this->load->view('header',[
-					'title'=>'Category',
-					'sideNav_view' => $this->load->view('side-nav', [
-						"sideNav" => $this->component_sidemenu->GetConfig("nav_finished_list"),
-						"path" => $this->component_sidemenu->GetConfig("path"),
-						"param" => $this->_param
-					], TRUE), 
-					'topNav_view' => $this->load->view('top-nav', [
-						"topNav" => $this->_inv_header_param["topNav"]
-					], TRUE)
-				]);
-			}
-			else
-			{
-				redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
-			}
-		// }
-		// else
-		// {
-		// 	redirect(base_url("master"),"refresh");
-		// }
+			// load header view
+			$this->load->view('header',[
+				'title'=>'Category',
+				'sideNav_view' => $this->load->view('side-nav', [
+					"sideNav" => $this->component_sidemenu->GetConfig("nav_finished_list"),
+					"path" => $this->component_sidemenu->GetConfig("path"),
+					"param" => $this->_param
+				], TRUE), 
+				'topNav_view' => $this->load->view('top-nav', [
+					"topNav" => $this->_inv_header_param["topNav"]
+				], TRUE)
+			]);
+		}
+		else
+		{
+			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
+		}
 	}
-	public function index($_page = 1)
+	public function index($_page = 1, $_default_per_page = 50)
 	{
 		// variable initial
-		$_default_per_page = 50;
 		$_API_ITEMS = [];
 		$_API_CATEGORIES = [];
 		$_modalshow = 0;
@@ -105,7 +104,7 @@ class Categories extends CI_Controller
 		}
 		
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
+		$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES'));
 		$this->component_api->CallGet();
 		$_API_CATEGORIES = json_decode($this->component_api->GetConfig("result"), true);
 		$_API_CATEGORIES = $_API_CATEGORIES['query'];
@@ -118,7 +117,8 @@ class Categories extends CI_Controller
 		//set user data
 		$this->session->set_userdata('cate_list',$_cate);
 		$this->session->set_userdata('page',$_page);
-		
+		$this->session->set_userdata('default_per_page', $_default_per_page);
+
 		// function bar with next, preview and save button
 		$this->load->view('function-bar', [
 			"btn" => [
@@ -129,7 +129,7 @@ class Categories extends CI_Controller
 		$this->load->view("categories/categories-view",[
 			"base_url" => base_url("/products/categories/edit/"),
 			"del_url" => base_url("/products/categories/delete/"),
-			"route_url" => base_url("/products/categories/page/"),
+			"route_url" => base_url("/products/categories/"),
 			"data" => $_API_CATEGORIES,
 			"user_auth" => $this->_user_auth,
 			"default_per_page" => $_default_per_page,
@@ -163,11 +163,12 @@ class Categories extends CI_Controller
 
 		// set user data
 		$_page = $this->session->userdata("page");
+		$_default_per_page = $this->session->userdata("_default_per_page");
 		//$_cate = $this->session->userdata('cate_list');
 
 		// API data
 		$_cate =  $this->session->userdata['cate_list'];
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/".$cate_code);
+		$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES').$cate_code);
 		$this->component_api->CallGet();
 		$_API_CATEGORIES = json_decode($this->component_api->GetConfig("result"), true);
 		$_API_CATEGORIES = $_API_CATEGORIES['query'];
@@ -228,7 +229,7 @@ class Categories extends CI_Controller
 		$_page = 1;
 		
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/items/has/category/".$cate_code);
+		$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES_HAS_ITEM').$cate_code);
 		$this->component_api->CallGet();
 		$_API_CATEGORIES = json_decode($this->component_api->GetConfig("result"), true);
 
@@ -259,7 +260,7 @@ class Categories extends CI_Controller
 	public function savedel($cate_code = "")
 	{
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/".$cate_code);
+		$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES').$cate_code);
 		$this->component_api->CallDelete();
 		$result = json_decode($this->component_api->GetConfig("result"),true);
 		if(isset($result['error']['message']) || isset($result['error']['code']))
@@ -297,7 +298,7 @@ class Categories extends CI_Controller
 			{
 				// API data
 				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/");
+				$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES'));
 				$this->component_api->CallPost();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
 				
@@ -339,7 +340,7 @@ class Categories extends CI_Controller
 			{
 				// API data
 				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('api_url')."/products/categories/".$cate_code);
+				$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES').$cate_code);
 				$this->component_api->CallPatch();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
 				

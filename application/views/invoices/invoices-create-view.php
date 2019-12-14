@@ -1,3 +1,9 @@
+<?php
+// echo "<pre>";
+// var_dump($default_shopcode);
+// echo "</pre>";   
+?>
+
 <div class="container-fluid">
     <form class="" method="POST" id="this-form" action="<?=$submit_to?>">
         <div class="input-group mb-2 input-group-sm">
@@ -24,18 +30,22 @@
             <div class="input-group-prepend">
                 <label class="input-group-text">Company</label>
             </div>
-            <select class="custom-select custom-select-sm" id="i-shopcode">
-                <option value="-1">Choose...</option>
-                <?php
+            <?php
                 if(!empty($ajax["shop_code"])):
+                    $key = array_search($default_shopcode,array_column($ajax["shop_code"],"shop_code"));
+            ?>
+            <select class="custom-select custom-select-sm" id="i-shopcode">
+                <option value="<?=$ajax["shop_code"][$key]['shop_code']?>"><?=$ajax["shop_code"][$key]['name']?></option>
+                <?php
+                
                     foreach($ajax["shop_code"] as $k => $v):
                 ?>
                         <option value="<?=$v['shop_code']?>"><?=$v['name']?></option>
                 <?php
                     endforeach;
-                endif;
                 ?>
             </select>
+            <?php endif;?>
         </div>
         
         

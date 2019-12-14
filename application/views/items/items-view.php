@@ -71,7 +71,8 @@ foreach($categories as $k => $v)
 </table>
 
 <script>
-$(document).ready(function() {  
+$(document).ready(function() {
+    // initial data table
     var table = $('#tbl').DataTable({
         "order" : [[0, "asc"]],
         "select": {
@@ -79,13 +80,18 @@ $(document).ready(function() {
         },
         "iDisplayLength": <?=$default_per_page?>,
     });
+    // set page number from previous
     table.page(<?=($page-1)?>).draw('page');
     
+    // page information
     $('#tbl').on( 'page.dt', function () {
+        // get number of row value
+        var tbl_show = $("#tbl_length > label > select").val()
         var info = table.page.info();
-        $(location).attr('href', '<?=$route_url?>'+(info.page+1))
+        $(location).attr('href', '<?=$route_url?>page/'+(info.page+1)+'/show/'+tbl_show)
     });
 
+    // search button event
     $("#search").click(function(){
         var cate = ""
         $("#cate_search").children().each(function(i){

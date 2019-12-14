@@ -531,6 +531,39 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+
+/*
+|--------------------------------------------------------------------------
+| Home Page Setting
+|--------------------------------------------------------------------------
+*/
+$config['default_home'] = 'dushboard';
+/*
+|--------------------------------------------------------------------------
+| API Configuration 
+|--------------------------------------------------------------------------
+*/
 //$config['api_url'] = 'http://api.crazykworkshop.com/api/v1';
 $config['api_url'] = 'http://localhost/erp_backend/api/v1';
-$config['default_home'] = 'dushboard';
+
+$config['URL_LOGIN'] =
+$config['URL_SHOP'] = $config['api_url']."/systems/shops/";
+$config['URL_MENU'] = $config['api_url']."/systems/menu/side";
+$config['URL_EMPLOYEES'] = $config['api_url']."/systems/employees/";
+$config['URL_EMPLOYEES_CODE'] = $config['api_url']."/systems/employees/code";
+$config['URL_MENU_SIDE'] = $config['api_url']."/systems/menu/side";
+$config['URL_CATEGORIES'] = $config['api_url']."/products/categories/";
+$config['URL_CATEGORIES_HAS_ITEM'] = $config['api_url']."/products/items/has/category/";
+$config['URL_CUSTOMERS'] = $config['api_url']."/customers/";
+$config['URL_PAYMENT_METHODS'] = $config['api_url']."/systems/payments/methods/";
+$config['URL_PAYMENT_TERMS'] = $config['api_url']."/systems/payments/terms/";
+$config['URL_DISTRICT'] = $config['api_url']."/systems/district/";
+$config['URL_INVENTORY_HAS_TRANSACTION'] = $config['api_url']."/inventory/invoices/transaction/h/INV/";
+$config['URL_INVENTORY'] = $config['api_url']."/inventory/invoices/";
+$config['URL_QUOTATIONS'] = $config['api_url']."/inventory/quotations/";
+$config['URL_ITEMS'] = $config['api_url']."/products/items/";
+$config['URL_ITEMS_WHERE'] = $config['api_url']."/products/items/where";
+$config['URL_INVENTORY_HAS_TRANSACTION_D'] = $config['api_url']."/inventory/invoices/transaction/d/";
+
+
+
