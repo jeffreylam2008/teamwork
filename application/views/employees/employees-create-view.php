@@ -43,7 +43,7 @@
                                     <label for="">Default Shop Code</label>
                                     <select class="custom-select custom-select-sm" id="i-shops" name="i-shops" >
                                         <?php 
-                                        foreach($data['shops'] as $key => $val):
+                                        foreach($data as $key => $val):
                                         ?>
                                         <option value="<?=$val['shop_code']?>"><?=$val['name']?></option>
                                         <?php

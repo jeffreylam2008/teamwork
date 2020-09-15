@@ -15,42 +15,42 @@
             <th>Delivery Address</th>
             <th>Contact Number</th>
             <th>Payment Method</th>
-            
+            <th>Status</th>
         </tr>
     <thead>
     <tbody>
     <?php
-        if(!empty($data))
-        {
+
         // echo "<pre>";
         // var_dump($data);
         // echo "</pre>";
-        $detail_auth = "";
-            foreach($data as $key => $val)
+
+        foreach($data as $key => $val)
+        {
+            echo "<tr>";
+            echo "<td>".($key+1)."</td>";
+            if($user_auth['delete'])
             {
-                echo "<tr>";
-                echo "<td>".($key+1)."</td>";
-                if($user_auth['delete'])
-                {
-                    echo "<td><a href='".$del_url.$val['cust_code']."'><i class='fas fa-trash-alt'></i></a></td>";
-                }
-                echo "<td>";
-                if($user_auth['edit'])
-                {
-                    echo "<a href='".$detail_url.$val['cust_code']."'>".$val['cust_code']."</a>";
-                }
-                else
-                {
-                    echo $val['cust_code'];
-                }
-                echo "</td>";
-                echo "<td>".$val['name']."</td>";
-                echo "<td>".$val['delivery_addr']."</td>";
-                echo "<td>".$val['phone_1']."</td>";
-                echo "<td>".$val['payment_method']."</td>";
-                echo "</tr>";
+                echo "<td><a href='".$del_url.$val['cust_code']."'><i class='fas fa-trash-alt'></i></a></td>";
             }
+            echo "<td>";
+            if($user_auth['edit'])
+            {
+                echo "<a href='".$detail_url.$val['cust_code']."'>".$val['cust_code']."</a>";
+            }
+            else
+            {
+                echo $val['cust_code'];
+            }
+            echo "</td>";
+            echo "<td>".$val['name']."</td>";
+            echo "<td>".$val['delivery_addr']."</td>";
+            echo "<td>".$val['phone_1']."</td>";
+            echo "<td>".$val['payment_method']."</td>";
+            echo "<td>".$val['status']."</td>";
+            echo "</tr>";
         }
+
     ?>
     </tbody>
     
@@ -58,6 +58,8 @@
 
     <script>
     $(document).ready(function() { 
+        
+        var param = ""
         // init data table 
         var table = $('#tbl').DataTable({
             "order" : [[2, "desc"]],
@@ -68,7 +70,26 @@
         });
         // set table current page
         table.page(<?=$page-1?>).draw('page');
-
+        // Change query string while change page and page page setting
+        table.on( 'draw', function () {
+            var urlParams = new URLSearchParams(location.search)
+            urlParams.set('page', $("ul.pagination > li.active > a").text())
+            urlParams.set('show', $(".dataTables_length > label > select").val())
+            window.history.replaceState({}, '', `${location.pathname}?${urlParams.toString()}`);
+            // search for all a href on this page and append query string at the end
+            $.each($("tbody > tr"), function(i){
+                $.each($(this).children(), function(j){
+                    if($(this)[0].children[0] != undefined)
+                    {
+                        var q = $(this)[0].children[0]
+                        if(q.href.indexOf('?') === -1)
+                        {
+                            q.href += `?${urlParams.toString()}`
+                        }
+                    }
+                });
+            });
+        });
 
         // Show create modal page if $_GET _NEW value = 1
         if(<?=$modalshow?>)

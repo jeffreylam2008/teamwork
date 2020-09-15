@@ -84,16 +84,17 @@ $route['products/categories/save'] = 'categories/savecreate';
 $route['products/categories/edit/save/(:any)'] = 'categories/saveedit/$1';
 
 // invocies
-$route['invoices/print'] = 'theprint/invoices'; 
 $route['invoices'] = 'error_404';
 $route['invoices/create'] = 'error_404';
 $route['invoices/create/(:any)'] = 'invoices/create/$1';
 $route['invoices/create/(:any)/(:any)'] = 'invoices/create/$1/$2';
 $route['invoices/list'] = 'invoices/invlist/1';
 $route['invoices/list/page/(:any)'] = 'invoices/invlist/$1';
+$route['invoices/edit'] = 'error_404';
 $route['invoices/edit/(:any)'] = 'invoices/edit/$1';
 $route['invoices/list/edit'] = 'error_404';
-$route['invoices/edit'] = 'error_404';
+$route['invoices/void/confirmed/(:any)'] = 'invoices/savevoid/$1';
+$route['invoices/copy/(:any)'] = 'invoices/docopy/$1';
 
 // quotations
 $route['quotations'] = 'error_404';
@@ -101,9 +102,11 @@ $route['quotations/create'] = 'error_404';
 $route['quotations/create/(:any)'] = 'quotations/create/$1';
 $route['quotations/list'] = 'quotations/qualist/1';
 $route['quotations/list/page/(:any)'] = 'quotations/qualist/$1';
+$route['quotations/edit'] = 'error_404';
 $route['quotations/edit/(:any)'] = 'quotations/edit/$1';
 $route['quotations/list/edit'] = 'error_404';
-$route['quotations/edit'] = 'error_404';
+$route['quotations/void/confirmed/(:any)'] = 'quotations/savevoid/$1';
+$route['quotations/copy/(:any)'] = 'quotations/docopy/$1';
 
 // Shops
 $route['administration/shops'] = 'shops/index';
@@ -134,15 +137,67 @@ $route['administration/payments/term/edit/save/(:any)'] = 'payments/paymentterms
 $route['administration/payments/term/save'] = 'payments/paymenttermsave';
 
 // customers
-$route['customers/customers'] = 'customers/index';
-$route['customers/customers/page/(:any)'] = 'customers/index/$1';
-$route['customers/customers/save'] = 'customers/save';
-$route['customers/customers/edit'] = 'error_404';
-$route['customers/customers/edit/(:any)'] = 'customers/edit/$1';
-$route['customers/customers/edit/save/(:any)'] = 'customers/saveedit/$1';
-$route['customers/customers/detail/(:any)'] = 'customers/detail/$1';
-$route['customers/customers/delete/(:any)'] = 'customers/delete/$1';
-$route['customers/customers/delete/confirmed/(:any)'] = 'customers/savedel/$1';
+$route['customers'] = 'customers/index';
+$route['customers/save'] = 'customers/save';
+$route['customers/edit'] = 'error_404';
+$route['customers/edit/(:any)'] = 'customers/edit/$1';
+$route['customers/edit/save/(:any)'] = 'customers/saveedit/$1';
+$route['customers/detail/(:any)'] = 'customers/detail/$1';
+$route['customers/delete/(:any)'] = 'customers/delete/$1';
+$route['customers/delete/confirmed/(:any)'] = 'customers/savedel/$1';
+
+// suppliers
+$route['suppliers'] = 'suppliers/index';
+$route['suppliers/save'] = 'suppliers/save';
+$route['suppliers/edit'] = 'error_404';
+$route['suppliers/edit/(:any)'] = 'suppliers/edit/$1';
+$route['suppliers/edit/save/(:any)'] = 'suppliers/saveedit/$1';
+$route['suppliers/detail/(:any)'] = 'suppliers/detail/$1';
+$route['suppliers/delete/(:any)'] = 'suppliers/delete/$1';
+$route['suppliers/delete/confirmed/(:any)'] = 'suppliers/savedel/$1';
+
+// purchases
+$route['purchases/order'] = 'purchases/index';
+$route['purchases/order/donew'] = 'purchases/donew';
+$route['purchases/order/create/(:any)'] = 'purchases/create/$1';  
+$route['purchases/order/process'] = 'purchases/confirm';
+$route['purchases/order/save'] = 'purchases/save';
+$route['purchases/order/saveedit'] = 'purchases/saveedit';
+$route['purchases/order/edit/(:any)'] = 'purchases/edit/$1';
+$route['purchases/order/void/(:any)'] = 'purchases/void/$1';
+$route['purchases/order/void/confirmed/(:any)'] = 'purchases/savevoid/$1';
+$route['purchases/order/togrn/(:any)'] = 'purchases/to_grn/$1';
+
+// stocks
+$route['stocks'] = 'stocks/index';
+$route['stocks/process'] = 'stocks/grn_confirm';
+
+// stocks -> grn
+$route['stocks/grn/donew'] = 'stocks/donewgrn';
+$route['stocks/grn/detail/(:any)'] = 'stocks/grn_detail/$1';
+$route['stocks/grn/create/(:any)'] = 'stocks/grn/$1';
+$route['stocks/grn/create/(:any)/(:any)'] = 'stocks/grn/$1/$2';
+$route['stocks/grn/save'] = 'stocks/grn_save';
+
+// stocks -> dn
+$route['stocks/dn/detail/(:any)'] = 'stocks/dn_detail/$1';
+
+// stocks -> adj
+$route['stocks/adj/create/(:any)'] = 'stocks/adjust/$1';
+$route['stocks/adj/create/(:any)/(:any)'] = 'stocks/adjust/$1/$2';
+$route['stocks/adj/process'] = 'stocks/adj_confirm';
+$route['stocks/adj/detail/(:any)'] = 'stocks/adj_detail/$1';
+$route['stocks/adj/save'] = 'stocks/adj_save';
+
+// stocks -> stocktake
+$route['stocks/stocktake/create/(:any)'] = 'stocks/take/$1';
+$route['stocks/stocktake/process'] = 'stocks/stocktake_process';
+$route['stocks/stocktake/detail/(:any)'] = 'stocks/stocktake_detail/$1';
+$route['stocks/stocktake/save'] = 'stocks/stocktake_save';
+$route['stocks/stocktake/discard/(:any)'] = 'stocks/stocktake_discard/$1';
+$route['stocks/stocktake/discard/confirmed/(:any)'] = 'stocks/stocktake_save_discard/$1';
+$route['stocks/stocktake/adjust/(:any)'] = 'stocks/stocktake_adjust/$1';
+$route['stocks/stocktake/adjust/confirmed/(:any)'] = 'stocks/stocktake_save_adjust/$1';
 
 // Login
 $route['login'] = 'login/index';
@@ -153,6 +208,6 @@ $route['master'] = 'master/index';
 
 
 // Master file load
-$route['testbed'] = 'testbed/index';
+$route['TestBed'] = 'TestBed/index';
 
 

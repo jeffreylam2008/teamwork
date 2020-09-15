@@ -1,32 +1,34 @@
 <form name="form1" id="form1" action="" method="GET" > 
-Categories: 
-<div class='btn-group-toggle' id='cate_search' data-toggle='buttons'>
+    Categories: 
+    <div class='btn-group-toggle' id='cate_search' data-toggle='buttons'>
 
-<?php
-$index = 0;
-
-foreach($categories as $k => $v)
-{
-    $active = "";
-    if(in_array($k, $where))
+    <?php
+    $index = 0;
+    // echo "<pre>";
+    // print_r($categories);
+    // echo "</pre>";
+    foreach($categories as $k => $v)
     {
-        $active = "active";
+        $active = "";
+        if(in_array($v['cate_code'], $where))
+        {
+            $active = "active";
+        }
+        if($index % 5 == 0)
+            echo "<br>";
+        echo "<label class='btn btn-outline-secondary ".$active."'>";
+        echo "<input type='checkbox' name='' value='".$v['cate_code']."' autocomplete='off' /> ";
+        echo $v['desc'];
+        echo "</label>&nbsp;";
+        $index++;
     }
-    if($index % 5 == 0)
-        echo "<br>";
-    echo "<label class='btn btn-outline-secondary ".$active."'>";
-    echo "<input type='checkbox' name='' value='".$k."' autocomplete='off' /> ";
-    echo $v;
-    echo "</label>&nbsp;";
-    $index++;
-}
 
-?>
-<input type="hidden" value="" id="i-all-cate" name="i-all-cate">
-</div>
-
+    ?>
+    <input type="hidden" id="i-all-cate" name="i-all-cate" value="">
+    <input type="hidden" id="i-page" name="page" value="<?=$page?>" />
+    <input type="hidden" id="i-show" name="show" value="<?=$default_per_page?>" />
+    </div>
 </form>
-
 
 <table id="tbl" class="table table-striped table-borderedNO" style="width:100%">
     <thead>
@@ -37,6 +39,7 @@ foreach($categories as $k => $v)
             <th>English Name</th>
             <th>Chinese Name</th>
             <th>Description</th>
+            <th>StockOnhand</th>
             <th>Price</th>
             <th>create_date</th>
             <th>Modify Date</th>
@@ -60,6 +63,7 @@ foreach($categories as $k => $v)
                     echo "<td>".$val['eng_name']."</td>";
                     echo "<td>".$val['chi_name']."</td>";
                     echo "<td>".$val['desc']."</td>";
+                    echo "<td>".$val['stockonhand']."</td>";
                     echo "<td>$".$val['price']."</td>";
                     echo "<td>".substr($val['create_date'],0,10)."</td>";
                     echo "<td>".substr($val['modify_date'],0,10)."</td>";
@@ -74,7 +78,7 @@ foreach($categories as $k => $v)
 $(document).ready(function() {
     // initial data table
     var table = $('#tbl').DataTable({
-        "order" : [[0, "asc"]],
+        "order" : [[2, "asc"]],
         "select": {
             items: 'column'
         },
@@ -83,14 +87,29 @@ $(document).ready(function() {
     // set page number from previous
     table.page(<?=($page-1)?>).draw('page');
     
-    // page information
-    $('#tbl').on( 'page.dt', function () {
-        // get number of row value
-        var tbl_show = $("#tbl_length > label > select").val()
-        var info = table.page.info();
-        $(location).attr('href', '<?=$route_url?>page/'+(info.page+1)+'/show/'+tbl_show)
+    // Change query string while change page and page page setting
+    table.on( 'draw', function () {
+        var urlParams = new URLSearchParams(location.search)
+        urlParams.set('page', $("ul.pagination > li.active > a").text())
+        urlParams.set('show', $(".dataTables_length > label > select").val())
+        window.history.replaceState({}, '', `${location.pathname}?${urlParams.toString()}`);
+        // search for all a href on this page and append query string at the end
+        $.each($("tbody > tr"), function(i){
+            $.each($(this).children(), function(j){
+                if($(this)[0].children[0] != undefined)
+                {
+                    var q = $(this)[0].children[0]
+                    if(q.href.indexOf('?') === -1)
+                    {
+                        q.href += `?${urlParams.toString()}`
+                    }
+                }
+            });
+        });
+        $("#i-page").val($("ul.pagination > li.active > a").text());
+        $("#i-show").val($(".dataTables_length > label > select").val());
     });
-
+    
     // search button event
     $("#search").click(function(){
         var cate = ""
@@ -102,5 +121,8 @@ $(document).ready(function() {
         $("#form1").submit();
     });
     
+    // Show create modal page if $_GET _NEW value = 1
+    if(<?=$modalshow?>)
+        $('#modal01').modal('show');
 });
 </script>

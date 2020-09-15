@@ -41,28 +41,28 @@
 							<div class="form-row">
 								<div class="col-8">
 									<label for="t1">Customer Shop</label>
-									<input type="text" class="form-control form-control-sm" name="i-name" id="i-name" placeholder="Name" value="<?=$name?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-name" id="i-name" placeholder="" value="<?=$name?>" disabled>
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Primary Attn</label>
-									<input type="text" class="form-control form-control-sm" name="i-attn_1" id="i-attn_1" placeholder="Primary Attn" value="<?=$attn_1?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-attn_1" id="i-attn_1" placeholder="" value="<?=$attn_1?>" disabled>
 								</div>
 								<div class="col-4">
 									<label for="t1">Secondary Attn </label>
-									<input type="text" class="form-control form-control-sm" name="i-attn_2" placeholder="Secondary Attn" value="<?=$attn_2?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-attn_2" placeholder="" value="<?=$attn_2?>" disabled>
 								</div>
 							</div>
 
 							<div class="form-row">
 								<div class="col-12">
 									<label for="">Mail Address</label>
-									<input type="text" class="form-control form-control-sm" name="i-mail_addr" id="i-mail_addr" placeholder="Type Something" value="<?=$mail_addr?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-mail_addr" id="i-mail_addr" placeholder="" value="<?=$mail_addr?>" disabled>
 								</div>
 								<div class="col-12">
 									<label for="">Shop Address</label>
-									<input type="text" class="form-control form-control-sm" name="i-shop_addr" placeholder="Type Something" value="<?=$shop_addr?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-shop_addr" placeholder="" value="<?=$shop_addr?>" disabled>
 								</div>
 								
 							</div>
@@ -70,21 +70,21 @@
 							<div class="form-row">
 								<div class="col-6">
 									<label for="t1">Primary Email</label>
-									<input type="text" class="form-control form-control-sm" name="i-email_1" placeholder="Primary Email" value="<?=$email_1?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-email_1" placeholder="" value="<?=$email_1?>" disabled>
 								</div>
 								<div class="col-6">
 									<label for="t1">Secondary Email</label>
-									<input type="text" class="form-control form-control-sm" name="i-email_2" placeholder="Secondary Email" value="<?=$email_2?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-email_2" placeholder="" value="<?=$email_2?>" disabled>
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Phone 1</label>
-									<input type="text" class="form-control form-control-sm" name="i-phone_1" id="i-phone_1" placeholder="00000000" value="<?=$phone_1?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-phone_1" id="i-phone_1" placeholder="" value="<?=$phone_1?>" disabled>
 								</div>
 								<div class="col-4">
 									<label for="t1">Fax 1</label>
-									<input type="text" class="form-control form-control-sm" name="i-fax_1" placeholder="00000000" value="<?=$fax_1?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-fax_1" placeholder="" value="<?=$fax_1?>" disabled>
 								</div>
 							</div>
 						   
@@ -92,13 +92,13 @@
 							<div class="form-row">
 								<div class="col-12">
 									<label for="t1">Statement Remark</label>
-									<textarea class="form-control form-control-sm" placeholder="Type Something" name="i-statement_remark" rows="2" disabled><?=$statement_remark?></textarea>
+									<textarea class="form-control form-control-sm" placeholder="" name="i-statement_remark" rows="2" disabled><?=$statement_remark?></textarea>
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-12">
 									<label for="t1">Remark</label>
-									<textarea class="form-control form-control-sm" placeholder="Type Something" name="i-remark" rows="2" disabled><?=$remark?></textarea>
+									<textarea class="form-control form-control-sm" placeholder="" name="i-remark" rows="2" disabled><?=$remark?></textarea>
 								</div>
 							</div>
 
@@ -151,7 +151,7 @@
 											$_dc = "N/A";
 										endif;
 									?>
-									<input type="text" class="form-control form-control-sm" name="i-district_code" placeholder="District" value="<?=$_dc?> <?=$district_chi?> <?=$district_eng?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-district_code" placeholder="" value="<?=$_dc?> <?=$district_chi?> <?=$district_eng?>" disabled>
 
 								</div>
 
@@ -159,7 +159,7 @@
 							<div class="form-row">
 								<div class="col-12">
 									<label for="">Delivery Address</label>
-									<input type="text" class="form-control form-control-sm" name="i-delivery_addr" placeholder="Type Something" value="<?=$delivery_addr?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-delivery_addr" placeholder="" value="<?=$delivery_addr?>" disabled>
 								</div>
 							</div>
 							<div class="form-row">
@@ -175,17 +175,17 @@
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Phone</label>
-									<input type="text" class="form-control form-control-sm" name="i-delivery_phonn" placeholder="00000000" value="<?=$phone_2?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-delivery_phonn" placeholder="" value="<?=$phone_2?>" disabled>
 								</div>
 								<div class="col-4">
 									<label for="t1">Fax</label>
-									<input type="text" class="form-control form-control-sm" name="i-delivery_fax" placeholder="00000000" value="<?=$fax_2?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-delivery_fax" placeholder="" value="<?=$fax_2?>" disabled>
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-12">
 									<label for="t1">Delivery Remark</label>
-									<textarea class="form-control form-control-sm" placeholder="Type Something" name="i-delivery_remark" rows="3" disabled><?=$delivery_remark?></textarea>
+									<textarea class="form-control form-control-sm" placeholder="" name="i-delivery_remark" rows="3" disabled><?=$delivery_remark?></textarea>
 								</div>
 							</div>
 						   
@@ -195,44 +195,43 @@
 							<div class="form-row">
 								<div class="col-8">
 									<label for="t1">Company BR Number</label>
-									<input type="text" class="form-control form-control-sm" name="i-acc_company_br" id="i-br" placeholder="BR Number" value="<?=$company_BR?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-acc_company_br" id="i-br" placeholder="" value="<?=$company_BR?>" disabled>
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-8">
 									<label for="t1">Company Sign</label>
-									<input type="text" class="form-control form-control-sm" name="i-acc_company_sign" placeholder="Company Sign" value="<?=$company_sign?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-acc_company_sign" placeholder="" value="<?=$company_sign?>" disabled>
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-8">
 									<label for="t1">Group Name</label>
-									<input type="text" class="form-control form-control-sm" name="i-acc_group_name" placeholder="Group" value="<?=$group_name?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-acc_group_name" placeholder="" value="<?=$group_name?>" disabled>
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Accountant</label>
-									<input type="text" class="form-control form-control-sm" name="i-acc_attn" id="i-acc_attn" placeholder="Account Attn" value="<?=$attn?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-acc_attn" id="i-acc_attn" placeholder="" value="<?=$attn?>" disabled>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="col-8">
+									<label for="t1">Accountant Email</label>
+									<input type="text" class="form-control form-control-sm" name="i-acc_email" id="i-acc_email" placeholder="" value="<?=$email?>" disabled >
 								</div>
 							</div>
 							<div class="form-row">
 								<div class="col-4">
 									<label for="t1">Phone</label>
-									<input type="text" class="form-control form-control-sm" name="i-acc_phone" placeholder="00000000" value="<?=$tel?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-acc_phone" placeholder="" value="<?=$tel?>" disabled>
 								</div>
 								<div class="col-4">
 									<label for="t1">Fax</label>
-									<input type="text" class="form-control form-control-sm" name="i-acc_fax" placeholder="00000000" value="<?=$fax?>" disabled>
+									<input type="text" class="form-control form-control-sm" name="i-acc_fax" placeholder="" value="<?=$fax?>" disabled>
 								</div>
 							</div>
-							<!--
-							<div class="form-row">
-								<div class="col-6">
-									<label for="t1">Email</label>
-									<input type="text" class="form-control form-control-sm" name="i-acc_email" placeholder="Email" value="<?=$email?>" disabled>
-								</div>
-							</div>-->
 						</li>
 					</ul>
 				</div>

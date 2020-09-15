@@ -1,8 +1,8 @@
 <?php
     // echo "<pre>";
-    // var_dump($data['employees']);
+    // var_dump($employees);
     // echo "</pre>";
-    extract($data);
+  
 ?>
 
 <form id="form1" name="form1" method="POST" action="<?=$save_url?>">
@@ -44,11 +44,11 @@
             
             <div class="form-row">
                 <div class="col-3">
-                    <label for="">Default Shop Code</label>
+                    <label for="">Default Shop</label>
                     <select class="custom-select custom-select-sm" id="i-shops" name="i-shops" >
                         <option value="<?=$employees['default_shopcode']?>"><?=$employees['shop_name']?></option>
                         <?php 
-                        foreach($data['shops'] as $key => $val):
+                        foreach($shops as $key => $val):
                         ?>
                         <option value="<?=$val['shop_code']?>"><?=$val['name']?></option>
                         <?php

@@ -32,7 +32,7 @@ class Component_Login
     //    {
         $this->_CI->load->library("component_api");
         // API Call: check validation token in Server side 
-        $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('api_url')."/systems/login/".$this->_token);
+        $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('URL_LOGIN').$this->_token);
         $this->_CI->component_api->CallGet();
         $_api_result = json_decode($this->_CI->component_api->GetConfig("result"),true);
 

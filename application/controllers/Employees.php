@@ -4,9 +4,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Employees extends CI_Controller 
 {
 	var $_inv_header_param = [];
+	var $_default_per_page = "";
+	var $_page = "";
 	var $_token = "";
 	var $_profile = "";
-	var $_username = "";
 	var $_param = "";
 	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
 	/**
@@ -17,13 +18,23 @@ class Employees extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		
+		$_query = ['page'=> "" , 'show' => ""];
+		$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
+		$this->_default_per_page = $this->config->item('DEFAULT_PER_PAGE');
+		$this->_page = $this->config->item('DEFAULT_FIRST_PAGE');
+		if($this->input->get("page"))
+		{
+			$this->_page = $this->input->get("page");
+		}
+		if($this->input->get("show"))
+		{
+			$this->_default_per_page = $this->input->get("show");
+		}
 		// dummy data
 		if(!empty($this->session->userdata['login']))
 		{
 			$this->_token = $this->session->userdata['login']['token'];
 			$this->_profile = $this->session->userdata['login']['profile'];
-			$this->_username = $this->session->userdata['login']['profile']['username'];
 		}
 		
 		$this->load->library("Component_Login",[$this->_token, "employees"]);
@@ -32,18 +43,18 @@ class Employees extends CI_Controller
 		if(!empty($this->component_login->CheckToken()))
 		{
 			// fatch master
-			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_username);
+			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
 			$this->component_api->CallGet();
 			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_EMP = $_API_EMP['query'];
+			$_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
 			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
 			$this->component_api->CallGet();
 			$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_SHOP = $_API_SHOP['query'];
+			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
 			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
 			$this->component_api->CallGet();
 			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_MENU = $_API_MENU['query'];
+			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
 
 			// sidebar session
 			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
@@ -66,6 +77,13 @@ class Employees extends CI_Controller
 				"today" => date("Y-m-d")
 			];
 
+			$_query['page'] = $this->_page;
+			$_query['show'] = $this->_default_per_page;
+			$_query = $this->component_uri->QueryToString($_query);
+			$_login = $this->session->userdata['login'];
+			$_login['preference'] = $_query;
+			$this->session->set_userdata("login", $_login);
+
 			// Call API here
 			$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
 			$this->component_sidemenu->SetConfig("active", $this->_param);
@@ -73,7 +91,7 @@ class Employees extends CI_Controller
 
 			// load header view
 			$this->load->view('header',[
-				'title'=>'Customers',
+				'title'=>'Employees',
 				'sideNav_view' => $this->load->view('side-nav', [
 					"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list"),
 					"path"=>$this->component_sidemenu->GetConfig("path"),
@@ -90,30 +108,19 @@ class Employees extends CI_Controller
 			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
 		}
 	}
-	public function index($_page = 1)
+	public function index()
 	{
-		// variable initial
-		$_default_per_page = 50;
-		$_API_EMPLOYEES = [];
-
-		// set user data
-		$this->session->set_userdata('page',$_page);
-
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES'));
 		$this->component_api->CallGet();
 		$_API_EMPLOYEES = json_decode($this->component_api->GetConfig("result"),true);
-		$_API_EMPLOYEES = $_API_EMPLOYEES['query'];
+		$_API_EMPLOYEES = !empty($_API_EMPLOYEES['query']) ? $_API_EMPLOYEES['query'] : [];
 		$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
 		$this->component_api->CallGet();
 		$_API_SHOPS = json_decode($this->component_api->GetConfig("result"),true);
-		$_API_SHOPS = $_API_SHOPS['query'];
+		$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : [];
 
-		$_data['shops'] = $_API_SHOPS;
-		
-		// echo "<pre>";
-		// var_dump($_API_EMPLOYEES);
-		// echo "</pre>";
+		$_login = $this->session->userdata['login'];
 
 		// API data usage
 		if(!empty($_API_EMPLOYEES))
@@ -131,19 +138,19 @@ class Employees extends CI_Controller
 				"del_url" => base_url(""),
 				'data' => $_API_EMPLOYEES,
 				"user_auth" => $this->_user_auth,
-				"default_per_page" => $_default_per_page,
-				"page" => $_page
+				"default_per_page" => $this->_default_per_page,
+				"page" => $this->_page
 			]);
 			$this->load->view("/employees/employees-create-view",[
 				"function_bar" => $this->load->view('function-bar', [
 					"btn" => [
-						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/administration/employees/page/'.$_page), "style" => "", "show" => true],
+						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/administration/employees'), "style" => "", "show" => true],
 						["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
 						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
 					 ]
 				],true),
 				"save_url" => base_url("/administration/employees/save"),
-				"data" => $_data
+				"data" => $_API_SHOPS
 			]);
 			$this->load->view('footer');
 		}
@@ -155,37 +162,36 @@ class Employees extends CI_Controller
 	public function edit($_employee_code)
 	{
 		// variable initial
-		$_API_EMPLOYEES = [];
-		$_page = 1;
-		$_data = [];
 		if(!empty($_employee_code))
 		{
 			//API call here
 			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES_CODE').$_employee_code);
 			$this->component_api->CallGet();
 			$_API_EMPLOYEES = json_decode($this->component_api->GetConfig("result"),true);
-			$_API_EMPLOYEES = $_API_EMPLOYEES['query'];
+			$_API_EMPLOYEES = !empty($_API_EMPLOYEES['query']) ? $_API_EMPLOYEES['query'] : [];
 			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
 			$this->component_api->CallGet();
 			$_API_SHOPS = json_decode($this->component_api->GetConfig("result"),true);
-			$_API_SHOPS = $_API_SHOPS['query'];
-		
-			$_data["employees"] = $_API_EMPLOYEES;
-			$_data['shops'] = $_API_SHOPS;
+			$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : [];
 
+			$_login = $this->session->userdata['login'];
 
-			// function bar here
-			$this->load->view('function-bar', [
-				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/administration/employees/page/'.$_page), "style" => "", "show" => true],
-					["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
-				]
-			]);
-			// load view here
-			$this->load->view('/employees/employees-edit-view', [
-				"save_url" => base_url("administration/employees/edit/save/".$_employee_code),
-				"data" => $_data
-			]);
+			if( !empty($_API_EMPLOYEES))
+			{
+				// function bar here
+				$this->load->view('function-bar', [
+					"btn" => [
+						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/administration/employees'.$_login['preference']), "style" => "", "show" => true],
+						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
+					]
+				]);
+				// load view here
+				$this->load->view('/employees/employees-edit-view', [
+					"save_url" => base_url("administration/employees/edit/save/".$_employee_code),
+					"shops" => $_API_SHOPS,
+					"employees" => $_API_EMPLOYEES
+				]);
+			}
 		}
 	}
 	/**

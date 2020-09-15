@@ -1,11 +1,6 @@
 
 <?php
-$page_separate = 1;
-$cItems = [];
-$iTotal = count($items);
-$i = 1;
-
-function PrintHeader($customer, $date, $quotation)
+function PrintHeader($customer = "", $date  = "", $quotation = "", $cust_code = "", $employee_code = "", $paymentmethod = "")
 {
     print "
         <!-- print header --> 
@@ -40,29 +35,29 @@ function PrintHeader($customer, $date, $quotation)
                 </td>
                 <td>&nbsp;</td>
                 <td>
-                    ".$quotation."
+                    
                 </td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>
-                    ".substr($date,0,-8)."
+                    ".$quotation."
                 </td>
                 <td>&nbsp;</td>
                 <td>
-                    ".$quotation."
+                    ".$cust_code."
                 </td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>
-                    ".substr($date,0,-8)."
+                    ".$employee_code."
                 </td>
                 <td>&nbsp;</td>
                 <td>
-                    ".$quotation."
+                    ".$paymentmethod."
                 </td>
             </tr>
             </tbody>
@@ -71,7 +66,7 @@ function PrintHeader($customer, $date, $quotation)
    // echo "<p style=\"page-break-after: always;\"></p>";
 }
     
-function PrintBody($items)
+function PrintBody($items = [])
 {
     print "
         <table border='0' height='620'>
@@ -99,7 +94,7 @@ function PrintBody($items)
     ";
 }
 
-function PrintFooter($total)
+function PrintFooter($total = "")
 {
     print "
         <!-- print footer --> 
@@ -110,7 +105,7 @@ function PrintFooter($total)
                 <td width='170'>&nbsp;</td>
                 <td width='150'>&nbsp;</td>
                 <td width='240'>&nbsp;</td>
-                <td width='150'>$".number_format($total,2)."</td>
+                <td width='150'>$".$total."</td>
             </tr>
         </table>
     ";
@@ -119,31 +114,42 @@ function PrintFooter($total)
 
 <div>
 <?php
-// divided items per page
-foreach($items as $k => $v)
-{ 
-    $page[$page_separate][] = $v;
-    // fixed 8 items for each page, more is not allow
-    if($i % 8==0){
-        $page_separate++;
-    }
-    $i++;
-}
-//generate the print template
-for($j=1; $j<=$page_separate; $j++)
-{
-    PrintHeader($customer, $date, $quotation);
-    PrintBody($page[$j]);
-    PrintFooter($total);
-    print "<p style=\"page-break-after: always;\"></p>";
-}
+extract($data);
+if(isset($items)){
+    $page_separate = 1;
+    $i = 1;
 
-// echo "<pre>";
-// var_dump($page);
-// echo "</pre>";
-    
+    // divided items per page
+    foreach($items as $k => $v)
+    { 
+        $page[$page_separate][] = $v;
+        // fixed 8 items for each page, more is not allow
+        if($i % 8==0){
+            $page_separate++;
+        }
+        $i++;
+    }
+    //generate the print template
+    for($j=1; $j<=$page_separate; $j++)
+    {
+        PrintHeader($customer, $date, $quotation, $cust_code, $employee_code, $paymentmethodname);
+        PrintBody($page[$j]);
+        PrintFooter($total);
+        print "<p style=\"page-break-after: always;\"></p>";
+    }
+
+    // echo "<pre>";
+    // var_dump($page);
+    // echo "</pre>";
+}    
 ?>
 </div>
-<script>
-window.print();
-</script>
+<?php
+if(!$preview):
+?>
+    <script type="text/javascript"> 
+    window.print();
+    </script> 
+<?php
+endif;
+?>

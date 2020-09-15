@@ -29,17 +29,23 @@ class Component_API
             //curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt_array($curl,[
                 CURLOPT_CUSTOMREQUEST => "GET",
-                CURLOPT_RETURNTRANSFER => 1
+                CURLOPT_RETURNTRANSFER => 1,
+                CURLOPT_NOSIGNAL => 1,
+                CURLOPT_TIMEOUT_MS => 20000
             ]);
             $resp = curl_exec($curl);
-            if(!$resp){
-                $_err_detail["Error"] = curl_error($curl);
-                $_err_detail["Code"]  = $curl ;
+            $_err_detail["Error"] = curl_error($curl);
+            $_err_detail["Code"]  = curl_errno($curl);
+            curl_close($curl);
+
+            if($_err_detail["Code"] > 0){
                 $_err = json_encode($_err_detail,true);
                 $this->SetConfig("result",$_err);
             }
-            curl_close($curl);
-            $this->SetConfig("result",$resp);
+            else
+            {
+                $this->SetConfig("result",$resp);
+            }
         }
     }
 

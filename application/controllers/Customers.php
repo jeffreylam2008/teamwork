@@ -4,168 +4,152 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Customers extends CI_Controller 
 {
 	var $_inv_header_param = [];
+	var $_default_per_page = "";
+	var $_page = "";
 	var $_token = "";
 	var $_profile = "";
-	var $_username = "";
 	var $_param = "";
-	var $_customers = [];
 	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
 	//var $_pm = [];
 	//var $_pt = [];
 	public function __construct()
 	{
 		parent::__construct();
-		// $this->load->library("Component_Master");
-		// if(isset($this->session->userdata['master']))
-		// {
-			// $this->session->sess_destroy();
-			// dummy data
-			// echo "<pre>";
-			// var_dump(array_keys($_SESSION['master']));
-			// echo "</pre>";
-			// call token from session
-			if(!empty($this->session->userdata['login']))
+		$_query = $this->input->get();
+		// initial Access rule
+		$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
+		$this->_default_per_page = $this->config->item('DEFAULT_PER_PAGE');
+		$this->_page = $this->config->item('DEFAULT_FIRST_PAGE');
+
+
+		if($this->input->get("page"))
+		{
+			$this->_page = $this->input->get("page");
+		}
+		if($this->input->get("show"))
+		{
+			$this->_default_per_page = $this->input->get("show");
+		}
+		if(!empty($this->session->userdata['login']))
+		{
+			$this->_token = $this->session->userdata['login']['token'];
+			$this->_profile = $this->session->userdata['login']['profile'];
+		}
+		
+		$this->load->library("Component_Login",[$this->_token, "customers"]);
+
+		// login session
+		if(!empty($this->component_login->CheckToken()))
+		{
+			// API call
+			// fatch master
+			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
+			$this->component_api->CallGet();
+			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
+			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
+			$this->component_api->CallGet();
+			$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
+			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
+			$this->component_api->CallGet();
+			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
+
+			// sidebar session
+			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
+			switch($this->_param)
 			{
-				$this->_token = $this->session->userdata['login']['token'];
-				$this->_profile = $this->session->userdata['login']['profile'];
-				$this->_username = $this->session->userdata['login']['profile']['username'];
+				case "customers/edit":
+					$this->_param = "customers/index";
+				break;
+				case "customers/delete":
+					$this->_param = "customers/index";
+				break;
+				case "customers/detail":
+					$this->_param = "customers/index";
+				break;
 			}
-			
-			$this->load->library("Component_Login",[$this->_token, "customers"]);
 
-			// login session
-			if(!empty($this->component_login->CheckToken()))
-			{
-				// API call
-				// fatch master
-				$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_username);
-				$this->component_api->CallGet();
-				$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
-				$_API_EMP = $_API_EMP['query'];
-				$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
-				$this->component_api->CallGet();
-				$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
-				$_API_SHOP = $_API_SHOP['query'];
-				$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
-				$this->component_api->CallGet();
-				$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
-				$this->_customers = $_API_CUSTOMERS['query'];
-				$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
-				$this->component_api->CallGet();
-				$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
-				$_API_MENU = $_API_MENU['query'];
+			// header data
+			$this->_inv_header_param["topNav"] = [
+				"isLogin" => true,
+				"username" => $_API_EMP['username'],
+				"employee_code" => $_API_EMP['employee_code'],
+				"shop_code" => $_API_SHOP['shop_code'],
+				"shop_name" => $_API_SHOP['name'],
+				"today" => date("Y-m-d")
+			];
+			//Set user preference
+			$_query['page'] = $this->_page;
+			$_query['show'] = $this->_default_per_page;
+			$_query = $this->component_uri->QueryToString($_query);
+			$_login = $this->session->userdata['login'];
+			$_login['preference'] = $_query;
+			$this->session->set_userdata("login", $_login);
 
-				// sidebar session
-				$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
-				switch($this->_param)
-				{
-					case "customers/edit":
-						$this->_param = "customers/index";
-					break;
-					case "customers/delete":
-						$this->_param = "customers/index";
-					break;
-					case "customers/detail":
-						$this->_param = "customers/index";
-					break;
-				}
+			// fatch side bar 
+			$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
+			$this->component_sidemenu->SetConfig("active", $this->_param);
+			$this->component_sidemenu->Proccess();
 
-				// header data
-				$this->_inv_header_param["topNav"] = [
-					"isLogin" => true,
-					"username" => $_API_EMP['username'],
-					"employee_code" => $_API_EMP['employee_code'],
-					"shop_code" => $_API_SHOP['shop_code'],
-					"shop_name" => $_API_SHOP['name'],
-					"today" => date("Y-m-d")
-				];
-				// initial Access rule
-				$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
-
-				// Call API here
-				$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
-				$this->component_sidemenu->SetConfig("active", $this->_param);
-				$this->component_sidemenu->Proccess();
-
-				// load header view
-				$this->load->view('header',[
-					'title'=>'Customers',
-					'sideNav_view' => $this->load->view('side-nav', [
-						"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list"),
-						"path"=>$this->component_sidemenu->GetConfig("path"),
-						"param"=> $this->_param
-					], TRUE), 
-					'topNav_view' => $this->load->view('top-nav', [
-						"topNav" => $this->_inv_header_param["topNav"]
-					], TRUE)
-				]);
-			}
-			else
-			{
-				redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
-			}
-		// }
-		// else
-		// {
-		// 	redirect(base_url("master"),"refresh");
-		// }
-
+			// load header view
+			$this->load->view('header',[
+				'title'=>'Customers',
+				'sideNav_view' => $this->load->view('side-nav', [
+					"sideNav" => $this->component_sidemenu->GetConfig("nav_finished_list"),
+					"path" => $this->component_sidemenu->GetConfig("path"),
+					"param" => $this->_param
+				], TRUE), 
+				'topNav_view' => $this->load->view('top-nav', [
+					"topNav" => $this->_inv_header_param["topNav"]
+				], TRUE)
+			]);
+		}
+		else
+		{
+			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
+		}
 	}
-	public function index($_page = 1, $new = false)
+	public function index()
 	{
 		// variable initial
-		$_default_per_page = 50;
 		$_API_CUSTOMERS = [];
 		$_modalshow = 0;
-
+		
 		// set create new modal pop up on initial
 		if($this->input->get("new") == 1)
 		{
 			$_modalshow = 1;
 		}
-
-		// set user data
-		$this->session->set_userdata('page',$_page);
-
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
 		$this->component_api->CallGet();
 		$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
-		$_API_CUSTOMERS = $_API_CUSTOMERS['query'];
+		$_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : [];
 
 		// Get payment method
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
 		$this->component_api->CallGet();
 		$_API_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
-		$_API_PAYMENT_METHOD = $_API_PAYMENT_METHOD['query'];
+		$_API_PAYMENT_METHOD = !empty($_API_PAYMENT_METHOD['query']) ? $_API_PAYMENT_METHOD['query'] : [];
 		
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_TERMS'));
 		$this->component_api->CallGet();
 		$_API_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
-		$_API_PAYMENT_TERM = $_API_PAYMENT_TERM['query'];
+		$_API_PAYMENT_TERM = !empty($_API_PAYMENT_TERM['query']) ? $_API_PAYMENT_TERM['query'] : [];
 
 		$this->component_api->SetConfig("url", $this->config->item('URL_DISTRICT'));
 		$this->component_api->CallGet();
 		$_API_DISTRICT = json_decode($this->component_api->GetConfig("result"), true);
-		$_API_DISTRICT = $_API_DISTRICT['query'];
+		$_API_DISTRICT = !empty($_API_DISTRICT['query']) ? $_API_DISTRICT['query'] : [];
+
+		// get user preference
+		$_login = $this->session->userdata("login");
 
 		// API data usage
-		if(!empty($_API_CUSTOMERS) >= 1 && !empty($_API_PAYMENT_METHOD))
+		if(!empty($_API_CUSTOMERS) && !empty($_API_PAYMENT_METHOD))
 		{
-
-			// join different table into one array	
-			foreach($_API_CUSTOMERS as $key => $val)
-			{
-				if(in_array($val['pm_code'],array_column($_API_PAYMENT_METHOD,"pm_code")))
-				{
-					$k = array_search($val['pm_code'], array_column($_API_PAYMENT_METHOD,"pm_code")); 
-					$_API_CUSTOMERS[$key]['payment_method'] = $_API_PAYMENT_METHOD[$k]['payment_method'];
-				}
-				else{
-					$_API_CUSTOMERS[$key]['payment_method'] = "";
-				}
-			}
-		
 			// load function bar view
 			$this->load->view('function-bar', [
 				"btn" => [
@@ -175,25 +159,26 @@ class Customers extends CI_Controller
 
 			// load main view
 			$this->load->view('customers/customers-list-view', [
-				"detail_url" => base_url("/customers/customers/detail/"),
-				"del_url" => base_url("/customers/customers/delete/"),
+				"detail_url" => base_url("/customers/detail/"),
+				"del_url" => base_url("/customers/delete/"),
 				'data' => $_API_CUSTOMERS,
 				"user_auth" => $this->_user_auth,
-				"default_per_page" => $_default_per_page,
-				"page" => $_page,
+				"default_per_page" => $this->_default_per_page,
+				"page" => $this->_page,
 				"modalshow" => $_modalshow
 			]);
 			$this->load->view("customers/customers-create-view",[
+				"title" => "New Customers",
 				"function_bar" => $this->load->view('function-bar', [
 					"btn" => [
-						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers/customers/page/'.$_page), "style" => "", "show" => true],
+						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers'), "style" => "", "show" => true],
 						["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
 						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
 					 ]
 				],true),
-				"save_url" => base_url("/customers/customers/save/"),
-				"new_pm_url" => base_url("/administration/payments/method/"),
-				"new_pt_url" => base_url("/administration/payments/term/"),
+				"save_url" => base_url("/customers/save/"),
+				"new_pm_url" => base_url("/administration/payments/method/?new=1"),
+				"new_pt_url" => base_url("/administration/payments/term/?new=1"),
 				'data_payment_method' => $_API_PAYMENT_METHOD,
 				'data_payment_term' => $_API_PAYMENT_TERM,
 				'data_district' => $_API_DISTRICT
@@ -201,7 +186,7 @@ class Customers extends CI_Controller
 			$this->load->view('footer');
 		}
 	}
-	public function edit($cust_code)
+	public function edit($cust_code = "")
 	{
 		//$this->session->sess_destroy();
 		// $_data = [];
@@ -209,82 +194,65 @@ class Customers extends CI_Controller
 		$_previous_disable = "";
 		$_next_disable = "";
 		// user data
-		$_page = 1;
 
-		// API Call
+		$_login = $this->session->userdata("login");
+	
+		// API data
+		$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS').$cust_code);
+		$this->component_api->CallGet();
+		$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : [];
+
 		// Get payment method
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
 		$this->component_api->CallGet();
 		$_API_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
-		$_API_PAYMENT_METHOD = $_API_PAYMENT_METHOD['query'];
-
+		$_API_PAYMENT_METHOD = !empty($_API_PAYMENT_METHOD['query']) ? $_API_PAYMENT_METHOD['query'] : [];
+		
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_TERMS'));
 		$this->component_api->CallGet();
 		$_API_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
-		$_API_PAYMENT_TERM = $_API_PAYMENT_TERM['query'];
+		$_API_PAYMENT_TERM = !empty($_API_PAYMENT_TERM['query']) ? $_API_PAYMENT_TERM['query'] : [];
 
 		$this->component_api->SetConfig("url", $this->config->item('URL_DISTRICT'));
 		$this->component_api->CallGet();
 		$_API_DISTRICT = json_decode($this->component_api->GetConfig("result"), true);
-		$_API_DISTRICT = $_API_DISTRICT['query'];
-
+		$_API_DISTRICT = !empty($_API_DISTRICT['query']) ? $_API_DISTRICT['query'] : [];
+		
 		if(!empty($cust_code))
 		{
-			// Call API here
-			$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS').$cust_code);
-			$this->component_api->CallGet();
-			$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_CUSTOMERS = $_API_CUSTOMERS['query'];
-
 			// API data usage
-			if(!empty($this->_customers) )
+			if(!empty($_API_CUSTOMERS) )
 			{
-				$_all = array_column($this->_customers, "cust_code");
-				
-				// search key
-				$_key = array_search(
-					$cust_code, array_column($this->_customers, "cust_code")
-				);
-				
-				if($_key !== false)
+				if(empty($_API_CUSTOMERS['previous']))
 				{
-					$_cur = $_key;
-					$_next = $_key + 1;
-					$_previous = $_key - 1;
-					
-					if($_cur == (count($_all)-1))
-					{
-						$_next_disable = "disabled";
-						$_next = (count($_all)-1);
-					}
-					if($_cur <= 0)
-					{
-						$_previous_disable = "disabled";
-						$_previous = 0;
-					}
-
-					// function bar with next, preview and save button
-					$this->load->view('function-bar', [
-						"btn" => [
-							["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers/customers/detail/'.$cust_code), "style" => "", "show" => true],
-							["name" => "Home", "type"=>"button", "id" => "home", "url"=>base_url('/customers/customers/page/'.$_page), "style" => "", "show" => true],
-							["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "" , "style" => "btn btn-outline-secondary", "show" => true],
-							["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
-							["name" => "Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/customers/customers/edit/".$_all[$_previous]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
-					 		["name" => "Next", "type"=>"button", "id" => "next", "url"=> base_url("/customers/customers/edit/".$_all[$_next]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
-					 	]
-					]);
-
-					// load main view
-					$this->load->view('customers/customers-edit-view', [
-						"save_url" => base_url("customers/customers/edit/save/".$cust_code),
-						'data' => $_API_CUSTOMERS,
-						'data_payment_method' => $_API_PAYMENT_METHOD,
-						'data_payment_term' => $_API_PAYMENT_TERM,
-						'data_district' => $_API_DISTRICT
-					]);
-					$this->load->view('footer');
+					$_previous_disable = "disabled";
 				}
+				if(empty($_API_CUSTOMERS['next']))
+				{
+					$_next_disable = "disabled";
+				}
+				// function bar with next, preview and save button
+				$this->load->view('function-bar', [
+					"btn" => [
+						["name" => "<i class='fas fa-chevron-left'></i> Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers/detail/'.$cust_code.$_login['preference']), "style" => "", "show" => true],
+						["name" => "<i class='fas fa-home'></i>  Home", "type"=>"button", "id" => "home", "url"=>base_url('/customers'.$_login['preference']), "style" => "", "show" => true],
+						["name" => "<i class='fas fa-undo-alt'></i> Reset", "type"=>"button", "id" => "reset", "url" => "" , "style" => "btn btn-outline-secondary", "show" => true],
+						["name" => "<i class='far fa-save'></i> Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
+						["name" => "<i class='fas fa-step-backward'></i> Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/customers/edit/".$_API_CUSTOMERS['previous'].$_login['preference']), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
+						["name" => "<i class='fas fa-step-forward'></i> Next", "type"=>"button", "id" => "next", "url"=> base_url("/customers/edit/".$_API_CUSTOMERS['next'].$_login['preference']), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
+					]
+				]);
+
+				// load main view
+				$this->load->view('customers/customers-edit-view', [
+					"save_url" => base_url("customers/edit/save/".$cust_code),
+					'data' => $_API_CUSTOMERS,
+					'data_payment_method' => $_API_PAYMENT_METHOD,
+					'data_payment_term' => $_API_PAYMENT_TERM,
+					'data_district' => $_API_DISTRICT
+				]);
+				$this->load->view('footer');
 			}
 		}
 		else
@@ -300,84 +268,72 @@ class Customers extends CI_Controller
 	/** 
 	 * Show the detail customer data
 	 */
-	public function detail($cust_code)
+	public function detail($cust_code = "")
 	{
 		$_previous_disable = "";
 		$_next_disable = "";
 		// user data
-		$_page = 1;
+
 		
-		// API
+		// API data
+		$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS').$cust_code);
+		$this->component_api->CallGet();
+		$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : [];
+
+		// Get payment method
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
 		$this->component_api->CallGet();
 		$_API_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
-		$_API_PAYMENT_METHOD = $_API_PAYMENT_METHOD['query'];
+		$_API_PAYMENT_METHOD = !empty($_API_PAYMENT_METHOD['query']) ? $_API_PAYMENT_METHOD['query'] : [];
 		
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_TERMS'));
 		$this->component_api->CallGet();
 		$_API_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
-		$_API_PAYMENT_TERM = $_API_PAYMENT_TERM['query'];
+		$_API_PAYMENT_TERM = !empty($_API_PAYMENT_TERM['query']) ? $_API_PAYMENT_TERM['query'] : [];
 
 		$this->component_api->SetConfig("url", $this->config->item('URL_DISTRICT'));
 		$this->component_api->CallGet();
 		$_API_DISTRICT = json_decode($this->component_api->GetConfig("result"), true);
-		$_API_DISTRICT = $_API_DISTRICT['query'];
+		$_API_DISTRICT = !empty($_API_DISTRICT['query']) ? $_API_DISTRICT['query'] : [];
+	
+		// echo "<pre>";
+		// var_dump($_API_CUSTOMERS);
+		// echo "</pre>";
+		$_login = $this->session->userdata("login");
 
 		//var_dump($_API_PAYMENT_METHOD);
 		if(!empty($cust_code))
 		{
-			// Call API here
-			$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS').$cust_code);
-			$this->component_api->CallGet();
-			$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_CUSTOMERS = $_API_CUSTOMERS['query'];
-
-			// API data usage
-			if(!empty($this->_customers))
-			{
-				
-				$_all = array_column($this->_customers, "cust_code");
-				// search key
-				$_key = array_search(
-					$cust_code, array_column($this->_customers, "cust_code")
-				);
-				
-				if($_key !== false)
+			if(!empty($_API_CUSTOMERS)){
+				if(empty($_API_CUSTOMERS['previous']))
 				{
-					$_cur = $_key;
-					$_next = $_key + 1;
-					$_previous = $_key - 1;
-					
-					if($_cur == (count($_all)-1))
-					{
-						$_next_disable = "disabled";
-						$_next = (count($_all)-1);
-					}
-					if($_cur <= 0)
-					{
-						$_previous_disable = "disabled";
-						$_previous = 0;
-					}
-
-					// function bar with next, preview and save button
-					$this->load->view('function-bar', [
-						"btn" => [
-							["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers/customers/page/'.$_page), "style" => "", "show" => true],
-							["name" => "Edit", "type"=>"button", "id" => "Edit", "url"=>base_url('/customers/customers/edit/'.$cust_code), "style" => "btn btn-primary", "show" => true],
-							["name" => "Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/customers/customers/detail/".$_all[$_previous]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
-					 		["name" => "Next", "type"=>"button", "id" => "next", "url"=> base_url("/customers/customers/detail/".$_all[$_next]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
-					 	]
-					]);
-
-					// load main view
-					$this->load->view('customers/customers-detail-view', [
-						'data' => $_API_CUSTOMERS,
-						'data_payment_method' => $_API_PAYMENT_METHOD,
-						'data_payment_term' => $_API_PAYMENT_TERM,
-						'data_district' => $_API_DISTRICT
-					]);
-					$this->load->view('footer');
+					$_previous_disable = "disabled";
 				}
+				if(empty($_API_CUSTOMERS['next']))
+				{
+					$_next_disable = "disabled";
+				}
+				// API data usage
+				// function bar with next, preview and save button
+				$this->load->view('function-bar', [
+					"btn" => [
+						["name" => "<i class='fas fa-chevron-left'></i> Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers'.$_login['preference']), "style" => "", "show" => true],
+						["name" => "<i class='far fa-edit'></i> Edit", "type"=>"button", "id" => "Edit", "url"=>base_url('/customers/edit/'.$cust_code.$_login['preference']), "style" => "btn btn-primary", "show" => true],
+						["name" => "<i class='fas fa-step-backward'></i> Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/customers/detail/".$_API_CUSTOMERS['previous'].$_login['preference']), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
+						["name" => "<i class='fas fa-step-forward'></i> Next", "type"=>"button", "id" => "next", "url"=> base_url("/customers/detail/".$_API_CUSTOMERS['next'].$_login['preference']), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
+					]
+				]);
+
+				// load main view
+				$this->load->view('customers/customers-detail-view', [
+					'data' => $_API_CUSTOMERS,
+					'data_payment_method' => $_API_PAYMENT_METHOD,
+					'data_payment_term' => $_API_PAYMENT_TERM,
+					'data_district' => $_API_DISTRICT
+				]);
+				$this->load->view('footer');
+
 			}
 		}
 		else
@@ -391,42 +347,37 @@ class Customers extends CI_Controller
 		}
 	}
 	/**
-	 * 
+	 *  Delete 
+	 *
+	 * TO delete
+	 * @param cust_code 
 	 */
-	public function delete($cust_code)
+	public function delete($cust_code = "")
 	{
-		// user data
-		$_page = $this->session->userdata("page");
-		$_comfirm_show = false;
-		$_page = 1;
-		$_data = [];
-
+		$_comfirm_show = true;
+		$_count = "";
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY_HAS_TRANSACTION').$cust_code);
+		$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY_HAS_TRANSACTION_CUSTOMERS').$cust_code);
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
-		// echo "<pre>";
-		// var_dump($_data);
-		// echo "</pre>";
-		if(isset($_data))
+		$_data = $_data['query'] != null ? $_data['query'] : [];
+
+		if(!empty($_data))
 		{
+		   $_login = $this->session->userdata("login");
 			// configure message 
-			if(!($_data['query']['has']))
+			if($_data['has'])
 			{
-				$_comfirm_show = true;
+				$_comfirm_show = false;
+				$_count = count($_data['data']);
+
 			}
-			// function bar with next, preview and save button
-			$this->load->view('function-bar', [
-				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "Back", "url"=>base_url('/customers/customers/page/'.$_page), "style" => "", "show" => true],
-					["name" => "Yes", "type"=>"button", "id" => "yes", "url"=>base_url('/customers/customers/delete/confirmed/'.$cust_code), "style" => "btn btn-outline-danger", "show" => $_comfirm_show],
-				]
-			]);
-			// main view loaded
 			$this->load->view("customers/customers-del-view",[
-				"trans_url" => base_url("/invoices/edit/"),
-				"cust_code" => $cust_code,
-				"data" => $_data,
+				"submit_to" => base_url('/customers/delete/confirmed/'.$cust_code),
+				"to_deleted_num" => $cust_code,
+				"confirm_show" => $_comfirm_show,
+				"count" => $_count,
+				"return_url" => base_url('/customers'.$_login['preference'])
 			]);
 		}
 	}
@@ -444,11 +395,8 @@ class Customers extends CI_Controller
 		// echo "</pre>";
 		if(isset($_POST) && !empty($_POST) && isset($cust_code) && !empty($cust_code))
 		{
-			
 			$_api_body = json_encode($_POST,true);
-			// echo "<pre>";
-			// var_dump($_api_body);
-			// echo "</pre>";
+
 			if($_api_body != "")
 			{
 				// API data
@@ -459,6 +407,7 @@ class Customers extends CI_Controller
 
 				if(isset($result['error']['message']) || isset($result['error']['code']))
 				{
+					$_login = $this->session->userdata("login");
 					$alert = "danger";
 					switch($result['error']['code'])
 					{
@@ -473,7 +422,7 @@ class Customers extends CI_Controller
 					]);
 					
 					// callback initial page
-					header("Refresh: 5; url=".base_url("/customers/customers/"));
+					header("Refresh: 5; url=".base_url("/customers".$_login['preference']));
 				}
 			}
 		}
@@ -493,7 +442,7 @@ class Customers extends CI_Controller
 		$result = json_decode($this->component_api->GetConfig("result"),true);
 		if(isset($result['error']['message']) || isset($result['error']['code']))
 		{
-
+			$_login = $this->session->userdata("login");
 			$alert = "danger";
 			switch($result['error']['code'])
 			{
@@ -509,7 +458,7 @@ class Customers extends CI_Controller
 			]);
 	
 			// callback initial page
-			header("Refresh: 5; url=".base_url("/customers/customers/"));
+			header("Refresh: 5; url=".base_url("/customers".$_login['preference']));
 		}
 	}
 
@@ -519,15 +468,16 @@ class Customers extends CI_Controller
 	 */
 	public function save()
 	{
-		// echo "<pre>";
-		// var_dump($_POST);
-		// echo "</pre>";
+
 		if(isset($_POST) && !empty($_POST))
 		{
 			$_api_body = json_encode($_POST,true);
 
 			if($_api_body != "")
 			{
+				// echo "<pre>";
+				// var_dump($_api_body);
+				// echo "</pre>";
 				// API data
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
@@ -536,6 +486,7 @@ class Customers extends CI_Controller
 				
 				if(isset($result['error']['message']) || isset($result['error']['code']))
 				{
+					$_login = $this->session->userdata("login");
 					$alert = "danger";
 					switch($result['error']['code'])
 					{
@@ -550,7 +501,7 @@ class Customers extends CI_Controller
 					]);
 					
 					// callback initial page
-					header("Refresh: 5; url=".base_url("/customers/customers/"));
+					header("Refresh: 5; url=".base_url("/customers".$_login['preference']));
 				}
 			}
 		}

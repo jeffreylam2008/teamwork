@@ -15,7 +15,6 @@ class Dushboard extends CI_Controller
 		{
 			$this->_token = $this->session->userdata['login']['token'];
 			$this->_profile = $this->session->userdata['login']['profile'];
-			$this->_username = $this->session->userdata['login']['profile']['username'];
 		}
 		
 		$this->load->library("Component_Login",[$this->_token, "dushboard"]);
@@ -26,7 +25,7 @@ class Dushboard extends CI_Controller
 			$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
 
 			// fatch master
-			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_username);
+			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
 			$this->component_api->CallGet();
 			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
 			$_API_EMP = $_API_EMP['query'];
@@ -34,7 +33,7 @@ class Dushboard extends CI_Controller
 			$this->component_api->CallGet();
 			$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
 			$_API_SHOP = $_API_SHOP['query'];
-			$this->component_api->SetConfig("url", $this->config->item('URL_MENU'));
+			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
 			$this->component_api->CallGet();
 			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
 			$_API_MENU = $_API_MENU['query'];
@@ -61,7 +60,7 @@ class Dushboard extends CI_Controller
 
 			// load header view
 			$this->load->view('header',[
-				'title'=>'Customers',
+				'title'=>'Dushboard',
 				'sideNav_view' => $this->load->view('side-nav', [
 					"sideNav"=>$this->component_sidemenu->GetConfig("nav_finished_list"),
 					"path"=>$this->component_sidemenu->GetConfig("path"),
@@ -80,6 +79,11 @@ class Dushboard extends CI_Controller
 	public function index()
 	{
 		$this->load->view('dushboard-view');
+
 		$this->load->view('footer');
+
+		unset($_SESSION['cur_invoicenum']);
+		unset($_SESSION['cur_quotationnum']);
+		unset($_SESSION['transaction']);
 	}
 }

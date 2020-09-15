@@ -1,19 +1,44 @@
+<div class="modal show" id="_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="">Delete</h5>
+            </div>
 
-<div class="card">
-    <div class="card-header">
-        <?php
-        if(!$data['query'])
-		{
-        ?>
-            <h2> Are you sure to delete item code: <u><?=$cate_code?></u></h2>
-		<?php
-        }
-		else
-		{
-        ?>
-            <h2> Total <?=$data['error']['message'];?>. Cannot delete category code: <u><?=$cate_code?></u></h2>
-        <?php
-        }
-        ?>
+            <div class="modal-body">
+            <!-- content -->
+                <div class="container-fluid">
+                    <p>Are you sure to delete item code: <u><?=$to_deleted_num?></u>?</p>
+                    <?php  if(!$confirm_show) : ?>
+                    <p>Transaction : <a href="<?=$trans_url?>"><?=$trans_code?></a>. Cannot delete: <u><?=$to_deleted_num?></u></p>
+                    <?php  endif; ?>
+
+                </div>
+            <!-- content end -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="canceled" data-dismiss="modal">Cancel</button>
+                <?php  if($confirm_show) : ?>
+                <button type="button" class="btn btn-danger" id="confirmed" data-dismiss="modal">Yes</button>
+                <?php  endif; ?>
+            </div>
+        </div>
     </div>
 </div>
+<form class="" method="POST" id="this-form" action="<?=$submit_to?>">
+</form>
+
+<script>
+$('#_modal').modal({
+    backdrop: 'static'
+});
+$("#canceled").on("click",function(){
+    $(this).modal("hide")
+    $(this).unbind()
+    window.location.href = "<?=$return_url?>";
+});
+$("#confirmed").on("click",function(){
+    $("#this-form").submit();
+});
+
+</script>

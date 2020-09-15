@@ -43,7 +43,7 @@
         <div class="input-group-prepend">
             <span class="input-group-text">Customer</span>
         </div>
-        <input type="text" class="form-control" value="(<?=$customer?>) <?=$customername?>" disabled />
+        <input type="text" class="form-control" value="(<?=$cust_code?>) <?=$cust_name?>" disabled />
     </div>
 
     <!-- Payment Method -->
@@ -82,8 +82,8 @@
                 <td><?=$chi_name?></td>
                 <td><?=$qty?></td>
                 <td><?=$unit?></td>
-                <td><?=$price?></td>
-                <td><?=$subtotal?></td>
+                <td>$<?=$price?></td>
+                <td>$<?=$subtotal?></td>
                 <!--<td><button class='btn btn-danger btn-sm' id='item-del' type='button'>X</button></td>-->
             </tr>
         <?php
@@ -93,7 +93,7 @@
             <tr>
                 <td colspan="6"></td>
                 <td align="right">Total: </td>
-                <td>$<?=number_format($total,2)?></td>
+                <td>$<?=$total?></td>
             </tr>
         </tbody>
     </table>
@@ -103,18 +103,15 @@
     </div>
 </div>
 
-
-
-
-
-
-
 <script>
 
 $("#preview").on("click",function(){
     window.open('<?=$preview_url?>', '_blank', 'location=yes,height=900,width=800,scrollbars=yes,status=yes');
 })
 $("#save").on("click",function(){
+    window.open('<?=$print_url?>', '_blank', 'location=yes,height=900,width=800,scrollbars=yes,status=yes');
+})
+$("#reprint").on("click",function(){
     window.open('<?=$print_url?>', '_blank', 'location=yes,height=900,width=800,scrollbars=yes,status=yes');
 })
 

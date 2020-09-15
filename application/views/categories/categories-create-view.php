@@ -1,23 +1,3 @@
-<!--<form id="form1" action="" name="form1" method="post">
-    <div class="card">
-        <div class="card-body"> 
-            <div class="form-row">
-                <div class="col-3">
-                    <label for="">Category Code</label>
-                    <input type="text" class="form-control form-control-sm" name="i-catecode" placeholder="Categorg Code" value="">
-                </div>
-                <div class="col-3">
-                    <label for="">Description</label>
-                    <input type="text" class="form-control form-control-sm" name="i-desc" placeholder="Description" value="">
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-</form>-->
-
-
 <!-- Modal -->
 <div class="modal fade" id="modal01" tabindex="-1" role="dialog" aria-labelledby="newitem" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">

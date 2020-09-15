@@ -3,27 +3,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Component_URI
 {
-    private $config = [
-        "uri" => [],
-        "this_uri" => []
-    ];
     public function __construct()
 	{
         
     }
-    public function Parse()
+    public function QueryToString($input = "")
     {
-        if(!empty($this->config["uri"]))
+        $str = "?";
+        $i = 0;
+        $len = count($input);
+        foreach($input as $k => $v)
         {
-           $this->config["this_uri"] = array_slice($this->config["uri"],0,-2);   
+        	$str .= $k."=".$v;
+        	if ($i != $len - 1) {
+        		$str .="&";
+        	}
+        	$i++;
         }
+        return $str;
     }
-    public function SetConfig($func, $val)
-    {
-        $this->config[$func] = $val;
-    }
-    public function GetConfig($func)
-    {
-        return $this->config[$func];
-    }
+
+
 }

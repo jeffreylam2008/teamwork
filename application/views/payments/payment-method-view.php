@@ -27,22 +27,20 @@
                 {
                     echo "<td><a href='".$del_url.$val['pm_code']."'><i class='fas fa-trash-alt'></i></a></td>";
                 }
-               
-                echo "<td>".$val['pm_code']."</td>";
                 echo "<td>";
                 if($user_auth['edit'])
                 {
-                    echo "<a href='".$edit_url.$val['pm_code']."'>".$val['payment_method']."</a>";
+                    echo "<a href='".$edit_url.$val['pm_code']."'>".$val['pm_code']."</a>";
                 }
                 else
                 {
-                    echo $val['payment_method'];
+                    echo $val['pm_code'];
                 }
                 echo "</td>";
+                echo "<td>".$val['payment_method']. "</td>";
                 echo "<td>".$val['create_date']."</td>";
                 echo "<td>".$val['modify_date']."</td>";
                 echo "</tr>";
-               
             }
         }
     ?>
@@ -53,12 +51,33 @@
     <script>
     $(document).ready(function() { 
         var table = $('#tbl').DataTable({
-                select: {
-                    items: 'column'
-                },
-                "iDisplayLength": <?=$default_per_page?>
+            select: {
+                items: 'column'
+            },
+            "iDisplayLength": <?=$default_per_page?>
+        });
+        table.page(<?=$page-1?>).draw('page');
+
+        table.on( 'draw', function () {
+            var urlParams = new URLSearchParams(location.search)
+            urlParams.set('page', $("ul.pagination > li.active > a").text())
+            urlParams.set('show', $(".dataTables_length > label > select").val())
+            window.history.replaceState({}, '', `${location.pathname}?${urlParams.toString()}`);
+            // search for all a href on this page and append query string at the end
+            $.each($("tbody > tr"), function(i){
+                $.each($(this).children(), function(j){
+                    if($(this)[0].children[0] != undefined)
+                    {
+                        var q = $(this)[0].children[0]
+                        if(q.href.indexOf('?') === -1)
+                        {
+                            q.href += `?${urlParams.toString()}`
+                        }
+                    }
+                });
             });
-            table.page(<?=$page-1?>).draw('page');
-        //console.log(table);
+        });
+        if(<?=$modalshow?>)
+            $('#modal01').modal('show');
     });
     </script>

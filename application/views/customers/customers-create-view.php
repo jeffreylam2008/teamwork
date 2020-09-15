@@ -5,7 +5,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <!-- Modal Head -->
-                <h2 class="modal-title" id=""><b>New Customer</b></h2>
+                <h2 class="modal-title" id=""><b><?=$title?></b></h2>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -103,7 +103,7 @@
                                                         <?php
                                                             foreach($data_payment_method as $k => $v):
                                                         ?>
-                                                            <option value="<?=$k?>"><?=$v['payment_method']?></option>
+                                                            <option value="<?=$v['pm_code']?>"><?=$v['payment_method']?></option>
                                                         <?php
                                                             endforeach;
                                                         ?>
@@ -118,7 +118,7 @@
                                                         <?php
                                                             foreach($data_payment_term as $k => $v):
                                                         ?>
-                                                            <option value="<?=$k?>"><?=$v['terms']?></option>
+                                                            <option value="<?=$v['pt_code']?>"><?=$v['terms']?></option>
                                                         <?php
                                                             endforeach;
                                                         ?>
@@ -140,7 +140,7 @@
                                                         <?php
                                                             foreach($data_district as $k => $v):
                                                         ?>
-                                                            <option value="<?=$k?>"><?=$v['district_chi']?></option>
+                                                            <option value="<?=$v['district_code']?>"><?=$v['district_chi']?></option>
                                                         <?php
                                                             endforeach;
                                                         ?>
@@ -208,6 +208,12 @@
                                                 </div>
                                             </div>
                                             <div class="form-row">
+                                                <div class="col-8">
+                                                    <label for="t1">Accountant Email</label>
+                                                    <input type="text" class="form-control form-control-sm" name="i-acc_email" id="i-acc_email" placeholder="Email" value="" >
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
                                                 <div class="col-4">
                                                     <label for="t1">Phone</label>
                                                     <input type="text" class="form-control form-control-sm" name="i-acc_phone" placeholder="00000000" value="" >
@@ -234,14 +240,14 @@
 <script>
 
     $(function() {
-        $( "#form1" ).sisyphus( {
-            locationBased: false,
-            timeout: 5,
-            autoRelease: true,
-            onSave: function(){
-                console.log("saved")
-            }
-        });
+        // $( "#form1" ).sisyphus( {
+        //     locationBased: false,
+        //     timeout: 5,
+        //     autoRelease: true,
+        //     onSave: function(){
+        //         console.log("saved")
+        //     }
+        // });
         $("#reset").click(function(){
             $("#form1").trigger("reset");
         });

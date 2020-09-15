@@ -58,7 +58,7 @@ $autoload['packages'] = array();
 |
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
-$autoload['libraries'] = array("Component_Pagination","Component_Sidemenu","Component_URI","Component_API","session");
+$autoload['libraries'] = array("Component_Sidemenu","Component_URI","Component_API","session","Component_File","Component_Logs");
 
 /*
 | -------------------------------------------------------------------

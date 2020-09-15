@@ -21,14 +21,15 @@ class Logout extends CI_Controller
         // echo "</pre>";
         // Reset login session
 
-        
+        $_login = $this->session->userdata('login');
         // API Call
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/logout/".$_SESSION['login']['token']);
+		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/logout/".$_login['token']);
 		$this->component_api->CallPatch();
         $_result = json_decode($this->component_api->GetConfig("result"), true);
         // clear session 
-        $_SESSION['login'] = "";
-        // var_dump($_result);
-        redirect("login","refresh");
+
+        $this->session->set_userdata('login',"");
+
+        header("Refresh: 0; url='".base_url('login')."'");
     }
 }

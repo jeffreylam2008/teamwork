@@ -25,8 +25,7 @@
                             <div class="form-row">
                                 <div class="col-3">
                                     <label for="">Payment Terms</label>
-                                    <textarea class="form-control form-control-sm" name="i-pt" placeholder="Terms" value="">
-                                    </textarea>
+                                    <textarea class="form-control form-control-sm" name="i-pt" placeholder="Terms" value=""></textarea>
                                 </div>
                             </div>
                         </div>

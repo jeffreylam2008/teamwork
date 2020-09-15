@@ -59,6 +59,7 @@
     $(document).ready(function() {  
         // initial data table
         var table = $('#tbl').DataTable({
+            "order" : [[4, "desc"]],
             "select": {
                 Code : 'column'
             },
@@ -66,19 +67,33 @@
         });
         // set page number from previous
         table.page(<?=$page - 1?>).draw('page');
-        
-        // page information
-        $('#tbl').on( 'page.dt', function () {
-            // get number of row value
-            var tbl_show = $("#tbl_length > label > select").val()
-            var info = table.page.info();
-            $(location).attr('href', '<?=$route_url?>/page/'+(info.page+1)+'/show/'+tbl_show)
+
+        // Change query string while change page and page page setting
+        table.on( 'draw', function () {
+            var urlParams = new URLSearchParams(location.search)
+            urlParams.set('page', $("ul.pagination > li.active > a").text())
+            urlParams.set('show', $(".dataTables_length > label > select").val())
+            window.history.replaceState({}, '', `${location.pathname}?${urlParams.toString()}`);
+            // search for all a href on this page and append query string at the end
+            $.each($("tbody > tr"), function(i){
+                $.each($(this).children(), function(j){
+                    if($(this)[0].children[0] != undefined)
+                    {
+                        var q = $(this)[0].children[0]
+                        if(q.href.indexOf('?') === -1)
+                        {
+                            q.href += `?${urlParams.toString()}`
+                        }
+                    }
+                });
+            });
         });
 
+        // Show create modal page if $_GET _NEW value = 1
         if(<?=$modalshow?>)
             $('#modal01').modal('show');
     });
-
+    
     
     </script>
 <!--</div>-->

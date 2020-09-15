@@ -7,16 +7,6 @@ class Login extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		
-		// dummy data
-
-
-		// // fatch employee API
-		// $this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/employee/".$username);
-		// $this->component_api->CallGet();
-		// $_employee = json_decode($this->component_api->GetConfig("result"),true);
-		//var_dump($_employee);
-
 		//load header view
 		$this->load->view('login/login-header-view',[
 			'title'=>'Login'
@@ -59,7 +49,7 @@ class Login extends CI_Controller
 		//echo $_api_body;
 		// echo "<br>";
 		$this->component_api->SetConfig("body", $_api_body);
-		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/login/");
+		$this->component_api->SetConfig("url", $this->config->item('URL_LOGIN'));
 		$this->component_api->CallPost();
 		$_result = json_decode($this->component_api->GetConfig("result"), true);
 		//var_dump($_result);
@@ -82,7 +72,7 @@ class Login extends CI_Controller
 			else
 			{
 				// save temp cookie
-				$this->session->set_tempdata('login',$_profile,3600);
+				$this->session->set_tempdata('login',$_profile,86400);
 			}
 			if(!empty($this->input->get('url')))
 			{

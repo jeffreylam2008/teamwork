@@ -1,21 +1,16 @@
 
 <?php
-$page_separate = 1;
-$cItems = [];
-$iTotal = count($items);
-$i = 1;
-
-function PrintHeader($customer, $date, $invoicenum)
+function PrintHeader($customer = "", $date  = "", $quotation = "", $cust_code = "", $employee_code = "", $paymentmethod = "", $invoicenum = "")
 {
     print "
         <!-- print header --> 
-        <table border='0' style='font-size:14px;'>
+        <table border='0' style='font-size:12px;'>
             <tbody>
             <tr>
                 <td width='20'>&nbsp;</td>
-                <td width='500'>&nbsp;</td>
+                <td width='750'>&nbsp;</td>
                 <td width='350'>&nbsp;</td>
-                <td width='150'>&nbsp;</td>
+                <td width='200'>&nbsp;</td>
                 <td width='200'>&nbsp;</td>
                 <td width='150'>&nbsp;</td>
             </tr>
@@ -27,10 +22,11 @@ function PrintHeader($customer, $date, $invoicenum)
             <tr><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td></tr>
             <tr><td>&nbsp;</td></tr>
-			<tr><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td></tr>
             <tr>
                 <td></td>
-                <td rowspan='3' height='120' valign='top'>
+                <td rowspan='3' height='115' valign='top'>
                     ".$customer['name']."<br>
                     ".$customer['delivery_addr']."
                 </td>
@@ -47,22 +43,22 @@ function PrintHeader($customer, $date, $invoicenum)
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>
-                    ".substr($date,0,-8)."
+                    ".$quotation."
                 </td>
                 <td>&nbsp;</td>
                 <td>
-                    ".$invoicenum."
+                    ".$cust_code."
                 </td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>
-                    ".substr($date,0,-8)."
+                    ".$employee_code."
                 </td>
                 <td>&nbsp;</td>
                 <td>
-                    ".$invoicenum."
+                    ".$paymentmethod."
                 </td>
             </tr>
             </tbody>
@@ -71,21 +67,22 @@ function PrintHeader($customer, $date, $invoicenum)
    // echo "<p style=\"page-break-after: always;\"></p>";
 }
     
-function PrintBody($items)
+function PrintBody($items = [])
 {
     print "
         <table border='0' height='620'>
+            <tr><td>&nbsp;</td></tr>
             <tr valign='top'>
-                <td>
+                <td width='100%'>
     ";
     foreach($items as $k => $v)
     {
         extract($v);
-        print "<table style='font-size:14px;'>";
+        print "<table style='font-size:12px;'>";
         print "<tr>";
         print "<td width='20' height='70'>&nbsp;</td>";
-        print "<td width='650'>".$item_code." ".$chi_name." ".$eng_name ."</td>";
-        print "<td width='200'>".$unit."</td>";
+        print "<td width='800'>".$item_code." ".$chi_name." ".$eng_name ."</td>";
+        print "<td width='250'>".$unit."</td>";
         print "<td width='200'>".$qty."</td>";
         print "<td width='200'>$".$price."</td>";
         print "<td width='100'>$".$subtotal."</td>";
@@ -99,7 +96,7 @@ function PrintBody($items)
     ";
 }
 
-function PrintFooter($total)
+function PrintFooter($total = "")
 {
     print "
         <!-- print footer --> 
@@ -110,7 +107,7 @@ function PrintFooter($total)
                 <td width='170'>&nbsp;</td>
                 <td width='150'>&nbsp;</td>
                 <td width='240'>&nbsp;</td>
-                <td width='150'>$".number_format($total,2)."</td>
+                <td width='150'>$".$total."</td>
             </tr>
         </table>
     ";
@@ -119,32 +116,41 @@ function PrintFooter($total)
 
 <div>
 <?php
-// divided items per page
-foreach($items as $k => $v)
-{ 
-    $page[$page_separate][] = $v;
-    // fixed 8 items for each page, more is not allow
-    if($i % 8==0){
-        $page_separate++;
+extract($data);
+if(isset($items)){
+    $page_separate = 0;
+    $i = 0;
+    // divided items per page
+    foreach($items as $k => $v)
+    {
+        if($i % 8==0 || $i == 0){
+            $page_separate++;
+        }
+        $page[$page_separate][] = $v;
+        // fixed 8 items for each page, more is not allow        
+        $i++;      
     }
-    $i++;
-}
-//generate the print template
-for($j=1; $j<=$page_separate; $j++)
-{
-    PrintHeader($customer, $date, $invoicenum);
-    PrintBody($page[$j]);
-    PrintFooter($total);
-    print "<p style=\"page-break-after: always;\"></p>";
-}
+    //generate the print template
+    for($j=1; $j<=$page_separate; $j++)
+    {
+        PrintHeader($customer, $date, $quotation, $cust_code, $employee_code, $paymentmethodname, $invoicenum);
+        PrintBody($page[$j]);
+        PrintFooter($total);
+        print "<p style=\"page-break-after: always;\"></p>";
+    }
 
-// echo "<pre>";
-// var_dump($page);
-// echo "</pre>";
-    
+    // echo "<pre>";
+    // var_dump($page);
+    // echo "</pre>";
+}
 ?>
 </div>
-
-<script>
-window.print();
-</script>
+<?php
+if(!$preview):
+?>
+    <script type="text/javascript"> 
+    window.print();
+    </script> 
+<?php
+endif;
+?>

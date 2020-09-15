@@ -54,12 +54,32 @@
     <script>
     $(document).ready(function() { 
         var table = $('#tbl').DataTable({
-                select: {
-                    items: 'column'
-                },
-                "iDisplayLength": <?=$default_per_page?>
+            select: {
+                items: 'column'
+            },
+            "iDisplayLength": <?=$default_per_page?>
+        });
+        table.page(<?=$page-1?>).draw('page');
+
+        table.on( 'draw', function () {
+            var urlParams = new URLSearchParams(location.search)
+            urlParams.set('page', $("ul.pagination > li.active > a").text())
+            urlParams.set('show', $(".dataTables_length > label > select").val())
+            window.history.replaceState({}, '', `${location.pathname}?${urlParams.toString()}`);
+            // search for all a href on this page and append query string at the end
+            $.each($("tbody > tr"), function(i){
+                $.each($(this).children(), function(j){
+                    if($(this)[0].children[0] != undefined)
+                    {
+                        var q = $(this)[0].children[0]
+                        if(q.href.indexOf('?') === -1)
+                        {
+                            q.href += `?${urlParams.toString()}`
+                        }
+                    }
+                });
             });
-            table.page(<?=$page-1?>).draw('page');
+        });
         //console.log(table);
     });
     </script>

@@ -4,14 +4,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Categories extends CI_Controller 
 {
 	var $_inv_header_param = [];
+	var $_default_per_page = "";
+	var $_page = "";
 	var $_token = "";
 	var $_profile = "";
-	var $_username = "";
 	var $_param = "";
 	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
+
+
 	public function __construct()
 	{
 		parent::__construct();
+
+		$_API_EMP = [];
+		$_API_SHOP = [];
+		$_API_MENU = [];
+		$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
+		$this->_default_per_page = $this->config->item('DEFAULT_PER_PAGE');
+		$this->_page = $this->config->item('DEFAULT_FIRST_PAGE');
+		$_query = ["page" => "", "show"=>""];
+		$_query = $this->input->get();
 		// dummy data
 		// $this->session->sess_destroy();
 		// echo "<pre>";
@@ -22,7 +34,6 @@ class Categories extends CI_Controller
 		{
 			$this->_token = $this->session->userdata['login']['token'];
 			$this->_profile = $this->session->userdata['login']['profile'];
-			$this->_username = $this->session->userdata['login']['profile']['username'];
 		}
 		// API call
 		$this->load->library("Component_Login",[$this->_token, "products/categories"]);
@@ -31,7 +42,7 @@ class Categories extends CI_Controller
 		if(!empty($this->component_login->CheckToken()))
 		{
 			// fatch employee API
-			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_username);
+			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
 			$this->component_api->CallGet();
 			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
 			$_API_EMP = $_API_EMP['query'];
@@ -64,8 +75,21 @@ class Categories extends CI_Controller
 				"shop_name" => $_API_SHOP['name'],
 				"today" => date("Y-m-d")
 			];
-			// initial Access rule
-			$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
+
+			if($this->input->get("page"))
+			{
+				$this->_page = $this->input->get("page");
+			}
+			if($this->input->get("show"))
+			{
+				$this->_default_per_page = $this->input->get("show");
+			}
+			$_query['page'] = $this->_page;
+			$_query['show'] = $this->_default_per_page;
+			$_query = $this->component_uri->QueryToString($_query);
+			$_login = $this->session->userdata['login'];
+			$_login['preference'] = $_query;
+			$this->session->set_userdata("login", $_login);
 
 			// fatch side bar 
 			$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
@@ -90,10 +114,9 @@ class Categories extends CI_Controller
 			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
 		}
 	}
-	public function index($_page = 1, $_default_per_page = 50)
+	public function index()
 	{
 		// variable initial
-		$_API_ITEMS = [];
 		$_API_CATEGORIES = [];
 		$_modalshow = 0;
 		
@@ -107,17 +130,7 @@ class Categories extends CI_Controller
 		$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES'));
 		$this->component_api->CallGet();
 		$_API_CATEGORIES = json_decode($this->component_api->GetConfig("result"), true);
-		$_API_CATEGORIES = $_API_CATEGORIES['query'];
-		
-		// data for ordering items in sequence
-		foreach($_API_CATEGORIES as $key => $val)
-		{
-			$_cate[]['cate_code'] = $val['cate_code'];
-		}
-		//set user data
-		$this->session->set_userdata('cate_list',$_cate);
-		$this->session->set_userdata('page',$_page);
-		$this->session->set_userdata('default_per_page', $_default_per_page);
+		$_API_CATEGORIES = !empty($_API_CATEGORIES['query']) ? $_API_CATEGORIES['query'] : "";
 
 		// function bar with next, preview and save button
 		$this->load->view('function-bar', [
@@ -132,15 +145,15 @@ class Categories extends CI_Controller
 			"route_url" => base_url("/products/categories/"),
 			"data" => $_API_CATEGORIES,
 			"user_auth" => $this->_user_auth,
-			"default_per_page" => $_default_per_page,
-			"page" => $_page,
+			"default_per_page" => $this->_default_per_page,
+			"page" => $this->_page,
 			"modalshow" => $_modalshow
 		]);
 
 		$this->load->view("categories/categories-create-view",[
 			"function_bar" => $this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/products/categories/page/'.$_page), "style" => "", "show" => true],
+					["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/products/categories'), "style" => "", "show" => true],
 					["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
 					["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
 				 ]
@@ -150,66 +163,45 @@ class Categories extends CI_Controller
 		$this->load->view('footer');
 	}
 	/**
-	 * Edit
-	 * 
+	 * Edit category
+	 * @param cate_code with input category code
+	 *  
 	 */
 	public function edit($cate_code="")
 	{
-
 		// variable initial
 		$_previous_disable = "";
 		$_next_disable = "";
-		$_page = 1;
-
-		// set user data
-		$_page = $this->session->userdata("page");
-		$_default_per_page = $this->session->userdata("_default_per_page");
-		//$_cate = $this->session->userdata('cate_list');
 
 		// API data
-		$_cate =  $this->session->userdata['cate_list'];
+		//$_cate =  $this->session->userdata['cate_list'];
 		$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES').$cate_code);
 		$this->component_api->CallGet();
 		$_API_CATEGORIES = json_decode($this->component_api->GetConfig("result"), true);
 		$_API_CATEGORIES = $_API_CATEGORIES['query'];
+
+		$_login = $this->session->userdata("login");
 		// data convertion for items edit (next and previous functions)
-		if(!empty($_cate))
+
+		if(empty($_API_CATEGORIES['previous']))
 		{
-			$_all = array_column($_cate, "cate_code");
-			// echo "<pre>";
-			// var_dump($_items['query']);
-			
-			// search key
-			$_key = array_search(
-				$cate_code, array_column($_cate, "cate_code")
-			);
-			// echo "</pre>"; 
-			$_cur = $_key;
-			$_next = $_key + 1;
-			$_previous = $_key - 1;
-			
-			if($_cur == (count($_all)-1))
-			{
-				$_next_disable = "disabled";
-				$_next = (count($_all)-1);
-			}
-			if($_cur <= 0)
-			{
-				$_previous_disable = "disabled";
-				$_previous = 0;
-			}
+			$_previous_disable = "disabled";	
+		}
+		if(empty($_API_CATEGORIES['next']))
+		{
+			$_next_disable = "disabled";
+		}
 			// echo "<pre>";
 			// var_dump ($_all);
 			// echo "</pre>";
-		}
-		
+
 		// function bar with next, preview and save button
 		$this->load->view('function-bar', [
 			"btn" => [
-				["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/products/categories/page/'.$_page), "style" => "", "show" => true],
+				["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/products/categories'.$_login['preference']), "style" => "", "show" => true],
 				["name" => "Save", "type"=>"button", "id" => "save", "url"=> "#", "style" => "", "show" => true],
-				["name" => "Previous", "type"=>"button", "id" => "Previous", "url"=> base_url("/products/categories/edit/".$_all[$_previous]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
-				["name" => "Next", "type"=>"button", "id" => "Next", "url"=> base_url("/products/categories/edit/".$_all[$_next]), "style" => "btn btn-outline-secondary ". $_next_disable, "show" => true]
+				["name" => "Previous", "type"=>"button", "id" => "Previous", "url"=> base_url("/products/categories/edit/".$_API_CATEGORIES['previous'].$_login['preference']), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
+				["name" => "Next", "type"=>"button", "id" => "Next", "url"=> base_url("/products/categories/edit/".$_API_CATEGORIES['next'].$_login['preference']), "style" => "btn btn-outline-secondary ". $_next_disable, "show" => true]
 			]
 		]);
 		$this->load->view("categories/categories-edit-view", [
@@ -224,32 +216,28 @@ class Categories extends CI_Controller
 	public function delete($cate_code="")
 	{
 		// user data
-		$_page = $this->session->userdata("page");
+		$_login = $this->session->userdata("login");
 		$_comfirm_show = true;
-		$_page = 1;
 		
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES_HAS_ITEM').$cate_code);
 		$this->component_api->CallGet();
-		$_API_CATEGORIES = json_decode($this->component_api->GetConfig("result"), true);
+		$_data = json_decode($this->component_api->GetConfig("result"), true);
 
-		if(isset($_API_CATEGORIES))
+		if(isset($_data))
 		{	
-			if($_API_CATEGORIES['query'])
+			if($_data['query'])
 			{
 				$_comfirm_show = false;	
 			}
-			// function bar with next, preview and save button
-			$this->load->view('function-bar', [
-				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "Back", "url"=>base_url('/products/categories/page/'.$_page), "style" => "", "show" => true],
-					["name" => "Yes", "type"=>"button", "id" => "yes", "url"=>base_url('/products/categories/delete/confirmed/'.$cate_code), "style" => "btn btn-outline-danger", "show" => $_comfirm_show],
-				]
-			]);
-			// main view loaded
+
 			$this->load->view("categories/categories-del-view",[
-				"cate_code" => $cate_code,
-				"data" => $_API_CATEGORIES,
+				"submit_to" => base_url('/products/categories/delete/confirmed/'.$cate_code),
+				"to_deleted_num" => $cate_code,
+				"confirm_show" => $_comfirm_show,
+				"trans_url" => base_url("/products/items/"),
+				"trans_code" => $_data['error']['message'],
+				"return_url" => base_url('/products/categories'.$_login['preference'])
 			]);
 		}
 	}
@@ -265,7 +253,7 @@ class Categories extends CI_Controller
 		$result = json_decode($this->component_api->GetConfig("result"),true);
 		if(isset($result['error']['message']) || isset($result['error']['code']))
 		{
-
+			$_login = $this->session->userdata("login");
 			$alert = "danger";
 			switch($result['error']['code'])
 			{
@@ -281,7 +269,7 @@ class Categories extends CI_Controller
 			]);
 	
 			// callback initial page
-			header("Refresh: 5; url=".base_url("/products/categories/"));
+			header("Refresh: 5; url=".base_url("/products/categories/".$_login['preference']));
 		}
 	}
 	/** 
@@ -304,6 +292,7 @@ class Categories extends CI_Controller
 				
 				if(isset($result['error']['message']) || isset($result['error']['code']))
 				{
+					$_login = $this->session->userdata("login");
 					$alert = "danger";
 					switch($result['error']['code'])
 					{
@@ -319,7 +308,7 @@ class Categories extends CI_Controller
 					]);
 			
 					// callback initial page
-					header("Refresh: 5; url=".base_url("/products/categories/"));
+					header("Refresh: 5; url=".base_url("/products/categories/".$_login['preference']));
 				}
 			}
 		}
@@ -346,6 +335,7 @@ class Categories extends CI_Controller
 				
 				if(isset($result['error']['message']) || isset($result['error']['code']))
 				{
+					$_login = $this->session->userdata("login");
 					$alert = "danger";
 					switch($result['error']['code'])
 					{
@@ -360,7 +350,7 @@ class Categories extends CI_Controller
 					]);
 					
 					// callback initial page
-					header("Refresh: 5; url=".base_url("/products/categories/"));
+					header("Refresh: 5; url=".base_url("/products/categories/".$_login['preference']));
 				}
 			}
 		}

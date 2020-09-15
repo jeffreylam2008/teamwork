@@ -4,15 +4,36 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Items extends CI_Controller
 {
 	var $_inv_header_param = [];
+	var $_default_per_page = "";
+	var $_page = "";
+	var $_i_all_cate = "";
 	var $_token = "";
 	var $_profile = "";
-	var $_username = "";
 	var $_param = "";
 	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
+	/**
+	 * Constructor
+	 */
 	public function __construct()
 	{
 		parent::__construct();
-		$_API_EMP = [];
+		
+		$_query = $this->input->get();
+		$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
+		$this->_default_per_page = $this->config->item('DEFAULT_PER_PAGE');
+		$this->_page = $this->config->item('DEFAULT_FIRST_PAGE');
+		if($this->input->get("page"))
+		{
+			$this->_page = $this->input->get("page");
+		}
+		if($this->input->get("show"))
+		{
+			$this->_default_per_page = $this->input->get("show");
+		}
+		if($this->input->get("i-all-cate"))
+		{
+			$this->_i_all_cate = $this->input->get("i-all-cate");
+		}
 
 		// dummy data
 		//$this->session->sess_destroy();
@@ -24,7 +45,6 @@ class Items extends CI_Controller
 		{
 			$this->_token = $this->session->userdata['login']['token'];
 			$this->_profile = $this->session->userdata['login']['profile'];
-			$this->_username = $this->session->userdata['login']['profile']['username'];
 		}
 
 		// API call
@@ -34,22 +54,18 @@ class Items extends CI_Controller
 		if(!empty($this->component_login->CheckToken()))
 		{
 			// API data
-			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_username);
+			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
 			$this->component_api->CallGet();
 			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_EMP = $_API_EMP['query'];
+			$_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
 			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
 			$this->component_api->CallGet();
 			$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_SHOP = $_API_SHOP['query'];
-			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
-			$this->component_api->CallGet();
-			$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_ITEMS = $_API_ITEMS['query'];
-			$this->component_api->SetConfig("url", $this->config->item('URL_MENU'));
+			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
+			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
 			$this->component_api->CallGet();
 			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_MENU = $_API_MENU['query'];
+			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
 
 			// sidebar session
 			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
@@ -71,8 +87,17 @@ class Items extends CI_Controller
 				"shop_name" => $_API_SHOP['name'],
 				"today" => date("Y-m-d")
 			];
-			// initial Access rule
-			$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
+			if(!empty($_query))
+			{
+				//Set user preference
+				$_query['page'] = $this->_page;
+				$_query['show'] = $this->_default_per_page;
+				$_query = $this->component_uri->QueryToString($_query);
+				$_login = $this->session->userdata['login'];
+				$_login['preference'] = $_query;
+				$this->session->set_userdata("login", $_login);
+			}
+			
 			// Navigator
 			$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
 			$this->component_sidemenu->SetConfig("active", $this->_param);
@@ -98,68 +123,42 @@ class Items extends CI_Controller
 	}
 
 	/** 
-	 * Item page display 
+	 * Main item page display 
 	 * 
 	 */
-	public function index($_page = 1, $_default_per_page = 50)
-	{	
-
+	public function index()
+	{
 		// variable initial
-		$_API_ITEMS = [];
-		$_API_CATEGORIES = [];
-		$_items = [];
-		$_where = "";
+
 		$_where_arr = [];
+		$_modalshow = 0;
 
-		
 		// input GET from previous page with name i-all-cate
-		
-		$_where = $this->input->get();
-
-		// API data
-		if(!empty($_where['i-all-cate']))
+		if($this->input->get("new") == 1)
 		{
-			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS_WHERE').$_where['i-all-cate']);
-			$this->component_api->CallGet();
-			$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_ITEMS = $_API_ITEMS['query'];			
-			$_where_arr = explode("/", $_where['i-all-cate']);
+			$_modalshow = 1;
 		}
-		else{
-			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
-			$this->component_api->CallGet();
-			$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_ITEMS = $_API_ITEMS['query'];	
-		}
+		//  Call API
+		$_where_arr = explode("/", $this->_i_all_cate);
+		$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS_CATE').$this->_i_all_cate);
+		$this->component_api->CallGet();
+		$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : [];
+		
 		$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES'));
 		$this->component_api->CallGet();
 		$_API_CATEGORIES = json_decode($this->component_api->GetConfig("result"), true);
-		$_API_CATEGORIES = $_API_CATEGORIES['query'];
-		
+		$_API_CATEGORIES = !empty($_API_CATEGORIES['query']) ? $_API_CATEGORIES['query'] : [];
 
-		// data for ordering items in sequence
-		foreach($_API_ITEMS as $key => $val)
-		{
-			$_items[]['item_code'] = $val['item_code'];
-		}
-		// set user data
-		$this->session->set_userdata('items_list',$_items);
-		
+		// $_API_CATEGORIES = $_API_CATEGORIES['query'];
+
+		// get user preference
+		$_login = $this->session->userdata("login");
+
+
 		// data for items type selection
 		if(!empty($_API_CATEGORIES))
 		{
-			// set user data
-			$this->session->set_userdata('page',$_page);
-			$this->session->set_userdata('default_per_page', $_default_per_page);
-
-			if(!empty($_API_CATEGORIES))
-			{
-				foreach($_API_CATEGORIES as $key => $val)
-				{
-					$_categories[$val["cate_code"]] = $val["desc"];
-				}
-			}
-			
 			// function bar with next, preview and save button
 			$this->load->view('function-bar', [
 				"btn" => [
@@ -172,183 +171,166 @@ class Items extends CI_Controller
 			$this->load->view("items/items-view",[
 				"edit_url" => base_url("/products/items/edit/"),
 				"del_url" => base_url("/products/items/delete/"),
-				"route_url" => base_url("/products/items/"),
 				"data" => $_API_ITEMS,
 				"user_auth" => true,
-				"default_per_page" => $_default_per_page,
-				"page" => $_page,
-				"categories" => $_categories,
-				"where" => $_where_arr
+				"default_per_page" => $this->_default_per_page,
+				"page" => $this->_page,
+				"categories" => $_API_CATEGORIES,
+				"where" => $_where_arr,
+				"modalshow" => $_modalshow
 			]);
 			$this->load->view("items/items-create-view",[
 				"function_bar" => $this->load->view('function-bar', [
 					"btn" => [
-						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/products/items/page/'.$_page.'/show/'.$_default_per_page), "style" => "", "show" => true],
+						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/products/items'), "style" => "", "show" => true],
 						["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
 						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
 					 ]
 				],true),
 				"save_url" => base_url("/products/items/save/"),
 				"categories_baseurl" => base_url("/products/categories/?new=1"),
-				"categories" => $_categories
+				"categories" => array_column($_API_CATEGORIES,"desc","cate_code"),
 			]);
 			$this->load->view('footer');
 		}
 	}
 
 	/** 
-	 * Edit Page Display 
-	 * 
+	 * Edit Operation 
+	 * @param item_code selected item code
 	 */
 	public function edit($item_code="")
 	{
-		
 		// variable initial
-		$_categories = [];
 		$_previous_disable = "";
 		$_next_disable = "";
-		$_page = 1;
-		$_default_per_page = 50;
-		$_items = [];
-		// user data
-
-		$_page = $this->session->userdata("page");
-		$_default_per_page = $this->session->userdata("default_per_page");
-		$_items = $this->session->userdata['items_list'];
+		$_remove_img = false;
 
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES'));
 		$this->component_api->CallGet();
 		$_API_CATEGORIES = json_decode($this->component_api->GetConfig("result"), true);
-		$_API_CATEGORIES = $_API_CATEGORIES['query'];
+		$_API_CATEGORIES = !empty($_API_CATEGORIES['query']) ? $_API_CATEGORIES['query'] : [];
 		$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS').$item_code);
 		$this->component_api->CallGet();
 		$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
-		$_API_ITEMS = $_API_ITEMS['query'];
-		$_API_ITEMS['desc'] = trim($_API_ITEMS['desc']);
-
+		$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : [];
 		
-		// data convertion for items edit (next and previous functions)
-		if(!empty($_items))
-		{
-			$_all = array_column($_items, "item_code");
-			
-			// search key
-			$_key = array_search(
-				$item_code, array_column($_items, "item_code")
-			);
-			if($_key !== false)
-			{
-				$_cur = $_key;
-				$_next = $_key + 1;
-				$_previous = $_key - 1;
-				
-				if($_cur == (count($_all)-1))
-				{
-					$_next_disable = "disabled";
-					$_next = (count($_all)-1);
-				}
-				if($_cur <= 0)
-				{
-					$_previous_disable = "disabled";
-					$_previous = 0;
-				}
-				// echo "<pre>";
-				// var_dump ($_all);
-				// echo "</pre>";
-				// data for items type selection
-				if(!empty($_API_CATEGORIES))
-				{
-					foreach($_API_CATEGORIES as $key => $val)
-					{
-						$_categories[$val["cate_code"]] = $val["desc"];
-					}
-				}
-				// function bar with next, preview and save button
-				$this->load->view('function-bar', [
-					"btn" => [
-						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/products/items/page/'.$_page.'/show/'.$_default_per_page), "style" => "", "show" => true],
-						["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
-						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
-						["name" => "Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/products/items/edit/".$_all[$_previous]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
-						["name" => "Next", "type"=>"button", "id" => "next", "url"=> base_url("/products/items/edit/".$_all[$_next]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
-					]
-				]);
 
-				// main view loaded
-				$this->load->view("items/items-edit-view",[
-					"categories_baseurl" => base_url("/products/categories/"),
-					"save_url" => base_url("/products/items/edit/save/"),
-					"categories_baseurl" => base_url("/products/categories/?new=1"),
-					"data" => $_API_ITEMS,
-					"categories" => $_categories
-				]);
-			}
-			else
-			{
-				$alert = "danger";
-				$this->load->view('error-handle', [
-					'message' => "Item Code not found!", 
-					'code'=> "", 
-					'alertstyle' => $alert
-				]);
-			}
-		}
-	}
-
-	/** 
-	 * Delete Page Display 
-	 * 
-	 */
-	public function delete($item_code="")
-	{
-		// variable initial
-		$_page = 1;
-		$_default_per_page = 50;
-
-		// user data
-		$_page = $this->session->userdata("page");
-		$_default_per_page = $this->session->userdata("default_per_page");
-		$_comfirm_show = true;
-		$_page = 1;
-		
-		// API data
-		$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY_HAS_TRANSACTION_D').$item_code);
+		$this->component_api->SetConfig("url", $this->config->item('URL_STOCKSONHAND').$item_code);
 		$this->component_api->CallGet();
-		$_data = json_decode($this->component_api->GetConfig("result"), true);
-		if(isset($_data))
+		$_API_ONHAND = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_ONHAND = !empty($_API_ONHAND['query']) ? $_API_ONHAND['query'] : [];
+
+		$_API_ITEMS['stockonhand'] = $_API_ONHAND['qty'];
+		$_API_ITEMS['desc'] = trim($_API_ITEMS['desc']);
+		if(empty($_API_ITEMS['image_body']))
 		{
-			// configure message 
-			if($_data['query'])
+			$_API_ITEMS['image_body'] = "data:image/png;base64,".base64_encode(file_get_contents(base_url("/assets/img/empty-img.jpg")));	
+			$_remove_img = true;
+		}
+		else
+		{
+			$_API_ITEMS['image_body'] = "data:image/png;base64,".$_API_ITEMS['image_body'];	
+		}
+
+		$_login = $this->session->userdata("login");
+		// data convertion for items edit (next and previous functions)
+		if(!empty($_API_ITEMS))
+		{
+			if(empty($_API_ITEMS["previous"]))
 			{
-				$_comfirm_show = false;
+				$_previous_disable = "disabled";
+			}
+			if(empty($_API_ITEMS["next"]))
+			{
+				$_next_disable = "disabled";
 			}
 			// function bar with next, preview and save button
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "Back", "url"=>base_url('/products/items/page/'.$_page.'/show/'.$_default_per_page), "style" => "", "show" => true],
-					["name" => "Yes", "type"=>"button", "id" => "yes", "url"=>base_url('/products/items/delete/confirmed/'.$item_code), "style" => "btn btn-outline-danger", "show" => $_comfirm_show],
+					["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/products/items'.$_login["preference"]), "style" => "", "show" => true],
+					["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
+					["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
+					["name" => "Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/products/items/edit/".$_API_ITEMS["previous"].$_login["preference"]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
+					["name" => "Next", "type"=>"button", "id" => "next", "url"=> base_url("/products/items/edit/".$_API_ITEMS["next"].$_login["preference"]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
 				]
 			]);
+
 			// main view loaded
+			$this->load->view("items/items-edit-view",[
+				//"categories_baseurl" => base_url("/products/categories/"),
+				"save_url" => base_url("/products/items/edit/save/"),
+				"categories_baseurl" => base_url("/products/categories/?new=1"),
+				"data" => $_API_ITEMS,
+				"categories" => array_column($_API_CATEGORIES,"desc","cate_code"),
+				"remove_img" => $_remove_img
+			]);
+		}
+		else
+		{
+			$alert = "danger";
+			$this->load->view('error-handle', [
+				'message' => "Item Code not found!", 
+				'code'=> "", 
+				'alertstyle' => $alert
+			]);
+		}
+		$this->load->view('footer');
+	}
+
+	/** 
+	 * Delete Page Display 
+	 * @param item_code selected item code to be delete
+	 */
+	public function delete($item_code="")
+	{
+		$_data = [];
+		$_trans_url = "";
+		$_trans_code = "";
+		$_login = $this->session->userdata("login");
+		$_comfirm_show = true;
+
+		// API data
+		$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY_HAS_TRANSACTION_D').$item_code);
+		$this->component_api->CallGet();
+		$_data = json_decode($this->component_api->GetConfig("result"), true);
+	
+		
+		// echo "<pre>";
+		// var_dump($_data['query']);
+		// echo "</pre>";
+		if(isset($_data))
+		{	
+			if($_data['query'])
+			{
+				$_comfirm_show = false;
+				$_trans_url = base_url("/invoices/edit/".$_data['trans_code']);
+				$_trans_code = $_data['trans_code'];
+			}
 			$this->load->view("items/items-del-view",[
-				"item_code" => $item_code,
-				"trans_url" => base_url("/invoices/edit/".$_data['query']['trans_code']),
-				"data" => $_data,
+				"submit_to" => base_url('/products/items/delete/confirmed/'.$item_code),
+				"to_deleted_num" => $item_code,
+				"confirm_show" => $_comfirm_show,
+				"trans_url" => $_trans_url,
+				"trans_code" => $_trans_code,
+				"return_url" => base_url('/products/items'.$_login['preference'])
 			]);
 		}
 	}
 
 	/** 
-	 * Process Save delete 
-	 * 
+	 * Save Operation 
+	 * @param item_code selected item code will be saved
 	 */
 	public function savedel($item_code="")
 	{
+		$_login = $this->session->userdata("login");
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS').$item_code);
 		$this->component_api->CallDelete();
 		$result = json_decode($this->component_api->GetConfig("result"),true);
+
 		if(isset($result['error']['message']) || isset($result['error']['code']))
 		{
 
@@ -367,19 +349,30 @@ class Items extends CI_Controller
 			]);
 	
 			// callback initial page
-			header("Refresh: 5; url=".base_url("/products/items/"));
+			header("Refresh: 5; url=".base_url("/products/items/".$_login['preference']));
 		}
 	}
 
 	/** 
-	 * Process Save create 
-	 * 
+	 * Save Operation for create 
 	 */
 	public function savecreate()
 	{
+		$_NEW_POST = [];
+		$_FILES['i-img']['content'] = "";
+		$_login = $this->session->userdata("login");
 		if(isset($_POST) && !empty($_POST))
 		{
-			$_api_body = json_encode($_POST,true);
+			if(!empty($_FILES['i-img']['tmp_name'])){
+				$_FILES['i-img']['content'] = $this->component_file->Encode($_FILES['i-img']);
+			}
+			$_NEW_POST = array_merge($_POST, $_FILES);
+			$_api_body = json_encode($_NEW_POST,true);
+			
+			// echo "<per>";
+			// var_dump($_api_body);
+			// echo "</per>";
+
 			if($_api_body != "null")
 			{
 				// API data
@@ -405,21 +398,41 @@ class Items extends CI_Controller
 					]);
 			
 					// callback initial page
-					header("Refresh: 5; url=".base_url("/products/items/"));
+					header("Refresh: 5; url=".base_url("/products/items/".$_login['preference']));
 				}
 			}
 		}
 	}
 
 	/** 
-	 * Process Save Edit 
-	 * 
+	 * Save  Operation for Edit 
+	 * @param item_code selected item code 
 	 */
 	public function saveedit($item_code="")
 	{
+		$_NEW_POST = [];
+		$_login = $this->session->userdata("login");
+
+		
 		if(isset($_POST) && !empty($_POST) && isset($item_code) && !empty($item_code))
 		{
-			$_api_body = json_encode($_POST,true);
+			if(!empty($_FILES))
+			{
+				$_FILES['i-img']['content'] = "";
+				$_FILES['i-img']['name'] = "";
+				
+				if(!empty($_FILES['i-img']['tmp_name'])){
+					$_FILES['i-img']['content'] = $this->component_file->Encode($_FILES['i-img']);
+				}
+				$_NEW_POST = array_merge($_POST, $_FILES);
+			}
+			else
+			{
+				$_NEW_POST = $_POST;
+			}
+			
+		 	$_api_body = json_encode($_NEW_POST,true);
+
 			// echo "<pre>";
 			// var_dump($_api_body);
 			// echo "</pre>";
@@ -452,7 +465,7 @@ class Items extends CI_Controller
 					]);
 			
 					// callback initial page
-					header("Refresh: 5; url=".base_url("/products/items/"));
+					header("Refresh: 2; url=".base_url("/products/items/".$_login['preference']));
 				}
 			}
 		}
