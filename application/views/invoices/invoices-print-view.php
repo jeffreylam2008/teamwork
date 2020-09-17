@@ -4,63 +4,31 @@ function PrintHeader($customer = "", $date  = "", $quotation = "", $cust_code = 
 {
     print "
         <!-- print header --> 
-        <table border='0' style='font-size:12px;'>
+        <BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR>
+        <table border='0' width='1100' height='170' style='font-family:PMingLiU;'>
             <tbody>
-            <tr>
-                <td width='20'>&nbsp;</td>
-                <td width='750'>&nbsp;</td>
-                <td width='350'>&nbsp;</td>
-                <td width='200'>&nbsp;</td>
-                <td width='200'>&nbsp;</td>
-                <td width='150'>&nbsp;</td>
-            </tr>
-            <tr><td>&nbsp;</td></tr>
-            <tr><td>&nbsp;</td></tr>
-            <tr><td>&nbsp;</td></tr>
-            <tr><td>&nbsp;</td></tr>
-            <tr><td>&nbsp;</td></tr>
-            <tr><td>&nbsp;</td></tr>
-            <tr><td>&nbsp;</td></tr>
-            <tr><td>&nbsp;</td></tr>
-            <tr><td>&nbsp;</td></tr>
-            <tr><td>&nbsp;</td></tr>
-            <tr>
-                <td></td>
-                <td rowspan='3' height='115' valign='top'>
-                    ".$customer['name']."<br>
-                    ".$customer['delivery_addr']."
-                </td>
-                <td>&nbsp;</td>
-                <td>
-                    ".substr($date,0,-8)."
-                </td>
-                <td>&nbsp;</td>
-                <td>
-                    ".$invoicenum."
-                </td>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>
-                    ".$quotation."
-                </td>
-                <td>&nbsp;</td>
-                <td>
-                    ".$cust_code."
-                </td>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>
-                    ".$employee_code."
-                </td>
-                <td>&nbsp;</td>
-                <td>
-                    ".$paymentmethod."
-                </td>
-            </tr>
+                <tr>
+                    <td width='380'><font size=5><b>".$customer['name']."</b></font></td>
+                    <td width='180'>&nbsp;</td>
+                    <td width='130'><font size=5><b>".substr($date,0,-8)."</b></font></td>
+                    <td width='150'>&nbsp;</td>
+                    <td width='150'><font size=5><b>".$invoicenum."</b></font></td>
+                </tr>
+
+                <tr>
+                    <td><font size=5><b>".$customer['delivery_addr']."</b></font></td>
+                    <td>&nbsp;</td>
+                    <td><font size=5><b>".$quotation."</b></font></td>
+                    <td>&nbsp;</td>
+                    <td><font size=5><b>".$cust_code."</b></font></td>
+                </tr>
+                <tr>
+                    <td><font size=5><b>&nbsp;</b></FONT></td>
+                    <td>&nbsp;</td>
+                    <td><font size=5><b>".$employee_code."</b></FONT></td>
+                    <td>&nbsp;</td>
+                    <td><font size=5><b>".$paymentmethod."</b></FONT></td>
+                </tr>
             </tbody>
         </table>
     ";
@@ -69,23 +37,23 @@ function PrintHeader($customer = "", $date  = "", $quotation = "", $cust_code = 
     
 function PrintBody($items = [])
 {
+    print "-<br>-<br>-<br>-<br>";
     print "
-        <table border='0' height='620'>
-            <tr><td>&nbsp;</td></tr>
+        <table border='0' width='1100' height='750'>
             <tr valign='top'>
                 <td width='100%'>
     ";
     foreach($items as $k => $v)
     {
         extract($v);
-        print "<table style='font-size:12px;'>";
+        print "<table height='50'>";
         print "<tr>";
-        print "<td width='20' height='70'>&nbsp;</td>";
-        print "<td width='800'>".$item_code." ".$chi_name." ".$eng_name ."</td>";
-        print "<td width='250'>".$unit."</td>";
-        print "<td width='200'>".$qty."</td>";
-        print "<td width='200'>$".$price."</td>";
-        print "<td width='100'>$".$subtotal."</td>";
+        print "<td width='50'>&nbsp;</td>";
+        print "<td width='500'><font size=5><b>".$item_code." ".$chi_name."<br>".$eng_name ."</b></font></td>";
+        print "<td width='150'><font size=5><b>".$unit."</b></font></td>";
+        print "<td width='120'><font size=5><b>".$qty."</b></font></td>";
+        print "<td width='150'><font size=5><b>$".$price."</b></font></td>";
+        print "<td width='130'><font size=5><b>$".$subtotal."</b></font></td>";
         print "</tr>";
         print "</table>";
     }	
@@ -100,30 +68,47 @@ function PrintFooter($total = "")
 {
     print "
         <!-- print footer --> 
-        <table border='0'>
+        <table border='0' width='1100'>
             <tr>
-                <td width='20'>&nbsp;</td>
-                <td width='450'>&nbsp;</td>
-                <td width='170'>&nbsp;</td>
-                <td width='150'>&nbsp;</td>
-                <td width='240'>&nbsp;</td>
-                <td width='150'>$".$total."</td>
+                <td width='860'>&nbsp;</td>
+                <td><font size=5><b>$".$total."</b></font></td>
             </tr>
         </table>
     ";
 }
+
+function PrintRemark($body = "")
+{
+    print "
+        <!-- deliver remark and invoice remark -->
+        <table border='0' width='1100' height='100'>
+            <tr valign='top'>
+                <td width='100%'><font size=5><b>
+                    ".$body."
+                </b></font></td>
+            </tr>
+        </table>
+    ";
+}
+
+
 ?>
+
 
 <div>
 <?php
 extract($data);
+
+// echo "<pre>";
+// var_dump($data);
+// echo "</pre>";
 if(isset($items)){
     $page_separate = 0;
     $i = 0;
     // divided items per page
     foreach($items as $k => $v)
     {
-        if($i % 8==0 || $i == 0){
+        if($i % 6==0 || $i == 0){
             $page_separate++;
         }
         $page[$page_separate][] = $v;
@@ -135,10 +120,10 @@ if(isset($items)){
     {
         PrintHeader($customer, $date, $quotation, $cust_code, $employee_code, $paymentmethodname, $invoicenum);
         PrintBody($page[$j]);
+        PrintRemark($customer['statement_remark']);
         PrintFooter($total);
         print "<p style=\"page-break-after: always;\"></p>";
     }
-
     // echo "<pre>";
     // var_dump($page);
     // echo "</pre>";

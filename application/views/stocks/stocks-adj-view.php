@@ -291,7 +291,36 @@
         refresh()
         render()
     }
-    
+    // lookup select item code from source
+    function lookup(selecteditemcode, source)
+    {
+        item = search(selecteditemcode,source)
+        if(item === undefined)
+        {
+            alert("Item not found!");
+        }
+        else
+        {
+            // return index if found item in source
+            let found = items.findIndex(o => o.item_code === item.item_code)
+            // check item exist on list and group it
+            if(found != -1){
+                new_qty = parseInt(items[found].qty) 
+                new_qty += 1;
+                items[found].qty = new_qty
+                items[found].subtotal = items[found].qty * items[found].price
+            }
+            // not in list then add one
+            else{
+                item.qty = 1
+                var subtotal = item.qty * item.price
+                items.push(item)
+            }
+            // print on screen
+            render()
+            recalc()
+        }
+    }
     $(window).on('beforeunload', function(){
         return "Any changes will be lost";
     });
@@ -378,32 +407,9 @@
                 $("#items-list > tbody > tr").each(function(i){
                     $(this).css("background-color","")
                 })
-                if(selecteditemcode!=""){
-                    // find item from source
-                    item = search(selecteditemcode,dbItems)
-                    // return index if found item in source
-                    let found = items.findIndex(o => o.item_code === item.item_code)
-                    
-                    // check item exist on list and group it
-                    if(found != -1){
-                        new_qty = parseInt(items[found].qty) 
-                        new_qty += 1;
-                        items[found].qty = new_qty
-                        items[found].subtotal = items[found].qty * items[found].price
-                    }
-                    // not in list then add one
-                    else{
-                        item.qty = 1
-                        // var subtotal = item.qty * item.price
-                        //console.log(item)
-                        items.push(item)
-                    }
-                    // print on screen
-                    render()
-                    recalc()
-                    // hide modal
-                    $(this).modal("hide")
-                }
+                lookup(selecteditemcode,dbItems)
+                // hide modal
+                $(this).modal("hide")
             }
         });
     });
@@ -426,65 +432,27 @@
     });
     // Ok Button   
     $("#item-ok").on("click", function(){
-        if(selecteditemcode!=""){
-            // find item from source
-            item = search(selecteditemcode,dbItems)
-
-            // return index if found item in source
-            let found = items.findIndex(o => o.item_code === item.item_code)
-            // check item exist on list and group it
-            if(found != -1){
-                new_qty = parseInt(items[found].qty) 
-                new_qty += 1;
-                items[found].qty = new_qty
-                items[found].subtotal = items[found].qty * items[found].price
-            }
-            // not in list then add one
-            else{
-                item.qty = 1
-                var subtotal = item.qty * item.price
-                items.push(item)
-            }
-            // print on screen
-            render()
-            recalc()
-        }
+        lookup(selecteditemcode,dbItems)
     });
     /**
      * END items_modal
      **/
 
-     $("#item-search").on("click", function(){
-        const input = $("#item-input").val();
-        if(input != ""){
-            // find item from source
-            item = search(input,dbItems)
-            if(item === undefined)
-            {
-                alert("Item not found!");
-            }
-            else
-            {
-                // return index if found item in source
-                let found = items.findIndex(o => o.item_code === item.item_code)
-                // check item exist on list and group it
-                if(found != -1){
-                    new_qty = parseInt(items[found].qty) 
-                    new_qty += 1;
-                    items[found].qty = new_qty
-                    items[found].subtotal = items[found].qty * items[found].price
-                }
-                // not in list then add one
-                else{
-                    item.qty = 1
-                    var subtotal = item.qty * item.price
-                    items.push(item)
-                }
-                // print on screen
-                render()
-                recalc()
-            }
+    $("#item-search").on("click", function(){
+        const selecteditemcode = $("#item-input").val();
+        if(selecteditemcode != ""){
+            lookup(selecteditemcode,dbItems)
         }
+    });
+    $("#item-input").on('focus', function(){
+        $(this).on("keypress", function(e){
+            if(e.keyCode==13){
+                const selecteditemcode = $(this).val();
+                if(selecteditemcode != ""){
+                    lookup(selecteditemcode,dbItems)
+                }
+            }
+        });
     });
 
     $("#next").on("click",function(){
