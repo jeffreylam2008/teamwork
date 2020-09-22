@@ -11,7 +11,7 @@ extract($data);
             <div class="input-group-prepend">
                 <span class="input-group-text" id="">Purchases Number</span>
             </div>
-            <input type="text" class="form-control" id="i-purchasesnum" value="<?=$purchasesnum?>" disabled>
+            <input type="text" class="form-control" id="i-purchasenum" value="<?=$purchasenum?>" disabled>
         </div>
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
@@ -506,7 +506,7 @@ extract($data);
     $("#next").on("click",function(){
         var _inputs = {};
         var _valid = 0;
-        _inputs["purchasesnum"] = $("#i-purchasesnum").val()
+        _inputs["purchasenum"] = $("#i-purchasenum").val()
         _inputs["refernum"] = $("#i-refernum").val()
         _inputs["prefix"] = $("#i-prefix").val()
         _inputs["quotation"] = $("#i-quotation").val()

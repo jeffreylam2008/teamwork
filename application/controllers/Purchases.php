@@ -317,7 +317,7 @@ class Purchases extends CI_Controller
 				"prefix" => $this->_inv_header_param['topNav']['prefix'],
 				"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
 				"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
-				"purchasesnum" => $_num,
+				"purchasenum" => $_num,
 				"date" => date("Y-m-d H:i:s"),
 				"ajax" => [
 					"items" => $_API_ITEMS,
@@ -350,12 +350,12 @@ class Purchases extends CI_Controller
 			// variable initial
 			$_data = json_decode($_POST['i-post'], true);
 			$_transaction = [];
-			$_cur_num = $_data['purchasesnum'];
+			$_cur_num = $_data['purchasenum'];
 			$_show_save_btn = false;
 			$_show_reprint_btn = false;
 
 			$_transaction[$_cur_num] = $_data;
-			$this->session->set_userdata('cur_purchasesnum',$_cur_num);
+			$this->session->set_userdata('cur_purchasenum',$_cur_num);
 			$this->session->set_userdata('transaction',$_transaction);
 
 			// show save button
@@ -408,7 +408,7 @@ class Purchases extends CI_Controller
 	{
 		$_transaction = [];
 		$_cur_num = "";
-		$_cur_num = $this->session->userdata('cur_purchasesnum');
+		$_cur_num = $this->session->userdata('cur_purchasenum');
 		$_transaction = $this->session->userdata('transaction');
 		$alert = "danger";
 		$this->load->view('function-bar', [
@@ -416,6 +416,7 @@ class Purchases extends CI_Controller
 				["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "donew", "url"=> base_url('/invoices/donew'),"style" => "","show" => true],
 			]
 		]);
+
 		if(!empty($_transaction[$_cur_num]) && isset($_transaction[$_cur_num]))
 		{
 			$_api_body = json_encode($_transaction[$_cur_num],true);
@@ -448,7 +449,7 @@ class Purchases extends CI_Controller
 					$result["error"]['message'] = "API-Error"; 
 				}
 				unset($_transaction[$_cur_num]);
-				$this->session->set_userdata('cur_purchasesnum',"");
+				$this->session->set_userdata('cur_purchasenum',"");
 				$this->session->set_userdata('transaction',$_transaction);
 				
 				header("Refresh: 5; url='".base_url('purchases/order')."'");
@@ -570,7 +571,7 @@ class Purchases extends CI_Controller
 	{
 		$_transaction = [];
 		$_cur_num = "";
-		$_cur_num = $this->session->userdata('cur_purchasesnum');
+		$_cur_num = $this->session->userdata('cur_purchasenum');
 		$_transaction = $this->session->userdata('transaction');
 		$alert = "danger";
 		$this->load->view('function-bar', [
@@ -610,7 +611,7 @@ class Purchases extends CI_Controller
 					$result["error"]['message'] = "API-Error"; 
 				}
 				unset($_transaction[$_cur_num]);
-				$this->session->set_userdata('cur_purchasesnum',"");
+				$this->session->set_userdata('cur_purchasenum',"");
 				$this->session->set_userdata('transaction',$_transaction);
 				
 				header("Refresh: 5; url='".base_url('purchases/order')."'");

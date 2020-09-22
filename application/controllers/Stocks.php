@@ -256,6 +256,9 @@ class Stocks extends CI_Controller
 					case "ST":
 						$_path = base_url("/stocks/stocktake/detail/".$_input);
 					break;
+					case "PO":
+						$_path = base_url("/purchases/order/edit/".$_input);
+					break;
 				 }
 				 header("Refresh: 0; url='".$_path."'");
 			 }
@@ -336,6 +339,7 @@ class Stocks extends CI_Controller
 				{
 					$_grn_num = $this->session->userdata('cur_grnnum');
 					$_transaction = $this->session->userdata('transaction');
+					$_transaction[$_grn_num]['prefix'] = $_API_GRN_PREFIX;
 				}
 				// For new create
 				else 
@@ -347,6 +351,7 @@ class Stocks extends CI_Controller
 					$_transaction[$_grn_num]['paymentmethod'] = "";
 					$_transaction[$_grn_num]['paymentmethodname'] = "";
 					$_transaction[$_grn_num]['remark'] = "";
+					$_transaction[$_grn_num]['prefix'] = $_API_GRN_PREFIX;
 					
 					$this->session->set_userdata('cur_grnnum',$_grn_num);
 					$this->session->set_userdata('transaction',$_transaction);
@@ -447,6 +452,7 @@ class Stocks extends CI_Controller
 				"preview_url" => base_url('/ThePrint/grn/preview'),
 				"print_url" => base_url('/ThePrint/grn/save')
 			]);
+			$this->load->view('footer');
 		}
 	}
 	/**
@@ -468,6 +474,7 @@ class Stocks extends CI_Controller
 		if(!empty($_transaction[$_cur_grnnum]) && isset($_transaction[$_cur_grnnum]))
 		{
 			$_api_body = json_encode($_transaction[$_cur_grnnum],true);
+			//echo $_api_body;
 			if($_api_body != null)
 			{
 				/** For debug use start */
