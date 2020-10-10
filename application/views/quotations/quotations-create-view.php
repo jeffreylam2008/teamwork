@@ -222,17 +222,17 @@ extract($data);
             var _price = parseFloat(items[item].price)
             var _subtotal = parseFloat(items[item].subtotal)
             tmpl += "<tr data-items='itmes_"+item+"'>"
-            +"<td class='col-1'>"+items[item].item_code+"</td>"
-            +"<td class='col-2'>"+items[item].eng_name+"</td>"
-            +"<td class='col-2'>"+items[item].chi_name+"</td>"
-            +"<td class='col-1 clearfix'><input type='button' class='btn btn-secondary btn-sm w-70 float-right' id='minus_"+item+"' value='-' /></td>"
-            +"<td class='col-sm-1'><input type='text' class='form-control form-control-sm item-input' id='qty_"+item+"' value='"+items[item].qty+"' disabled /></td>"
-            +"<td class='col-1'><input type='button' class='btn btn-secondary btn-sm w-70' id='plus_"+item+"' value='+' /></td>"
-            +"<td class='col-1'>"+items[item].unit+"</td>"
-            +"<td class='col-1'><input type='text' class='form-control form-control-sm item-input' id='price_"+item+"' value='"+_price.toFixed(2)+"' /></td>"
-            +"<td class='col-1'>"+items[item].price_special+"</td>"
-            +"<td class='col-1' id='subtotal_"+item+"'>"+_subtotal.toFixed(2)+"</td>"
-            +"<td class='col-1'><button class='btn btn-danger btn-sm w-90' data-del-itemcode='"+items[item].item_code+"' id='del_"+item+"' type='button'><i class='fas fa-trash-alt'></i></button></td>"
+            +"<td>"+items[item].item_code+"</td>"
+            +"<td>"+items[item].eng_name+"</td>"
+            +"<td>"+items[item].chi_name+"</td>"
+            +"<td><input type='button' class='btn btn-secondary btn-sm w-70 float-right' id='minus_"+item+"' value='-' /></td>"
+            +"<td><input type='text' class='form-control form-control-sm item-input' id='qty_"+item+"' value='"+items[item].qty+"' disabled /></td>"
+            +"<td><input type='button' class='btn btn-secondary btn-sm w-70' id='plus_"+item+"' value='+' /></td>"
+            +"<td>"+items[item].unit+"</td>"
+            +"<td><input type='text' class='form-control form-control-sm item-input' id='price_"+item+"' value='"+_price.toFixed(2)+"' /></td>"
+            +"<td>"+items[item].price_special+"</td>"
+            +"<td id='subtotal_"+item+"'>"+_subtotal.toFixed(2)+"</td>"
+            +"<td><button class='btn btn-danger btn-sm w-90' data-del-itemcode='"+items[item].item_code+"' id='del_"+item+"' type='button'><i class='fas fa-trash-alt'></i></button></td>"
             +"</tr>"
             //console.log(tmpl)
         }
@@ -460,15 +460,13 @@ extract($data);
         }
     });
     
-    $("#item-input").on('focus', function(){
-        $(this).on("keypress", function(e){
-            if(e.keyCode==13){
-                const selecteditemcode = $(this).val();
-                if(selecteditemcode != ""){
-                    lookup(selecteditemcode,dbItems)
-                }
+    $("#item-input").on("keypress", function(e){
+        if(e.keyCode==13){
+            const selecteditemcode = $(this).val();
+            if(selecteditemcode != ""){
+                lookup(selecteditemcode,dbItems)
             }
-        });
+        }
     });
 
     $("#next").on("click",function(){

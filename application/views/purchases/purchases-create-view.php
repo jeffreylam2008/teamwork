@@ -217,7 +217,7 @@ extract($data);
                 "unit":  $(this).children()[6].innerText,
                 "price" : $(this).children()[7].children[0].value,
                 "price_special" : parseFloat($(this).children()[8].innerText),
-                "subtotal" : $(this).children()[9].innerText,
+                "subtotal" : $(this).children()[9].innerText
             }
         });
     }
@@ -492,15 +492,13 @@ extract($data);
             lookup(selecteditemcode,dbItems)
         }
     });
-    $("#item-input").on('focus', function(){
-        $(this).on("keypress", function(e){
-            if(e.keyCode==13){
-                const selecteditemcode = $(this).val();
-                if(selecteditemcode != ""){
-                    lookup(selecteditemcode,dbItems)
-                }
+    $("#item-input").on("keypress", function(e){
+        if(e.keyCode==13){
+            const selecteditemcode = $(this).val();
+            if(selecteditemcode != ""){
+                lookup(selecteditemcode,dbItems)
             }
-        });
+        }
     });
 
     $("#next").on("click",function(){

@@ -462,15 +462,13 @@ extract($data);
         }
     });
     
-    $("#item-input").on('focus', function(){
-        $(this).on("keypress", function(e){
-            if(e.keyCode==13){
-                const selecteditemcode = $(this).val();
-                if(selecteditemcode != ""){
-                    lookup(selecteditemcode,dbItems)
-                }
+    $("#item-input").on("keypress", function(e){
+        if(e.keyCode==13){
+            const selecteditemcode = $(this).val();
+            if(selecteditemcode != ""){
+                lookup(selecteditemcode,dbItems)
             }
-        });
+        }
     });
     
     $("#next").on("click",function(){

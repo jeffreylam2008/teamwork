@@ -6,172 +6,194 @@ extract($data);
 ?>
 
 <div class="container-fluid">
-    <form class="" method="POST" id="this-form" action="<?=$submit_to?>">
-        <div class="input-group mb-2 input-group-sm">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="">Invoice Number</span>
-            </div>
-            
-            <input type="text" class="form-control" id="i-invoicenum" value="<?=$invoice_num?>" disabled>
+    <div class="row">
+        <div class="col-sm-8">
+            <form class="" method="POST" id="this-form" action="<?=$submit_to?>">
+                <div class="input-group mb-2 input-group-sm">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="">Invoice Number</span>
+                    </div>
+                    
+                    <input type="text" class="form-control" id="i-invoicenum" value="<?=$invoice_num?>" disabled>
+                </div>
+                <div class="input-group mb-2 input-group-sm">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="">Quotation</span>
+                    </div>
+                    <input type="text" class="form-control" id="i-quotation" value="<?=$quotation?>" disabled>
+                </div>
+                <div class="input-group mb-2 input-group-sm">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="">Date</span>
+                    </div>
+                    <input type="text" class="form-control" id="i-date" value="<?=$date?>" disabled >
+                </div>
+                <!-- Company -->
+                <div class="input-group mb-2 input-group-sm">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text">Company</label>
+                    </div>
+                    <?php
+                        if(!empty($ajax["shop_code"])):
+                            $key = array_search($default_shopcode,array_column($ajax["shop_code"],"shop_code"));
+                    ?>
+                    <select class="custom-select custom-select-sm" id="i-shopcode">
+                        <?php if(!empty($shopcode)): ?>
+                            <option value="<?=$shopcode?>"><?=$shopname?></option>
+                        <?php else: ?>
+                            <option value="<?=$ajax["shop_code"][$key]['shop_code']?>"><?=$ajax["shop_code"][$key]['name']?></option>
+                        <?php endif; ?>
+                        <?php
+                            foreach($ajax["shop_code"] as $k => $v):
+                        ?>
+                                <option value="<?=$v['shop_code']?>"><?=$v['name']?></option>
+                        <?php
+                            endforeach;
+                        ?>
+                    </select>
+                    <?php endif;?>
+                </div>
+                
+                <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+                <!-- customer Modal -->
+                <?php include(APPPATH."views/modal-customers.php"); ?>
+                <!-- customer Modal End -->
+
+                <!-- Customer Modal button -->
+                <div class="input-group mb-2 input-group-sm">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Customer</span>
+                    </div>
+                    <input type="text" class="form-control" value="<?=$cust_code?>" id="i-customer" disabled="" />
+                    <input type="text" class="form-control" value="<?=$cust_name?>" id="i-customer-name" disabled="">
+                    <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#customers_modal">More...</button>
+                </div>
+                <!-- Customer Modal button END -->
+                <!-- Payment Method button -->
+                <div class="input-group mb-2 input-group-sm">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text">Payment Method</label>
+                    </div>
+                    <select class="custom-select custom-select-sm" id="i-paymentmethod">
+                        <?php if(!empty($paymentmethod)): ?>
+                            <option value="<?=$paymentmethod?>"><?=$paymentmethodname?></option>
+                        <?php else: ?>
+                            <option value="-1">Choose...</option>
+                        <?php endif; ?>
+                        <?php 
+                            foreach($ajax["tender"] as $k => $v):
+                        ?>
+                                <option value="<?=$v['pm_code']?>"><?=$v['payment_method']?></option>
+                        <?php
+                            endforeach;
+                        ?>
+                    </select>
+                </div>
+                <!-- Payment Method button END-->
+                <!-- Product Search Button -->
+                <div class="input-group mb-2 input-group-sm">
+                    <input type="text" class="form-control item-input" id="item-input" placeholder="items code">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary btn-sm" type="button" id="item-search">Search</button>
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#items_modal">More...</button>
+                    <!-- items Modal -->
+                    <?php include(APPPATH."views/modal-items.php"); ?>
+                    <!-- items Modal End -->
+                </div>
+                <!-- Product Search Button END-->
+                <!-- Product view -->
+                <table class="table table-sm table-striped" id="tbl">
+                    <thead>
+                        <th>Item code</th>
+                        <th>Eng name</th>
+                        <th>Chi_name</th>
+                        <th></th>
+                        <th>QTY</th>
+                        <th></th>
+                        <th>Unit</th>
+                        <th>Price</th>
+                        <th>Discount</th>
+                        <th>Subtotal</th>
+                        <th>Stockonhand</th>
+                    </thead>
+                    <!-- render items-list here -->
+                    <tbody id="tdisplay">
+                    <?php
+                        $total = 0;
+                        $subtotal = 0;
+                        foreach ($items as $k=> $v){
+                            extract($v);
+                            $subtotal = $qty * $price;
+                    ?>
+                        <tr data-items="item_<?=$k?>">
+                            <td class="col-1" ><?=$item_code?></td>
+                            <td class="col-2" ><?=$eng_name?></td>
+                            <td class="col-2" ><?=$chi_name?></td>
+                            <td class="col-1 clearfix" >
+                                <input type="button" class='btn btn-secondary btn-sm w-70 float-right' id="minus_<?=$k?>" value="-" />
+                            </td>
+                            <td class="col-sm-1" >
+                                <input type="text" class="form-control form-control-sm item-input" id="qty_<?=$k?>" value="<?=$qty?>" disabled />
+                            </td>
+                            <td class="col-1">
+                                <input type="button" class='btn btn-secondary btn-sm w-70' id="plus_<?=$k?>" value="+" />
+                            </td>
+                            <td class="col-1"><?=$unit?></td>
+                            <td class="col-1">
+                            <input type="text" class="form-control form-control-sm item-input" id="price_<?=$k?>" value="<?=$price?>" />
+                            </td>
+                            <td class="col-1" ><?=$price_special?></td>
+                            <td class="col-2" id="subtotal_<?=$k?>"><?=$subtotal?></td>
+                            <td class="col-2"><?=$stockonhand?></td>
+                        </tr>
+                    <?php
+                            $total += $subtotal;
+                        }
+                    ?>
+                    <tbody>
+                </table>
+                <table class="table table-sm table-striped" id="tbl-total">
+                    <tbody>
+                        <tr>
+                            <td class="col-sm-10"></td>
+                            <td align="right">Total: </td>
+                            <td id="total"><?=number_format($total,2,".","")?></td>
+                        </tr>
+                    </tbody>        
+                </table>
+                <!-- Product view END -->
+                <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+                <div class="input-group mb-2 input-group-sm">
+                    <textarea  class="form-control" rows="3" id="i-remark" placeholder="Remark"><?=$remark?></textarea>
+                </div>
+                <input type="hidden" name="i-post" id="i-post" value="" />
+                <input type="hidden" name="i-prefix" id="i-prefix" value="<?=$prefix?>" />
+                <input type="hidden" name="i-employeecode" id="i-employeecode" value="<?=$employee_code?>" />
+                <input type="hidden" name="i-dn-prefix" id="i-dn-prefix" value="<?=$dn_prefix?>" />
+                <input type="hidden" name="i-dn-num" id="i-dn-num" value="<?=$dn_num?>" />
+                <input type="hidden" name="i-void" id="i-void" value="true" />
+                <input type="hidden" name="i-form-type" id="i-form-type" value="create" />
+            </form>
         </div>
-        <div class="input-group mb-2 input-group-sm">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="">Quotation</span>
-            </div>
-            <input type="text" class="form-control" id="i-quotation" value="<?=$quotation?>" disabled>
+        <div class="col-sm-4">
+            <h4>Quotation Reference</h4>
+            <table class="table table-sm table-striped">
+                <thead>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Unit</th>
+                    <th>QTY</th>
+                    <th>Price</th>
+                </thead>
+                <tbody id="quote_info">
+                </tbody>
+            </table>
         </div>
-        <div class="input-group mb-2 input-group-sm">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="">Date</span>
-            </div>
-            <input type="text" class="form-control" id="i-date" value="<?=$date?>" disabled >
-        </div>
-        <!-- Company -->
-        <div class="input-group mb-2 input-group-sm">
-            <div class="input-group-prepend">
-                <label class="input-group-text">Company</label>
-            </div>
-            <?php
-                if(!empty($ajax["shop_code"])):
-                    $key = array_search($default_shopcode,array_column($ajax["shop_code"],"shop_code"));
-            ?>
-            <select class="custom-select custom-select-sm" id="i-shopcode">
-                <?php if(!empty($shopcode)): ?>
-                    <option value="<?=$shopcode?>"><?=$shopname?></option>
-                <?php else: ?>
-                    <option value="<?=$ajax["shop_code"][$key]['shop_code']?>"><?=$ajax["shop_code"][$key]['name']?></option>
-                <?php endif; ?>
-                <?php
-                    foreach($ajax["shop_code"] as $k => $v):
-                ?>
-                        <option value="<?=$v['shop_code']?>"><?=$v['name']?></option>
-                <?php
-                    endforeach;
-                ?>
-            </select>
-            <?php endif;?>
-        </div>
-        
-        <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-        <!-- customer Modal -->
-        <?php include(APPPATH."views/modal-customers.php"); ?>
-        <!-- customer Modal End -->
-        
-        <!-- Customer Modal button -->
-        <div class="input-group mb-2 input-group-sm">
-            <div class="input-group-prepend">
-                <span class="input-group-text">Customer</span>
-            </div>
-            <input type="text" class="form-control" value="<?=$cust_code?>" id="i-customer" disabled="" />
-            <input type="text" class="form-control" value="<?=$cust_name?>" id="i-customer-name" disabled="">
-            <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#customers_modal">More...</button>
-        </div>
-        <!-- Customer Modal button END -->
-        <!-- Payment Method button -->
-        <div class="input-group mb-2 input-group-sm">
-            <div class="input-group-prepend">
-                <label class="input-group-text">Payment Method</label>
-            </div>
-            <select class="custom-select custom-select-sm" id="i-paymentmethod">
-                <?php if(!empty($paymentmethod)): ?>
-                    <option value="<?=$paymentmethod?>"><?=$paymentmethodname?></option>
-                <?php else: ?>
-                    <option value="-1">Choose...</option>
-                <?php endif; ?>
-                <?php 
-                    foreach($ajax["tender"] as $k => $v):
-                ?>
-                        <option value="<?=$v['pm_code']?>"><?=$v['payment_method']?></option>
-                <?php
-                    endforeach;
-                ?>
-            </select>
-        </div>
-        <!-- Payment Method button END-->
-        <!-- Product Search Button -->
-        <div class="input-group mb-2 input-group-sm">
-            <input type="text" class="form-control item-input" id="item-input" placeholder="items code">
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary btn-sm" type="button" id="item-search">Search</button>
-            </div>
-            <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#items_modal">More...</button>
-            <!-- items Modal -->
-            <?php include(APPPATH."views/modal-items.php"); ?>
-            <!-- items Modal End -->
-        </div>
-        <!-- Product Search Button END-->
-        <!-- Product view -->
-        <table class="table table-sm table-striped" id="tbl">
-            <thead>
-                <th>item code</th>
-                <th>eng name</th>
-                <th>chi_name</th>
-                <th></th>
-                <th>qty</th>
-                <th></th>
-                <th>unit</th>
-                <th>price</th>
-                <th>discount</th>
-                <th>subtotal</th>
-            </thead>
-            <!-- render items-list here -->
-            <tbody id="tdisplay">
-            <?php
-                $total = 0;
-                $subtotal = 0;
-                foreach ($items as $k=> $v){
-                    extract($v);
-                    $subtotal = $qty * $price;
-            ?>
-                <tr data-items="item_<?=$k?>">
-                    <td class="col-1" ><?=$item_code?></td>
-                    <td class="col-2" ><?=$eng_name?></td>
-                    <td class="col-2" ><?=$chi_name?></td>
-                    <td class="col-1 clearfix" >
-                        <input type="button" class='btn btn-secondary btn-sm w-70 float-right' id="minus_<?=$k?>" value="-" />
-                    </td>
-                    <td class="col-sm-1" >
-                        <input type="text" class="form-control form-control-sm item-input" id="qty_<?=$k?>" value="<?=$qty?>" disabled />
-                    </td>
-                    <td class="col-1">
-                        <input type="button" class='btn btn-secondary btn-sm w-70' id="plus_<?=$k?>" value="+" />
-                    </td>
-                    <td class="col-1"><?=$unit?></td>
-                    <td class="col-1">
-                       <input type="text" class="form-control form-control-sm item-input" id="price_<?=$k?>" value="<?=$price?>" />
-                    </td>
-                    <td class="col-1" ><?=$price_special?></td>
-                    <td class="col-2" id="subtotal_<?=$k?>"><?=$subtotal?></td>
-                </tr>
-            <?php
-                    $total += $subtotal;
-                }
-            ?>
-             <tbody>
-        </table>
-        <table class="table table-sm table-striped" id="tbl-total">
-            <tbody>
-                <tr>
-                    <td class="col-sm-10"></td>
-                    <td align="right">Total: </td>
-                    <td id="total"><?=number_format($total,2,".","")?></td>
-                </tr>
-            </tbody>        
-        </table>
-        <!-- Product view END -->
-        <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-        <div class="input-group mb-2 input-group-sm">
-            <textarea  class="form-control" rows="3" id="i-remark" placeholder="Remark"><?=$remark?></textarea>
-        </div>
-        <input type="hidden" name="i-post" id="i-post" value="" />
-        <input type="hidden" name="i-prefix" id="i-prefix" value="<?=$prefix?>" />
-        <input type="hidden" name="i-employeecode" id="i-employeecode" value="<?=$employee_code?>" />
-        <input type="hidden" name="i-dn-prefix" id="i-dn-prefix" value="<?=$dn_prefix?>" />
-        <input type="hidden" name="i-dn-num" id="i-dn-num" value="<?=$dn_num?>" />
-        <input type="hidden" name="i-void" id="i-void" value="true" />
-        <input type="hidden" name="i-form-type" id="i-form-type" value="create" />
-    </form>
+        <?php include(APPPATH."views/modal-tips.php"); ?>
+    </div>
 </div>
+
 
 <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <script>
@@ -194,10 +216,10 @@ extract($data);
         },
         "iDisplayLength": <?=$default_per_page?>,
     });
-
     //testing here
 
     /* /////////////////// START Libaray Session /////////////////////*/
+
     // search item from list
     function search(lookfor, arr){
         var a
@@ -221,6 +243,7 @@ extract($data);
                 "price" : $(this).children()[7].children[0].value,
                 "price_special" : parseFloat($(this).children()[8].innerText),
                 "subtotal" : $(this).children()[9].innerText,
+                "stockonhand" : $(this).children()[10].innerText
             }
         });
     }
@@ -231,17 +254,18 @@ extract($data);
             var _price = parseFloat(items[item].price)
             var _subtotal = parseFloat(items[item].subtotal)
             tmpl += "<tr data-items='itmes_"+item+"'>"
-            +"<td class='col-1'>"+items[item].item_code+"</td>"
-            +"<td class='col-2'>"+items[item].eng_name+"</td>"
-            +"<td class='col-2'>"+items[item].chi_name+"</td>"
-            +"<td class='col-1 clearfix'><input type='button' class='btn btn-secondary btn-sm w-70 float-right' id='minus_"+item+"' value='-' /></td>"
-            +"<td class='col-sm-1'><input type='text' class='form-control form-control-sm item-input' id='qty_"+item+"' value='"+items[item].qty+"' disabled /></td>"
-            +"<td class='col-1'><input type='button' class='btn btn-secondary btn-sm w-70' id='plus_"+item+"' value='+' /></td>"
-            +"<td class='col-1'>"+items[item].unit+"</td>"
-            +"<td class='col-1'><input type='text' class='form-control form-control-sm item-input' id='price_"+item+"' value='"+_price.toFixed(2)+"' /></td>"
-            +"<td class='col-1'>"+items[item].price_special+"</td>"
-            +"<td class='col-1' id='subtotal_"+item+"'>"+_subtotal.toFixed(2)+"</td>"
-            +"<td class='col-1'><button class='btn btn-danger btn-sm w-90' data-del-itemcode='"+items[item].item_code+"' id='del_"+item+"' type='button'><i class='fas fa-trash-alt'></i></button></td>"
+            +"<td><a href='#' id='sel_item_"+item+"' data-itemcode='"+items[item].item_code+"'>"+items[item].item_code+"</a></td>"
+            +"<td>"+items[item].eng_name+"</td>"
+            +"<td>"+items[item].chi_name+"</td>"
+            +"<td><input type='button' class='btn btn-secondary btn-sm w-70 float-right' id='minus_"+item+"' value='-' /></td>"
+            +"<td><input type='text' class='form-control form-control-sm item-input' id='qty_"+item+"' value='"+items[item].qty+"' disabled /></td>"
+            +"<td><input type='button' class='btn btn-secondary btn-sm w-70' id='plus_"+item+"' value='+' /></td>"
+            +"<td>"+items[item].unit+"</td>"
+            +"<td><input type='text' class='form-control form-control-sm item-input' id='price_"+item+"' value='"+_price.toFixed(2)+"' /></td>"
+            +"<td>"+items[item].price_special+"</td>"
+            +"<td id='subtotal_"+item+"'>"+_subtotal.toFixed(2)+"</td>"
+            +"<td>"+items[item].stockonhand+"</td>"
+            +"<td><button class='btn btn-danger btn-sm w-90' data-del-itemcode='"+items[item].item_code+"' id='del_"+item+"' type='button'><i class='fas fa-trash-alt'></i></button></td>"
             +"</tr>"
             //console.log(tmpl)
         }
@@ -265,7 +289,6 @@ extract($data);
                     $(this).val(price.toFixed(2))
                 }
                 recalc()
-
             });
             // minus function
             $('#minus_'+i).on("click", function(){
@@ -291,9 +314,12 @@ extract($data);
                 // return index if found item in source
                 let found = items.findIndex(o => o.item_code === $(this).data('del-itemcode'))
                 items.splice(found,1)
-                refresh()
+                //refresh()
                 render()
                 recalc()
+            });
+            $("#sel_item_"+i).on("click",function(){
+                show_items_quotation($(this).data("itemcode"),custcode);
             });
         });
     }
@@ -328,6 +354,7 @@ extract($data);
             let found = items.findIndex(o => o.item_code === item.item_code)
             // check item exist on list and group it
             if(found != -1){
+               
                 new_qty = parseInt(items[found].qty) 
                 new_qty += 1;
                 items[found].qty = new_qty
@@ -335,13 +362,74 @@ extract($data);
             }
             // not in list then add one
             else{
+                
                 item.qty = 1
                 var subtotal = item.qty * item.price
                 items.push(item)
             }
-            // print on screen
-            render()
-            recalc()
+        }
+        // print on screen
+        render()
+        recalc()
+    }
+    async function show_quotation(cust_code)
+    {
+        if(cust_code != "")
+        {
+            let the_url = "<?=$quote_fetch_url?>"+cust_code;
+            let response = await fetch(the_url);
+            if (response.ok) { // if HTTP-status is 200-299
+                // get the response body (the method explained below)
+                let json = await response.json();
+                var tmpl=""
+                for(item in json.query){
+                    tmpl += "<tr>"
+                        +"<td>"+json.query[item].item_code+"</td>"
+                        +"<td>"+json.query[item].chi_name+"</td>"
+                        +"<td>"+json.query[item].unit+"</td>"
+                        +"<td>"+json.query[item].qty+"</td>"
+                        +"<td>"+json.query[item].price+"</td>"
+                        +"</tr>"
+                }
+                $("#quote_info").html(tmpl)
+            } 
+            else {
+                alert("HTTP-Error: " + response.status);
+            }
+        }
+    }
+    async function show_items_quotation(item_code,cust_code)
+    {
+        $("#tips_modal").modal("show")
+        selecteditemcode = item_code
+        custcode = cust_code
+        if(custcode != "" && selecteditemcode != "")
+        {
+            let the_url = "<?=$quote_item_fetch_url?>/cust/"+custcode+"/item/"+selecteditemcode;
+            let response = await fetch(the_url);
+            if (response.ok) { // if HTTP-status is 200-299
+                // get the response body (the method explained below)
+                let json = await response.json();
+
+                $('body').on('shown.bs.modal', '#tips_modal', function () {
+                    $("#header-tips").html(selecteditemcode)
+                    var tmpl=""
+                    for(item in json.query){
+                        tmpl += "<tr>"
+                            +"<td>"+json.query[item].trans_code+"</td>"
+                            +"<td>"+json.query[item].total+"</td>"
+                            +"<td>"+json.query[item].unit+"</td>"
+                            +"<td>"+json.query[item].qty+"</td>"
+                            +"<td>"+json.query[item].price+"</td>"
+                            +"</tr>"
+                    }
+                    $("#modal_info").html(tmpl)
+                });
+
+            } 
+            else {
+                alert("HTTP-Error: " + response.status);
+            }
         }
     }
     $(window).on('beforeunload', function(){
@@ -355,10 +443,9 @@ extract($data);
     $(document).ready(function(){
         refresh()
         render()
+        
     });
     /* /////////////////// END Libaray Session /////////////////////*/
-
-    
     
     /** 
      * START customers_modal handler
@@ -378,6 +465,7 @@ extract($data);
                     }
                     $("#i-customer").val(custcode)
                     $("#i-customer-name").val(custname)
+                    show_quotation(custcode)
                 }
                 $(this).modal("hide")
             }
@@ -412,13 +500,13 @@ extract($data);
             }
             $("#i-customer").val(custcode)
             $("#i-customer-name").val(custname)
+            show_quotation(custcode)
         }
     });
     /** 
      * END customers_modal
      **/
-    
-   
+
     /** 
      * START items_modal handler
      **/
@@ -439,7 +527,7 @@ extract($data);
     $('body').on('hidden.bs.modal', '#items_modal', function () {
         $(this).modal("hide")
         $(this).unbind()
-    })
+    });
     // Selecting items
     $('#items-list tbody').on( 'click', 'tr', function () {
         if ( $(this).hasClass('selected') ) {
@@ -459,21 +547,34 @@ extract($data);
     /**
      * END items_modal
      **/
-     $("#item-search").on("click", function(){
+    
+    /** 
+    * START tips_modal handler
+    **/
+    
+    // Exit Modal
+    $('body').on('hidden.bs.modal', '#tips_modal', function () {
+        $(this).modal("hide")
+        $(this).unbind()
+    })
+    /** 
+    * END tips_modal
+    **/
+
+    $("#item-search").on("click", function(){
         const selecteditemcode = $("#item-input").val();
         if(selecteditemcode != ""){
-            lookup(selecteditemcode,dbItems)
+            lookup(selecteditemcode,dbItems) 
         }
     });
-    $("#item-input").on('focus', function(){
-        $(this).on("keypress", function(e){
-            if(e.keyCode==13){
-                const selecteditemcode = $(this).val();
-                if(selecteditemcode != ""){
-                    lookup(selecteditemcode,dbItems)
-                }
+
+    $("#item-input").on("keypress", function(e){
+        if(e.keyCode==13){
+            const selecteditemcode = $(this).val();
+            if(selecteditemcode != ""){
+                lookup(selecteditemcode,dbItems)
             }
-        });
+        }
     });
 
     $("#next").on("click",function(){

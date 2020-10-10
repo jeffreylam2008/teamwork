@@ -264,27 +264,7 @@ class Invoices extends CI_Controller
 			$_API_DN_NUM = json_decode($this->component_api->GetConfig("result"),true);
 			$_API_DN_NUM = !empty($_API_DN_NUM['query']) ? $_API_DN_NUM['query'] : "";			
 
-			// if($json=file_get_contents($this->config->item('MASTER_FILE_ITEMS')))
-			// {
-			// 	$_API_ITEMS = json_decode($json, true);
-			// }
-			// if($json=file_get_contents($this->config->item('MASTER_FILE_SHOPS')))
-			// {
-			// 	$_API_SHOPS = json_decode($json, true);
-			// }
-			// if($json=file_get_contents($this->config->item('MASTER_FILE_CUSTOMERS')))
-			// {
-			// 	$_API_CUSTOMERS = json_decode($json, true);
-			// }
-			// if($json=file_get_contents($this->config->item('MASTER_FILE_PAYMENT_METHODS')))
-			// {
-			// 	$_API_PAYMENTS = json_decode($json, true);
-			// }
-			// var_dump($_theprint_data);
-
-
 			// function bar with next, preview and save button
-
 			$this->load->view('function-bar', [
 				"btn" => [
 					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> Next", "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
@@ -300,6 +280,8 @@ class Invoices extends CI_Controller
 				"prefix" => $this->_inv_header_param['topNav']['prefix'],
 				"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
 				"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
+				"quote_fetch_url" => $this->config->item('URL_QUOTATIONS')."getinfo/cust/",
+				"quote_item_fetch_url" => $this->config->item('URL_INVENTORY')."getinfo",
 				"invoice_num" => $_invoice_num,
 				"date" => date("Y-m-d H:i:s"),
 				"dn_num" => $_API_DN_NUM,

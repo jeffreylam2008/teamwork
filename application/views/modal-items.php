@@ -21,6 +21,7 @@
                                 <th scope="col">English Name</th>
                                 <th scope="col">Unit</th>
                                 <th scope="col">Price</th>
+                                <th scope="col">stockonhand</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -35,6 +36,7 @@
                                         <td><?=$v["eng_name"]?></td>
                                         <td><?=$v["unit"]?></td>
                                         <td>$<?=$v["price"]?></td>
+                                        <td><?=$v["stockonhand"]?></td>
                                     </tr>
                             <?php
                                     endforeach;
