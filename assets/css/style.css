@@ -70,6 +70,7 @@ a[data-toggle="collapse"] {
     position: relative;
 }
 
+
 /*a[aria-expanded="false"]::before, a[aria-expanded="true"]::before {
     content: '\e259';
     display: block;
@@ -113,6 +114,7 @@ a[aria-expanded="true"]::before {
     }
 }
 
+
 /* ---------------------------------------------------
     Login screen
 ----------------------------------------------------- */
@@ -153,3 +155,4 @@ html, body {
     Common function
 ----------------------------------------------------- */
 
+  

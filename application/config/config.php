@@ -9,8 +9,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 
 
-
-
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
@@ -33,7 +31,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://app.teamwork.hk/webapp/';
+$config['base_url'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -544,7 +542,7 @@ $config['default_home'] = 'dushboard';
 |--------------------------------------------------------------------------
 */
 //$config['api_url'] = 'http://api.crazykworkshop.com/api/v1';
-$config['api_url'] = 'http://app.teamwork.hk/erp_backend/api/v1';
+$config['api_url'] = 'http://192.168.1.114/erp_backend/api/v1';
 $config['DEFAULT_PER_PAGE'] = 10;
 $config['DEFAULT_FIRST_PAGE'] = 1;
 $config['APP_LOG_PATH'] = $_SERVER['DOCUMENT_ROOT']."/webapp/logs/";
