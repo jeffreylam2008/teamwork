@@ -11,6 +11,7 @@ class Login extends CI_Controller
 		$this->load->view('login/login-header-view',[
 			'title'=>'Login'
 		]);
+		echo $_SERVER['CI_ENV'];
 	}
 
 	public function index()
