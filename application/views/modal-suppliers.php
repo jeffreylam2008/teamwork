@@ -26,13 +26,15 @@
                                 <?php
                                     if(!empty($ajax['suppliers'])):
                                         foreach($ajax['suppliers'] as $k => $v):
+                                            if( $v['status'] != "Closed"):
                                 ?>
                                     <tr data-suppcode="<?=$v['supp_code']?>" data-suppname="<?=$v['name']?>" data-pmcode="<?=$v['pm_code']?>">
-                                        <td><?=$k+1?></td>
+                                        <td><?=$k?></td>
                                         <td><?=$v['supp_code']?></td>
                                         <td><?=$v['name']?></td>
                                     </tr>
                                 <?php
+                                            endif;
                                         endforeach;
                                     endif;
                                 ?>

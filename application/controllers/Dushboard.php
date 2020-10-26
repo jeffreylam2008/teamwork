@@ -6,7 +6,6 @@ class Dushboard extends CI_Controller
 	var $_inv_header_param = [];	
 	var $_token = "";
 	var $_profile = "";
- 	var $_username = "";
 	var $_param = "";
 	public function __construct()
 	{
@@ -32,11 +31,11 @@ class Dushboard extends CI_Controller
 			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
 			$this->component_api->CallGet();
 			$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_SHOP = $_API_SHOP['query'];
+			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
 			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
 			$this->component_api->CallGet();
 			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_MENU = $_API_MENU['query'];
+			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
 
 			// sidebar session
 			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
@@ -79,11 +78,14 @@ class Dushboard extends CI_Controller
 	public function index()
 	{
 		$this->load->view('dushboard-view');
-
-		$this->load->view('footer');
-
-		unset($_SESSION['cur_invoicenum']);
-		unset($_SESSION['cur_quotationnum']);
-		unset($_SESSION['transaction']);
+		if($this->config->item("DEBUG_MODE") == true)
+		{
+			$this->load->view('footer',["show_session"=>$_SESSION]);
+		}
+		else
+		{
+			$this->load->view('footer');
+		}
+		
 	}
 }

@@ -4,9 +4,12 @@
             <!--<div class="footer"></div> --><!-- footer section -->
         <!--</div> end of row -->
         <?php
-            // echo "<pre>";
-            // var_dump($_SESSION);
-            // echo "</pre>";
+        if(!empty($show_session)){
+            echo "<pre>";
+            var_dump($show_session);
+            echo "</pre>";
+        }
+            
         ?>
     </body>
     
