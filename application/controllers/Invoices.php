@@ -190,7 +190,7 @@ class Invoices extends CI_Controller
 		var_dump($_transaction);
 		echo "</pre>";
 		
-		redirect(base_url("invoices/create/".$_API_NEXT."/".$_quotation),"refresh");
+		//redirect(base_url("invoices/create/".$_API_NEXT."/".$_quotation),"refresh");
 	}
 	/**
 	 * Create Process
