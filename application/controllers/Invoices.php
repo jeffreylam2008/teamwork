@@ -186,11 +186,11 @@ class Invoices extends CI_Controller
 			$_transaction[$_API_NEXT]['prefix'] = $this->_inv_header_param["topNav"]['prefix'];
 			$this->session->set_userdata('transaction', $_transaction);
 		}
-		echo "<pre>";
-		var_dump($_transaction);
-		echo "</pre>";
+		// echo "<pre>";
+		// var_dump($_transaction);
+		// echo "</pre>";
 		
-		//redirect(base_url("invoices/create/".$_API_NEXT."/".$_quotation),"refresh");
+		redirect(base_url("invoices/create/".$_API_NEXT."/".$_quotation),"refresh");
 	}
 	/**
 	 * Create Process
@@ -231,9 +231,9 @@ class Invoices extends CI_Controller
 				}
 			}
 
-		// echo "<pre>";
-		// var_dump($_SESSION);
-		// echo "</pre>";
+		echo "<pre>";
+		var_dump($_SESSION);
+		echo "</pre>";
 
 			// fatch items API
 			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
