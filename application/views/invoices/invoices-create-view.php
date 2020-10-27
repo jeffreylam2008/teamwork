@@ -197,10 +197,11 @@ extract($data);
 
 <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <script>
+
     var dbItems = <?=json_encode($ajax["items"],true)?>;
     var items = []
     var selecteditemcode = ""
-    var custcode = "" 
+    var custcode = $("#i-customer").val()
     var custname = ""
     var cust_pmcode = ""
     var ftotal = 0
@@ -443,7 +444,7 @@ extract($data);
     $(document).ready(function(){
         refresh()
         render()
-        
+        show_quotation(custcode)
     });
     /* /////////////////// END Libaray Session /////////////////////*/
     
