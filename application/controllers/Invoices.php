@@ -186,8 +186,9 @@ class Invoices extends CI_Controller
 			$_transaction[$_API_NEXT]['prefix'] = $this->_inv_header_param["topNav"]['prefix'];
 			$this->session->set_userdata('transaction', $_transaction);
 		}
-		//var_dump($_transaction);
-
+		echo "<pre>";
+		var_dump($_transaction);
+		echo "</pre>";
 		
 		redirect(base_url("invoices/create/".$_API_NEXT."/".$_quotation),"refresh");
 	}
