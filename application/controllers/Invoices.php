@@ -231,9 +231,9 @@ class Invoices extends CI_Controller
 				}
 			}
 
-		echo "<pre>";
-		var_dump($_SESSION);
-		echo "</pre>";
+		// echo "<pre>";
+		// var_dump($_SESSION);
+		// echo "</pre>";
 
 			// fatch items API
 			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
