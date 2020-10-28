@@ -77,7 +77,10 @@ class Dushboard extends CI_Controller
 	}
 	public function index()
 	{
-		$this->load->view('dushboard-view');
+		$this->load->view('dushboard-view', [
+			"invoices_url" => base_url("/invoices/list"),
+			"invoices_url" => base_url("/customers")
+		]);
 		if($this->config->item("DEBUG_MODE") == true)
 		{
 			$this->load->view('footer',["show_session"=>$_SESSION]);

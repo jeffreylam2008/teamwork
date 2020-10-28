@@ -185,6 +185,7 @@ class Invoices extends CI_Controller
 			$_transaction[$_API_NEXT]['date'] = date("Y-m-d H:i:s");
 			$_transaction[$_API_NEXT]['prefix'] = $this->_inv_header_param["topNav"]['prefix'];
 			$this->session->set_userdata('transaction', $_transaction);
+			$this->session->set_userdata('cur_invoicenum', $_API_NEXT);
 		}
 		// echo "<pre>";
 		// var_dump($_transaction);

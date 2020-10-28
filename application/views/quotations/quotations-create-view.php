@@ -117,24 +117,24 @@ extract($data);
                     $subtotal = $qty * $price;
             ?>
                 <tr data-items="item_<?=$k?>">
-                    <td class="col-1" ><?=$item_code?></td>
-                    <td class="col-2" ><?=$eng_name?></td>
-                    <td class="col-2" ><?=$chi_name?></td>
-                    <td class="col-1 clearfix" >
+                    <td><?=$item_code?></td>
+                    <td><?=$eng_name?></td>
+                    <td><?=$chi_name?></td>
+                    <td>
                         <input type="button" class='btn btn-secondary btn-sm w-70 float-right' id="minus_<?=$k?>" value="-" />
                     </td>
-                    <td class="col-sm-1" >
+                    <td>
                         <input type="text" class="form-control form-control-sm item-input" id="qty_<?=$k?>" value="<?=$qty?>" disabled />
                     </td>
-                    <td class="col-1">
+                    <td>
                         <input type="button" class='btn btn-secondary btn-sm w-70' id="plus_<?=$k?>" value="+" />
                     </td>
-                    <td class="col-1"><?=$unit?></td>
-                    <td class="col-1">
+                    <td><?=$unit?></td>
+                    <td>
                        <input type="text" class="form-control form-control-sm item-input" id="price_<?=$k?>" value="<?=$price?>" />
                     </td>
-                    <td class="col-1" ><?=$price_special?></td>
-                    <td class="col-2" id="subtotal_<?=$k?>"><?=$subtotal?></td>
+                    <td><?=$price_special?></td>
+                    <td id="subtotal_<?=$k?>"><?=$subtotal?></td>
                 </tr>
             <?php
                     $total += $subtotal;
