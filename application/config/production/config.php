@@ -551,7 +551,7 @@ $config['MASTER_FILE_SHOPS'] = "./files/SHOPS.json";
 $config['MASTER_FILE_CUSTOMERS'] = "./files/CUSTOMERS.json";
 $config['MASTER_FILE_PAYMENT_METHODS'] = "./files/PAYMENT_METHODS.json";
 $config['MASTER_FILE_MENU'] = "./files/MENU.json";
-$config['DEBUG_MODE'] = true;
+$config['DEBUG_MODE'] = false;
 
 $config['URL_LOGIN'] = $config['api_url']."/systems/login/";
 $config['URL_SHOP'] = $config['api_url']."/systems/shops/";
