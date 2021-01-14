@@ -18,7 +18,7 @@
             <span class="input-group-text" >Purchases Number</span>
         </div>
         
-        <input type="text" class="form-control" value="<?=$purchasenum?>" disabled />
+        <input type="text" class="form-control" value="<?=$purchasesnum?>" disabled />
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">

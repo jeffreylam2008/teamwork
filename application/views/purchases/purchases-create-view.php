@@ -111,7 +111,6 @@ extract($data);
                 <th></th>
                 <th>unit</th>
                 <th>price</th>
-                <th>discount</th>
                 <th>subtotal</th>
             </thead>
             <!-- render items-list here -->
@@ -142,7 +141,6 @@ extract($data);
                     <td>
                        <input type="text" class="form-control form-control-sm item-input" id="price_<?=$k?>" value="<?=$price?>" />
                     </td>
-                    <td><?=$price_special?></td>
                     <td id="subtotal_<?=$k?>"><?=$subtotal?></td>
                 </tr>
             <?php
@@ -216,8 +214,7 @@ extract($data);
                 "qty" :  parseInt($(this).children()[4].children[0].value),
                 "unit":  $(this).children()[6].innerText,
                 "price" : $(this).children()[7].children[0].value,
-                "price_special" : parseFloat($(this).children()[8].innerText),
-                "subtotal" : $(this).children()[9].innerText
+                "subtotal" : $(this).children()[8].innerText
             }
         });
     }
@@ -242,7 +239,6 @@ extract($data);
             +"</td>"
             +"<td>"+items[item].unit+"</td>"
             +"<td><input type='text' class='form-control form-control-sm item-input' id='price_"+item+"' value='"+_price.toFixed(2)+"' /></td>"
-            +"<td>"+items[item].price_special+"</td>"
             +"<td id='subtotal_"+item+"'>"+_subtotal.toFixed(2)+"</td>"
             +"<td><button cass='btn btn-danger btn-sm w-90' data-del-itemcode='"+items[item].item_code+"' id='del_"+item+"' type='button'><i class='fas fa-trash-alt'></i></button></td>"
             +"</tr>"

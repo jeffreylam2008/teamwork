@@ -2,7 +2,7 @@
    <!-- <div class="container">-->
       <div class="row">
         <div class="col-md-4 login-sec">
-          <h2 class="text-center"><img class="d-block img-fluid" src="<?=base_url('assets/img/logo-white.png');?>" alt="First slide" width="98%" height="100%"/></h2>
+          <h2 class="text-center"><img class="d-block img-fluid" src="<?=base_url('assets/img/just-logo.png');?>" alt="First slide" width="98%" height="100%"/></h2>
           <form class="login-form" action="<?=$submit?>" method="POST">
 
             <div class="form-group">
@@ -47,10 +47,14 @@
             ?>
               
             <div class="input-group mb-5">
-              <?php
-              //echo "DEBUG MODE:";
-              //var_dump($s_status);
-              ?>
+            <?php
+            if($this->config->item("DEBUG_MODE")){
+                echo "<pre>";
+                var_dump($_SESSION);
+                echo "</pre>";
+            }
+                
+            ?>
             </div>
             <?php
               endif;
@@ -62,7 +66,7 @@
         </div>
 
         <div class="col-md-8">
-          <img class=" img-fluid" src="<?=base_url('assets/img/twc-about.jpg');?>" alt="First slide" width="100%" />
+          <img class=" img-fluid" src="<?=base_url('assets/img/just-bg.png');?>" alt="First slide" width="100%" />
         </div>
     <!-- container
     </div>-->
