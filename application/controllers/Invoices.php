@@ -778,6 +778,7 @@ class Invoices extends CI_Controller
 			}
 			else
 			{
+
 				// fatch items API
 				$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY').$_query);
 			}

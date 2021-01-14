@@ -77,18 +77,25 @@ class Dushboard extends CI_Controller
 	}
 	public function index()
 	{
+		// API data
+		$this->component_api->SetConfig("url", $this->config->item('URL_DUSHBOARD_MONTHLY_INVOICES')."?year=".date('Y')."&month=".date('m')."");
+		$this->component_api->CallGet();
+		$_API_MONTHLY_INVOICES = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_MONTHLY_INVOICES = !empty($_API_MONTHLY_INVOICES['query']) ? $_API_MONTHLY_INVOICES['query'] : "";
+		$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS_COUNT'));
+		$this->component_api->CallGet();
+		$_API_CUSTOMERS_COUNT = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_CUSTOMERS_COUNT = !empty($_API_CUSTOMERS_COUNT['query']) ? $_API_CUSTOMERS_COUNT['query'] : "";
 		$this->load->view('dushboard-view', [
 			"invoices_url" => base_url("/invoices/list"),
-			"invoices_url" => base_url("/customers")
+			"customer_url" => base_url("/customers"),
+			"elem" => [
+				"m_customers" => $_API_CUSTOMERS_COUNT['count'],
+				"m_invoices" => $_API_MONTHLY_INVOICES['count'],
+				"m_income" => $_API_MONTHLY_INVOICES['income']
+			]
 		]);
-		if($this->config->item("DEBUG_MODE") == true)
-		{
-			$this->load->view('footer',["show_session"=>$_SESSION]);
-		}
-		else
-		{
-			$this->load->view('footer');
-		}
+		$this->load->view('footer');
 		
 	}
 }

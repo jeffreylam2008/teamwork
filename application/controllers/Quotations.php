@@ -152,6 +152,7 @@ class Quotations extends CI_Controller
 		$this->component_api->CallGet();
 		$_API_QTA_NUM = json_decode($this->component_api->GetConfig("result"), true);
 		$_API_QTA_NUM = !empty($_API_QTA_NUM['query']) ? $_API_QTA_NUM['query'] : "";
+		// transaction retrieve
 		$_transaction[$_API_QTA_NUM] = $_API_QTA;
 		$_transaction[$_API_QTA_NUM]['date'] = date("Y-m-d H:i:s");
 		$this->session->set_userdata('cur_quotationnum',$_API_QTA_NUM);
@@ -181,6 +182,7 @@ class Quotations extends CI_Controller
 				{
 					$_num = $this->session->userdata('cur_quotationnum');
 					$_transaction = $this->session->userdata('transaction');
+					$_transaction[$_num]['quotation'] = $_num;
 				}
 				// For new create
 				else 
@@ -350,6 +352,7 @@ class Quotations extends CI_Controller
 						"show" => $_show_void_btn,
 						"default_per_page" => $this->_default_per_page						
 					]);
+					$this->load->view('footer');
 				}
 				else
 				{

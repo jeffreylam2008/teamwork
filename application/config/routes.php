@@ -210,4 +210,5 @@ $route['master'] = 'master/index';
 // Master file load
 $route['TestBed'] = 'TestBed/index';
 
-
+// Reports -> index
+$route['reports'] = 'reports/index';

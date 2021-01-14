@@ -4,9 +4,9 @@
             <!--<div class="footer"></div> --><!-- footer section -->
         <!--</div> end of row -->
         <?php
-        if(!empty($show_session)){
+        if($this->config->item("DEBUG_MODE")){
             echo "<pre>";
-            var_dump($show_session);
+            var_dump($_SESSION);
             echo "</pre>";
         }
             

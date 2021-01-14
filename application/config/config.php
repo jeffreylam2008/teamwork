@@ -541,7 +541,6 @@ $config['default_home'] = 'dushboard';
 | API Configuration 
 |--------------------------------------------------------------------------
 */
-//$config['api_url'] = 'http://api.crazykworkshop.com/api/v1';
 $config['api_url'] = 'http://192.168.1.114/erp_backend/api/v1';
 $config['DEFAULT_PER_PAGE'] = 10;
 $config['DEFAULT_FIRST_PAGE'] = 1;
@@ -563,6 +562,7 @@ $config['URL_MENU_SIDE'] = $config['api_url']."/systems/menu/side";
 $config['URL_CATEGORIES'] = $config['api_url']."/products/categories/";
 $config['URL_CATEGORIES_HAS_ITEM'] = $config['api_url']."/products/items/has/category/";
 $config['URL_CUSTOMERS'] = $config['api_url']."/customers/";
+$config['URL_CUSTOMERS_COUNT'] = $config['api_url']."/customers/count/";
 $config['URL_SUPPLIERS'] = $config['api_url']."/suppliers/";
 $config['URL_PAYMENT_METHODS'] = $config['api_url']."/systems/payments/methods/";
 $config['URL_PAYMENT_TERMS'] = $config['api_url']."/systems/payments/terms/";
@@ -596,5 +596,5 @@ $config['URL_STOCK_ST_PREFIX'] = $config['api_url']."/stocks/stocktake/getprefix
 $config['URL_PURCHASES_ORDER'] = $config['api_url']."/purchases/order/";
 $config['URL_PURCHASES_ORDER_NEXT_NUM'] = $config['api_url']."/purchases/order/getnextnum/";
 $config['URL_PURCHASES_ORDER_PREFIX'] = $config['api_url']."/purchases/order/getprefix/";
-
+$config['URL_DUSHBOARD_MONTHLY_INVOICES'] = $config['api_url']."/inventory/invoices/transaction/h/INV/count/";
 
