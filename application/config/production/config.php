@@ -31,7 +31,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://app.teamwork.hk/webapp/';
+$config['base_url'] = 'http://13.209.150.150/webapp/';
 
 /*
 |--------------------------------------------------------------------------
@@ -541,7 +541,7 @@ $config['default_home'] = 'dushboard';
 | API Configuration 
 |--------------------------------------------------------------------------
 */
-$config['api_url'] = 'http://app.teamwork.hk/erp_backend/api/v1';
+$config['api_url'] = 'http://13.209.150.150/erp_backend/api/v1';
 $config['DEFAULT_PER_PAGE'] = 10;
 $config['DEFAULT_FIRST_PAGE'] = 1;
 $config['APP_LOG_PATH'] = $_SERVER['DOCUMENT_ROOT']."/webapp/logs/";
