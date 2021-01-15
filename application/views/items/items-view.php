@@ -83,6 +83,7 @@ $(document).ready(function() {
             items: 'column'
         },
         "iDisplayLength": <?=$default_per_page?>,
+        "dom": '<"top"flp<"clear">>rt<"bottom"ip<"clear">>'
     });
     // set page number from previous
     table.page(<?=($page-1)?>).draw('page');
