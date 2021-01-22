@@ -84,8 +84,8 @@ class Categories extends CI_Controller
 			{
 				$this->_default_per_page = $this->input->get("show");
 			}
-			$_query['page'] = $this->_page;
-			$_query['show'] = $this->_default_per_page;
+			$_query['page'] = htmlspecialchars($this->_page);
+			$_query['show'] = htmlspecialchars($this->_default_per_page);
 			$_query = $this->component_uri->QueryToString($_query);
 			$_login = $this->session->userdata['login'];
 			$_login['preference'] = $_query;

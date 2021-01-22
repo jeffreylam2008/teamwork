@@ -88,8 +88,8 @@ class Invoices extends CI_Controller
 			if(!empty($_query))
 			{
 				//Set user preference
-				$_query['page'] = $this->_page;
-				$_query['show'] = $this->_default_per_page;
+				$_query['page'] = htmlspecialchars($this->_page);
+				$_query['show'] = htmlspecialchars($this->_default_per_page);
 				$_query = $this->component_uri->QueryToString($_query);
 				$_login = $this->session->userdata['login'];
 				$_login['preference'] = $_query;
@@ -759,12 +759,12 @@ class Invoices extends CI_Controller
 			$_cust_code = $this->input->get('i-cust-code');
 
 			//Set user preference
-			$_query['page'] = $this->_page;
-			$_query['show'] = $this->_default_per_page;
-			$_query['i-start-date'] = $_start_date;
-			$_query['i-end-date'] = $_end_date;
-			$_query['i-invoice-num'] = $_invoice_num;
-			$_query['i-cust-code'] = $_cust_code;
+			$_query['page'] = htmlspecialchars($this->_page);
+			$_query['show'] = htmlspecialchars($this->_default_per_page);
+			$_query['i-start-date'] = htmlspecialchars($_start_date);
+			$_query['i-end-date'] = htmlspecialchars($_end_date);
+			$_query['i-invoice-num'] = htmlspecialchars($_invoice_num);
+			$_query['i-cust-code'] = htmlspecialchars($_cust_code);
 			$_query = $this->component_uri->QueryToString($_query);
 			$_login = $this->session->userdata['login'];
 			$_login['preference'] = $_query;

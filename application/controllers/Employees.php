@@ -77,8 +77,8 @@ class Employees extends CI_Controller
 				"today" => date("Y-m-d")
 			];
 
-			$_query['page'] = $this->_page;
-			$_query['show'] = $this->_default_per_page;
+			$_query['page'] = htmlspecialchars($this->_page);
+			$_query['show'] = htmlspecialchars($this->_default_per_page);
 			$_query = $this->component_uri->QueryToString($_query);
 			$_login = $this->session->userdata['login'];
 			$_login['preference'] = $_query;

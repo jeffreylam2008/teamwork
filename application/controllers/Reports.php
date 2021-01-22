@@ -84,8 +84,8 @@ class Reports extends CI_Controller
 			if(!empty($_query))
 			{
 				//Set user preference
-				$_query['page'] = $this->_page;
-				$_query['show'] = $this->_default_per_page;
+				$_query['page'] = htmlspecialchars($this->_page);
+				$_query['show'] = htmlspecialchars($this->_default_per_page);
 				$_query = $this->component_uri->QueryToString($_query);
 				$_login = $this->session->userdata['login'];
 				$_login['preference'] = $_query;
@@ -116,6 +116,22 @@ class Reports extends CI_Controller
 	}
 	public function index()
 	{
+		$this->load->view('title-bar', [
+			"title" => "General Report"
+		]);
+		$this->load->view("reports/menu_view", [
+			"reports" => [
+				["name"=>"Monthly Report", "url"=>base_url('/reports/monthly')],
+				["name"=>"Daily Report", "url"=>base_url('/reports/daily')],
+				["name"=>"Transactions Report", "url"=>base_url('/reports/transactions')],
+				["name"=>"Products Report", "url"=>base_url('/reports/products')]
+			]
+		]);
+	}
+	public function reports($report="")
+	{
+		echo $report;
+
 		if(empty($_GET['i-start-date']) && empty($_GET['i-end-date']))
 		{
 			$_GET['i-start-date'] = date("Y-m-d", strtotime('-5 days'));
@@ -123,9 +139,25 @@ class Reports extends CI_Controller
 		}
 		$_start_date = $this->input->get('i-start-date');
 		$_end_date = $this->input->get('i-end-date');
-		$this->load->view("reports/calendar_view", [
-			"ad_start_date" => $_start_date,
-			"ad_end_date" => $_end_date
+
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> Back", "type"=>"button", "id" => "Back", "url"=> base_url('/reports'), "style" => "", "show" => true]
+			]
 		]);
+		switch($report)
+		{
+			case "monthly":
+				$this->load->view("reports/calendar_month_view",[
+					"ad_end_date"
+				]);
+				break;
+			case "daily":
+				$this->load->view("reports/calendar_view", [
+					"ad_start_date" => $_start_date,
+					"ad_end_date" => $_end_date
+				]);
+				break;
+		}
 	}
 }

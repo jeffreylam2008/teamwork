@@ -11,7 +11,7 @@ extract($data);
             <div class="input-group-prepend">
                 <span class="input-group-text" id="">Purchases Number</span>
             </div>
-            <input type="text" class="form-control" id="i-purchasenum" value="<?=$purchasenum?>" disabled>
+            <input type="text" class="form-control" id="i-purchasesnum" value="<?=$purchasesnum?>" disabled>
         </div>
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
@@ -269,7 +269,7 @@ extract($data);
              // minus function
             $('#more_minus_'+i).on("click", function(){
                 var $qty = $('#qty_'+i)
-                if(parseInt($qty.val()) > 1){
+                if(parseInt($qty.val()) > 10){
                     let new_qty = parseInt($qty.val()) - 10
                     if(new_qty > 0)
                         new_qty = "+"+new_qty
@@ -289,7 +289,7 @@ extract($data);
             // plus function
             $('#plus_'+i).on("click",function(){
                 var $qty = $('#qty_'+i)
-                if(parseInt( $qty.val()) >= 0 && parseInt( $qty.val()) < 10){
+                if(parseInt( $qty.val()) >= 0){
                     let new_qty = parseInt( $qty.val()) + 1
                     $qty.val(new_qty)
                     recalc()
@@ -500,7 +500,7 @@ extract($data);
     $("#next").on("click",function(){
         var _inputs = {};
         var _valid = 0;
-        _inputs["purchasenum"] = $("#i-purchasenum").val()
+        _inputs["purchasesnum"] = $("#i-purchasesnum").val()
         _inputs["refernum"] = $("#i-refernum").val()
         _inputs["prefix"] = $("#i-prefix").val()
         _inputs["quotation"] = $("#i-quotation").val()

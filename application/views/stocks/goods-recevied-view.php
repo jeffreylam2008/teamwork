@@ -275,7 +275,7 @@ function render(){
          // minus function
          $('#more_minus_'+i).on("click", function(){
             var $qty = $('#qty_'+i)
-            if(parseInt($qty.val()) > 1){
+            if(parseInt($qty.val()) > 10){
                 let new_qty = parseInt($qty.val()) - 10
                 if(new_qty > 0)
                     new_qty = "+"+new_qty

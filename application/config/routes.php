@@ -212,3 +212,4 @@ $route['TestBed'] = 'TestBed/index';
 
 // Reports -> index
 $route['reports'] = 'reports/index';
+$route['reports/(:any)'] = 'reports/reports/$1';

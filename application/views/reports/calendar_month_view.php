@@ -4,7 +4,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text" id="basic-addon1">Start Date</span>
             </div>
-            <input type="text" class="form-control" id="i-start-date" name="i-start-date" value="<?=$ad_start_date?>" placeholder="yyyy-mm-dd" />
+            <input type="text" class="form-control" id="i-start-date" name="i-start-date" value="<?=date('Y')?>-<?=date('m')?>" placeholder="" />
             <div class="input-group-append">
                 <span class="input-group-text">
                 <i class="far fa-calendar-alt"></i>
@@ -17,7 +17,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text" id="basic-addon1">End Date</span>
             </div>
-            <input type="text" class="form-control" id="i-end-date" name="i-end-date" value="<?=$ad_end_date?>" placeholder="yyyy-mm-dd" />
+            <input type="text" class="form-control" id="i-end-date" name="i-end-date" value="<?=date('Y')?>-<?=date('m')?>" placeholder="" />
             <div class="input-group-append">
                 <span class="input-group-text">
                 <i class="far fa-calendar-alt"></i>
@@ -31,9 +31,9 @@
 <script>
     $(document).ready(function() { 
         $('.input-group.date').datepicker({
-            format: "yyyy-mm-dd",
-            orientation: "bottom left",
-            todayHighlight: true,
+            format: "yyyy-mm",
+            viewMode: "months",
+            minViewMode: "months",
             autoclose: true
         });
     });
