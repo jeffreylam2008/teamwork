@@ -594,6 +594,7 @@ $config['URL_STOCK_ST'] = $config['api_url']."/stocks/stocktake/";
 $config['URL_STOCK_ST_NEXT_NUM'] = $config['api_url']."/stocks/stocktake/getnextnum/";
 $config['URL_STOCK_ST_PREFIX'] = $config['api_url']."/stocks/stocktake/getprefix/";
 $config['URL_PURCHASES_ORDER'] = $config['api_url']."/purchases/order/";
+$config['URL_PURCHASES_ORDER_GRN'] = $config['api_url']."/purchases/order/getgrn/po/";
 $config['URL_PURCHASES_ORDER_NEXT_NUM'] = $config['api_url']."/purchases/order/getnextnum/";
 $config['URL_PURCHASES_ORDER_PREFIX'] = $config['api_url']."/purchases/order/getprefix/";
 $config['URL_DUSHBOARD_MONTHLY_INVOICES'] = $config['api_url']."/inventory/invoices/transaction/h/INV/count/";

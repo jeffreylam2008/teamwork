@@ -295,7 +295,7 @@ function render(){
         // plus function
         $('#plus_'+i).on("click",function(){
             var $qty = $('#qty_'+i)
-            if(parseInt( $qty.val()) >= 0 && parseInt( $qty.val()) < item_qty_limit){
+            if(parseInt( $qty.val()) > 0 && parseInt( $qty.val()) < item_qty_limit){
                 let new_qty = parseInt( $qty.val()) + 1
                 $qty.val(new_qty)
                 recalc()
@@ -304,13 +304,13 @@ function render(){
          // plus function
          $('#more_plus_'+i).on("click",function(){
             var $qty = $('#qty_'+i)
-            //if(parseInt( $qty.val()) >= 0 && parseInt( $qty.val()) < 10){
+            if(parseInt( $qty.val()) > 0 && parseInt( $qty.val()) < item_qty_limit){
                 let new_qty = parseInt( $qty.val()) + 10
                 if(new_qty > 0)
                     new_qty = "+"+new_qty
                 $qty.val(new_qty.toString())
                 recalc()
-            //}
+            }
         });
         // remove function
         $('#del_'+i).on("click",function(){

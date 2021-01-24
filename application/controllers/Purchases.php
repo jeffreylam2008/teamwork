@@ -702,13 +702,26 @@ class Purchases extends CI_Controller
 		$this->component_api->CallGet();
 		$_API_NEXT = json_decode($this->component_api->GetConfig("result"), true);
 		$_API_NEXT = !empty($_API_NEXT['query']) ? $_API_NEXT['query'] : "";
+		
 		if(!empty($_API_NEXT))
 		{
-			$this->session->set_userdata('cur_grnnum', $_API_NEXT);
+			$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_GRN').$_num);
+			$this->component_api->CallGet();
+			$_API_GET_GRN = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_GET_GRN = !empty($_API_GET_GRN['query']) ? $_API_GET_GRN['query'] : "";
+			// echo "<pre>";
+			// var_dump($_API_GET_GRN);
+			// echo "</pre>";
+
+
 			$_temp = $this->session->userdata('transaction');
-			$_transaction[$_API_NEXT] = $_temp['query'];
+			// echo "<pre>";
+			// var_dump($_temp);
+			// echo "</pre>";
+			$_transaction[$_API_NEXT] = $_API_GET_GRN;
 			$_transaction[$_API_NEXT]['trans_code'] = $_API_NEXT;
 			$_transaction[$_API_NEXT]['po_num'] = $_num;
+			$this->session->set_userdata('cur_grnnum', $_API_NEXT);
 			$this->session->set_userdata('transaction', $_transaction);
 			redirect(base_url("stocks/grn/create/".$_API_NEXT."/".$_num),"refresh");
 		} 

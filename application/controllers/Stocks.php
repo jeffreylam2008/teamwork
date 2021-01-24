@@ -357,9 +357,10 @@ class Stocks extends CI_Controller
 					$this->session->set_userdata('transaction',$_transaction);
 				}
 			}
-			
+
 			$this->load->view('function-bar', [
 				"btn" => [
+					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/purchases/order/edit/'.$_po_num) ,"style" => "","show" => true],
 					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> Next", "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
 					["name" => "<i class='fas fa-trash-alt'></i> Discard", "type"=>"button", "id" => "discard", "url"=> base_url('/stocks/grn/donew'), "style" => "btn btn-danger", "show" => $_show_discard_btn]
 				]
@@ -371,7 +372,6 @@ class Stocks extends CI_Controller
 			
 			$this->load->view("stocks/goods-recevied-view", [
 				"submit_to" => base_url("stocks/process"),
-				"prefix" => $_API_GRN_PREFIX,
 				"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
 				"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
 				"default_per_page" => $this->_default_per_page,
