@@ -46,8 +46,8 @@
             <div class="input-group-prepend">
                 <span class="input-group-text">Suppliers</span>
             </div>
-            <input type="text" class="form-control" value="<?=$suppcode?>" id="i-suppliers" disabled="" />
-            <input type="text" class="form-control" value="<?=$suppname?>" id="i-suppliers-name" disabled="">
+            <input type="text" class="form-control" value="<?=$supp_code?>" id="i-suppliers" disabled="" />
+            <input type="text" class="form-control" value="<?=$supp_name?>" id="i-suppliers-name" disabled="">
         </div>
         <!-- End Suppliers -->
         

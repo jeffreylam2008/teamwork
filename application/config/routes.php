@@ -167,6 +167,8 @@ $route['purchases/order/edit/(:any)'] = 'purchases/edit/$1';
 $route['purchases/order/void/(:any)'] = 'purchases/void/$1';
 $route['purchases/order/void/confirmed/(:any)'] = 'purchases/savevoid/$1';
 $route['purchases/order/togrn/(:any)'] = 'purchases/to_grn/$1';
+$route['purchases/order/settlement/(:any)'] = 'purchases/settlement/$1';
+$route['purchases/order/settlement/save/(:any)'] = 'purchases/savesettlement/$1';
 
 // stocks
 $route['stocks'] = 'stocks/index';

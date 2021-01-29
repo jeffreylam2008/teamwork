@@ -542,7 +542,7 @@ $config['default_home'] = 'dushboard';
 |--------------------------------------------------------------------------
 */
 $config['api_url'] = 'http://192.168.1.114/erp_backend/api/v1';
-$config['DEFAULT_PER_PAGE'] = 10;
+$config['DEFAULT_PER_PAGE'] = 25;
 $config['DEFAULT_FIRST_PAGE'] = 1;
 $config['APP_LOG_PATH'] = $_SERVER['DOCUMENT_ROOT']."/webapp/logs/";
 $config['APP_LOG_FILE'] = "applog.log";
@@ -595,6 +595,7 @@ $config['URL_STOCK_ST_NEXT_NUM'] = $config['api_url']."/stocks/stocktake/getnext
 $config['URL_STOCK_ST_PREFIX'] = $config['api_url']."/stocks/stocktake/getprefix/";
 $config['URL_PURCHASES_ORDER'] = $config['api_url']."/purchases/order/";
 $config['URL_PURCHASES_ORDER_GRN'] = $config['api_url']."/purchases/order/getgrn/po/";
+$config['URL_PURCHASES_ORDER_SETTLEMENT'] = $config['api_url']."/purchases/order/settlement/po/";
 $config['URL_PURCHASES_ORDER_NEXT_NUM'] = $config['api_url']."/purchases/order/getnextnum/";
 $config['URL_PURCHASES_ORDER_PREFIX'] = $config['api_url']."/purchases/order/getprefix/";
 $config['URL_DUSHBOARD_MONTHLY_INVOICES'] = $config['api_url']."/inventory/invoices/transaction/h/INV/count/";

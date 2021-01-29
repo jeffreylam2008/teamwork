@@ -409,10 +409,12 @@ class Purchases extends CI_Controller
 		$_cur_num = "";
 		$_cur_num = $this->session->userdata('cur_purchasesnum');
 		$_transaction = $this->session->userdata('transaction');
+		$_login = $this->session->userdata('login');
 		$alert = "danger";
 		$this->load->view('function-bar', [
 			"btn" => [
-				["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "donew", "url"=> base_url('/purchases/order/donew'),"style" => "","show" => true],
+				["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/purchases/order/'.$_login['preference']) ,"style" => "","show" => true],
+				["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "donew", "url"=> base_url('/purchases/order/donew'),"style" => "","show" => true]
 			]
 		]);
 
@@ -478,6 +480,8 @@ class Purchases extends CI_Controller
 		$_transaction = [];
 		$_show_void_btn = true;
 		$_show_next_btn = true;
+		$_show_grn_btn = true;
+		$_grn_btn_name = "";
 		if(!empty($_num))
 		{
 			// Check Quotation exist
@@ -496,6 +500,20 @@ class Purchases extends CI_Controller
 				{
 					$_show_void_btn = false;
 					$_show_next_btn = false;
+				}
+				// already settlement
+				if($_transaction['query']['is_settle'] > 0)
+				{
+					$_show_grn_btn = false;
+				}
+				// display button name
+				if($_transaction['query']['settlement'])
+				{
+					$_grn_btn_name = "Do Settlement";
+				}
+				else
+				{
+					$_grn_btn_name = "Goods Recevied";
 				}
 				// set current invoice number to session
 				$this->session->set_userdata('cur_purchasesnum',$_num);
@@ -532,8 +550,8 @@ class Purchases extends CI_Controller
 						"btn" => [
 							["name" => "<i class='fas fa-chevron-left'></i> Back", "type"=>"button", "id" => "Back", "url"=> base_url('/purchases/order/'.$_login['preference']), "style" => "", "show" => true],
 							["name" => "<i class='fas fa-arrow-alt-circle-right'></i> Next", "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => $_show_next_btn],
-							//["name" => "<i class='far fa-copy'></i> Copy", "type"=>"button", "id" => "copy", "url"=> base_url('/purchases/order/copy/'.$_num), "style" => "btn btn-dark", "show" => true],
-							["name" => "<i class='fas fa-truck-loading'></i> Good Received", "type"=>"button", "id" => "grn", "url"=> base_url('/purchases/order/togrn/'.$_num), "style" => "btn btn-success", "show" => true],
+							["name" => "<i class='far fa-copy'></i> Copy", "type"=>"button", "id" => "copy", "url"=> base_url('/purchases/order/copy/'.$_num), "style" => "btn btn-dark", "show" => true],
+							["name" => "<i class='fas fa-truck-loading'></i> ".$_grn_btn_name."", "type"=>"button", "id" => "grn", "url"=> base_url('/purchases/order/togrn/'.$_num), "style" => "btn btn-success", "show" => $_show_grn_btn],
 							["name" => "<i class='fas fa-eraser'></i> Cancel", "type"=>"button", "id" => "discard", "url"=> base_url('/purchases/order/void/'.$_num), "style" => "btn btn-danger", "show" => $_show_void_btn]
 						]
 					]);
@@ -573,6 +591,7 @@ class Purchases extends CI_Controller
 			}
 		}
 	}
+	
 	 /**
 	  * Save Edit
 	  */
@@ -642,14 +661,14 @@ class Purchases extends CI_Controller
 	  * Void
 	  * @param _num transaction number which PO number
 	  */
-	  public function void($_num = "")
-	  {
+	public function void($_num = "")
+	{
 		$this->load->view("purchases/purchases-void-view", [
 			"submit_to" => base_url("purchases/order/void/confirmed/".$_num),
 			"to_deleted_num" => $_num,
 			"return_url" => base_url("purchases/order/edit/".$_num)
 		]);
-	  }
+	}
 	/**
 	* Save Void
 	*/
@@ -693,11 +712,12 @@ class Purchases extends CI_Controller
 	}
 	/**
 	* To GRN
-	* @param _num PO number to food recevied Note
+	* @param _num PO number to good recevied Note
 	*/
 	public function to_grn($_num = "")
 	{
 		$_transaction = [];
+		$_temp = [];
 		$this->component_api->SetConfig("url", $this->config->item('URL_PO_GRN_NEXT_NUM'));
 		$this->component_api->CallGet();
 		$_API_NEXT = json_decode($this->component_api->GetConfig("result"), true);
@@ -709,15 +729,14 @@ class Purchases extends CI_Controller
 			$this->component_api->CallGet();
 			$_API_GET_GRN = json_decode($this->component_api->GetConfig("result"), true);
 			$_API_GET_GRN = !empty($_API_GET_GRN['query']) ? $_API_GET_GRN['query'] : "";
-			// echo "<pre>";
-			// var_dump($_API_GET_GRN);
-			// echo "</pre>";
-
-
-			$_temp = $this->session->userdata('transaction');
-			// echo "<pre>";
-			// var_dump($_temp);
-			// echo "</pre>";
+			
+			// send settlement 
+			if($_API_GET_GRN['settlement'])
+			{
+				$this->session->set_userdata('transaction', $_API_GET_GRN);
+				redirect(base_url("purchases/order/settlement/".$_num),"refresh");
+			}
+			
 			$_transaction[$_API_NEXT] = $_API_GET_GRN;
 			$_transaction[$_API_NEXT]['trans_code'] = $_API_NEXT;
 			$_transaction[$_API_NEXT]['po_num'] = $_num;
@@ -725,6 +744,63 @@ class Purchases extends CI_Controller
 			$this->session->set_userdata('transaction', $_transaction);
 			redirect(base_url("stocks/grn/create/".$_API_NEXT."/".$_num),"refresh");
 		} 
-		
 	}
+	/**
+	 * Settlement
+	 * @param _num Purchase Order reference code
+	 */
+	public function settlement($_num = "")
+	{
+		$_total = 0;
+		$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_SETTLEMENT').$_num);
+		$this->component_api->CallGet();
+		$_API_SETTLEMENT = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_SETTLEMENT = !empty($_API_SETTLEMENT['query']) ? $_API_SETTLEMENT['query'] : "";
+
+		$this->load->view("purchases/purchases-settlement-view", [
+			"return_url" => base_url("purchases/order/edit/".$_num),
+			"submit_to" => base_url("purchases/order/settlement/save/".$_num),
+			"po_num" => $_num,
+			"data" => $_API_SETTLEMENT['all_grn'],
+			"total" => $_API_SETTLEMENT['total']
+		]);
+	}
+	/**
+	 * Settlement Save
+	 * @param _num trans_code
+	 */
+	 public function savesettlement($_num = "")
+	 {
+		$_login = $this->session->userdata('login');
+		
+		$this->load->view('function-bar', [
+			"btn" => [
+				[
+					"name" => "<i class='fas fa-chevron-left'></i> Back", "type"=>"button", "id" => "back", "url"=> base_url('/purchases/order/'.$_login["preference"]), "style" => "", "show" => true
+				]
+			]
+		]);
+		if(!empty($_num))
+		{
+			$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_SETTLEMENT').$_num);
+			$this->component_api->CallPatch();
+			$result = json_decode($this->component_api->GetConfig("result"),true);
+			if(isset($result["error"]))
+			{
+				$alert = "danger";
+				switch($result["error"]['code'])
+				{
+					case "00000":
+						$alert = "success";
+					break;
+				}
+				$this->load->view('error-handle', [
+					'message' => $result["error"]['message'], 
+					'code'=> $result["error"]['code'], 
+					'alertstyle' => $alert
+				]);
+				redirect(base_url("purchases/order/".$_login['preference']),"refresh");
+			}
+		}
+	 }
 }
