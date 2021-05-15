@@ -19,31 +19,31 @@
                             <div class="col-6">
                                 <div class="form-row">
                                     <div class="col-6">
-                                        <label for="">Item Code</label>
-                                        <input type="text" class="form-control form-control-sm" id="i-itemcode" name="i-itemcode" placeholder="For itemcode" value="">
+                                        <label for=""><?=$this->lang->line("item_code")?></label>
+                                        <input type="text" class="form-control form-control-sm" id="i-itemcode" name="i-itemcode" placeholder="<?=$this->lang->line("item_code")?>" value="">
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="col-6">
-                                        <label for="">Chinese Name</label>
-                                        <input type="text" class="form-control form-control-sm" id="i-chiname" name="i-chiname" placeholder="Type Something" value="">
+                                        <label for=""><?=$this->lang->line("item_chi_name")?></label>
+                                        <input type="text" class="form-control form-control-sm" id="i-chiname" name="i-chiname" placeholder="<?=$this->lang->line("item_chi_name")?>" value="">
                                     </div>
                                     <div class="col-6">
-                                        <label for="">English Name</label>
-                                        <input type="text" class="form-control form-control-sm" id="i-engname" name="i-engname" placeholder="Type Something" value="">
+                                        <label for=""><?=$this->lang->line("item_eng_name")?></label>
+                                        <input type="text" class="form-control form-control-sm" id="i-engname" name="i-engname" placeholder="<?=$this->lang->line("item_eng_name")?>" value="">
                                     </div>
                                 </div>
 
                                 <div class="form-row">
                                     <div class="col-12">
-                                        <label for="t1">Description</label>
-                                        <textarea class="form-control form-control-sm" placeholder="Type Something" id="i-desc" name="i-desc" rows="2"></textarea>
+                                        <label for="t1"><?=$this->lang->line("label_description")?></label>
+                                        <textarea class="form-control form-control-sm" placeholder="<?=$this->lang->line("label_description")?>" id="i-desc" name="i-desc" rows="2"></textarea>
                                     </div>
                                 </div>
 
                                 <div class="form-row">
                                     <div class="col-4">
-                                        <label>Price</label>
+                                        <label><?=$this->lang->line("item_price")?></label>
                                         <div class="input-group input-group-sm">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">$</span>
@@ -54,7 +54,7 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="col-4">
-                                        <label>Special Price</label>
+                                        <label><?=$this->lang->line("item_discount")?></label>
                                         <div class="input-group input-group-sm">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text">$</span>
@@ -65,10 +65,10 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="col-12">
-                                        <label>Categories</label>                
-                                        <a class='btn btn-outline-primary btn-sm' href='<?=$categories_baseurl?>' type='button'>New</a>
+                                        <label><?=$this->lang->line("category_label")?></label>                
+                                        <a class='btn btn-outline-primary btn-sm' href='<?=$categories_baseurl?>' type='button'><?=$this->lang->line("function_new")?></a>
                                         <select class="form-control" id="i-category" name="i-category">
-                                        <option value="null">-- Select --</option>
+                                        <option value="null"><?=$this->lang->line("function_select")?></option>
                                             <?php 
                                                     foreach($categories as $k => $v):
                                             ?>
@@ -79,6 +79,18 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="form-row">
+                                    <div class="col-12">
+                                        <label>Type</label>  
+                                        <select class="form-control" id="i-type" name="i-type">
+                                            <option value="null"><?=$this->lang->line("function_select")?></option>                                            
+                                            <option value='1'>Non Inventory</option>
+                                            <option value='2'>Inventory</option>
+                                            <option value='3'>Non Inventory - Point</option>
+                                        </select>
+                                    </div>
+                                </div>    
+
                                 <div class="form-row">
                                     <div class="col-12">
                                         <label>Unit</label>

@@ -153,7 +153,7 @@ class Customers extends CI_Controller
 			// load function bar view
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => $this->_user_auth['create'], "extra" => "data-toggle='modal' data-target='#modal01'"]
+					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => $this->_user_auth['create'], "extra" => "data-toggle='modal' data-target='#modal01'"]
 				]
 			]);
 
@@ -168,12 +168,12 @@ class Customers extends CI_Controller
 				"modalshow" => $_modalshow
 			]);
 			$this->load->view("customers/customers-create-view",[
-				"title" => "New Customers",
+				"title" => $this->lang->line("customer_new_titles"),
 				"function_bar" => $this->load->view('function-bar', [
 					"btn" => [
-						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers'), "style" => "", "show" => true],
-						["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
-						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
+						["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/customers'), "style" => "", "show" => true],
+						["name" => "<i class='fas fa-redo'></i> ".$this->lang->line("function_reset"), "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
+						["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
 					 ]
 				],true),
 				"save_url" => base_url("/customers/save/"),
@@ -235,12 +235,12 @@ class Customers extends CI_Controller
 				// function bar with next, preview and save button
 				$this->load->view('function-bar', [
 					"btn" => [
-						["name" => "<i class='fas fa-chevron-left'></i> Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers/detail/'.$cust_code.$_login['preference']), "style" => "", "show" => true],
-						["name" => "<i class='fas fa-home'></i>  Home", "type"=>"button", "id" => "home", "url"=>base_url('/customers'.$_login['preference']), "style" => "", "show" => true],
-						["name" => "<i class='fas fa-undo-alt'></i> Reset", "type"=>"button", "id" => "reset", "url" => "" , "style" => "btn btn-outline-secondary", "show" => true],
-						["name" => "<i class='far fa-save'></i> Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
-						["name" => "<i class='fas fa-step-backward'></i> Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/customers/edit/".$_API_CUSTOMERS['previous'].$_login['preference']), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
-						["name" => "<i class='fas fa-step-forward'></i> Next", "type"=>"button", "id" => "next", "url"=> base_url("/customers/edit/".$_API_CUSTOMERS['next'].$_login['preference']), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
+						["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/customers/detail/'.$cust_code.$_login['preference']), "style" => "", "show" => true],
+						["name" => "<i class='fas fa-home'></i> ".$this->lang->line("function_home"), "type"=>"button", "id" => "home", "url"=>base_url('/customers'.$_login['preference']), "style" => "", "show" => true],
+						["name" => "<i class='fas fa-undo-alt'></i> ".$this->lang->line("function_reset"), "type"=>"button", "id" => "reset", "url" => "" , "style" => "btn btn-outline-secondary", "show" => true],
+						["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
+						["name" => "<i class='fas fa-step-backward'></i> ".$this->lang->line("function_previous"), "type"=>"button", "id" => "previous", "url"=> base_url("/customers/edit/".$_API_CUSTOMERS['previous'].$_login['preference']), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
+						["name" => "<i class='fas fa-step-forward'></i> ".$this->lang->line("function_next"), "type"=>"button", "id" => "next", "url"=> base_url("/customers/edit/".$_API_CUSTOMERS['next'].$_login['preference']), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
 					]
 				]);
 
@@ -318,10 +318,10 @@ class Customers extends CI_Controller
 				// function bar with next, preview and save button
 				$this->load->view('function-bar', [
 					"btn" => [
-						["name" => "<i class='fas fa-chevron-left'></i> Back", "type"=>"button", "id" => "back", "url"=>base_url('/customers'.$_login['preference']), "style" => "", "show" => true],
-						["name" => "<i class='far fa-edit'></i> Edit", "type"=>"button", "id" => "Edit", "url"=>base_url('/customers/edit/'.$cust_code.$_login['preference']), "style" => "btn btn-primary", "show" => true],
-						["name" => "<i class='fas fa-step-backward'></i> Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/customers/detail/".$_API_CUSTOMERS['previous'].$_login['preference']), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
-						["name" => "<i class='fas fa-step-forward'></i> Next", "type"=>"button", "id" => "next", "url"=> base_url("/customers/detail/".$_API_CUSTOMERS['next'].$_login['preference']), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
+						["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/customers'.$_login['preference']), "style" => "", "show" => true],
+						["name" => "<i class='far fa-edit'></i> ".$this->lang->line("function_edit"), "type"=>"button", "id" => "Edit", "url"=>base_url('/customers/edit/'.$cust_code.$_login['preference']), "style" => "btn btn-primary", "show" => true],
+						["name" => "<i class='fas fa-step-backward'></i> ".$this->lang->line("function_previous"), "type"=>"button", "id" => "previous", "url"=> base_url("/customers/detail/".$_API_CUSTOMERS['previous'].$_login['preference']), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
+						["name" => "<i class='fas fa-step-forward'></i> ".$this->lang->line("function_next"), "type"=>"button", "id" => "next", "url"=> base_url("/customers/detail/".$_API_CUSTOMERS['next'].$_login['preference']), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
 					]
 				]);
 

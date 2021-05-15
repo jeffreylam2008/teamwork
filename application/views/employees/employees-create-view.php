@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <!-- Modal Head -->
-                <h2 class="modal-title" id=""><b>New Employee</b></h2>
+                <h2 class="modal-title" id=""><b><?=$this->lang->line("employee_new_titles")?></b></h2>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -19,28 +19,28 @@
                         <div class="card-body">
                             <div class="form-row">
                                 <div class="col-3">
-                                    <label for="">* Employee ID</label>
-                                    <input type="text" class="form-control form-control-sm" name="i-emp-code" placeholder="Employee ID" value="" >
+                                    <label for="">* <?=$this->lang->line("employee_id")?></label>
+                                    <input type="text" class="form-control form-control-sm" name="i-emp-code" placeholder="<?=$this->lang->line("employee_id")?>" value="" >
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="col-3">
-                                    <label for="">* Username</label>
-                                    <input type="text" class="form-control form-control-sm" name="i-username" placeholder="Username" value="" >
+                                    <label for="">* <?=$this->lang->line("employee_username")?></label>
+                                    <input type="text" class="form-control form-control-sm" name="i-username" placeholder="<?=$this->lang->line("employee_username")?>" value="" >
                                 </div>
                                 <div class="col-3">
-                                    <label for="">* Password</label>
-                                    <input type="password" class="form-control form-control-sm" name="i-pwd" id="i-pwd" placeholder="Password" value="" >
+                                    <label for="">* <?=$this->lang->line("employee_password")?></label>
+                                    <input type="password" class="form-control form-control-sm" name="i-pwd" id="i-pwd" placeholder="<?=$this->lang->line("employee_password")?>" value="" >
                                 </div>
                                 <div class="col-3">
-                                    <label for="">* Comfirm Password</label>
-                                    <input type="password" class="form-control form-control-sm" name="i-confirm-pwd" placeholder="Confirm Password" value="" >
+                                    <label for="">* <?=$this->lang->line("employee_comfirm_password")?></label>
+                                    <input type="password" class="form-control form-control-sm" name="i-confirm-pwd" placeholder="<?=$this->lang->line("employee_comfirm_password")?>" value="" >
                                 </div>
                             </div>
                         
                             <div class="form-row">
                                 <div class="col-3">
-                                    <label for="">Default Shop Code</label>
+                                    <label for=""><?=$this->lang->line("employee_default_shop")?></label>
                                     <select class="custom-select custom-select-sm" id="i-shops" name="i-shops" >
                                         <?php 
                                         foreach($data as $key => $val):
@@ -54,7 +54,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="col-2">
-                                    <label for="">Status</label>
+                                    <label for=""><?=$this->lang->line("employee_status")?></label>
                                     <select class="custom-select custom-select-sm" id="i-status" name="i-status" >
                                         <option value="1">Active</option>
                                         <option value="0">Disable</option>
@@ -82,28 +82,29 @@
     });
     // configure your validation
     $("#save").click(function(){
-        $.validator.addMethod("selectValid", function(value, element, arg){
-            return arg !== value;
-        }, "This field is required.");
-
+        $.validator.addMethod("cRequired", $.validator.methods.required, "<?=$this->lang->line("function_valid_field_require")?>");
+        $.validator.addMethod("cDigits", $.validator.methods.digits,$.validator.format("<?=$this->lang->line("function_valid_field_digits")?>"));
+        $.validator.addMethod("cMinlength", $.validator.methods.minlength,$.validator.format("<?=$this->lang->line("function_valid_field_minlength")?>"));
+        $.validator.addMethod("cMaxlength", $.validator.methods.maxlength,$.validator.format("<?=$this->lang->line("function_valid_field_maxlength")?>"));
+        $.validator.addMethod("cEqualto", $.validator.methods.equalTo,$.validator.format("<?=$this->lang->line("function_valid_field_equalto")?>"));
         var isvalid = $("#form1").validate({
             rules: {
                 // simple rule, converted to {required:true}
                 "i-emp-code": {
-                    required: true,
-                    digits:true,
-                    minlength: 5,
-                    maxlength: 10
+                    cRequired: true,
+                    cDigits:true,
+                    cMinlength: 5,
+                    cMaxlength: 10
                 },
                 "i-username": {
-                    required: true
+                    cRequired: true
                 },
                 "i-pwd": {
-                    required: true
+                    cRequired: true
                 },
                 "i-confirm-pwd": {
-                    required: true,
-                    equalTo: "#i-pwd"
+                    cRequired: true,
+                    cEqualto: "#i-pwd"
                 }
             }
         });

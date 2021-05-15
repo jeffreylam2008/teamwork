@@ -192,7 +192,7 @@ $route['stocks/adj/detail/(:any)'] = 'stocks/adj_detail/$1';
 $route['stocks/adj/save'] = 'stocks/adj_save';
 
 // stocks -> stocktake
-$route['stocks/stocktake/create/(:any)'] = 'stocks/take/$1';
+$route['stocks/stocktake/create/(:any)'] = 'stocks/stocktake/$1';
 $route['stocks/stocktake/process'] = 'stocks/stocktake_process';
 $route['stocks/stocktake/detail/(:any)'] = 'stocks/stocktake_detail/$1';
 $route['stocks/stocktake/save'] = 'stocks/stocktake_save';
@@ -215,3 +215,6 @@ $route['TestBed'] = 'TestBed/index';
 // Reports -> index
 $route['reports'] = 'reports/index';
 $route['reports/(:any)'] = 'reports/reports/$1';
+
+// Systems
+$route['systems/backup'] = 'systems/index';

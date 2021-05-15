@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="">Items List</h5>
+                <h5 class="modal-title" id=""><?=$this->lang->line('item_list')?></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -16,12 +16,12 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Code</th>
-                                <th scope="col">Chinese Name</th>
-                                <th scope="col">English Name</th>
-                                <th scope="col">Unit</th>
-                                <th scope="col">Price</th>
-                                <th scope="col">stockonhand</th>
+                                <th scope="col"><?=$this->lang->line('item_code')?></th>
+                                <th scope="col"><?=$this->lang->line('item_chi_name')?></th>
+                                <th scope="col"><?=$this->lang->line('item_eng_name')?></th>
+                                <th scope="col"><?=$this->lang->line('item_unit')?></th>
+                                <th scope="col"><?=$this->lang->line('item_price')?></th>
+                                <th scope="col"><?=$this->lang->line('item_Stockonhand')?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -49,8 +49,8 @@
             <!-- content end -->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="item-ok" data-dismiss="modal">OK</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><?=$this->lang->line("function_close")?></button>
+                <button type="button" class="btn btn-primary" id="item-ok" data-dismiss="modal"><?=$this->lang->line("function_ok")?></button>
             </div>
         </div>
     </div>

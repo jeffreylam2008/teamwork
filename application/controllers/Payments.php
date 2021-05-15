@@ -37,7 +37,7 @@ class Payments extends CI_Controller
 			$this->_profile = $this->session->userdata['login']['profile'];
 		}
 		
-		$this->load->library("Component_Login",[$this->_token, "customers"]);
+		$this->load->library("Component_Login",[$this->_token, "payments/paymentmethod"]);
 
 		// check login session
 		if(!empty($this->component_login->CheckToken()))

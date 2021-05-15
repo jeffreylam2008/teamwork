@@ -84,8 +84,8 @@ $config['url_suffix'] = '';
 | than english.
 |
 */
-$config['language']	= 'english';
-
+$config['language']	= 'zh-hk';
+//$config['language']	= 'en-us';
 /*
 |--------------------------------------------------------------------------
 | Default Character Set
@@ -542,6 +542,7 @@ $config['default_home'] = 'dushboard';
 |--------------------------------------------------------------------------
 */
 $config['api_url'] = 'http://192.168.1.114/erp_backend/api/v1';
+$config['DEBUG_MODE'] = false;
 $config['DEFAULT_PER_PAGE'] = 25;
 $config['DEFAULT_FIRST_PAGE'] = 1;
 $config['APP_LOG_PATH'] = $_SERVER['DOCUMENT_ROOT']."/webapp/logs/";
@@ -551,7 +552,6 @@ $config['MASTER_FILE_SHOPS'] = "./files/SHOPS.json";
 $config['MASTER_FILE_CUSTOMERS'] = "./files/CUSTOMERS.json";
 $config['MASTER_FILE_PAYMENT_METHODS'] = "./files/PAYMENT_METHODS.json";
 $config['MASTER_FILE_MENU'] = "./files/MENU.json";
-$config['DEBUG_MODE'] = false;
 
 $config['URL_LOGIN'] = $config['api_url']."/systems/login/";
 $config['URL_SHOP'] = $config['api_url']."/systems/shops/";
@@ -599,4 +599,4 @@ $config['URL_PURCHASES_ORDER_SETTLEMENT'] = $config['api_url']."/purchases/order
 $config['URL_PURCHASES_ORDER_NEXT_NUM'] = $config['api_url']."/purchases/order/getnextnum/";
 $config['URL_PURCHASES_ORDER_PREFIX'] = $config['api_url']."/purchases/order/getprefix/";
 $config['URL_DUSHBOARD_MONTHLY_INVOICES'] = $config['api_url']."/inventory/invoices/transaction/h/INV/count/";
-
+$config['URL_BACKUP'] = $config['api_url']."/systems/backup/";

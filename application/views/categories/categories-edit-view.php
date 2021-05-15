@@ -6,17 +6,17 @@
 <form id="form1" name="form1" method="POST" action="<?=$save_url.$cate_code?>">
     <div class="card">
         <div class="card-header">
-            <h2>Edit Category: <u></u></h2>
+            <h2><b><?=$this->lang->line("category_edit_titles")?></b></h2>
         </div>
         <div class="card-body"> 
             <div class="form-row">
                 <div class="col-3">
-                    <label for="">Category Code</label>
-                    <input type="text" class="form-control form-control-sm" name="i-catecode" placeholder="Categorg Code" value="<?=$cate_code?>" disabled>
+                    <label for=""><?=$this->lang->line("category_label")?></label>
+                    <input type="text" class="form-control form-control-sm" name="i-catecode" placeholder="<?=$this->lang->line("category_label")?>" value="<?=$cate_code?>" disabled>
                 </div>
                 <div class="col-3">
-                    <label for="">Description</label>
-                    <input type="text" class="form-control form-control-sm" name="i-desc" placeholder="Description" value="<?=$desc?>">
+                    <label for=""><?=$this->lang->line("category_description")?></label>
+                    <input type="text" class="form-control form-control-sm" name="i-desc" placeholder="<?=$this->lang->line("category_description")?>" value="<?=$desc?>">
                 </div>
             </div>
 

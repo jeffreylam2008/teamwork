@@ -135,7 +135,7 @@ class Categories extends CI_Controller
 		// function bar with next, preview and save button
 		$this->load->view('function-bar', [
 			"btn" => [
-				["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => $this->_user_auth['create'], "extra" => "data-toggle='modal' data-target='#modal01'"]
+				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => $this->_user_auth['create'], "extra" => "data-toggle='modal' data-target='#modal01'"]
 			]
 		]);
 		// Main view loaded
@@ -153,9 +153,9 @@ class Categories extends CI_Controller
 		$this->load->view("categories/categories-create-view",[
 			"function_bar" => $this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/products/categories'), "style" => "", "show" => true],
-					["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
-					["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
+					["name" => $this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/products/categories'), "style" => "", "show" => true],
+					["name" => $this->lang->line("function_reset"), "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
+					["name" => $this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
 				 ]
 			],true),
 			"save_url" => base_url("/products/categories/save/")
@@ -198,10 +198,10 @@ class Categories extends CI_Controller
 		// function bar with next, preview and save button
 		$this->load->view('function-bar', [
 			"btn" => [
-				["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/products/categories'.$_login['preference']), "style" => "", "show" => true],
-				["name" => "Save", "type"=>"button", "id" => "save", "url"=> "#", "style" => "", "show" => true],
-				["name" => "Previous", "type"=>"button", "id" => "Previous", "url"=> base_url("/products/categories/edit/".$_API_CATEGORIES['previous'].$_login['preference']), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
-				["name" => "Next", "type"=>"button", "id" => "Next", "url"=> base_url("/products/categories/edit/".$_API_CATEGORIES['next'].$_login['preference']), "style" => "btn btn-outline-secondary ". $_next_disable, "show" => true]
+				["name" => $this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/products/categories'.$_login['preference']), "style" => "", "show" => true],
+				["name" => $this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=> "#", "style" => "", "show" => true],
+				["name" => $this->lang->line("function_previous"), "type"=>"button", "id" => "Previous", "url"=> base_url("/products/categories/edit/".$_API_CATEGORIES['previous'].$_login['preference']), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
+				["name" => $this->lang->line("function_next"), "type"=>"button", "id" => "Next", "url"=> base_url("/products/categories/edit/".$_API_CATEGORIES['next'].$_login['preference']), "style" => "btn btn-outline-secondary ". $_next_disable, "show" => true]
 			]
 		]);
 		$this->load->view("categories/categories-edit-view", [

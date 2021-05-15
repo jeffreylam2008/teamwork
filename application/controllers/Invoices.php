@@ -269,12 +269,12 @@ class Invoices extends CI_Controller
 			// function bar with next, preview and save button
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> Next", "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
-					["name" => "<i class='fas fa-trash-alt'></i> Discard", "type"=>"button", "id" => "discard", "url"=> base_url('/invoices/discard'), "style" => "btn btn-danger", "show" => $_show_discard_btn]
+					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
+					["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('/invoices/discard'), "style" => "btn btn-danger", "show" => $_show_discard_btn]
 				]
 			]);
 			$this->load->view('title-bar', [
-				"title" => "Invoices Create"
+				"title" => $this->lang->line("invoice_new_title")
 			]);
 			// present form view
 			$this->load->view('invoices/invoices-create-view', [
@@ -298,7 +298,7 @@ class Invoices extends CI_Controller
 				"default_per_page" => $this->_default_per_page,
 				"function_bar" => $this->load->view('function-bar', [
 					"btn" => [
-						["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "new", "url"=>base_url('/customers/?new=1'), "style" => "", "show" => true]
+						["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "new", "url"=>base_url('/customers/?new=1'), "style" => "", "show" => true]
 					 ]
 				],true)
 			]);
@@ -317,6 +317,8 @@ class Invoices extends CI_Controller
 		$_transaction = [];
 		$_trans = [];
 		$_show_void_btn = false;
+		$_show_next_btn = true;
+		$_show_copy_btn = true;
 
 		if(!empty($_invoice_num))
 		{
@@ -330,6 +332,7 @@ class Invoices extends CI_Controller
 		// echo "<pre>";
 		// var_dump($_transaction);
 		// echo "</pre>";
+			
 			if(!empty($_transaction))
 			{
 				// set current invoice number to session
@@ -344,6 +347,13 @@ class Invoices extends CI_Controller
 					$_the_date_diff = $_diff->format("%a");
 					if($_the_date_diff == 0){
 						$_show_void_btn = true;
+					}
+
+					if($_transaction['query']['is_void'])
+					{
+						$_show_copy_btn = false;
+						$_show_next_btn = false;
+						$_show_void_btn = false;
 					}
 					// fatch items API
 					$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
@@ -369,15 +379,15 @@ class Invoices extends CI_Controller
 					// function bar with next, preview and save button
 					$this->load->view('function-bar', [
 						"btn" => [
-							["name" => "<i class='fas fa-chevron-left'></i> Back", "type"=>"button", "id" => "Back", "url"=> base_url('/invoices/list'.$_login['preference']), "style" => "", "show" => true],
-							["name" => "<i class='fas fa-arrow-alt-circle-right'></i> Next", "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
-							["name" => "<i class='far fa-copy'></i> Copy", "type"=>"button", "id" => "copy", "url"=> base_url('/invoices/copy/'.$_invoice_num), "style" => "btn btn-dark", "show" => true],
-							["name" => "<i class='fas fa-eraser'></i> Void", "type"=>"button", "id" => "discard", "url"=> base_url('/invoices/void/'.$_invoice_num), "style" => "btn btn-danger", "show" => $_show_void_btn]
+							["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "Back", "url"=> base_url('/invoices/list'.$_login['preference']), "style" => "", "show" => true],
+							["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => $_show_next_btn],
+							["name" => "<i class='far fa-copy'></i> ".$this->lang->line("function_copy"), "type"=>"button", "id" => "copy", "url"=> base_url('/invoices/copy/'.$_invoice_num), "style" => "btn btn-dark", "show" => $_show_copy_btn],
+							["name" => "<i class='fas fa-eraser'></i> ".$this->lang->line("function_void"), "type"=>"button", "id" => "discard", "url"=> base_url('/invoices/void/'.$_invoice_num), "style" => "btn btn-danger", "show" => $_show_void_btn]
 						]
 					]);
 					
 					$this->load->view('title-bar', [
-						"title" => "Invoice Edit"
+						"title" => $this->lang->line("invoice_edit_title")
 					]);
 			
 					//show edit view
@@ -400,7 +410,7 @@ class Invoices extends CI_Controller
 						"default_per_page" => $this->_default_per_page,
 						"function_bar" => $this->load->view('function-bar', [
 							"btn" => [
-								["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "new", "url"=>base_url('/customers/?new=1'), "style" => "", "show" => true]
+								["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "new", "url"=>base_url('/customers/?new=1'), "style" => "", "show" => true]
 							]
 						],true)
 					]);
@@ -465,10 +475,10 @@ class Invoices extends CI_Controller
 			// function bar
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/invoices/'.$_data['formtype'].'/'.$_data['invoicenum']."/".$_data['quotation']) ,"style" => "","show" => true],
-					["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
-					["name" => "Save", "type"=>"button", "id" => "save", "url"=> base_url("/invoices/".$_the_form_type) , "style" => "","show" => $_show_save_btn],
-					["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
+					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/invoices/'.$_data['formtype'].'/'.$_data['invoicenum']."/".$_data['quotation']) ,"style" => "","show" => true],
+					["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=> base_url("/invoices/".$_the_form_type) , "style" => "btn btn-primary", "show" => $_show_save_btn],
+					["name" => "<i class='far fa-file-alt'></i> ".$this->lang->line("function_preview"), "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
+					["name" => "<i class='fas fa-print'></i> ".$this->lang->line("function_reprint"), "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
 				]
 			]);
 			// render view
@@ -496,7 +506,10 @@ class Invoices extends CI_Controller
 		 if(!empty($_transaction[$_cur_invoicenum]) && isset($_transaction[$_cur_invoicenum]))
 		 {
 			 $_api_body = json_encode($_transaction[$_cur_invoicenum],true);
- 
+			// echo "<pre>";
+			// var_dump($_api_body);
+			// echo "</pre>";
+
 			 if($_api_body != null)
 			 {
 				// save invoice 
@@ -546,7 +559,7 @@ class Invoices extends CI_Controller
 				else
 				{
 					$result["error"]['code'] = "99999";
-					$result["error"]['message'] = "API-Error"; 
+					$result["error"]['message'] = "API-Error";
 				}
 				unset($_transaction[$_cur_invoicenum]);
 				$this->session->set_userdata('cur_quotationnum',"");
@@ -803,14 +816,14 @@ class Invoices extends CI_Controller
 			// Function bar
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=> base_url("invoices/donew/"), "style" => "", "show" => true, "extra" => ""]
+					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> base_url("invoices/donew/"), "style" => "", "show" => true, "extra" => ""]
 				]
 			]);
 
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-search'></i> Search", "type"=>"button", "id" => "i-search", "url"=> "#", "style" => "", "show" => true, "extra" => ""],
-					["name" => "<i class='fas fa-undo-alt'></i> Clear", "type"=>"button", "id" => "i-clear", "url"=> "#", "style" => "btn btn-secondary", "show" => true, "extra" => ""]
+					["name" => "<i class='fas fa-search'></i> ".$this->lang->line("function_search"), "type"=>"button", "id" => "i-search", "url"=> "#", "style" => "", "show" => true, "extra" => ""],
+					["name" => "<i class='fas fa-undo-alt'></i> ".$this->lang->line("function_clear"), "type"=>"button", "id" => "i-clear", "url"=> "#", "style" => "btn btn-secondary", "show" => true, "extra" => ""]
 				]
 			]);
 

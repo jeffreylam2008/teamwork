@@ -37,7 +37,8 @@ class Component_File
         //return ob_get_clean();
     }
 
-    public function DownloadHeaders($filename) {
+    public function DownloadHeaders($filename) 
+    {
         header('Content-Encoding: UTF-8');
         header('Content-Type: text/csv; charset=utf-8' );
         // disable caching
@@ -55,6 +56,47 @@ class Component_File
         // disposition / encoding on response body
         header("Content-Disposition: attachment;filename={$filename}");
         header("Content-Transfer-Encoding: binary");
-        
+    }
+
+    public function ReadCSVContents($fileinput)
+    {
+        $response = array();
+        try 
+        {
+            if(!isset($fileinput)) 
+            {
+                throw new RuntimeException('Invalid parameters.');
+            }
+
+            $content = array();
+            $row = 0;
+            
+            if (($handle = fopen($fileinput['tmp_name'], "r")) !== FALSE) {
+                while (($data = fgetcsv($handle, 0, ",")) !== FALSE) {
+                    $num = count($data);
+                    for ($c=0; $c < $num; $c++) {
+                        $content[$row][] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $data[$c]);
+                    }
+                    $row++;
+                }
+                fclose($handle);
+            }
+            $response = array(
+                "data" => $content,
+                "status" => "success",
+                "error" => false,
+                "message" => "file content"
+            );
+        }
+        catch(exception $e)
+        {
+            $response = array(
+                "data" =>  "",
+                "status" => "failure",
+                "error" => true,
+                "message" => "No File Found!"
+            );
+        }
+        return json_encode($response);
     }
 }

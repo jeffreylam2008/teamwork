@@ -8,34 +8,34 @@
 <form id="form1" name="form1" method="POST" action="<?=$save_url?>">
     <div class="card">
         <div class="card-header">
-            <h2> Employee: <u><?=$employees['employee_code']?></u></h2>
+            <h2> <?=$this->lang->line('employee_id')?>: <u><?=$employees['employee_code']?></u></h2>
         </div>
         <div class="card-body">
             <div class="form-row">
                 <div class="col-3">
-                    <label for="">* Employee ID</label>
-                    <input type="text" class="form-control form-control-sm" name="i-emp-code" placeholder="Employee ID" value="<?=$employees['employee_code']?>" >
+                    <label for="">* <?=$this->lang->line('employee_id')?></label>
+                    <input type="text" class="form-control form-control-sm" name="i-emp-code" placeholder="<?=$this->lang->line('employee_id')?>" value="<?=$employees['employee_code']?>" >
                 </div>
             </div>
             <div class="form-row">
                 <div class="col-3">
-                    <label for="">* Username</label>
-                    <input type="text" class="form-control form-control-sm" name="i-username" placeholder="Username" value="<?=$employees['username']?>" >
+                    <label for="">* <?=$this->lang->line('employee_username')?></label>
+                    <input type="text" class="form-control form-control-sm" name="i-username" placeholder="<?=$this->lang->line('employee_username')?>" value="<?=$employees['username']?>" >
                     
                 </div>
             </div>
             <div class="form-row">
                 <div class="col-12">
-                    <input type="button" href="#pwd" class="btn-primary btn-sm" data-toggle='collapse' aria-expanded='true' value="Change Password" />
+                    <input type="button" href="#pwd" class="btn-primary btn-sm" data-toggle='collapse' aria-expanded='true' value="<?=$this->lang->line('function_change_password')?>" />
                     <div class="collapse" id="pwd">
                         <div class="form-row">
                             <div class="col-3">
-                                <label for="">* Password</label>
-                                <input type="password" class="form-control form-control-sm" name="i-pwd" id="i-pwd" placeholder="Password" value="" >
+                                <label for="">* <?=$this->lang->line('employee_password')?></label>
+                                <input type="password" class="form-control form-control-sm" name="i-pwd" id="i-pwd" placeholder="<?=$this->lang->line('employee_password')?>" value="" >
                             </div>
                             <div class="col-3">
-                                <label for="">* Comfirm Password</label>
-                                <input type="password" class="form-control form-control-sm" name="i-confirm-pwd" placeholder="Confirm Password" value="" >
+                                <label for="">* <?=$this->lang->line('employee_comfirm_password')?></label>
+                                <input type="password" class="form-control form-control-sm" name="i-confirm-pwd" placeholder="<?=$this->lang->line('employee_comfirm_password')?>" value="" >
                             </div> 
                         </div>
                     </div>
@@ -44,7 +44,7 @@
             
             <div class="form-row">
                 <div class="col-3">
-                    <label for="">Default Shop</label>
+                    <label for=""><?=$this->lang->line('employee_default_shop')?></label>
                     <select class="custom-select custom-select-sm" id="i-shops" name="i-shops" >
                         <option value="<?=$employees['default_shopcode']?>"><?=$employees['shop_name']?></option>
                         <?php 
@@ -59,7 +59,7 @@
             </div>
             <div class="form-row">
                 <div class="col-2">
-                    <label for="">Status</label>
+                    <label for=""><?=$this->lang->line('employee_status')?></label>
                     <select class="custom-select custom-select-sm" id="i-status" name="i-status" >
                         <option value="<?=$employees['status']?>"><?=$employees['status'] ? "Active" : "Disable"?></option>
                         <option value="1">Active</option>
@@ -79,25 +79,27 @@ $(function() {
 });
 // form validation
 $("#save").click(function(){
-    $.validator.addMethod("selectValid", function(value, element, arg){
-        return arg !== value;
-    }, "This field is required.");
+    $.validator.addMethod("cRequired", $.validator.methods.required, "<?=$this->lang->line("function_valid_field_require")?>");
+    $.validator.addMethod("cDigits", $.validator.methods.digits,$.validator.format("<?=$this->lang->line("function_valid_field_digits")?>"));
+    $.validator.addMethod("cMinlength", $.validator.methods.minlength,$.validator.format("<?=$this->lang->line("function_valid_field_minlength")?>"));
+    $.validator.addMethod("cMaxlength", $.validator.methods.maxlength,$.validator.format("<?=$this->lang->line("function_valid_field_maxlength")?>"));
+    $.validator.addMethod("cEqualto", $.validator.methods.equalTo,$.validator.format("<?=$this->lang->line("function_valid_field_equalto")?>"));
 
     var isvalid = $("#form1").validate({
         rules: {
             // simple rule, converted to {required:true}
             "i-emp-code": {
-                required: true
+                cRequired: true
             },
             "i-username": {
-                required: true
+                cRequired: true
             },
             "i-pwd": {
-                required: true
+                cRequired: true
             },
             "i-confirm-pwd": {
-                required: true,
-                equalTo: "#i-pwd"
+                cRequired: true,
+                cEqualto: "#i-pwd"
             }
         }
     });

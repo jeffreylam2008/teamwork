@@ -1,8 +1,8 @@
 <?php
     extract($data);
-//     echo "<pre>";
-//     print_r($data);
-//     echo "</pre>";
+    echo "<pre>";
+    print_r($data);
+    echo "</pre>";
 // ?>
 
 <form id="form1" name="form1" method="POST" action="<?=$save_url.$item_code?>" enctype="multipart/form-data">
@@ -61,6 +61,10 @@
                             <select class="form-control" name="i-category">
                             <?php if( array_key_exists($cate_code, $categories)):?>
                                 <option value="<?=$cate_code?>"><?=$categories[$cate_code]?></option>
+                            <?php
+                                else:
+                            ?>  
+                                <option value="null">-- Select --</option>
                             <?php endif;?>
                                 <?php 
                                         foreach($categories as $k => $v):
@@ -72,6 +76,23 @@
                             </select>
                         </div>
                     </div>
+                    <div class="form-row">
+                        <div class="col-6">
+                            <label>Type</label> 
+                            <select class="form-control" id="i-type" name="i-type">
+                                <?php if( array_key_exists($type, $types)):?>
+                                    <option value="<?=$type?>"><?=$types[$type]?></option>
+                                <?php
+                                    else:
+                                ?>
+                                <option value="null">-- Select --</option>
+                                <?php endif;?>                                                                   
+                                <option value='1'>Non Inventory</option>
+                                <option value='2'>Inventory</option>
+                                <option value='3'>Non Inventory - Point</option>
+                            </select>
+                        </div>
+                    </div>    
                     <div class="form-row">
                         <div class="col-6">
                             <label>Unit</label>
@@ -116,7 +137,7 @@
     </div>
     <div class="card-body">
         <div class="form-row">
-            <div class="col-2">
+            <div class="col-1">
                 <label for="">Stock Onhand</label>
                 <input type="text" class="form-control form-control-sm" name="i-stockonhand" placeholder="Type Something" value="<?=$stockonhand?>" disabled>
             </div>

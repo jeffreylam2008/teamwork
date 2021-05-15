@@ -162,8 +162,8 @@ class Items extends CI_Controller
 			// function bar with next, preview and save button
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=> "#", "style" => "", "show" => true, "extra" => "data-toggle='modal' data-target='#modal01'"],
-					["name" => "<i class='fas fa-search'></i> Search", "type"=>"button", "id" => "search", "url"=> "#", "style" => "", "show" => true, "extra" => ""]
+					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> "#", "style" => "", "show" => true, "extra" => "data-toggle='modal' data-target='#modal01'"],
+					["name" => "<i class='fas fa-search'></i> ".$this->lang->line("function_search"), "type"=>"button", "id" => "search", "url"=> "#", "style" => "", "show" => true, "extra" => ""]
 				]
 			]);
 
@@ -182,9 +182,9 @@ class Items extends CI_Controller
 			$this->load->view("items/items-create-view",[
 				"function_bar" => $this->load->view('function-bar', [
 					"btn" => [
-						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/products/items'), "style" => "", "show" => true],
-						["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
-						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
+						["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/products/items'), "style" => "", "show" => true],
+						["name" => "<i class='fas fa-redo'></i> ".$this->lang->line("function_reset"), "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
+						["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
 					 ]
 				],true),
 				"save_url" => base_url("/products/items/save/"),
@@ -264,6 +264,7 @@ class Items extends CI_Controller
 				"categories_baseurl" => base_url("/products/categories/?new=1"),
 				"data" => $_API_ITEMS,
 				"categories" => array_column($_API_CATEGORIES,"desc","cate_code"),
+				"types" => [1 => "Non Inventory", 2 => "Inventory", 3 => "Non Inventory - Point"],
 				"remove_img" => $_remove_img
 			]);
 		}
@@ -295,8 +296,6 @@ class Items extends CI_Controller
 		$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY_HAS_TRANSACTION_D').$item_code);
 		$this->component_api->CallGet();
 		$_data = json_decode($this->component_api->GetConfig("result"), true);
-	
-		
 		// echo "<pre>";
 		// var_dump($_data['query']);
 		// echo "</pre>";
@@ -305,8 +304,8 @@ class Items extends CI_Controller
 			if($_data['query'])
 			{
 				$_comfirm_show = false;
-				$_trans_url = base_url("/invoices/edit/".$_data['trans_code']);
-				$_trans_code = $_data['trans_code'];
+				$_trans_url = base_url("/invoices/edit/".$_data['query']['trans_code']);
+				$_trans_code = $_data['query']['trans_code'];
 			}
 			$this->load->view("items/items-del-view",[
 				"submit_to" => base_url('/products/items/delete/confirmed/'.$item_code),

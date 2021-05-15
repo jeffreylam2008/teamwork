@@ -10,10 +10,10 @@
                 <?php
                     endif;
                 ?>   
-                <th>Code</th>
-                <th>Description</th>
-                <th>create_date</th>
-                <th>Modify Date</th>
+                <th><?=$this->lang->line("label_code")?></th>
+                <th><?=$this->lang->line("label_description")?></th>
+                <th><?=$this->lang->line("label_create_date")?></th>
+                <th><?=$this->lang->line("label_modify_date")?></th>
             </tr>
         <thead>
         <tbody>
@@ -64,6 +64,17 @@
                 Code : 'column'
             },
             "iDisplayLength": <?=$default_per_page?>,
+            "language": {
+                "lengthMenu" : "<?=$this->lang->line('function_page_showing')?> _MENU_",
+                "search": "<?=$this->lang->line('function_search')?> :",
+                "info": "<?=$this->lang->line('function_page_showing')?> _START_ <?=$this->lang->line('function_page_to')?> _END_ <?=$this->lang->line('function_page_of')?> _TOTAL_ <?=$this->lang->line('function_page_entries')?>",
+                "paginate": {
+                    "first": "<?=$this->lang->line('function_first')?>",
+                    "last": "<?=$this->lang->line('function_last')?>",
+                    "next": "<?=$this->lang->line('function_next')?>",
+                    "previous": "<?=$this->lang->line('function_previous')?>"
+                }
+            }
         });
         // set page number from previous
         table.page(<?=$page - 1?>).draw('page');

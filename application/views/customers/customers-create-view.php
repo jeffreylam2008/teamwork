@@ -21,10 +21,10 @@
                                 <div class="col">
                                     <ul class="list-group">
                                         <li class="list-group-item">
-                                            <span class="badge badge-pill badge-secondary">General</span> 
+                                            <span class="badge badge-pill badge-secondary"><?=$this->lang->line("function_general")?></span> 
                                             <div class="form-row">
-                                                <div class="col-3">
-                                                    <label for="t1">Status</label>
+                                                <div class="col-4">
+                                                    <label for="t1"><?=$this->lang->line("customer_status")?></label>
                                                     <select class="custom-select custom-select-sm" id="i-status" name="i-status">
                                                         <option value="Active">Active</option>
                                                         <option value="Closed">Closed</option>
@@ -33,50 +33,50 @@
                                             </div>
                                             <div class="form-row">
                                                 <div class="col-8">
-                                                    <label for="t1">Customer Shop</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-name" id="i-name" placeholder="Name" value="" >
+                                                    <label for="t1"><?=$this->lang->line("customer_name")?></label>
+                                                    <input type="text" class="form-control form-control-sm" name="i-name" id="i-name" placeholder="<?=$this->lang->line("customer_name")?>" value="" >
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="col-4">
-                                                    <label for="t1">Primary Attn *</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-attn_1" id="i-attn_1" placeholder="Primary Attn" value="" >
+                                                    <label for="t1"><?=$this->lang->line("customer_attn_1")?> *</label>
+                                                    <input type="text" class="form-control form-control-sm" name="i-attn_1" id="i-attn_1" placeholder="<?=$this->lang->line("customer_attn_1")?>" value="" >
                                                 </div>
                                                 <div class="col-4">
-                                                    <label for="t1">Secondary Attn </label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-attn_2" placeholder="Secondary Attn" value="" >
+                                                    <label for="t1"><?=$this->lang->line("customer_attn_2")?> </label>
+                                                    <input type="text" class="form-control form-control-sm" name="i-attn_2" placeholder="<?=$this->lang->line("customer_attn_2")?>" value="" >
                                                 </div>
                                             </div>
 
                                             <div class="form-row">
                                                 <div class="col-12">
-                                                    <label for="">Mail Address</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-mail_addr" id="i-mail_addr" placeholder="Type Something" value="" >
+                                                    <label for=""><?=$this->lang->line("customer_mail_addr")?></label>
+                                                    <input type="text" class="form-control form-control-sm" name="i-mail_addr" id="i-mail_addr" placeholder="<?=$this->lang->line("customer_mail_addr")?>" value="" >
                                                 </div>
                                                 <div class="col-12">
-                                                    <label for="">Shop Address</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-shop_addr" placeholder="Type Something" value="" >
+                                                    <label for=""><?=$this->lang->line("customer_shop_addr")?></label>
+                                                    <input type="text" class="form-control form-control-sm" name="i-shop_addr" placeholder="<?=$this->lang->line("customer_shop_addr")?>" value="" >
                                                 </div>
                                                 
                                             </div>
 
                                             <div class="form-row">
                                                 <div class="col-6">
-                                                    <label for="t1">Primary Email</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-email_1" placeholder="Primary Email" value="" >
+                                                    <label for="t1"><?=$this->lang->line("customer_email_1")?></label>
+                                                    <input type="text" class="form-control form-control-sm" name="i-email_1" placeholder="<?=$this->lang->line("customer_email_1")?>" value="" >
                                                 </div>
                                                 <div class="col-6">
-                                                    <label for="t1">Secondary Email</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-email_2" placeholder="Secondary Email" value="" >
+                                                    <label for="t1"><?=$this->lang->line("customer_email_2")?></label>
+                                                    <input type="text" class="form-control form-control-sm" name="i-email_2" placeholder="<?=$this->lang->line("customer_email_2")?>" value="" >
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="col-4">
-                                                    <label for="t1">Phone 1 *</label>
+                                                    <label for="t1"><?=$this->lang->line("customer_phone")?> *</label>
                                                     <input type="text" class="form-control form-control-sm" name="i-phone_1" id="i-phone_1" placeholder="00000000" value="" >
                                                 </div>
                                                 <div class="col-4">
-                                                    <label for="t1">Fax 1</label>
+                                                    <label for="t1"><?=$this->lang->line("customer_fax")?></label>
                                                     <input type="text" class="form-control form-control-sm" name="i-fax_1" placeholder="00000000" value="" >
                                                 </div>
                                             </div>
@@ -84,22 +84,22 @@
 
                                             <div class="form-row">
                                                 <div class="col-12">
-                                                    <label for="t1">Statement Remark</label>
-                                                    <textarea class="form-control form-control-sm" placeholder="Type Something" name="i-statement_remark" rows="2" ></textarea>
+                                                    <label for="t1"><?=$this->lang->line("customer_statement_remark")?></label>
+                                                    <textarea class="form-control form-control-sm" placeholder="<?=$this->lang->line("customer_statment_remark")?>" name="i-statement_remark" rows="2" ></textarea>
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="col-12">
-                                                    <label for="t1">Remark</label>
-                                                    <textarea class="form-control form-control-sm" placeholder="Type Something" name="i-remark" rows="2" ></textarea>
+                                                    <label for="t1"><?=$this->lang->line("customer_remark")?></label>
+                                                    <textarea class="form-control form-control-sm" placeholder="<?=$this->lang->line("customer_remark")?>" name="i-remark" rows="2" ></textarea>
                                                 </div>
                                             </div>
 
                                             <div class="form-row">
                                                 <div class="col-4">
-                                                    <label for="t1">Payment Method</label>
+                                                    <label for="t1"><?=$this->lang->line("customer_payment_method")?></label>
                                                     <select class="custom-select custom-select-sm" id="i-paymentmethod" name="i-pm_code" >
-                                                        <option value="-1">Select...</option>
+                                                        <option value="-1"><?=$this->lang->line("function_select")?></option>
                                                         <?php
                                                             foreach($data_payment_method as $k => $v):
                                                         ?>
@@ -112,9 +112,9 @@
                                             </div>
                                             <div class="form-row">
                                                 <div class="col-4">
-                                                    <label for="t1">Payment Terms</label>
+                                                    <label for="t1"><?=$this->lang->line("customer_payment_term")?></label>
                                                     <select class="custom-select custom-select-sm" id="i-paymentterms" name="i-pt_code" >
-                                                        <option value="-1">Select...</option>
+                                                        <option value="-1"><?=$this->lang->line("function_select")?></option>
                                                         <?php
                                                             foreach($data_payment_term as $k => $v):
                                                         ?>
@@ -131,12 +131,12 @@
                                 <div class="col">
                                     <ul class="list-group">
                                         <li class="list-group-item">
-                                            <span class="badge badge-pill badge-secondary">Delivery</span>
+                                            <span class="badge badge-pill badge-secondary"><?=$this->lang->line("function_delivery")?></span>
                                             <div class="form-row">
-                                                <div class="col-3">
-                                                    <label for="t1">District</label> 
+                                                <div class="col-4">
+                                                    <label for="t1"><?=$this->lang->line("customer_district")?></label> 
                                                     <select class="custom-select custom-select-sm" id="i-district" name="i-district" >
-                                                        <option value="-1">Select...</option>
+                                                        <option value="-1"><?=$this->lang->line("function_select")?></option>
                                                         <?php
                                                             foreach($data_district as $k => $v):
                                                         ?>
@@ -150,76 +150,76 @@
                                             </div>
                                             <div class="form-row">
                                                 <div class="col-12">
-                                                    <label for="">Delivery Address</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-delivery_addr" placeholder="Type Something" value="" >
+                                                    <label for=""><?=$this->lang->line("customer_delivery_addr")?></label>
+                                                    <input type="text" class="form-control form-control-sm" name="i-delivery_addr" placeholder="<?=$this->lang->line("customer_delivery_addr")?>" value="" >
                                                 </div>
                                             </div>
                                             <div class="form-row">
-                                                <div class="col-3">
-                                                    <label for="t1">From</label>
+                                                <div class="col-4">
+                                                    <label for="t1"><?=$this->lang->line("customer_delivery_from")?></label>
                                                     <input type="text" class="form-control form-control-sm" name="i-from_time" placeholder="00:00:00" value="" >
                                                 </div>
-                                                <div class="col-3">
-                                                    <label for="t1">To</label>
+                                                <div class="col-4">
+                                                    <label for="t1"><?=$this->lang->line("customer_delivery_to")?></label>
                                                     <input type="text" class="form-control form-control-sm" name="i-to_time" placeholder="00:00:00" value="" >
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="col-4">
-                                                    <label for="t1">Phone</label>
+                                                    <label for="t1"><?=$this->lang->line("customer_phone")?></label>
                                                     <input type="text" class="form-control form-control-sm" name="i-delivery_phone" placeholder="00000000" value="" >
                                                 </div>
                                                 <div class="col-4">
-                                                    <label for="t1">Fax</label>
+                                                    <label for="t1"><?=$this->lang->line("customer_fax")?></label>
                                                     <input type="text" class="form-control form-control-sm" name="i-delivery_fax" placeholder="00000000" value="" >
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="col-12">
-                                                    <label for="t1">Delivery Remark</label>
-                                                    <textarea class="form-control form-control-sm" placeholder="Type Something" name="i-delivery_remark" rows="3" ></textarea>
+                                                    <label for="t1"><?=$this->lang->line("customer_delivery_remark")?></label>
+                                                    <textarea class="form-control form-control-sm" placeholder="<?=$this->lang->line("Customer_delivery_remark")?>" name="i-delivery_remark" rows="3" ></textarea>
                                                 </div>
                                             </div>
                                         </li>
                                         <li class="list-group-item">
-                                            <span class="badge badge-pill badge-secondary">Account</span>    
+                                            <span class="badge badge-pill badge-secondary"><?=$this->lang->line("function_accounting")?></span>    
                                             <div class="form-row">
                                                 <div class="col-8">
-                                                    <label for="t1">Company BR Number</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-acc_company_br" id="i-br" placeholder="BR Number" value="" >
+                                                    <label for="t1"><?=$this->lang->line("customer_br_number")?></label>
+                                                    <input type="text" class="form-control form-control-sm" name="i-acc_company_br" id="i-br" placeholder="<?=$this->lang->line("customer_br_number")?>" value="" >
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="col-8">
-                                                    <label for="t1">Company Sign</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-acc_company_sign" placeholder="Company Sign" value="">
+                                                    <label for="t1"><?=$this->lang->line("customer_sign_company")?></label>
+                                                    <input type="text" class="form-control form-control-sm" name="i-acc_company_sign" placeholder="<?=$this->lang->line("customer_sign_company")?>" value="">
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="col-8">
-                                                    <label for="t1">Group Name</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-acc_group_name" placeholder="Group" value="" >
+                                                    <label for="t1"><?=$this->lang->line("customer_group")?></label>
+                                                    <input type="text" class="form-control form-control-sm" name="i-acc_group_name" placeholder="<?=$this->lang->line("customer_group")?>" value="" >
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="col-4">
-                                                    <label for="t1">Accountant</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-acc_attn" id="i-acc_attn" placeholder="Account Attn" value="" >
+                                                    <label for="t1"><?=$this->lang->line("customer_accountant")?></label>
+                                                    <input type="text" class="form-control form-control-sm" name="i-acc_attn" id="i-acc_attn" placeholder="<?=$this->lang->line("customer_accountant")?>" value="" >
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="col-8">
-                                                    <label for="t1">Accountant Email</label>
-                                                    <input type="text" class="form-control form-control-sm" name="i-acc_email" id="i-acc_email" placeholder="Email" value="" >
+                                                    <label for="t1"><?=$this->lang->line("customer_acc_email")?></label>
+                                                    <input type="text" class="form-control form-control-sm" name="i-acc_email" id="i-acc_email" placeholder="<?=$this->lang->line("customer_acc_email")?>" value="" >
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="col-4">
-                                                    <label for="t1">Phone</label>
+                                                    <label for="t1"><?=$this->lang->line("customer_phone")?></label>
                                                     <input type="text" class="form-control form-control-sm" name="i-acc_phone" placeholder="00000000" value="" >
                                                 </div>
                                                 <div class="col-4">
-                                                    <label for="t1">Fax</label>
+                                                    <label for="t1"><?=$this->lang->line("customer_fax")?></label>
                                                     <input type="text" class="form-control form-control-sm" name="i-acc_fax" placeholder="00000000" value="" >
                                                 </div>
                                             </div>
@@ -257,21 +257,21 @@
     });
     // configure your validation
     $("#save").click(function(){
-        $.validator.addMethod("selectValid", function(value, element, arg){
-            return arg !== value;
-        }, "This field is required.");
-
+        $.validator.addMethod("cRequired", $.validator.methods.required, "<?=$this->lang->line("function_valid_field_require")?>");
+        $.validator.addMethod("cDigits", $.validator.methods.digits,$.validator.format("<?=$this->lang->line("function_valid_field_digits")?>"));
+        $.validator.addMethod("cMinlength", $.validator.methods.minlength,$.validator.format("<?=$this->lang->line("function_valid_field_minlength")?>"));
+        $.validator.addMethod("cMaxlength", $.validator.methods.maxlength,$.validator.format("<?=$this->lang->line("function_valid_field_maxlength")?>"));
         var isvalid = $("#form1").validate({
             rules: {
                 // simple rule, converted to {required:true}
                 "i-attn_1": {
-                    required: true
+                    cRequired: true
                 },
                 "i-phone_1": {
-                    required: true,
-                    digits:true,
-                    minlength: 8,
-                    maxlength: 9
+                    cRequired: true,
+                    cDigits:true,
+                    cMinlength: 8,
+                    cMaxlength: 9
                 }
             }
         });

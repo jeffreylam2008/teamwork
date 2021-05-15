@@ -15,33 +15,33 @@
 
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <span class="input-group-text" >Invoice Number</span>
+            <span class="input-group-text"><?=$this->lang->line("invoice_number")?></span>
         </div>
         
         <input type="text" class="form-control" value="<?=$invoicenum?>" disabled />
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <span class="input-group-text" >Quotation</span>
+            <span class="input-group-text" ><?=$this->lang->line("quotation_number")?></span>
         </div>
         <input type="text" class="form-control" value="<?=$quotation?>" disabled />
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <span class="input-group-text" >Date</span>
+            <span class="input-group-text" ><?=$this->lang->line("invoice_date")?></span>
         </div>
         <input type="text" class="form-control" value="<?=$date?>" disabled />
     </div>
     <!-- Company -->
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <span class="input-group-text">Company</span>
+            <span class="input-group-text"><?=$this->lang->line("company")?></span>
         </div>
         <input type="text" class="form-control" value="(<?=$shopcode?>) <?=$shopname?>" disabled />
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <span class="input-group-text">Customer</span>
+            <span class="input-group-text"><?=$this->lang->line("customer")?></span>
         </div>
         <input type="text" class="form-control" value="(<?=$cust_code?>) <?=$cust_name?>" disabled />
     </div>
@@ -49,7 +49,7 @@
     <!-- Payment Method -->
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <label class="input-group-text">Payment Method</label>
+            <label class="input-group-text"><?=$this->lang->line("customer_payment_method")?></label>
         </div>
         <input type="text" class="form-control" value="(<?=$paymentmethod?>) <?=$paymentmethodname?>" disabled />
     </div>
@@ -58,13 +58,13 @@
         <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Item Code</th>
-                <th scope="col">English Name</th>
-                <th scope="col">Chinese Name</th>
-                <th scope="col">Qty</th>
-                <th scope="col">Unit</th>
-                <th scope="col">Unit Price</th>
-                <th scope="col">Total</th>
+                <th scope="col"><?=$this->lang->line("item_code")?></th>
+                <th scope="col"><?=$this->lang->line("item_eng_name")?></th>
+                <th scope="col"><?=$this->lang->line("item_chi_name")?></th>
+                <th scope="col"><?=$this->lang->line("item_qty")?></th>
+                <th scope="col"><?=$this->lang->line("item_unit")?></th>
+                <th scope="col"><?=$this->lang->line("item_price")?></th>
+                <th scope="col"><?=$this->lang->line("item_subtotal")?></th>
                 <th scope="col"></th>
             </tr>
         </thead>
@@ -92,14 +92,14 @@
         ?>
             <tr>
                 <td colspan="6"></td>
-                <td align="right">Total: </td>
+                <td align="right"><?=$this->lang->line("common_total")?>: </td>
                 <td>$<?=$total?></td>
             </tr>
         </tbody>
     </table>
     
     <div class="input-group mb-2 input-group-sm">
-        <textarea  class="form-control" rows="10" placeholder="Remark" disabled><?=$remark?></textarea>
+        <textarea  class="form-control" rows="10" placeholder="<?=$this->lang->line("item_remark")?>" disabled><?=$remark?></textarea>
     </div>
 </div>
 

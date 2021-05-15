@@ -169,9 +169,9 @@
             });
         });
     }
-    function doFetch()
+    function doFetch(form_name)
     {
-        const form = new FormData(document.querySelector('#this-form'));
+        const form = new FormData(document.querySelector('#'+form_name));
         const url = '<?=$import_url?>'
         const request = new Request(url, {
             method: 'POST',
@@ -268,10 +268,10 @@
     });
     // File input change event
     $("#i-import-submit").on("click", function(){
-        doFetch().then(response => {
+        doFetch("this-form").then(response => {
             items = []
-            const json = JSON.parse(response.data);
-            //console.log(json)
+            const json = response.data;
+            console.log(json)
             for(i=1; i < json.length; i++){
                 const item = {}
                 item['index'] = i

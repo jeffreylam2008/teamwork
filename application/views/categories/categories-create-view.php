@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <!-- Modal Head -->
-                <h2 class="modal-title" id=""><b>Create New Category</b></h2>
+                <h2 class="modal-title" id=""><b><?=$this->lang->line("category_new_titles")?></b></h2>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -18,12 +18,12 @@
                         <div class="card-body"> 
                             <div class="form-row">
                                 <div class="col-3">
-                                    <label for="">Category Code</label>
-                                    <input type="text" class="form-control form-control-sm" name="i-catecode" placeholder="Categorg Code" value="">
+                                    <label for=""><?=$this->lang->line("category_label")?></label>
+                                    <input type="text" class="form-control form-control-sm" name="i-catecode" placeholder="<?=$this->lang->line("category_label")?>" value="">
                                 </div>
                                 <div class="col-3">
-                                    <label for="">Description</label>
-                                    <input type="text" class="form-control form-control-sm" name="i-desc" placeholder="Description" value="">
+                                    <label for=""><?=$this->lang->line("category_description")?></label>
+                                    <input type="text" class="form-control form-control-sm" name="i-desc" placeholder="<?=$this->lang->line("category_description")?>" value="">
                                 </div>
                             </div>
 
@@ -37,16 +37,7 @@
 </div>
 
 <script>
-
     $(function() {
-        $( "#form1" ).sisyphus( {
-            locationBased: false,
-            timeout: 5,
-            autoRelease: true,
-            onSave: function(){
-                console.log("saved")
-            }
-        });
         $("#reset").click(function(){
             $("#form1").trigger("reset");
         });

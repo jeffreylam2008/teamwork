@@ -73,7 +73,7 @@ class Stocks extends CI_Controller
 				case "stocks/dn_detail":
 					$this->_param = "stocks/index";
 				break;
-				case "stocks/take":
+				case "stocks/stocktake":
 					$this->_param = "stocks/index";
 				break;
 				case "stocks/adj_detail":
@@ -922,7 +922,7 @@ class Stocks extends CI_Controller
 	/**
 	 * Stock Take
 	 */
-	public function take($_stocktake_num = "")
+	public function stocktake($_stocktake_num = "")
 	{
 		$_show_discard_btn = false;
 		$_transaction = [];
@@ -1165,6 +1165,8 @@ class Stocks extends CI_Controller
 						]
 					],true)
 				]);
+				// persent footer view
+				$this->load->view('footer');
 			}
 		}
 	}

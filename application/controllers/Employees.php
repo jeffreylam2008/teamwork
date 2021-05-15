@@ -128,7 +128,7 @@ class Employees extends CI_Controller
 			// load function bar view
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => $this->_user_auth['create'], "extra" => "data-toggle='modal' data-target='#modal01'"]
+					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => $this->_user_auth['create'], "extra" => "data-toggle='modal' data-target='#modal01'"]
 				]
 			]);
 
@@ -144,9 +144,9 @@ class Employees extends CI_Controller
 			$this->load->view("/employees/employees-create-view",[
 				"function_bar" => $this->load->view('function-bar', [
 					"btn" => [
-						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/administration/employees'), "style" => "", "show" => true],
-						["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
-						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
+						["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/administration/employees'), "style" => "", "show" => true],
+						["name" => "<i class='fas fa-undo-alt'></i> ".$this->lang->line("function_reset"), "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
+						["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
 					 ]
 				],true),
 				"save_url" => base_url("/administration/employees/save"),
@@ -181,8 +181,8 @@ class Employees extends CI_Controller
 				// function bar here
 				$this->load->view('function-bar', [
 					"btn" => [
-						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/administration/employees'.$_login['preference']), "style" => "", "show" => true],
-						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
+						["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/administration/employees'.$_login['preference']), "style" => "", "show" => true],
+						["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
 					]
 				]);
 				// load view here

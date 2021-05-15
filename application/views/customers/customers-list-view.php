@@ -10,12 +10,12 @@
             <?php
                 endif;
             ?>   
-            <th>Customer Code</th>
-            <th>Name</th>
-            <th>Delivery Address</th>
-            <th>Contact Number</th>
-            <th>Payment Method</th>
-            <th>Status</th>
+            <th><?=$this->lang->line('customer_label')?></th>
+            <th><?=$this->lang->line('customer_name')?></th>
+            <th><?=$this->lang->line('customer_delivery_addr')?></th>
+            <th><?=$this->lang->line('customer_contact_number')?></th>
+            <th><?=$this->lang->line('customer_payment_method')?></th>
+            <th><?=$this->lang->line('customer_status')?></th>
         </tr>
     <thead>
     <tbody>
@@ -66,7 +66,18 @@
             select : {
                 items : 'column'
             },
-            "iDisplayLength": <?=$default_per_page?>
+            "iDisplayLength": <?=$default_per_page?>,
+            "language": {
+                "lengthMenu" : "<?=$this->lang->line('function_page_showing')?> _MENU_",
+                "search": "<?=$this->lang->line('function_search')?> :",
+                "info": "<?=$this->lang->line('function_page_showing')?> _START_ <?=$this->lang->line('function_page_to')?> _END_ <?=$this->lang->line('function_page_of')?> _TOTAL_ <?=$this->lang->line('function_page_entries')?>",
+                "paginate": {
+                    "first": "<?=$this->lang->line('function_first')?>",
+                    "last": "<?=$this->lang->line('function_last')?>",
+                    "next": "<?=$this->lang->line('function_next')?>",
+                    "previous": "<?=$this->lang->line('function_previous')?>"
+                }
+            }
         });
         // set table current page
         table.page(<?=$page-1?>).draw('page');

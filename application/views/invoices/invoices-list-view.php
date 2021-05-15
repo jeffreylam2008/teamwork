@@ -1,13 +1,13 @@
 <form class="" method="GET" id="this-form" action="<?=$submit_to?>">
     <!-- search selection -->
-    Advanced Search:
+    <?=$this->lang->line("invoice_number")?>
     <input type="hidden" name="page" id="i-page" value="<?=$page?>" />
     <input type="hidden" name="show" id="i-show" value="<?=$default_per_page?>" />
     <div class="row">
         <div class="col-3">
             <div class="input-group input-group-sm mb-3 date">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">Start Date</span>
+                    <span class="input-group-text" id="basic-addon1"><?=$this->lang->line("function_start_date")?></span>
                 </div>
                 <input type="text" class="form-control" id="i-start-date" name="i-start-date" value="<?=$ad_start_date?>" placeholder="yyyy-mm-dd" />
                 <div class="input-group-append">
@@ -20,7 +20,7 @@
         <div class="col-3">
             <div class="input-group input-group-sm mb-3 date">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">End Date</span>
+                    <span class="input-group-text" id="basic-addon1"><?=$this->lang->line("function_end_date")?></span>
                 </div>
                 <input type="text" class="form-control" id="i-end-date" name="i-end-date" value="<?=$ad_end_date?>" placeholder="yyyy-mm-dd" />
                 <div class="input-group-append">
@@ -35,7 +35,7 @@
         <div class="col-6">
             <div class="input-group input-group-sm mb-3">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">Invoice Number</span>
+                    <span class="input-group-text" id="basic-addon1"><?=$this->lang->line("invoice_number")?></span>
                 </div>
                 <input type="text" class="form-control" id="i-invoice-num" name="i-invoice-num" value="<?=$ad_invoice_num?>" placeholder="#" />
             </div>
@@ -43,7 +43,7 @@
         <div class="col-3">
             <div class="input-group input-group-sm mb-3">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">Customer Code</span>
+                    <span class="input-group-text" id="basic-addon1"><?=$this->lang->line("customer")?></span>
                 </div>
                 <input type="text" class="form-control" id="i-cust-code" name="i-cust-code" value="<?=$ad_cust_code?>" placeholder="#" />
             </div>
@@ -55,14 +55,14 @@
     <table id="invoices-tbl" class="table table-striped table-borderedNO" style="width:100%">
         <thead>
             <tr>
-                <th>Invoices Number</th>
-                <th>Quotations Number</th>
-                <th>Shop code / name</th>
-                <th>Customer</th>
-                <th>Payment Method</th>
-                <th>Total</th>
-                <th>Invoice Date</th>
-                <th>Modify Date</th>
+                <th><?=$this->lang->line("invoice_number")?></th>
+                <th><?=$this->lang->line("quotation_number")?></th>
+                <th><?=$this->lang->line("company")?></th>
+                <th><?=$this->lang->line("customer")?></th>
+                <th><?=$this->lang->line("customer_payment_method")?></th>
+                <th><?=$this->lang->line("common_total")?></th>
+                <th><?=$this->lang->line("label_create_date")?></th>
+                <th><?=$this->lang->line("label_modify_date")?></th>
             </tr>
         <thead>
         <tbody>
@@ -99,6 +99,17 @@
                 items: 'column'
             },
             "iDisplayLength": <?=$default_per_page?>,
+            "language": {
+                "lengthMenu" : "<?=$this->lang->line('function_page_showing')?> _MENU_",
+                "search": "<?=$this->lang->line('function_search')?> :",
+                "info": "<?=$this->lang->line('function_page_showing')?> _START_ <?=$this->lang->line('function_page_to')?> _END_ <?=$this->lang->line('function_page_of')?> _TOTAL_ <?=$this->lang->line('function_page_entries')?>",
+                "paginate": {
+                    "first": "<?=$this->lang->line('function_first')?>",
+                    "last": "<?=$this->lang->line('function_last')?>",
+                    "next": "<?=$this->lang->line('function_next')?>",
+                    "previous": "<?=$this->lang->line('function_previous')?>"
+                }
+            },
             order : [6,"desc"]
         });
         // capture page while page refreshing
