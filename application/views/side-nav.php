@@ -1,7 +1,7 @@
     <div id="diy-sidebar">
 
         <?php 
-        echo traversal($sideNav,$path, $param);
+        echo traversal($sideNav, $path, $param);
         ?>
     </div>
     <?php
@@ -13,10 +13,11 @@
     // var_dump($slug);
     // echo "</pre>";
 
-    //echo traversal($sideNav);
+
 
     function traversal($sideNav, $path, $param=""){
         $result = "";
+        
         foreach($sideNav as $key => $val)
         {
             // one and many item on menu with Parent and Children
@@ -36,7 +37,6 @@
                 if(in_array($val["name"],$path))
                 {
                     $result .= "<div class='sub collapse show' id='".$val["name"]."'>";
-
                 }
                 else
                 {

@@ -95,11 +95,14 @@
 
     $(document).ready(function() { 
         var table = $('#invoices-tbl').DataTable({
-            select: {
+            "order" : [6,"desc"],
+            "select": {
                 items: 'column'
             },
             "iDisplayLength": <?=$default_per_page?>,
             "language": {
+                "emptyTable" : "<?=$this->lang->line('label_emptytable')?>",
+                "infoEmpty":   "<?=$this->lang->line('label_infoEmpty')?>",
                 "lengthMenu" : "<?=$this->lang->line('function_page_showing')?> _MENU_",
                 "search": "<?=$this->lang->line('function_search')?> :",
                 "info": "<?=$this->lang->line('function_page_showing')?> _START_ <?=$this->lang->line('function_page_to')?> _END_ <?=$this->lang->line('function_page_of')?> _TOTAL_ <?=$this->lang->line('function_page_entries')?>",
@@ -109,8 +112,7 @@
                     "next": "<?=$this->lang->line('function_next')?>",
                     "previous": "<?=$this->lang->line('function_previous')?>"
                 }
-            },
-            order : [6,"desc"]
+            }
         });
         // capture page while page refreshing
         table.page(<?=$page-1?>).draw('page');

@@ -1,14 +1,14 @@
 <?php
     extract($data);
-    echo "<pre>";
-    print_r($data);
-    echo "</pre>";
+    // echo "<pre>";
+    // print_r($data);
+    // echo "</pre>";
 // ?>
 
 <form id="form1" name="form1" method="POST" action="<?=$save_url.$item_code?>" enctype="multipart/form-data">
 <div class="card">
     <div class="card-header">
-        <h2> Item Code: <u><?=$item_code?></u></h2>
+        <h2> <?=$this->lang->line("item_code")?>: <u><?=$item_code?></u></h2>
     </div>
     <div class="card-body">
         <div class="container-fluid">
@@ -16,25 +16,25 @@
                 <div class="col-6">
                     <div class="form-row">
                         <div class="col-6">
-                            <label for="">Chinese Name</label>
-                            <input type="text" class="form-control form-control-sm" name="i-chiname" placeholder="Type Something" value="<?=$chi_name?>">
+                            <label for=""><?=$this->lang->line("item_chi_name")?></label>
+                            <input type="text" class="form-control form-control-sm" name="i-chiname" placeholder="<?=$this->lang->line("item_chi_name")?>" value="<?=$chi_name?>">
                         </div>
                         <div class="col-6">
-                            <label for="">English Name</label>
-                            <input type="text" class="form-control form-control-sm" name="i-engname" placeholder="Type Something" value="<?=$eng_name?>">
+                            <label for=""><?=$this->lang->line("item_eng_name")?></label>
+                            <input type="text" class="form-control form-control-sm" name="i-engname" placeholder="<?=$this->lang->line("item_eng_name")?>" value="<?=$eng_name?>">
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="col-12">
-                            <label for="t1">Description</label>
-                            <textarea class="form-control form-control-sm" placeholder="Type Something" name="i-desc" rows="2"><?=$desc?></textarea>
+                            <label for="t1"><?=$this->lang->line("label_description")?></label>
+                            <textarea class="form-control form-control-sm" placeholder="<?=$this->lang->line("label_description")?>" name="i-desc" rows="2"><?=$desc?></textarea>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="col-4">
-                            <label>Price</label>
+                            <label><?=$this->lang->line("item_price")?></label>
                         <div class="input-group input-group-sm">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">$</span>
@@ -45,7 +45,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-4">
-                            <label>Special Price</label>
+                            <label><?=$this->lang->line("item_discount")?></label>
                             <div class="input-group input-group-sm">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">$</span>
@@ -56,15 +56,15 @@
                     </div>
                     <div class="form-row">
                         <div class="col-6">
-                            <label>Categories</label>                
-                            <a class='btn btn-outline-primary btn-sm' href='<?=$categories_baseurl?>' type='button'>New</a>
+                            <label><?=$this->lang->line("category_label")?></label>                
+                            <a class='btn btn-outline-primary btn-sm' href='<?=$categories_baseurl?>' type='button'><?=$this->lang->line("function_new")?></a>
                             <select class="form-control" name="i-category">
                             <?php if( array_key_exists($cate_code, $categories)):?>
                                 <option value="<?=$cate_code?>"><?=$categories[$cate_code]?></option>
                             <?php
                                 else:
                             ?>  
-                                <option value="null">-- Select --</option>
+                                <option value="null"><?=$this->lang->line("function_select")?></option>
                             <?php endif;?>
                                 <?php 
                                         foreach($categories as $k => $v):
@@ -78,24 +78,24 @@
                     </div>
                     <div class="form-row">
                         <div class="col-6">
-                            <label>Type</label> 
+                            <label><?=$this->lang->line("item_type")?></label> 
                             <select class="form-control" id="i-type" name="i-type">
                                 <?php if( array_key_exists($type, $types)):?>
                                     <option value="<?=$type?>"><?=$types[$type]?></option>
                                 <?php
                                     else:
                                 ?>
-                                <option value="null">-- Select --</option>
+                                <option value="null"><?=$this->lang->line("function_select")?></option>
                                 <?php endif;?>                                                                   
-                                <option value='1'>Non Inventory</option>
-                                <option value='2'>Inventory</option>
-                                <option value='3'>Non Inventory - Point</option>
+                                <option value='1'><?=$this->lang->line("item_non_inventory")?></option>
+                                <option value='2'><?=$this->lang->line("item_inventory")?></option>
+                                <option value='3'><?=$this->lang->line("item_non_inventory_point")?></option>
                             </select>
                         </div>
                     </div>    
                     <div class="form-row">
                         <div class="col-6">
-                            <label>Unit</label>
+                            <label><?=$this->lang->line("item_unit")?></label>
                             <input type="text" class="form-control form-control-sm" name="i-unit" placeholder="i.e. pack, 4x3L etc" value="<?=$unit?>">
                         </div>
                     </div>
@@ -103,20 +103,20 @@
                 <div class="col-6">
                     <div class="form-row" id="i-file">
                         <div class="col-10">
-                            <label>Upload Product Image (Max file size = 2MB)</label>
+                            <label><?=$this->lang->line("item_image")?></label>
                             <input type="file" class="form-control form-control-sm" id="i-img" name="i-img" value="" disabled>
                         </div>
                     </div>
                     <?php if(!$remove_img):?>
                         <div class="form-row">
                             <div class="col-10">
-                                <a href="#" type="button" class="btn btn-danger btn-sm" id="i-img-remove" name="i-img-remove" > Remove Image</a>
+                                <a href="#" type="button" class="btn btn-danger btn-sm" id="i-img-remove" name="i-img-remove" ><?=$this->lang->line("item_removeimage")?></a>
                             </div>
                         </div>
                     <?php else: ?>
                         <div class="form-row">
                             <div class="col-10">
-                                <label>Upload Product Image (Max file size = 2MB)</label>
+                                <label><?=$this->lang->line("item_image")?></label>
                                 <input type="file" class="form-control form-control-sm" id="i-img" name="i-img" value="">
                             </div>
                         </div>
@@ -133,12 +133,12 @@
 </div>
 <div class="card">
     <div class="card-header">
-        <h2> Warehouse</u></h2>
+        <h2> <?=$this->lang->line("warehouse")?></u></h2>
     </div>
     <div class="card-body">
         <div class="form-row">
-            <div class="col-1">
-                <label for="">Stock Onhand</label>
+            <div class="col-2">
+                <label for=""><?=$this->lang->line("item_Stockonhand")?></label>
                 <input type="text" class="form-control form-control-sm" name="i-stockonhand" placeholder="Type Something" value="<?=$stockonhand?>" disabled>
             </div>
         </div>

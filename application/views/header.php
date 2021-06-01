@@ -14,8 +14,8 @@
         <!--<script src="<?=base_url("/assets/js/sisyphus.min.js");?>"></script>-->
         <!-- require for dropdown button -->
         
-        <script src="<?=base_url("/assets/js/bootstrap-4.0.0.min.js");?>"></script>
-        <script src="<?=base_url("/assets/js/popper.min.js");?>"></script>
+        <script src="<?=base_url("/assets/js/bootstrap.bundle.min.js");?>"></script>
+        <!--<script src="<script src="<?=base_url("/assets/js/popper.min.js");?>"></script>-->
 
         <!-- jquery quicksearch -->
         <script src="<?=base_url("/assets/js/jquery.quicksearch.js");?>"></script>

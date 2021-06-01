@@ -360,9 +360,9 @@ class Stocks extends CI_Controller
 
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/purchases/order/edit/'.$_po_num) ,"style" => "","show" => true],
-					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> Next", "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
-					["name" => "<i class='fas fa-trash-alt'></i> Discard", "type"=>"button", "id" => "discard", "url"=> base_url('/stocks/grn/donew'), "style" => "btn btn-danger", "show" => $_show_discard_btn]
+					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/stocks') ,"style" => "","show" => true],
+					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
+					["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('/stocks/grn/donew'), "style" => "btn btn-danger", "show" => $_show_discard_btn]
 				]
 			]);
 
@@ -706,8 +706,9 @@ class Stocks extends CI_Controller
 			}
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> Next", "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
-					["name" => "<i class='fas fa-trash-alt'></i> Discard", "type"=>"button", "id" => "discard", "url"=> base_url('/stocks/donewadj'), "style" => "btn btn-danger", "show" => $_show_discard_btn]
+					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/stocks') ,"style" => "","show" => true],
+					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
+					["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('/stocks/donewadj'), "style" => "btn btn-danger", "show" => $_show_discard_btn]
 				]
 			]);
 

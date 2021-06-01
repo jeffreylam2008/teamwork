@@ -10,6 +10,7 @@ class Dushboard extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
+
 		if(!empty($this->session->userdata['login']))
 		{
 			$this->_token = $this->session->userdata['login']['token'];
@@ -38,8 +39,8 @@ class Dushboard extends CI_Controller
 			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
 
 			// sidebar session
-			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
-
+			$this->_param = strtolower($this->router->fetch_class()."/".$this->router->fetch_method());
+			
 			// header data
 			$this->_inv_header_param["topNav"] = [
 				"isLogin" => true,
@@ -47,8 +48,6 @@ class Dushboard extends CI_Controller
 				"employee_code" => $_API_EMP['employee_code'],
 				"shop_code" => $_API_SHOP['shop_code'],
 				"shop_name" => $_API_SHOP['name'],
-				// "d_shop_code" => $_API_EMP['default_shopcode'],
-				// "d_shop_name" => $_API_EMP['name'],
 				"today" => date("Y-m-d")
 			];
 

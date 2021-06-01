@@ -65,6 +65,8 @@
             },
             "iDisplayLength": <?=$default_per_page?>,
             "language": {
+                "emptyTable" : "<?=$this->lang->line('label_emptytable')?>",
+                "infoEmpty":   "<?=$this->lang->line('label_infoEmpty')?>",
                 "lengthMenu" : "<?=$this->lang->line('function_page_showing')?> _MENU_",
                 "search": "<?=$this->lang->line('function_search')?> :",
                 "info": "<?=$this->lang->line('function_page_showing')?> _START_ <?=$this->lang->line('function_page_to')?> _END_ <?=$this->lang->line('function_page_of')?> _TOTAL_ <?=$this->lang->line('function_page_entries')?>",

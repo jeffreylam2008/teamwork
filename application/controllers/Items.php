@@ -249,11 +249,11 @@ class Items extends CI_Controller
 			// function bar with next, preview and save button
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/products/items'.$_login["preference"]), "style" => "", "show" => true],
-					["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
-					["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
-					["name" => "Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/products/items/edit/".$_API_ITEMS["previous"].$_login["preference"]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
-					["name" => "Next", "type"=>"button", "id" => "next", "url"=> base_url("/products/items/edit/".$_API_ITEMS["next"].$_login["preference"]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
+					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/products/items'.$_login["preference"]), "style" => "", "show" => true],
+					["name" => "<i class='fas fa-redo'></i> ".$this->lang->line("function_reset"), "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
+					["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
+					["name" => "<i class='fas fa-step-backward'></i> ".$this->lang->line("function_previous"), "type"=>"button", "id" => "previous", "url"=> base_url("/products/items/edit/".$_API_ITEMS["previous"].$_login["preference"]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
+					["name" => "<i class='fas fa-step-forward'></i> ".$this->lang->line("function_next"), "type"=>"button", "id" => "next", "url"=> base_url("/products/items/edit/".$_API_ITEMS["next"].$_login["preference"]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
 				]
 			]);
 

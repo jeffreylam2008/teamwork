@@ -1,5 +1,5 @@
 <form name="form1" id="form1" action="" method="GET" > 
-    Categories: 
+    <?=$this->lang->line("category")?>: 
     <div class='btn-group-toggle' id='cate_search' data-toggle='buttons'>
 
     <?php
@@ -35,14 +35,14 @@
         <tr>
             <th>#</td>      
             <th></th>
-            <th>Code</th>
-            <th>English Name</th>
-            <th>Chinese Name</th>
-            <th>Description</th>
-            <th>StockOnhand</th>
-            <th>Price</th>
-            <th>create_date</th>
-            <th>Modify Date</th>
+            <th><?=$this->lang->line("item_code")?></th>
+            <th><?=$this->lang->line("item_eng_name")?></th>
+            <th><?=$this->lang->line("item_chi_name")?></th>
+            <th><?=$this->lang->line("label_description")?></th>
+            <th><?=$this->lang->line("item_Stockonhand")?></th>
+            <th><?=$this->lang->line("item_price")?></th>
+            <th><?=$this->lang->line("label_create_date")?></th>
+            <th><?=$this->lang->line("label_modify_date")?></th>
         </tr>
     <thead>
     <tbody>
@@ -83,7 +83,20 @@ $(document).ready(function() {
             items: 'column'
         },
         "iDisplayLength": <?=$default_per_page?>,
-        "dom": '<"top"flp<"clear">>rt<"bottom"ip<"clear">>'
+        "dom": '<"top"flp<"clear">>rt<"bottom"ip<"clear">>',
+        "language": {
+            "emptyTable" : "<?=$this->lang->line('label_emptytable')?>",
+            "infoEmpty":   "<?=$this->lang->line('label_infoEmpty')?>",
+            "lengthMenu" : "<?=$this->lang->line('function_page_showing')?> _MENU_",
+            "search": "<?=$this->lang->line('function_search')?> :",
+            "info": "<?=$this->lang->line('function_page_showing')?> _START_ <?=$this->lang->line('function_page_to')?> _END_ <?=$this->lang->line('function_page_of')?> _TOTAL_ <?=$this->lang->line('function_page_entries')?>",
+            "paginate": {
+                "first": "<?=$this->lang->line('function_first')?>",
+                "last": "<?=$this->lang->line('function_last')?>",
+                "next": "<?=$this->lang->line('function_next')?>",
+                "previous": "<?=$this->lang->line('function_previous')?>"
+            }
+        }
     });
     // set page number from previous
     table.page(<?=($page-1)?>).draw('page');

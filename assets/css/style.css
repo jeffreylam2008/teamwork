@@ -24,7 +24,7 @@
     z-index: 1;
     top: 0;
     left: 0;
-    background-color: #007bff;
+    background-color: #384b77;
     overflow-x: hidden;
     transition: 0.5s;
     padding-top: 20px;
@@ -38,14 +38,14 @@
     transition: 0.3s;
 }
 #diy-sidebar .sub1.active{
-    background-color: #0050ff;
+    background-color: #3287c1;
     padding: 0;
     margin: 0px 0px;
 }
 #diy-sidebar .sub{
     text-indent: 1px;
     left: 0;
-    background-color: #007bff;
+    background-color: #384b77;
     overflow-x: hidden;
 }
 #diy-sidebar .sub .sub1{
@@ -55,7 +55,7 @@
     text-indent: 20px;
 }
 #diy-sidebar a:hover{
-    background-color:  #0050ff;
+    background-color:  #3287c1;
 }
 
 
@@ -88,6 +88,7 @@ html, body {
 }
 .row{
     height: 100%;
+    margin-top: 10px;
 }
 .banner-sec{max-height:100%; border-radius: 0 0 0 0; padding:0;}
 /*.container{background:#fff; border-radius: 10px; box-shadow:15px 20px 0px rgba(0,0,0,0.1);}*/

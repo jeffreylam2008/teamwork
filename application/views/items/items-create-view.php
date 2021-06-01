@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <!-- Modal Head -->
-                <h2 class="modal-title" id=""><b>New Item</b></h2>
+                <h2 class="modal-title" id=""><b><?=$this->lang->line("item_new_titles")?></b></h2>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -81,19 +81,19 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="col-12">
-                                        <label>Type</label>  
+                                        <label><?=$this->lang->line("item_type")?></label>  
                                         <select class="form-control" id="i-type" name="i-type">
                                             <option value="null"><?=$this->lang->line("function_select")?></option>                                            
-                                            <option value='1'>Non Inventory</option>
-                                            <option value='2'>Inventory</option>
-                                            <option value='3'>Non Inventory - Point</option>
+                                            <option value='1'><?=$this->lang->line("item_non_inventory")?></option>
+                                            <option value='2'><?=$this->lang->line("item_inventory")?></option>
+                                            <option value='3'><?=$this->lang->line("item_non_inventory_point")?></option>
                                         </select>
                                     </div>
                                 </div>    
 
                                 <div class="form-row">
                                     <div class="col-12">
-                                        <label>Unit</label>
+                                        <label><?=$this->lang->line("item_unit")?></label>
                                         <input type="text" class="form-control form-control-sm" id="i-unit" name="i-unit" placeholder="i.e. pack, 4x3L etc" value="">
                                     </div>
                                 </div>
@@ -101,7 +101,7 @@
                             <div class="col-6">
                                 <div class="form-row">
                                     <div class="col-10">
-                                        <label>Upload Product Image (Max file size = 2MB)</label>
+                                        <label><?=$this->lang->line("item_image")?></label>
                                         <input type="file" class="form-control form-control-sm" id="i-img" name="i-img" value="">
                                     </div>
                                 </div>

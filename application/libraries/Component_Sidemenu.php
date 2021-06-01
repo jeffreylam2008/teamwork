@@ -32,7 +32,7 @@ class Component_Sidemenu
     {
         if(empty($this->config['active']))
         {
-            $this->config['active'] = "dushboard";
+            $this->config['active'] = "Dushboard/index";
         }
 
         $this->config['nav_finished_list'] = $this->build_menu($this->config["nav_list"], 0, $this->config['active']);
