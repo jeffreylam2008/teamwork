@@ -86,6 +86,7 @@ class Dushboard extends CI_Controller
 		$_API_CUSTOMERS_COUNT = json_decode($this->component_api->GetConfig("result"), true);
 		$_API_CUSTOMERS_COUNT = !empty($_API_CUSTOMERS_COUNT['query']) ? $_API_CUSTOMERS_COUNT['query'] : "";
 		$this->load->view('dushboard-view', [
+			"title" => $this->lang->line("dushboard"),
 			"invoices_url" => base_url("/invoices/list"),
 			"customer_url" => base_url("/customers"),
 			"elem" => [

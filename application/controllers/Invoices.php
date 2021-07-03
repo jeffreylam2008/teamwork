@@ -220,8 +220,6 @@ class Invoices extends CI_Controller
 				// For new create
 				else 
 				{
-					$this->session->set_userdata('cur_invoicenum',$_invoice_num);
-					$this->session->set_userdata('transaction',$_transaction);
 					$_transaction[$_invoice_num]['items'] = [];
 					$_transaction[$_invoice_num]['quotation'] = "";
 					$_transaction[$_invoice_num]['cust_code'] = "";
@@ -229,6 +227,9 @@ class Invoices extends CI_Controller
 					$_transaction[$_invoice_num]['paymentmethod'] = "";
 					$_transaction[$_invoice_num]['paymentmethodname'] = "";
 					$_transaction[$_invoice_num]['remark'] = "";
+					$_transaction[$_invoice_num]['invoice_num'] = $_invoice_num;
+					$this->session->set_userdata('cur_invoicenum',$_invoice_num);
+					$this->session->set_userdata('transaction',$_transaction);
 				}
 			}
 
@@ -791,7 +792,6 @@ class Invoices extends CI_Controller
 			}
 			else
 			{
-
 				// fatch items API
 				$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY').$_query);
 			}
@@ -803,12 +803,12 @@ class Invoices extends CI_Controller
 		// var_dump($_data);
 		// echo "</pre>";
 		
-		if(!empty($_data['Error']))
+		if(!empty($_data['error']['code']) && $_data['error']['code'] != "00000")
 		{
 			$this->load->view("error-handle", [
 				"alertstyle" => "danger",
-				"code" => $_data['Code'],
-				"message" => $_data['Error']
+				"code" => $_data['error']['code'],
+				"message" => $_data['error']['message']
 			]);
 		}
 		else
@@ -819,15 +819,14 @@ class Invoices extends CI_Controller
 					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> base_url("invoices/donew/"), "style" => "", "show" => true, "extra" => ""]
 				]
 			]);
-
+			// Function bar
 			$this->load->view('function-bar', [
 				"btn" => [
 					["name" => "<i class='fas fa-search'></i> ".$this->lang->line("function_search"), "type"=>"button", "id" => "i-search", "url"=> "#", "style" => "", "show" => true, "extra" => ""],
 					["name" => "<i class='fas fa-undo-alt'></i> ".$this->lang->line("function_clear"), "type"=>"button", "id" => "i-clear", "url"=> "#", "style" => "btn btn-secondary", "show" => true, "extra" => ""]
 				]
 			]);
-
-
+			// View Content
 			$this->load->view("invoices/invoices-list-view", [
 				"data" => $_data,
 				"submit_to" => base_url("/invoices/list"),

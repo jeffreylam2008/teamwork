@@ -663,12 +663,12 @@ class Quotations extends CI_Controller
 			$_data = json_decode($this->component_api->GetConfig("result"), true);
 			$_data = $_data != null ? $_data : "";
 		}
-		if(!empty($_data['Error']))
+		if(!empty($_data['error']['code']) && $_data['error']['code'] != "00000")
 		{
 			$this->load->view("error-handle", [
 				"alertstyle" => "danger",
-				"code" => $_data['Code'],
-				"message" => $_data['Error']
+				"code" => $_data['error']['code'],
+				"message" => $_data['error']['message']
 			]);
 		}
 		else

@@ -66,8 +66,9 @@
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                     <span class="dropdown-header"><?=$topNav['username']?></span>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Profile</a>
-                    <a class="dropdown-item" href="<?=base_url('logout');?>">Logout</a>
+                    <a class="dropdown-item" href="#"><?=$this->lang->line("function_language")?></a>
+                    <a class="dropdown-item" href="#"><?=$this->lang->line("function_profile")?></a>
+                    <a class="dropdown-item" href="<?=base_url('logout');?>"><?=$this->lang->line("function_logout")?></a>
                 </div>
             </div>
             </li>

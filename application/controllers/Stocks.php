@@ -588,49 +588,6 @@ class Stocks extends CI_Controller
 	}
 
 	/**
-	 * Show DN detail 
-	 * @param _input transaction code
-	 */
-	 public function dn_detail($_input)
-	 {
-		$_transaction = [];
-		// Call API
-		$this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE').$_input);
-		$this->component_api->CallGet();
-		$_API_DN = json_decode($this->component_api->GetConfig("result"), true);
-		$_API_DN = !empty($_API_DN['query']) ? $_API_DN['query'] : "";
-
-		$_login = $this->session->userdata("login");
-
-		$_transaction[$_input] = $_API_DN;
-		$this->session->set_userdata('cur_dnnum',$_input);
-		$this->session->set_userdata('transaction',$_transaction);
-		
-		$this->load->view('function-bar', [
-			"btn" => [
-				["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/stocks/'.$_login['preference']) ,"style" => "","show" => true],
-				["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
-				["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => true]
-			]
-		]);
-		$this->load->view('title-bar', [
-			"title" => "Delivery Note"
-		]);
-		//view content
-		$this->load->view("stocks/delivery-note-detail-view", [
-			"data" => $_transaction[$_input],
-			"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
-			"preview_url" => base_url('/ThePrint/dn/preview'),
-			"print_url" => base_url('/ThePrint/dn/save'),
-			"function_bar" => $this->load->view('function-bar', [
-				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "new", "url"=>base_url('/customers/?new=1'), "style" => "", "show" => true]
-					]
-			],true)
-		]);
-	 }
-
-	/**
 	 * Create new adjustment
 	 * @param _trans_code the refer transaction code to be adjust 
 	 */
@@ -960,8 +917,9 @@ class Stocks extends CI_Controller
 			}
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> Next", "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
-					["name" => "<i class='fas fa-trash-alt'></i> Discard", "type"=>"button", "id" => "discard", "url"=> base_url('/stocks/donew_stocktake'), "style" => "btn btn-danger", "show" => $_show_discard_btn]
+					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/stocks') ,"style" => "","show" => true],
+					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
+					["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('/stocks/donewadj'), "style" => "btn btn-danger", "show" => $_show_discard_btn]
 				]
 			]);
 

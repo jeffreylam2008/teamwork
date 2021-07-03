@@ -140,7 +140,8 @@ class Items extends CI_Controller
 		}
 		//  Call API
 		$_where_arr = explode("/", $this->_i_all_cate);
-		$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS_CATE').$this->_i_all_cate);
+		$_trim_where = implode("/",array_filter($_where_arr));
+		$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS_CATE')."/".$_trim_where);
 		$this->component_api->CallGet();
 		$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
 		$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : [];

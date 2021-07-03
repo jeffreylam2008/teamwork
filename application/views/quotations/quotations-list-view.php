@@ -7,7 +7,7 @@
         <div class="col-3">
             <div class="input-group input-group-sm mb-3 date">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">Start Date</span>
+                    <span class="input-group-text" id="basic-addon1"><?=$this->lang->line("function_start_date")?></span>
                 </div>
                 <input type="text" class="form-control" id="i-start-date" name="i-start-date" value="<?=$ad_start_date?>" placeholder="yyyy-mm-dd" />
                 <div class="input-group-append">
@@ -20,7 +20,7 @@
         <div class="col-3">
             <div class="input-group input-group-sm mb-3 date">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">End Date</span>
+                    <span class="input-group-text" id="basic-addon1"><?=$this->lang->line("function_end_date")?></span>
                 </div>
                 <input type="text" class="form-control" id="i-end-date" name="i-end-date" value="<?=$ad_end_date?>" placeholder="yyyy-mm-dd" />
                 <div class="input-group-append">
@@ -35,7 +35,7 @@
         <div class="col-6">
             <div class="input-group input-group-sm mb-3">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">Quotation Number</span>
+                    <span class="input-group-text" id="basic-addon1"><?=$this->lang->line("quotation_number")?></span>
                 </div>
                 <input type="text" class="form-control" id="i-quotation-num" name="i-quotation-num" value="<?=$ad_quotation_num?>" placeholder="#" />
             </div>
@@ -43,7 +43,7 @@
         <div class="col-3">
             <div class="input-group input-group-sm mb-3">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">Customer Code</span>
+                    <span class="input-group-text" id="basic-addon1"><?=$this->lang->line("customer_label")?></span>
                 </div>
                 <input type="text" class="form-control" id="i-cust-code" name="i-cust-code" value="" placeholder="#" />
             </div>
@@ -54,14 +54,14 @@
     <table id="tbl" class="table table-sm table-borderedNO" style="width:100%">
         <thead>
             <tr>
-                <th>Quotation Number</th>
-                <th>Shop code / name</th>
-                <th>Customer</th>
-                <th>Payment Method</th>
-                <th>Total</th>
-                <th>Converted</th>
-                <th>Invoice Date</th>
-                <th>Modify Date</th>
+                <th><?=$this->lang->line("quotation_number")?></th>
+                <th><?=$this->lang->line("company")?></th>
+                <th><?=$this->lang->line("customer_name")?></th>
+                <th><?=$this->lang->line("customer_payment_method")?></th>
+                <th><?=$this->lang->line("common_total")?></th>
+                <th><?=$this->lang->line("common_is_convert")?></th>
+                <th><?=$this->lang->line("label_create_date")?></th>
+                <th><?=$this->lang->line("label_modify_date")?></th>
             </tr>
         <thead>
         <tbody>
@@ -100,7 +100,20 @@
                 items: 'column'
             },
             "iDisplayLength": <?=$default_per_page?>,
-            order : [6,"desc"]
+            order : [6,"desc"],
+            "language": {
+                "emptyTable" : "<?=$this->lang->line('label_emptytable')?>",
+                "infoEmpty":   "<?=$this->lang->line('label_infoEmpty')?>",
+                "lengthMenu" : "<?=$this->lang->line('function_page_showing')?> _MENU_",
+                "search": "<?=$this->lang->line('function_search')?> :",
+                "info": "<?=$this->lang->line('function_page_showing')?> _START_ <?=$this->lang->line('function_page_to')?> _END_ <?=$this->lang->line('function_page_of')?> _TOTAL_ <?=$this->lang->line('function_page_entries')?>",
+                "paginate": {
+                    "first": "<?=$this->lang->line('function_first')?>",
+                    "last": "<?=$this->lang->line('function_last')?>",
+                    "next": "<?=$this->lang->line('function_next')?>",
+                    "previous": "<?=$this->lang->line('function_previous')?>"
+                }
+            }
         });
         // capture page while page refreshing
         table.page(<?=$page-1?>).draw('page');

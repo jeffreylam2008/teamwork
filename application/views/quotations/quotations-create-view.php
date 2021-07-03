@@ -9,7 +9,7 @@ extract($data);
     <form class="" method="POST" id="this-form" action="<?=$submit_to?>">
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text" id="">Quotation Number</span>
+                <span class="input-group-text" id=""><?=$this->lang->line("quotation_number")?></span>
             </div>
             <input type="text" class="form-control" id="i-quotation" value="<?=$quotation?>" disabled>
         </div>
@@ -178,12 +178,34 @@ extract($data);
             items: 'column'
         },
         "iDisplayLength": <?=$default_per_page?>,
+        "language": {
+            "lengthMenu" : "<?=$this->lang->line('function_page_showing')?> _MENU_",
+            "search": "<?=$this->lang->line('function_search')?> :",
+            "info": "<?=$this->lang->line('function_page_showing')?> _START_ <?=$this->lang->line('function_page_to')?> _END_ <?=$this->lang->line('function_page_of')?> _TOTAL_ <?=$this->lang->line('function_page_entries')?>",
+            "paginate": {
+                "first": "<?=$this->lang->line('function_first')?>",
+                "last": "<?=$this->lang->line('function_last')?>",
+                "next": "<?=$this->lang->line('function_next')?>",
+                "previous": "<?=$this->lang->line('function_previous')?>"
+            }
+        }
     });
     var itemTbl =$('#items-list').DataTable({
         "select": {
             items: 'column'
         },
-        "iDisplayLength": 10,
+        "iDisplayLength": <?=$default_per_page?>,
+        "language": {
+            "lengthMenu" : "<?=$this->lang->line('function_page_showing')?> _MENU_",
+            "search": "<?=$this->lang->line('function_search')?> :",
+            "info": "<?=$this->lang->line('function_page_showing')?> _START_ <?=$this->lang->line('function_page_to')?> _END_ <?=$this->lang->line('function_page_of')?> _TOTAL_ <?=$this->lang->line('function_page_entries')?>",
+            "paginate": {
+                "first": "<?=$this->lang->line('function_first')?>",
+                "last": "<?=$this->lang->line('function_last')?>",
+                "next": "<?=$this->lang->line('function_next')?>",
+                "previous": "<?=$this->lang->line('function_previous')?>"
+            }
+        }
     });
 
     //testing here

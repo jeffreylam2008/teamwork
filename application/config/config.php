@@ -31,7 +31,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://192.168.1.114/webapp';
+$config['base_url'] = 'http://192.168.20.114/webapp';
 
 /*
 |--------------------------------------------------------------------------
@@ -541,8 +541,8 @@ $config['default_home'] = 'dushboard';
 | API Configuration 
 |--------------------------------------------------------------------------
 */
-$config['api_url'] = 'http://192.168.1.114/erp_backend/api/v1';
-$config['DEBUG_MODE'] = false;
+$config['api_url'] = 'http://192.168.20.114/erp_backend/api/v1';
+$config['DEBUG_MODE'] = true;
 $config['DEFAULT_PER_PAGE'] = 25;
 $config['DEFAULT_FIRST_PAGE'] = 1;
 $config['APP_LOG_PATH'] = $_SERVER['DOCUMENT_ROOT']."/webapp/logs/";

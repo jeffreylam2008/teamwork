@@ -199,7 +199,6 @@ extract($data);
 
 <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <script>
-
     var dbItems = <?=json_encode($ajax["items"],true)?>;
     var items = []
     var selecteditemcode = ""

@@ -107,13 +107,13 @@ class ThePrint extends CI_Controller
             switch($_option)
             {
                 case "preview":
-                    $this->load->view('stocks/delivery-note-print-view', [
+                    $this->load->view('stocks/dn/delivery-note-print-view', [
                         "data" => $_transaction[$_cur_num],
                         "preview" => true
                     ]);
                 break;
                 case "save":
-                    $this->load->view('stocks/delivery-note-print-view', [
+                    $this->load->view('stocks/dn/delivery-note-print-view', [
                         "data" => $_transaction[$_cur_num],
                         "preview" => false
                     ]);

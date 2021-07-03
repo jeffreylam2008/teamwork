@@ -10,14 +10,15 @@
     foreach($categories as $k => $v)
     {
         $active = "";
+
         if(in_array($v['cate_code'], $where))
         {
-            $active = "active";
+            $active = "checked";
         }
         if($index % 5 == 0)
             echo "<br>";
-        echo "<label class='btn btn-outline-secondary ".$active."'>";
-        echo "<input type='checkbox' name='' value='".$v['cate_code']."' autocomplete='off' /> ";
+        echo "<label class='btn btn-outline-secondary'>";
+        echo "<input type='checkbox' name='' value='".$v['cate_code']."' autocomplete='off'  ".$active." /> ";
         echo $v['desc'];
         echo "</label>&nbsp;";
         $index++;
@@ -100,8 +101,8 @@ $(document).ready(function() {
     });
     // set page number from previous
     table.page(<?=($page-1)?>).draw('page');
-    
-    // Change query string while change page and page page setting
+
+    // Change query string while change page and page setting
     table.on( 'draw', function () {
         var urlParams = new URLSearchParams(location.search)
         urlParams.set('page', $("ul.pagination > li.active > a").text())
@@ -129,8 +130,12 @@ $(document).ready(function() {
         var cate = ""
         $("#cate_search").children().each(function(i){
             if($(this).hasClass('active'))
-                cate += "/" +$(this).children().val();
+            {
+                cate += $(this).children().val();
+                cate += "/";
+            } 
         });
+        
         $("#i-all-cate").val(cate);
         $("#form1").submit();
     });
