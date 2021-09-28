@@ -81,7 +81,7 @@
                     echo "<td>(".$val['shop_code'].") - ".$val['shop_name']."</td>";
                     echo "<td>".$val['customer']."</td>";
                     echo "<td>".$val['payment_method']."</td>";
-                    echo "<td>$".$val['total']."</td>";
+                    echo "<td>$".number_format($val['total'],2)."</td>";
                     echo "<td>".$val['create_date']."</td>";
                     echo "<td>".$val['modify_date']."</td>";
                     echo "</tr>";

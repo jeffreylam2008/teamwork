@@ -1,9 +1,9 @@
 <div>
     <?php 
-       
-        $data = json_decode($_POST["i-post"],true);
+        
+        // $data = json_decode($_POST["i-post"],true);
         // echo "<pre>";
-        // var_dump($data);
+        // var_dump($_POST);
         // echo "</pre>";
         extract($data);
 
@@ -18,7 +18,7 @@
             <span class="input-group-text"><?=$this->lang->line("invoice_number")?></span>
         </div>
         
-        <input type="text" class="form-control" value="<?=$invoicenum?>" disabled />
+        <input type="text" class="form-control" value="<?=$trans_code?>" disabled />
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">

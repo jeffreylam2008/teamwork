@@ -1,8 +1,8 @@
 <div>
     <?php 
-        // echo "<pre>";
-        // var_dump($data);
-        // echo "</pre>";
+        //echo "<pre>";
+        //var_dump($data);
+        //echo "</pre>";
         extract($data);
     ?>
 </div>
@@ -20,7 +20,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text" id=""><?=$this->lang->line("dn_reference_number")?></span>
             </div>
-            <input type="text" class="form-control" id="i-ref-num" value=""  />
+            <input type="text" class="form-control" id="i-ref-num" value=" "  />
         </div>
 
         <div class="input-group mb-2 input-group-sm">
@@ -120,10 +120,37 @@
                 <th><?=$this->lang->line("item_qty")?></th>
                 <th></th>
                 <th><?=$this->lang->line("item_unit")?></th>
+                <th></th>
             </thead>
             <!-- render items-list here -->
             <tbody id="tdisplay">
-
+            <?php
+                
+                foreach ($items as $k=> $v){
+                    extract($v);
+                    
+            ?>
+                <tr data-items="item_<?=$k?>">
+                    <td><?=$item_code?></td>
+                    <td><?=$eng_name?></td>
+                    <td><?=$chi_name?></td>
+                    <td><?=$stockonhand?></td>
+                    <td>
+                        <input type="button" class='btn btn-secondary btn-sm w-70 float-right' id="minus_<?=$k?>" value="-" />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control form-control-sm item-input" id="qty_<?=$k?>" value="<?=$qty?>" disabled />
+                    </td>
+                    <td>
+                        <input type="button" class='btn btn-secondary btn-sm w-70' id="plus_<?=$k?>" value="+" />
+                    </td>
+                    <td><?=$unit?></td>
+                    <td></td>
+                </tr>
+            <?php
+                    
+                }
+            ?>
             <tbody>
         </table>
 
@@ -132,6 +159,7 @@
         </div>
         <input type="hidden" name="i-post" id="i-post" value="" />
         <input type="hidden" name="i-prefix" id="i-prefix" value="<?=$prefix?>" />
+        <input type="hidden" name="i-void" id="i-void" value="true" />
         <input type="hidden" name="i-employeecode" id="i-employeecode" value="<?=$employee_code?>" />
         <input type="hidden" name="i-form-type" id="i-form-type" value="create" />
     </form>
@@ -470,8 +498,8 @@
         var _inputs = {};
         var _valid = 0;
         _inputs["dn_num"] = $("#i-dn-num").val()
-        _inputs["prefix"] = $("#i-prefix").val()
-        _inputs["refernum"] = $("#i-ref-num").val()
+        _inputs["dn_prefix"] = $("#i-prefix").val()
+        _inputs["trans_code"] = $("#i-ref-num").val()
         _inputs["employee_code"] = $("#i-employeecode").val()
         _inputs["date"] = $("#i-date").val()
         _inputs["shopcode"] = $("#i-shopcode").val()

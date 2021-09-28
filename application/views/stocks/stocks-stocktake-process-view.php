@@ -17,7 +17,7 @@
         <div class="input-group-prepend">
             <span class="input-group-text" id="">Transaction Number</span>
         </div>            
-        <input type="text" class="form-control" id="i-st-num" value="<?=$num?>" disabled>
+        <input type="text" class="form-control" id="i-st-num" value="<?=$trans_code?>" disabled>
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">

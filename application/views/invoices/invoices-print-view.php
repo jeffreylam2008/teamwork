@@ -118,7 +118,7 @@ if(isset($items)){
     //generate the print template
     for($j=1; $j<=$page_separate; $j++)
     {
-        PrintHeader($customer, $date, $quotation, $cust_code, $employee_code, $paymentmethodname, $invoicenum);
+        PrintHeader($customer, $date, $quotation, $cust_code, $employee_code, $paymentmethodname, $trans_code);
         PrintBody($page[$j]);
         PrintRemark($customer['statement_remark']);
         PrintFooter($total);

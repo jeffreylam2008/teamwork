@@ -185,6 +185,7 @@ $route['stocks/grn/save'] = 'stocks/grn_save';
 $route['stocks/dn/detail/(:any)'] = 'DeliveryNote/dn_detail/$1';
 $route['stocks/dn/donew'] = 'DeliveryNote/donew';
 $route['stocks/dn/create/(:any)'] = 'DeliveryNote/create/$1';
+$route['stocks/dn/save'] = 'DeliveryNote/save';
 
 // stocks -> adj
 $route['stocks/adj/create/(:any)'] = 'stocks/adjust/$1';
@@ -202,8 +203,6 @@ $route['stocks/stocktake/discard/(:any)'] = 'stocks/stocktake_discard/$1';
 $route['stocks/stocktake/discard/confirmed/(:any)'] = 'stocks/stocktake_save_discard/$1';
 $route['stocks/stocktake/adjust/(:any)'] = 'stocks/stocktake_adjust/$1';
 $route['stocks/stocktake/adjust/confirmed/(:any)'] = 'stocks/stocktake_save_adjust/$1';
-
-
 
 // Login
 $route['login'] = 'login/index';

@@ -58,10 +58,7 @@ class Invoices extends CI_Controller
 			$this->component_api->CallGet();
 			$_API_PREFIX = json_decode($this->component_api->GetConfig("result"), true);
 			$_API_PREFIX = !empty($_API_PREFIX['query']) ? $_API_PREFIX['query'] : [];
-			// if($json=file_get_contents($this->config->item('MASTER_FILE_MENU')))
-			// {
-			// 	$_API_MENU = json_decode($json, true);
-			// }
+
 			// dummy data
 			// sidebar session
 			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
@@ -435,7 +432,7 @@ class Invoices extends CI_Controller
 			// variable initial
 			$_data = json_decode($_POST['i-post'], true);
 			$_transaction = [];
-			$_cur_invoicenum = $_data['invoicenum'];
+			$_cur_invoicenum = $_data['trans_code'];
 			$_show_save_btn = false;
 			$_show_reprint_btn = false;
 
@@ -476,7 +473,7 @@ class Invoices extends CI_Controller
 			// function bar
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/invoices/'.$_data['formtype'].'/'.$_data['invoicenum']."/".$_data['quotation']) ,"style" => "","show" => true],
+					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/invoices/'.$_data['formtype'].'/'.$_data['trans_code']."/".$_data['quotation']) ,"style" => "","show" => true],
 					["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=> base_url("/invoices/".$_the_form_type) , "style" => "btn btn-primary", "show" => $_show_save_btn],
 					["name" => "<i class='far fa-file-alt'></i> ".$this->lang->line("function_preview"), "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
 					["name" => "<i class='fas fa-print'></i> ".$this->lang->line("function_reprint"), "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
@@ -484,6 +481,7 @@ class Invoices extends CI_Controller
 			]);
 			// render view
 			$this->load->view("invoices/invoices-tender-view", [
+				"data" => $_transaction[$_cur_invoicenum],
 				"preview_url" => base_url('/ThePrint/invoices/preview'),
 				"print_url" => base_url('/ThePrint/invoices/save')
 			]);
@@ -506,13 +504,13 @@ class Invoices extends CI_Controller
 		 ]);
 		 if(!empty($_transaction[$_cur_invoicenum]) && isset($_transaction[$_cur_invoicenum]))
 		 {
-			 $_api_body = json_encode($_transaction[$_cur_invoicenum],true);
+			$_api_body = json_encode($_transaction[$_cur_invoicenum],true);
 			// echo "<pre>";
 			// var_dump($_api_body);
 			// echo "</pre>";
 
-			 if($_api_body != null)
-			 {
+			if($_api_body != null)
+			{
 				// save invoice 
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY'));
@@ -543,6 +541,7 @@ class Invoices extends CI_Controller
 				$this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE'));
 				$this->component_api->CallPost();
 				$result = json_decode($this->component_api->GetConfig("result"),true);
+				
 				if(isset($result["error"]['code']))
 				{
 					switch($result["error"]['code'])
@@ -553,7 +552,7 @@ class Invoices extends CI_Controller
 					}
 					$this->load->view('error-handle', [
 						'message' => $result["error"]['message'], 
-						'code'=> $result["error"]['code'], 
+						'code'=> $result["error"]['code'],
 						'alertstyle' => $alert
 					]);
 				}
@@ -568,9 +567,9 @@ class Invoices extends CI_Controller
 				
 				header("Refresh: 10; url='list/'");
 			}
-		 }
-		 else
-		 {
+		}
+		else
+		{
 			$alert = "danger";
 			$result["error"]['code'] = "90000";
 			$result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again"; 
@@ -579,7 +578,7 @@ class Invoices extends CI_Controller
 				'code'=> $result["error"]['code'], 
 				'alertstyle' => $alert
 			]);
-		 }
+		}
 	 }
 	/**
 	 * Save Edit Process

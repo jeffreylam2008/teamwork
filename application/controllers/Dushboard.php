@@ -85,13 +85,27 @@ class Dushboard extends CI_Controller
 		$this->component_api->CallGet();
 		$_API_CUSTOMERS_COUNT = json_decode($this->component_api->GetConfig("result"), true);
 		$_API_CUSTOMERS_COUNT = !empty($_API_CUSTOMERS_COUNT['query']) ? $_API_CUSTOMERS_COUNT['query'] : "";
+		$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS_COUNT'));
+		$this->component_api->CallGet();
+		$_API_ITEMS_COUNT = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_ITEMS_COUNT = !empty($_API_ITEMS_COUNT['query']) ? $_API_ITEMS_COUNT['query'] : "";
+		$this->component_api->SetConfig("url", $this->config->item('URL_DUSHBOARD_MONTHLY_PURCHASES')."?year=".date('Y')."&month=".date('m')."");
+		$this->component_api->CallGet();
+		$_API_MONTHLY_PURCHASES = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_MONTHLY_PURCHASES = !empty($_API_MONTHLY_PURCHASES['query']) ? $_API_MONTHLY_PURCHASES['query'] : "";
+
+		
 		$this->load->view('dushboard-view', [
 			"title" => $this->lang->line("dushboard"),
 			"invoices_url" => base_url("/invoices/list"),
 			"customer_url" => base_url("/customers"),
+			"income_url" => base_url("/purchases/order"),
+			"items_url" => base_url("/products/items"),
 			"elem" => [
 				"m_customers" => $_API_CUSTOMERS_COUNT['count'],
 				"m_invoices" => $_API_MONTHLY_INVOICES['count'],
+				"m_purchases" => $_API_MONTHLY_PURCHASES['count'],
+				"m_items" => $_API_ITEMS_COUNT['count'],
 				"m_income" => $_API_MONTHLY_INVOICES['income']
 			]
 		]);

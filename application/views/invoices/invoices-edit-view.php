@@ -142,10 +142,10 @@ extract($data);
                     </td>
                     <td><?=$unit?></td>
                     <td>
-                        <input type="text" class="form-control form-control-sm item-input" id="price_<?=$k?>" value="<?=number_format($price,2)?>" />
+                        <input type="text" class="form-control form-control-sm item-input" id="price_<?=$k?>" value="<?=$price?>" />
                     </td>
                     <td><?=$price_special?></td>
-                    <td id="subtotal_<?=$k?>"><?=number_format($subtotal,2)?></td>
+                    <td id="subtotal_<?=$k?>"><?=$subtotal?></td>
                     <!-- <td class='col-1'><button class='btn btn-danger btn-sm w-90' data-del-itemcode='<?=$item_code?>' id='del_<?=$k?>' type='button'><i class='fas fa-trash-alt'></i></button></td> -->
                 </tr>
             <?php
@@ -483,9 +483,7 @@ extract($data);
     $("#next").on("click",function(){
         var _inputs = {};
         var _valid = 0;
-
-        console.log()
-        _inputs["invoicenum"] = $("#i-invoicenum").val()
+        _inputs["trans_code"] = $("#i-invoicenum").val()
         _inputs["prefix"] = $("#i-prefix").val()
         _inputs["quotation"] = $("#i-quotation").val()
         _inputs["employee_code"] = $("#i-employeecode").val()

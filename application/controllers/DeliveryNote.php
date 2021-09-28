@@ -109,10 +109,13 @@ class DeliveryNote extends CI_Controller
 		}	
     }
     public function index()
-    {
-        
+    { 
     }
 
+	/**
+	 * Do New
+	 * To kick start Delivery transaction
+	 */
 	public function donew()
 	{
 		if(!empty($this->session->userdata('transaction')))
@@ -131,14 +134,14 @@ class DeliveryNote extends CI_Controller
 	 * To create new delivery note transaction
 	 * @param _dn_num delivery not number
 	 */
-	 public function create($_dn_num = "")
-	 {
+	public function create($_dn_num = "")
+	{
 		$_show_discard_btn = false;
 		$_transaction = [];
 		if(!empty($_dn_num))
 		{
 			// For back button after submit to tender page
-			if(!empty($this->session->userdata('transaction')) && !empty($this->session->userdata('cur_dn_num')))
+			if(!empty($this->session->userdata('transaction')) && !empty($this->session->userdata('cur_dnnum')))
 			{
 				$_dn_num = $this->session->userdata('cur_dnnum');
 				$_transaction = $this->session->userdata('transaction');
@@ -146,7 +149,7 @@ class DeliveryNote extends CI_Controller
 			// For new create
 			else 
 			{
-				$_transaction[$_dn_num] = [];
+				$_transaction[$_dn_num]['items'] = [];
 				$_transaction[$_dn_num]['dn_num'] = $_dn_num;
 				$_transaction[$_dn_num]['date'] = date("Y-m-d H:i:s");
 				$_transaction[$_dn_num]['cust_code'] = "";
@@ -155,7 +158,7 @@ class DeliveryNote extends CI_Controller
 				$this->session->set_userdata('transaction',$_transaction);
 			}
 		}
-	
+
 		// fatch items API
 		$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
 		$this->component_api->CallGet();
@@ -220,11 +223,77 @@ class DeliveryNote extends CI_Controller
 		]);
 		// persent footer view
 		$this->load->view('footer');
-	 }
+	}
+
+	/**
+	 * Process
+	 * To confirm submit information
+	 */
 	public function process()
 	{
-		$this->load->view("stocks/dn/delivery-note-process-view");
+		if(isset($_POST["i-post"]))
+		{
+			//Insert Post data to transaction
+			$_data = json_decode($_POST['i-post'], true);
+			$_transaction = [];
+			$_cur_dnnum = $_data['dn_num'];
+			$_show_save_btn = false;
+			$_show_reprint_btn = false;
+
+			$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS').$_data['cust_code']);
+			$this->component_api->CallGet();
+			$_API_CUSTOMER = json_decode($this->component_api->GetConfig("result"),true);
+			$_API_CUSTOMER = !empty($_API_CUSTOMER['query']) ? $_API_CUSTOMER['query'] : "";
+
+			$_transaction[$_cur_dnnum] = $_data;
+			$_transaction[$_cur_dnnum]['customer'] = $_API_CUSTOMER;
+			$this->session->set_userdata('cur_invoicenum',$_cur_dnnum);
+			$this->session->set_userdata('transaction',$_transaction);
+
+			// show save button
+			if(isset($_transaction[$_cur_dnnum]['void']))
+			{
+				if(filter_var($_transaction[$_cur_dnnum]['void'], FILTER_VALIDATE_BOOLEAN))
+				{
+					$_show_save_btn = true;
+				}
+			}
+
+			switch($_data['formtype'])
+			{
+				case "edit":
+					$_show_reprint_btn = true;
+					$_the_form_type = "saveedit";
+				break;
+				case "create":
+					$_show_reprint_btn = false;
+					$_the_form_type = "save";
+				break;
+			}
+			// echo "<pre>";
+			// var_dump($_transaction);
+			// echo "</pre>";
+			
+			// function bar
+			$this->load->view('function-bar', [
+				"btn" => [
+					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/stocks/dn/'.$_data['formtype'].'/'.$_data['dn_num']) ,"style" => "","show" => true],
+					["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=> base_url("/stocks/dn/".$_the_form_type) , "style" => "btn btn-primary", "show" => $_show_save_btn],
+					["name" => "<i class='far fa-file-alt'></i> ".$this->lang->line("function_preview"), "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
+					["name" => "<i class='fas fa-print'></i> ".$this->lang->line("function_reprint"), "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
+				]
+			]);
+			// render view
+			$this->load->view("stocks/dn/delivery-note-process-view", [
+				"submit_to" => base_url('/stock/dn/save'),
+				"data" => $_transaction[$_cur_dnnum],
+				"preview_url" => base_url('/ThePrint/invoices/preview'),
+				"print_url" => base_url('/ThePrint/invoices/save')
+			]);
+			$this->load->view("footer");
+		}
 	}
+	
 	/**
 	 * Show DN detail 
 	 * @param _input transaction code
@@ -268,4 +337,70 @@ class DeliveryNote extends CI_Controller
 			],true)
 		]);
 	 }
+
+	 /**
+	 * Save DN
+	 */
+	public function save()
+	{
+		$_cur_dnnum = $this->session->userdata('cur_dnnum');
+		$_transaction = $this->session->userdata('transaction');
+		$alert = "danger";
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "donew", "url"=> base_url('/stocks/dn/donew'),"style" => "","show" => true],
+			]
+		]);
+		if(!empty($_transaction[$_cur_dnnum]) && isset($_transaction[$_cur_dnnum]))
+		{
+			$_api_body = json_encode($_transaction[$_cur_dnnum],true);
+			// echo "<pre>";
+			// var_dump($_api_body);
+			// echo "</pre>";
+		
+			if($_api_body != null)
+			{
+				// create DN
+				$this->component_api->SetConfig("body", $_api_body);
+				$this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE'));
+				$this->component_api->CallPost();
+				$result = json_decode($this->component_api->GetConfig("result"),true);
+				
+				if(isset($result["error"]['code']))
+				{
+					switch($result["error"]['code'])
+					{
+						case "00000":
+							$alert = "success";
+						break;
+					}
+					$this->load->view('error-handle', [
+						'message' => $result["error"]['message'], 
+						'code'=> $result["error"]['code'], 
+						'alertstyle' => $alert
+					]);
+				}
+				else
+				{
+					$result["error"]['code'] = "99999";
+					$result["error"]['message'] = "API-Error";
+				}
+				unset($_transaction[$cur_dnnum]);
+				$this->session->set_userdata('cur_dnnum',"");
+				$this->session->set_userdata('transaction',$_transaction);
+			}	
+		}
+		else
+		{
+		   $alert = "danger";
+		   $result["error"]['code'] = "90000";
+		   $result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again"; 
+		   $this->load->view('error-handle', [
+			   'message' => $result["error"]['message'], 
+			   'code'=> $result["error"]['code'], 
+			   'alertstyle' => $alert
+		   ]);
+		}
+		$this->load->view("footer");
+	}
 }

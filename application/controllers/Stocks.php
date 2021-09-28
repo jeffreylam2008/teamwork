@@ -905,14 +905,16 @@ class Stocks extends CI_Controller
 				{
 					$_stocktake_num = $this->session->userdata('cur_stocktake_num');
 					$_transaction = $this->session->userdata('transaction');
-					echo "here";
 				}
 				// For new create
 				else 
 				{
+					$_transaction[$_stocktake_num]['trans_code'] = $_stocktake_num;
+					$_transaction[$_stocktake_num]['date'] = date("Y-m-d H:i:s");
 					$_transaction[$_stocktake_num]['items'] = [];
-					$_transaction[$_stocktake_num]['remark'] = "";
+					$_transaction[$_stocktake_num]['remark'] = "";	
 					$this->session->set_userdata('cur_stocktake_num',$_stocktake_num);
+					
 				}
 			}
 			$this->load->view('function-bar', [
@@ -934,8 +936,6 @@ class Stocks extends CI_Controller
 				"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
 				"default_per_page" => $this->_default_per_page,
 				"page" => $this->_page,
-				"date" => date("Y-m-d H:i:s"),
-				"num" => $_stocktake_num,
 				"ajax" => [
 					"items" => $_API_ITEMS
 				],
@@ -992,7 +992,7 @@ class Stocks extends CI_Controller
 			// function bar
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/stocks/stocktake/'.$_data['formtype'].'/'.$_data['num']) ,"style" => "","show" => true],
+					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/stocks/stocktake/'.$_data['formtype'].'/'.$_data['trans_code']) ,"style" => "","show" => true],
 					["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
 					["name" => "Save", "type"=>"button", "id" => "save", "url"=> base_url('/stocks/stocktake/'.$_the_form_type) , "style" => "","show" => $_show_save_btn],
 					["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
@@ -1027,6 +1027,9 @@ class Stocks extends CI_Controller
 		if(!empty($_transaction[$_cur_num]) && isset($_transaction[$_cur_num]))
 		{
 			$_api_body = json_encode($_transaction[$_cur_num],true);
+			// echo "<pre>";
+			// var_dump($_api_body);
+			// echo "</pre>";
 
 			// save transaction 
 			$this->component_api->SetConfig("body", $_api_body);

@@ -606,7 +606,7 @@ extract($data);
     $("#next").on("click",function(){
         var _inputs = {};
         var _valid = 0;
-        _inputs["invoicenum"] = $("#i-invoicenum").val()
+        _inputs["trans_code"] = $("#i-invoicenum").val()
         _inputs["prefix"] = $("#i-prefix").val()
         _inputs["quotation"] = $("#i-quotation").val()
         _inputs["employee_code"] = $("#i-employeecode").val()

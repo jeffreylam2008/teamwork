@@ -11,7 +11,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text" id="">Transaction Number</span>
             </div>            
-            <input type="text" class="form-control" id="i-st-num" value="<?=$num?>" disabled>
+            <input type="text" class="form-control" id="i-st-num" value="<?=$trans_code?>" disabled>
         </div>
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
@@ -321,7 +321,7 @@
         var _inputs = {};
         var _valid = 0;
         refresh()
-        _inputs["num"] = $("#i-st-num").val()
+        _inputs["trans_code"] = $("#i-st-num").val()
         _inputs["prefix"] = $("#i-prefix").val()
         _inputs["refer_num"] = $("#i-refer-num").val()
         _inputs["employee_code"] = $("#i-employeecode").val()

@@ -1,8 +1,6 @@
 <div>
     <?php 
-        // echo "<pre>";
-        // var_dump($data);
-        // echo "</pre>";
+
         extract($data);
     ?>
 </div>
@@ -37,7 +35,7 @@
             </div>
           
             <select class="custom-select custom-select-sm" id="i-shopcode" disabled>
-                <option value="<?=$shop_code?>"><?=$shopname?></option>
+                <option value="<?=$shopcode?>"><?=$shopname?></option>
             </select>
            
         </div>
