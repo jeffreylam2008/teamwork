@@ -154,7 +154,7 @@
 							<span class="badge badge-pill badge-secondary"><?=$this->lang->line("function_delivery")?></span>
 							<div class="form-row">
 								<div class="col-3">
-									<label for="t1">District</label> 
+									<label for="t1"><?=$this->lang->line("customer_district")?></label> 
 									<select class="custom-select custom-select-sm" id="i-district" name="i-district" >
 										<?php 
 											if(!empty($district_code) && $district_code != "-1"):

@@ -139,10 +139,11 @@ class Stocks extends CI_Controller
 			$_GET['i-end-date'] = date("Y-m-d");
 		}
 		$_query = [
-			'i-dn' => $this->input->get("i-dn"),
+			'i-num' => $this->input->get("i-num"),
 			'i-start-date' => $this->input->get('i-start-date'),
 			'i-end-date' => $this->input->get('i-end-date'),
-			'i-cust-code' => $this->input->get('i-cust-code')
+			'i-cust-code' => $this->input->get('i-cust-code'),
+			'i-supp-code' => $this->input->get('i-supp-code')
 		];
 		
 		if(!empty($_query))
@@ -156,14 +157,19 @@ class Stocks extends CI_Controller
 			$this->session->set_userdata("login", $_login);
 			
 			// echo "<pre>";
-			// var_dump($_query);
+			// var_dump($_q);
 			// echo "</pre>";
 			// fatch items API
 			if(!empty($_query['i-cust-code']))
 			{
 				// fatch items API
 				// get result by customer code 
-				$this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE')."getlast/cust/".$_query['i-cust-code']);
+				$this->component_api->SetConfig("url", $this->config->item('URL_STOCKS')."getlast/cust/".$_query['i-cust-code']);
+			}
+			elseif(!empty($_query['i-supp-code']))
+			{
+				// fatch items API
+				$this->component_api->SetConfig("url", $this->config->item('URL_STOCKS')."getlast/supp/".$_query['i-supp-code']);
 			}
 			else
 			{
@@ -191,16 +197,16 @@ class Stocks extends CI_Controller
 			// Function bar
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-truck-loading'></i> GRN", "type"=>"button", "id" => "i-grn", "url"=> base_url('/stocks/grn/donew'), "style" => "", "show" => true, "extra" => ""],
-					["name" => "<i class='fas fa-adjust'></i> Adjustment", "type"=>"button", "id" => "i-adj", "url"=> base_url('/stocks/donewadj'), "style" => "", "show" => true, "extra" => ""],
-					["name" => "<i class='fas fa-box'></i> Stocktake", "type"=>"button", "id" => "i-stocktake", "url"=> base_url('/stocks/donew_stocktake'), "style" => "", "show" => true, "extra" => ""]
+					["name" => "<i class='fas fa-truck-loading'></i> ".$this->lang->line("grn_short"), "type"=>"button", "id" => "i-grn", "url"=> base_url('/stocks/grn/donew'), "style" => "", "show" => true, "extra" => ""],
+					["name" => "<i class='fas fa-adjust'></i> ".$this->lang->line("adjustment_short"), "type"=>"button", "id" => "i-adj", "url"=> base_url('/stocks/donewadj'), "style" => "", "show" => true, "extra" => ""],
+					["name" => "<i class='fas fa-box'></i> ".$this->lang->line("stocktake"), "type"=>"button", "id" => "i-stocktake", "url"=> base_url('/stocks/donew_stocktake'), "style" => "", "show" => true, "extra" => ""]
 				]
 			]);
 			// Function bar
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-search'></i> Search", "type"=>"button", "id" => "i-search", "url"=> "#", "style" => "", "show" => true, "extra" => ""],
-					["name" => "<i class='fas fa-undo-alt'></i> Clear", "type"=>"button", "id" => "i-clear", "url"=> "#", "style" => "btn btn-secondary", "show" => true, "extra" => ""]
+					["name" => "<i class='fas fa-search'></i> ".$this->lang->line("function_search"), "type"=>"button", "id" => "i-search", "url"=> "#", "style" => "", "show" => true, "extra" => ""],
+					["name" => "<i class='fas fa-undo-alt'></i> ".$this->lang->line("function_clear"), "type"=>"button", "id" => "i-clear", "url"=> "#", "style" => "btn btn-secondary", "show" => true, "extra" => ""]
 				]
 			]);
 
@@ -212,8 +218,9 @@ class Stocks extends CI_Controller
 				"page" => $this->_page,
 				"ad_start_date" => $_query['i-start-date'],
 				"ad_end_date" => $_query['i-end-date'],
-				"ad_dn" => $_query['i-dn'],
-				"ad_cust_code" => $_query['i-cust-code']
+				"ad_num" => $_query['i-num'],
+				"ad_cust_code" => $_query['i-cust-code'],
+				"ad_supp_code" => $_query['i-supp-code']
 			]);
 			$this->load->view("footer");
 		}
@@ -328,7 +335,7 @@ class Stocks extends CI_Controller
 			$_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
 			$_API_PAYMENTS = !empty($_API_PAYMENTS['query']) ? $_API_PAYMENTS['query'] : "";
 			$this->component_api->SetConfig("url", $this->config->item('URL_PO_GRN_PREFIX'));
-			$this->component_api->CallGET();
+			$this->component_api->CallGet();
 			$_API_GRN_PREFIX = json_decode($this->component_api->GetConfig("result"),true);
 			$_API_GRN_PREFIX = !empty($_API_GRN_PREFIX['query']) ? $_API_GRN_PREFIX['query'] : "";
 
@@ -357,6 +364,10 @@ class Stocks extends CI_Controller
 					$this->session->set_userdata('transaction',$_transaction);
 				}
 			}
+
+		// echo "<pre>";
+		// var_dump($_transaction);
+		// echo "</pre>";
 
 			$this->load->view('function-bar', [
 				"btn" => [
@@ -474,7 +485,7 @@ class Stocks extends CI_Controller
 		if(!empty($_transaction[$_cur_grnnum]) && isset($_transaction[$_cur_grnnum]))
 		{
 			$_api_body = json_encode($_transaction[$_cur_grnnum],true);
-			//echo $_api_body;
+
 			if($_api_body != null)
 			{
 				/** For debug use start */

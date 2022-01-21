@@ -115,7 +115,103 @@ class Invoices extends CI_Controller
 			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
 		}		
 	}
+	/**
+	 * List Invoice Process
+	 * To list out and query invoice record
+	 */
+	public function index()
+	{
+		// variable initial
+		$_data = [];
+		$_start_date = "";
+		$_end_date = "";
+		$_invoice_num = "";
+		$_cust_code = "";
+		if(empty($_GET['i-start-date']) && empty($_GET['i-end-date']))
+		{
+			$_GET['i-start-date'] = date("Y-m-d", strtotime('-5 days'));
+			$_GET['i-end-date'] = date("Y-m-d");
+		}
+		$_query =$this->input->get();
+		if(!empty($_query))
+		{
+			$_invoice_num = $this->input->get("i-invoice-num");
+			$_start_date = $this->input->get('i-start-date');
+			$_end_date = $this->input->get('i-end-date');
+			$_cust_code = $this->input->get('i-cust-code');
 
+			//Set user preference
+			$_query['page'] = htmlspecialchars($this->_page);
+			$_query['show'] = htmlspecialchars($this->_default_per_page);
+			$_query['i-start-date'] = htmlspecialchars($_start_date);
+			$_query['i-end-date'] = htmlspecialchars($_end_date);
+			$_query['i-invoice-num'] = htmlspecialchars($_invoice_num);
+			$_query['i-cust-code'] = htmlspecialchars($_cust_code);
+			if(!empty($_query['i-invoice-num'])){
+				$_query['i-start-date']  = $_query['i-end-date'];
+			}
+			$_query = $this->component_uri->QueryToString($_query);
+			$_login = $this->session->userdata['login'];
+			$_login['preference'] = $_query;
+			$this->session->set_userdata("login", $_login);
+			
+			// fatch items API
+			if(!empty($_cust_code))
+			{
+				// fatch items API
+				$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY')."getlast/cust/".$_cust_code);
+			}
+			else
+			{
+				// fatch items API
+				$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY').$_query);
+			}
+			$this->component_api->CallGet();
+			$_data = json_decode($this->component_api->GetConfig("result"), true);
+			$_data = $_data != null ? $_data : "";
+		}
+		// echo "<pre>";
+		// var_dump($_query);
+		// echo "</pre>";
+		
+		if(!empty($_data['error']['code']) && $_data['error']['code'] != "00000")
+		{
+			$this->load->view("error-handle", [
+				"alertstyle" => "danger",
+				"code" => $_data['error']['code'],
+				"message" => $_data['error']['message']
+			]);
+		}
+		else
+		{
+			// Function bar
+			$this->load->view('function-bar', [
+				"btn" => [
+					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> base_url("invoices/donew/"), "style" => "", "show" => true, "extra" => ""]
+				]
+			]);
+			// Function bar
+			$this->load->view('function-bar', [
+				"btn" => [
+					["name" => "<i class='fas fa-search'></i> ".$this->lang->line("function_search"), "type"=>"button", "id" => "i-search", "url"=> "#", "style" => "", "show" => true, "extra" => ""],
+					["name" => "<i class='fas fa-undo-alt'></i> ".$this->lang->line("function_clear"), "type"=>"button", "id" => "i-clear", "url"=> "#", "style" => "btn btn-secondary", "show" => true, "extra" => ""]
+				]
+			]);
+			// View Content
+			$this->load->view("invoices/invoices-list-view", [
+				"data" => $_data,
+				"submit_to" => base_url("/invoices/list"),
+				"edit_url" => base_url("invoices/edit/"),
+				"default_per_page" => $this->_default_per_page,
+				"page" => $this->_page,
+				"ad_start_date" => $_start_date,
+				"ad_end_date" => $_end_date,
+				"ad_invoice_num" => $_invoice_num,
+				"ad_cust_code" => $_cust_code
+			]);
+		}
+		$this->load->view("footer");
+	}
 	/**
 	 * Invoice Number Generation
 	 * To generate new invoice number
@@ -272,7 +368,7 @@ class Invoices extends CI_Controller
 				]
 			]);
 			$this->load->view('title-bar', [
-				"title" => $this->lang->line("invoice_new_title")
+				"title" => $this->lang->line("invoice_new_titles")
 			]);
 			// present form view
 			$this->load->view('invoices/invoices-create-view', [
@@ -385,7 +481,7 @@ class Invoices extends CI_Controller
 					]);
 					
 					$this->load->view('title-bar', [
-						"title" => $this->lang->line("invoice_edit_title")
+						"title" => $this->lang->line("invoice_edit_titles")
 					]);
 			
 					//show edit view
@@ -746,98 +842,5 @@ class Invoices extends CI_Controller
 			"return_url" => base_url("invoices/edit/".$_num)
 		]);
 	}
-	/**
-	 * List Invoice Process
-	 * To list out and query invoice record
-	 */
-	public function invlist()
-	{
-		// variable initial
-		$_data = [];
-		$_start_date = "";
-		$_end_date = "";
-		$_invoice_num = "";
-		$_cust_code = "";
-		if(empty($_GET['i-start-date']) && empty($_GET['i-end-date']))
-		{
-			$_GET['i-start-date'] = date("Y-m-d", strtotime('-5 days'));
-			$_GET['i-end-date'] = date("Y-m-d");
-		}
-		$_query =$this->input->get();
-		if(!empty($_query))
-		{
-			$_invoice_num = $this->input->get("i-invoice-num");
-			$_start_date = $this->input->get('i-start-date');
-			$_end_date = $this->input->get('i-end-date');
-			$_cust_code = $this->input->get('i-cust-code');
 
-			//Set user preference
-			$_query['page'] = htmlspecialchars($this->_page);
-			$_query['show'] = htmlspecialchars($this->_default_per_page);
-			$_query['i-start-date'] = htmlspecialchars($_start_date);
-			$_query['i-end-date'] = htmlspecialchars($_end_date);
-			$_query['i-invoice-num'] = htmlspecialchars($_invoice_num);
-			$_query['i-cust-code'] = htmlspecialchars($_cust_code);
-			$_query = $this->component_uri->QueryToString($_query);
-			$_login = $this->session->userdata['login'];
-			$_login['preference'] = $_query;
-			$this->session->set_userdata("login", $_login);
-			
-			// fatch items API
-			if(!empty($_cust_code))
-			{
-				// fatch items API
-				$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY')."getlast/cust/".$_cust_code);
-			}
-			else
-			{
-				// fatch items API
-				$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY').$_query);
-			}
-			$this->component_api->CallGet();
-			$_data = json_decode($this->component_api->GetConfig("result"), true);
-			$_data = $_data != null ? $_data : "";
-		}
-		// echo "<pre>";
-		// var_dump($_data);
-		// echo "</pre>";
-		
-		if(!empty($_data['error']['code']) && $_data['error']['code'] != "00000")
-		{
-			$this->load->view("error-handle", [
-				"alertstyle" => "danger",
-				"code" => $_data['error']['code'],
-				"message" => $_data['error']['message']
-			]);
-		}
-		else
-		{
-			// Function bar
-			$this->load->view('function-bar', [
-				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> base_url("invoices/donew/"), "style" => "", "show" => true, "extra" => ""]
-				]
-			]);
-			// Function bar
-			$this->load->view('function-bar', [
-				"btn" => [
-					["name" => "<i class='fas fa-search'></i> ".$this->lang->line("function_search"), "type"=>"button", "id" => "i-search", "url"=> "#", "style" => "", "show" => true, "extra" => ""],
-					["name" => "<i class='fas fa-undo-alt'></i> ".$this->lang->line("function_clear"), "type"=>"button", "id" => "i-clear", "url"=> "#", "style" => "btn btn-secondary", "show" => true, "extra" => ""]
-				]
-			]);
-			// View Content
-			$this->load->view("invoices/invoices-list-view", [
-				"data" => $_data,
-				"submit_to" => base_url("/invoices/list"),
-				"edit_url" => base_url("invoices/edit/"),
-				"default_per_page" => $this->_default_per_page,
-				"page" => $this->_page,
-				"ad_start_date" => $_start_date,
-				"ad_end_date" => $_end_date,
-				"ad_invoice_num" => $_invoice_num,
-				"ad_cust_code" => $_cust_code
-			]);
-		}
-		$this->load->view("footer");
-	}
 }

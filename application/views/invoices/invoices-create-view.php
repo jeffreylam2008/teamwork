@@ -24,7 +24,7 @@ extract($data);
                 </div>
                 <div class="input-group mb-2 input-group-sm">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id=""><?=$this->lang->line("invoice_date")?></span>
+                        <span class="input-group-text" id=""><?=$this->lang->line("date")?></span>
                     </div>
                     <input type="text" class="form-control" id="i-date" value="<?=$date?>" disabled >
                 </div>
@@ -158,7 +158,7 @@ extract($data);
                         <tr>
                             <td class="col-sm-10"></td>
                             <td align="right"><?=$this->lang->line("common_total")?>: </td>
-                            <td id="total"><?=number_format($total,2,".","")?></td>
+                            <td id="total"><?=number_format($total,2,".",",")?></td>
                         </tr>
                     </tbody>        
                 </table>

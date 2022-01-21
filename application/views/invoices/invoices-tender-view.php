@@ -28,7 +28,7 @@
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <span class="input-group-text" ><?=$this->lang->line("invoice_date")?></span>
+            <span class="input-group-text" ><?=$this->lang->line("date")?></span>
         </div>
         <input type="text" class="form-control" value="<?=$date?>" disabled />
     </div>
@@ -93,7 +93,7 @@
             <tr>
                 <td colspan="6"></td>
                 <td align="right"><?=$this->lang->line("common_total")?>: </td>
-                <td>$<?=$total?></td>
+                <td>$<?=number_format($total,2,".",",")?></td>
             </tr>
         </tbody>
     </table>

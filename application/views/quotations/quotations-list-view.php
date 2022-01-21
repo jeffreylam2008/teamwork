@@ -1,8 +1,8 @@
 <form class="" method="GET" id="this-form" action="<?=$submit_to?>">
     <!-- search selection -->
-    Advanced Search:
-    <input type="hidden" name="page" value="<?=$page?>" />
-    <input type="hidden" name="show" value="<?=$default_per_page?>" />
+    <?=$this->lang->line("function_adv_search")?>
+    <input type="hidden" name="page" id="i-page" value="<?=$page?>" />
+    <input type="hidden" name="show" id="i-show" value="<?=$default_per_page?>" />
     <div class="row">
         <div class="col-3">
             <div class="input-group input-group-sm mb-3 date">
@@ -120,7 +120,8 @@
 
         table.on( 'draw', function () {
             var urlParams = new URLSearchParams(location.search)
-            urlParams.set('page', $("ul.pagination > li.active > a").text())
+            var tPage = table.page() + 1
+            urlParams.set('page', tPage)
             urlParams.set('show', $(".dataTables_length > label > select").val())
             window.history.replaceState({}, '', `${location.pathname}?${urlParams.toString()}`);
             // search for all a href on this page and append query string at the end
@@ -136,7 +137,7 @@
                     }
                 });
             });
-            $("#i-page").val($("ul.pagination > li.active > a").text());
+            $("#i-page").val(tPage);
             $("#i-show").val($(".dataTables_length > label > select").val());
         });
 

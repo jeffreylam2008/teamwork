@@ -111,6 +111,7 @@ class Suppliers extends CI_Controller
 			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
 		}
 	}
+	
 	public function index()
 	{
 
@@ -149,7 +150,7 @@ class Suppliers extends CI_Controller
 			// load function bar view
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => $this->_user_auth['create'], "extra" => "data-toggle='modal' data-target='#modal01'"]
+					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => $this->_user_auth['create'], "extra" => "data-toggle='modal' data-target='#modal01'"]
 				]
 			]);
 
@@ -164,12 +165,12 @@ class Suppliers extends CI_Controller
 				"modalshow" => $_modalshow
 			]);
 			$this->load->view("suppliers/suppliers-create-view",[
-				"title" => "New Supplier",
+				"title" => $this->lang->line("supplier_new_titles"),
 				"function_bar" => $this->load->view('function-bar', [
 					"btn" => [
-						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/suppliers'), "style" => "", "show" => true],
-						["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
-						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
+						["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/suppliers'), "style" => "", "show" => true],
+						["name" => "<i class='fas fa-redo'></i> ".$this->lang->line("function_reset"), "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
+						["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
 					 ]
 				],true),
 				"save_url" => base_url("/suppliers/save/"),
@@ -181,6 +182,10 @@ class Suppliers extends CI_Controller
 			$this->load->view('footer');
 		
 	}
+	/**
+	 * To edit supplier detail
+	 * @param supp_code Supplier code
+	 */
 	public function edit($supp_code = "")
 	{
 		//$this->session->sess_destroy();
@@ -254,6 +259,7 @@ class Suppliers extends CI_Controller
 			]);
 		}
 	}
+
 	/** 
 	 * Show the detail supplier data
 	 * @param supp_code Suppliers Code to look up record
@@ -327,6 +333,7 @@ class Suppliers extends CI_Controller
 			]);
 		}
 	}
+
 	/**
 	 *  Delete 
 	 *

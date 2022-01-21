@@ -60,7 +60,8 @@
 
         table.on( 'draw', function () {
             var urlParams = new URLSearchParams(location.search)
-            urlParams.set('page', $("ul.pagination > li.active > a").text())
+            var tPage = table.page() + 1
+            urlParams.set('page', tPage)
             urlParams.set('show', $(".dataTables_length > label > select").val())
             window.history.replaceState({}, '', `${location.pathname}?${urlParams.toString()}`);
             // search for all a href on this page and append query string at the end
@@ -76,6 +77,8 @@
                     }
                 });
             });
+            $("#i-page").val(tPage);
+            $("#i-show").val($(".dataTables_length > label > select").val());
         });
         if(<?=$modalshow?>)
             $('#modal01').modal('show');

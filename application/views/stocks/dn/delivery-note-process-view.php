@@ -132,3 +132,17 @@
         <input type="hidden" name="i-form-type" id="i-form-type" value="create" />
     </form>
 </div>
+
+
+<script>
+
+$("#preview").on("click",function(){
+    window.open('<?=$preview_url?>', '_blank', 'location=yes,height=500,width=900,scrollbars=yes,status=yes');
+})
+$("#save").on("click",function(){
+    window.open('<?=$print_url?>', '_blank', 'location=yes,height=500,width=900,scrollbars=yes,status=yes');
+})
+$("#reprint").on("click",function(){
+    window.open('<?=$print_url?>', '_blank', 'location=yes,height=500,width=900,scrollbars=yes,status=yes');
+})
+</script>

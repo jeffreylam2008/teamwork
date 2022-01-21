@@ -136,7 +136,7 @@ if(isset($items)){
         $customer['cust_code'] = $cust_code;
         $customer['name'] = $cust_name;
         $customer['delivery_addr'] = $delivery_addr;
-        PrintHeader($dn_num, $customer, $date, $shop_code, $shopname, $employee_code, $j);
+        PrintHeader($dn_num, $customer, $date, $shopcode, $shopname, $employee_code, $j);
         PrintBody($page[$j]);
         PrintFooter($total);
         PrintRemark($delivery_remark);

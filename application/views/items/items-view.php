@@ -77,6 +77,7 @@
 
 <script>
 $(document).ready(function() {
+    
     // initial data table
     var table = $('#tbl').DataTable({
         "order" : [[2, "asc"]],
@@ -99,13 +100,15 @@ $(document).ready(function() {
             }
         }
     });
+    
     // set page number from previous
     table.page(<?=($page-1)?>).draw('page');
 
     // Change query string while change page and page setting
     table.on( 'draw', function () {
         var urlParams = new URLSearchParams(location.search)
-        urlParams.set('page', $("ul.pagination > li.active > a").text())
+        var tPage = table.page() + 1
+        urlParams.set('page', tPage)
         urlParams.set('show', $(".dataTables_length > label > select").val())
         window.history.replaceState({}, '', `${location.pathname}?${urlParams.toString()}`);
         // search for all a href on this page and append query string at the end
@@ -121,9 +124,10 @@ $(document).ready(function() {
                 }
             });
         });
-        $("#i-page").val($("ul.pagination > li.active > a").text());
+        $("#i-page").val(tPage);
         $("#i-show").val($(".dataTables_length > label > select").val());
     });
+   
     
     // search button event
     $("#search").click(function(){

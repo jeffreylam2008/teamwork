@@ -25,7 +25,7 @@
 
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text" id=""><?=$this->lang->line("invoice_date")?></span>
+                <span class="input-group-text" id=""><?=$this->lang->line("date")?></span>
             </div>
             <input type="text" class="form-control" id="i-date" value="<?=$date?>" disabled >
         </div>
@@ -155,7 +155,7 @@
         </table>
 
         <div class="input-group mb-2 input-group-sm">
-            <textarea  class="form-control" rows="3" id="i-remark" placeholder="Remark" disabled></textarea>
+            <textarea  class="form-control" rows="3" id="i-remark" placeholder="<?=$this->lang->line("stock_remark")?>" disabled></textarea>
         </div>
         <input type="hidden" name="i-post" id="i-post" value="" />
         <input type="hidden" name="i-prefix" id="i-prefix" value="<?=$prefix?>" />

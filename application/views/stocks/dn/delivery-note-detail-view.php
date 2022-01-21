@@ -1,6 +1,8 @@
 <div>
     <?php 
-
+        // echo "<pre>";
+        // var_dump($data);
+        // echo "</pre>";
         extract($data);
     ?>
 </div>
@@ -9,21 +11,21 @@
         <!-- Suppliers -->
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text">DN Number</span>
+                <span class="input-group-text"><?=$this->lang->line("dn_number")?></span>
             </div>
             <input type="text" class="form-control" value="<?=$dn_num?>" id="i-grn-num" disabled="" />
         </div>
 
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text" id="">Reference Number</span>
+                <span class="input-group-text" id=""><?=$this->lang->line("dn_reference_number")?></span>
             </div>
             <input type="text" class="form-control" id="i-po-num" value="<?=$refer_num?>" disabled="" />
         </div>
 
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text" id="">Date</span>
+                <span class="input-group-text" id=""><?=$this->lang->line("date")?></span>
             </div>
             <input type="text" class="form-control" id="i-date" value="<?=$date?>" disabled >
         </div>
@@ -31,7 +33,7 @@
         <!-- Company -->
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <label class="input-group-text">Company</label>
+                <label class="input-group-text"><?=$this->lang->line("company")?></label>
             </div>
           
             <select class="custom-select custom-select-sm" id="i-shopcode" disabled>
@@ -44,7 +46,7 @@
         <!-- Customer Modal button -->
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text">Customer</span>
+                <span class="input-group-text"><?=$this->lang->line("customer_name")?></span>
             </div>
             <input type="text" class="form-control" value="<?=$data['cust_code']?>" id="i-customer" disabled="" />
             <input type="text" class="form-control" value="<?=$data['cust_name']?>" id="i-customer-name" disabled="">
@@ -55,7 +57,7 @@
         <!-- Payment Method button -->
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <label class="input-group-text">Payment Method</label>
+                <label class="input-group-text"><?=$this->lang->line("customer_payment_method")?></label>
             </div>
             <select class="custom-select custom-select-sm" id="i-paymentmethod" disabled>
                 <?php if(!empty($paymentmethod) && $paymentmethod != -1): ?>

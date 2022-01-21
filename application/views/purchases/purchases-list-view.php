@@ -1,13 +1,13 @@
 <form class="" method="GET" id="this-form" action="<?=$submit_to?>">
     <!-- search selection -->
-    Advanced Search:
+    <?=$this->lang->line("function_adv_search")?>
     <input type="hidden" name="page" id="i-page" value="<?=$page?>" />
     <input type="hidden" name="show" id="i-show" value="<?=$default_per_page?>" />
     <div class="row">
         <div class="col-3">
             <div class="input-group input-group-sm mb-3 date">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">Start Date</span>
+                    <span class="input-group-text" id="basic-addon1"><?=$this->lang->line("function_start_date")?></span>
                 </div>
                 <input type="text" class="form-control" id="i-start-date" name="i-start-date" value="<?=$ad_start_date?>" placeholder="yyyy-mm-dd" />
                 <div class="input-group-append">
@@ -20,7 +20,7 @@
         <div class="col-3">
             <div class="input-group input-group-sm mb-3 date">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">End Date</span>
+                    <span class="input-group-text" id="basic-addon1"><?=$this->lang->line("function_end_date")?></span>
                 </div>
                 <input type="text" class="form-control" id="i-end-date" name="i-end-date" value="<?=$ad_end_date?>" placeholder="yyyy-mm-dd" />
                 <div class="input-group-append">
@@ -35,7 +35,7 @@
         <div class="col-6">
             <div class="input-group input-group-sm mb-3">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">Invoice Number</span>
+                    <span class="input-group-text" id="basic-addon1"><?=$this->lang->line("quotation_number")?></span>
                 </div>
                 <input type="text" class="form-control" id="i-num" name="i-num" value="<?=$ad_num?>" placeholder="#" />
             </div>
@@ -43,7 +43,7 @@
         <div class="col-3">
             <div class="input-group input-group-sm mb-3">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">Supplier Code</span>
+                    <span class="input-group-text" id="basic-addon1"><?=$this->lang->line("supplier_id")?></span>
                 </div>
                 <input type="text" class="form-control" id="i-supp-code" name="i-supp-code" value="<?=$ad_supp_code?>" placeholder="#" />
             </div>
@@ -55,14 +55,15 @@
     <table id="invoices-tbl" class="table table-striped table-borderedNO" style="width:100%">
         <thead>
             <tr>
-                <th>PO Number</th>
-                <th>Reference Number</th>
-                <th>Shop code / name</th>
-                <th>Supplier</th>
-                <th>Payment Method</th>
-                <th>Total</th>
-                <th>Create Date</th>
-                <th>Modify Date</th>
+                <th><?=$this->lang->line("purchase_number")?></th>
+                <th><?=$this->lang->line("purchase_reference_number")?></th>
+                <th><?=$this->lang->line("purchase_shop_code")?></th>
+                <th><?=$this->lang->line("purchase_supplier")?></th>
+                <th><?=$this->lang->line("purchase_payment_method")?></th>
+                <th><?=$this->lang->line("purchase_remark")?></th>
+                <th><?=$this->lang->line("common_total")?></th>
+                <th><?=$this->lang->line("label_create_date")?></th>
+                <th><?=$this->lang->line("label_modify_date")?></th>
             </tr>
         <thead>
         <tbody>
@@ -81,7 +82,8 @@
                     echo "<td>(".$val['shop_code'].") - ".$val['shop_name']."</td>";
                     echo "<td>".$val['supp_code']."</td>";
                     echo "<td>".$val['payment_method']."</td>";
-                    echo "<td>$".$val['total']."</td>";
+                    echo "<td>".$val['remark']."</td>";
+                    echo "<td>$".number_format($val['total'],2,".",",")."</td>";
                     echo "<td>".$val['create_date']."</td>";
                     echo "<td>".$val['modify_date']."</td>";
                     echo "</tr>";
@@ -99,14 +101,28 @@
                 items: 'column'
             },
             "iDisplayLength": <?=$default_per_page?>,
-            order : [6,"desc"]
+            order : [7,"desc"],
+            "language": {
+                "emptyTable" : "<?=$this->lang->line('label_emptytable')?>",
+                "infoEmpty":   "<?=$this->lang->line('label_infoEmpty')?>",
+                "lengthMenu" : "<?=$this->lang->line('function_page_showing')?> _MENU_",
+                "search": "<?=$this->lang->line('function_search')?> :",
+                "info": "<?=$this->lang->line('function_page_showing')?> _START_ <?=$this->lang->line('function_page_to')?> _END_ <?=$this->lang->line('function_page_of')?> _TOTAL_ <?=$this->lang->line('function_page_entries')?>",
+                "paginate": {
+                    "first": "<?=$this->lang->line('function_first')?>",
+                    "last": "<?=$this->lang->line('function_last')?>",
+                    "next": "<?=$this->lang->line('function_next')?>",
+                    "previous": "<?=$this->lang->line('function_previous')?>"
+                }
+            }
         });
         // capture page while page refreshing
         table.page(<?=$page-1?>).draw('page');
 
         table.on( 'draw', function () {
             var urlParams = new URLSearchParams(location.search)
-            urlParams.set('page', $("ul.pagination > li.active > a").text())
+            var tPage = table.page() + 1
+            urlParams.set('page', tPage)
             urlParams.set('show', $(".dataTables_length > label > select").val())
             window.history.replaceState({}, '', `${location.pathname}?${urlParams.toString()}`);
             // search for all a href on this page and append query string at the end
@@ -122,7 +138,7 @@
                     }
                 });
             });
-            $("#i-page").val($("ul.pagination > li.active > a").text());
+            $("#i-page").val(tPage);
             $("#i-show").val($(".dataTables_length > label > select").val());
         });
 
@@ -139,8 +155,8 @@
         $("#i-clear").on("click",function(){
             $("#i-start-date").val("")
             $("#i-end-date").val("")
-            $("#i-invoice-num").val("")
-            $("#i-cust-code").val("")
+            $("#i-num").val("")
+            $("#i-supp-code").val("")
         });
        
     });

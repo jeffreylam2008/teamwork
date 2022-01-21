@@ -135,7 +135,7 @@
                 <tr>
                     <td class="col-sm-8"></td>
                     <td class="col-sm-2" align="right">Total: </td>
-                    <td id="total">$ <?=number_format($total,2,".","")?></td>
+                    <td id="total">$ <?=number_format($total,2,".",",")?></td>
                 </tr>
             </tbody>        
         </table>

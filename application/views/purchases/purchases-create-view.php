@@ -9,26 +9,26 @@ extract($data);
     <form class="" method="POST" id="this-form" action="<?=$submit_to?>">
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text" id="">Purchases Number</span>
+                <span class="input-group-text" id=""><?=$this->lang->line("purchase_number")?></span>
             </div>
             <input type="text" class="form-control" id="i-purchasesnum" value="<?=$purchasesnum?>" disabled>
         </div>
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text" id="">Reference Number</span>
+                <span class="input-group-text" id=""><?=$this->lang->line("purchase_reference_number")?></span>
             </div>
             <input type="text" class="form-control" id="i-refernum" value="<?=$refernum?>" >
         </div>
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text" id="">Date</span>
+                <span class="input-group-text" id=""><?=$this->lang->line("date")?></span>
             </div>
             <input type="text" class="form-control" id="i-date" value="<?=$date?>" disabled >
         </div>
         <!-- Company -->
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <label class="input-group-text">Company</label>
+                <label class="input-group-text"><?=$this->lang->line("company")?></label>
             </div>
             <?php
                 if(!empty($ajax["shop_code"])):
@@ -57,24 +57,24 @@ extract($data);
             <?php include(APPPATH."views/modal-suppliers.php"); ?>
             <!-- suppliers Modal End -->
             <div class="input-group-prepend">
-                <span class="input-group-text">Suppliers</span>
+                <span class="input-group-text"><?=$this->lang->line("purchase_supplier")?></span>
             </div>
-            <input type="text" class="form-control" value="<?=$suppcode?>" id="i-suppliers" disabled="" />
-            <input type="text" class="form-control" value="<?=$suppname?>" id="i-suppliers-name" disabled="">
-            <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#suppliers_modal">More...</button>
+            <input type="text" class="form-control" value="<?=$supp_code?>" id="i-suppliers" disabled="" />
+            <input type="text" class="form-control" value="<?=$supp_name?>" id="i-suppliers-name" disabled="">
+            <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#suppliers_modal"><?=$this->lang->line("function_more")?></button>
         </div>
         <!-- End Suppliers -->
         
         <!-- Payment Method button -->
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <label class="input-group-text">Payment Method</label>
+                <label class="input-group-text"><?=$this->lang->line("purchase_payment_method")?></label>
             </div>
             <select class="custom-select custom-select-sm" id="i-paymentmethod">
                 <?php if(!empty($paymentmethod)): ?>
                     <option value="<?=$paymentmethod?>"><?=$paymentmethodname?></option>
                 <?php else: ?>
-                    <option value="-1">Choose...</option>
+                    <option value="-1"><?=$this->lang->line("function_select")?></option>
                 <?php endif; ?>
                 <?php 
                     foreach($ajax["tender"] as $k => $v):
@@ -90,11 +90,11 @@ extract($data);
 
         <!-- Product Search Button -->
         <div class="input-group mb-2 input-group-sm">
-            <input type="text" class="form-control item-input" id="item-input" placeholder="items code">
+            <input type="text" class="form-control item-input" id="item-input" placeholder="<?=$this->lang->line("item_code")?>">
             <div class="input-group-append">
-                <button class="btn btn-outline-secondary btn-sm" type="button" id="item-search">Search</button>
+                <button class="btn btn-outline-secondary btn-sm" type="button" id="item-search"><?=$this->lang->line("function_search")?></button>
             </div>
-            <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#items_modal">More...</button>
+            <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#items_modal"><?=$this->lang->line("function_more")?></button>
             <!-- items Modal -->
             <?php include(APPPATH."views/modal-items.php"); ?>
             <!-- items Modal End -->
@@ -103,15 +103,15 @@ extract($data);
         <!-- Product view -->
         <table class="table table-sm table-striped" id="tbl">
             <thead>
-                <th>item code</th>
-                <th>eng name</th>
-                <th>chi_name</th>
+                <th><?=$this->lang->line("item_code")?></th>
+                <th><?=$this->lang->line("item_eng_name")?></th>
+                <th><?=$this->lang->line("item_chi_name")?></th>
                 <th></th>
-                <th>qty</th>
+                <th><?=$this->lang->line("item_qty")?></th>
                 <th></th>
-                <th>unit</th>
-                <th>price</th>
-                <th>subtotal</th>
+                <th><?=$this->lang->line("item_unit")?></th>
+                <th><?=$this->lang->line("item_price")?></th>
+                <th><?=$this->lang->line("item_subtotal")?></th>
             </thead>
             <!-- render items-list here -->
             <tbody id="tdisplay">
@@ -153,15 +153,15 @@ extract($data);
             <tbody>
                 <tr>
                     <td class="col-sm-10"></td>
-                    <td align="right">Total: </td>
-                    <td id="total"><?=number_format($total,2,".","")?></td>
+                    <td align="right"><?=$this->lang->line("common_total")?>: </td>
+                    <td id="total"><?=number_format($total,2,".",",")?></td>
                 </tr>
             </tbody>        
         </table>
         <!-- Product view END -->
         <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
         <div class="input-group mb-2 input-group-sm">
-            <textarea  class="form-control" rows="3" id="i-remark" placeholder="Remark"><?=$remark?></textarea>
+            <textarea  class="form-control" rows="3" id="i-remark" placeholder="<?=$this->lang->line("item_remark")?>"><?=$remark?></textarea>
         </div>
         <input type="hidden" name="i-post" id="i-post" value="" />
         <input type="hidden" name="i-prefix" id="i-prefix" value="<?=$prefix?>" />
@@ -240,7 +240,7 @@ extract($data);
             +"<td>"+items[item].unit+"</td>"
             +"<td><input type='text' class='form-control form-control-sm item-input' id='price_"+item+"' value='"+_price.toFixed(2)+"' /></td>"
             +"<td id='subtotal_"+item+"'>"+_subtotal.toFixed(2)+"</td>"
-            +"<td><button cass='btn btn-danger btn-sm w-90' data-del-itemcode='"+items[item].item_code+"' id='del_"+item+"' type='button'><i class='fas fa-trash-alt'></i></button></td>"
+            +"<td><button class='btn btn-danger btn-sm w-90' data-del-itemcode='"+items[item].item_code+"' id='del_"+item+"' type='button'><i class='fas fa-trash-alt'></i></button></td>"
             +"</tr>"
             //console.log(tmpl)
         }
@@ -507,8 +507,8 @@ extract($data);
         _inputs["employee_code"] = $("#i-employeecode").val()
         _inputs["date"] = $("#i-date").val()
         _inputs["shopcode"] = $("#i-shopcode").val()
-        _inputs["suppcode"] = $("#i-suppliers").val()
-        _inputs["suppname"] = $("#i-suppliers-name").val()
+        _inputs["supp_code"] = $("#i-suppliers").val()
+        _inputs["supp_name"] = $("#i-suppliers-name").val()
         _inputs['items'] = items
         _inputs['total'] = $("#total").text()
         _inputs['remark'] = $("#i-remark").val()
@@ -531,7 +531,7 @@ extract($data);
             $("#i-shopcode").addClass("is-invalid")
             _valid = 1
         }
-        if(_inputs["suppcode"] == ""){
+        if(_inputs["supp_code"] == ""){
             $("#i-suppliers").addClass("is-invalid")
             $("#i-suppliers-name").addClass("is-invalid")
             _valid = 1

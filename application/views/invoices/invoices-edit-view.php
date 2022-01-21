@@ -21,7 +21,7 @@ extract($data);
         </div>
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text" id=""><?=$this->lang->line("invoice_date")?></span>
+                <span class="input-group-text" id=""><?=$this->lang->line("date")?></span>
             </div>
             <input type="text" class="form-control" id="i-date" value="<?=$date?>" disabled>
         </div>
@@ -92,7 +92,7 @@ extract($data);
         <!-- Product Search Button -->
         <div class="input-group mb-2 input-group-sm">
             <?php if($show===true) :?>
-                <input type="text" class="form-control item-input" id="item-input" placeholder="items code">
+                <input type="text" class="form-control item-input" id="item-input" placeholder="<?=$this->lang->line("item_code")?>">
                 <div class="input-group-append">
                     <button class='btn btn-outline-secondary btn-sm' type='button' id='item-search'><?=$this->lang->line("function_search")?></button>
                     <button type='button' class='btn btn-secondary btn-sm' data-toggle='modal' data-target='#items_modal'><?=$this->lang->line("function_more")?></button>
@@ -159,7 +159,7 @@ extract($data);
                 <tr>
                     <td class="col-sm-10"></td>
                     <td align="right"><?=$this->lang->line("common_total")?>: </td>
-                    <td id="total"><?php echo number_format($total,2,".","");?></td>
+                    <td id="total"><?=number_format($total,2,".",",")?></td>
                 </tr>
             </tbody>        
         </table>

@@ -15,7 +15,7 @@
                             echo $v["trans_code"]."<br>";
                         }
                     ?>
-                    Total: <b><?="$".number_format($total,"2");?></b>
+                    Total: <b><?="$".number_format($total,2,".",",");?></b>
                     <p>Do you want settle PO (<?=$po_num?>) ?</p>
                 </div>
             <!-- content end -->

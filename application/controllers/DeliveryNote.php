@@ -197,7 +197,7 @@ class DeliveryNote extends CI_Controller
 		]);
 		//view title
 		$this->load->view('title-bar', [
-			"title" => "Delivery Note"
+			"title" => $this->lang->line("dn_new_titles")
 		]);
 		//view content
 		$this->load->view("stocks/dn/delivery-note-create-view", [
@@ -316,13 +316,13 @@ class DeliveryNote extends CI_Controller
 		$this->load->view('function-bar', [
 			"btn" => [
 				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/stocks/'.$_login['preference']) ,"style" => "","show" => true],
-				["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
-				["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => true]
+				["name" => "<i class='far fa-file-alt'></i> ".$this->lang->line("function_preview"), "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
+				["name" => "<i class='fas fa-print'></i> ".$this->lang->line("function_reprint"), "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => true]
 			]
 		]);
 		//view title
 		$this->load->view('title-bar', [
-			"title" => "Delivery Note"
+			"title" => $this->lang->line("dn_new_titles")
 		]);
 		//view content
 		$this->load->view("stocks/dn/delivery-note-detail-view", [
@@ -385,9 +385,10 @@ class DeliveryNote extends CI_Controller
 					$result["error"]['code'] = "99999";
 					$result["error"]['message'] = "API-Error";
 				}
-				unset($_transaction[$cur_dnnum]);
+				unset($_transaction[$_cur_dnnum]);
 				$this->session->set_userdata('cur_dnnum',"");
 				$this->session->set_userdata('transaction',$_transaction);
+				header("Refresh: 8; url='".base_url('/stocks')."'");
 			}	
 		}
 		else

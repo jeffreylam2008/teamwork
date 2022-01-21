@@ -9,15 +9,15 @@
             <?php
                 endif;
             ?>   
-            <th>Supplier Code</th>
-            <th>Name</th>
-			<th>Attn</th>
-            <th>Phone</th>
-			<th>fax</th>
-            <th>Email</th>
-            <th>Status</th>
-            <th>Create Date</th>
-            <th>Modify Date</th>
+            <th><?=$this->lang->line("supplier_id")?></th>
+            <th><?=$this->lang->line("supplier_name")?></th>
+			<th><?=$this->lang->line("supplier_attn")?></th>
+            <th><?=$this->lang->line("supplier_phone")?></th>
+			<th><?=$this->lang->line("supplier_fax")?></th>
+            <th><?=$this->lang->line("supplier_email")?></th>
+            <th><?=$this->lang->line("supplier_status")?></th>
+            <th><?=$this->lang->line("label_create_date")?></th>
+            <th><?=$this->lang->line("label_modify_date")?></th>
             
         </tr>
     <thead>
@@ -71,14 +71,28 @@
             select : {
                 items : 'column'
             },
-            "iDisplayLength": <?=$default_per_page?>
+            "iDisplayLength": <?=$default_per_page?>, 
+            "language": {
+                "emptyTable" : "<?=$this->lang->line('label_emptytable')?>",
+                "infoEmpty":   "<?=$this->lang->line('label_infoEmpty')?>",
+                "lengthMenu" : "<?=$this->lang->line('function_page_showing')?> _MENU_",
+                "search": "<?=$this->lang->line('function_search')?> :",
+                "info": "<?=$this->lang->line('function_page_showing')?> _START_ <?=$this->lang->line('function_page_to')?> _END_ <?=$this->lang->line('function_page_of')?> _TOTAL_ <?=$this->lang->line('function_page_entries')?>",
+                "paginate": {
+                    "first": "<?=$this->lang->line('function_first')?>",
+                    "last": "<?=$this->lang->line('function_last')?>",
+                    "next": "<?=$this->lang->line('function_next')?>",
+                    "previous": "<?=$this->lang->line('function_previous')?>"
+                }
+            }
         });
         // set table current page
         table.page(<?=$page-1?>).draw('page');
         // Change query string while change page and page page setting
         table.on( 'draw', function () {
             var urlParams = new URLSearchParams(location.search)
-            urlParams.set('page', $("ul.pagination > li.active > a").text())
+            var tPage = table.page() + 1
+            urlParams.set('page', tPage)
             urlParams.set('show', $(".dataTables_length > label > select").val())
             window.history.replaceState({}, '', `${location.pathname}?${urlParams.toString()}`);
             // search for all a href on this page and append query string at the end
@@ -94,6 +108,8 @@
                     }
                 });
             });
+            $("#i-page").val(tPage);
+            $("#i-show").val($(".dataTables_length > label > select").val());
         });
 
         // Show create modal page if $_GET _NEW value = 1

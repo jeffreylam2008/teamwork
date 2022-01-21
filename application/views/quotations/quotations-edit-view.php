@@ -9,20 +9,20 @@ extract($data);
     <form class="" method="POST" id="this-form" action="<?=$submit_to?>">
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text" id="">Quotation Number</span>
+                <span class="input-group-text" id=""><?=$this->lang->line("quotation_number")?></span>
             </div>
             <input type="text" class="form-control" id="i-quotation" value="<?=$quotation?>" disabled>
         </div>
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text" id="">Date</span>
+                <span class="input-group-text" id=""><?=$this->lang->line("date")?></span>
             </div>
             <input type="text" class="form-control" id="i-date" value="<?=$date?>" disabled >
         </div>
         <!-- Company -->
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <label class="input-group-text">Company</label>
+                <label class="input-group-text"><?=$this->lang->line("company")?></label>
             </div>
             <?php
                 if(!empty($ajax["shop_code"])):
@@ -53,7 +53,7 @@ extract($data);
         <!-- Customer Modal button -->
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text">Customer</span>
+                <span class="input-group-text"><?=$this->lang->line("customer_name")?></span>
             </div>
             <input type="text" class="form-control" value="<?=$data['cust_code']?>" id="i-customer" disabled="" />
             <input type="text" class="form-control" value="<?=$data['cust_name']?>" id="i-customer-name" disabled="">
@@ -65,13 +65,13 @@ extract($data);
         <!-- Payment Method button -->
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <label class="input-group-text">Payment Method</label>
+                <label class="input-group-text"><?=$this->lang->line("purchase_payment_method")?></label>
             </div>
             <select class="custom-select custom-select-sm" id="i-paymentmethod" <?=($show===true) ? "" : "disabled"?>>
                 <?php if(!empty($paymentmethod)): ?>
                     <option value="<?=$paymentmethod?>"><?=$paymentmethodname?></option>
                 <?php else: ?>
-                    <option value="-1">Choose...</option>
+                    <option value="-1"><?=$this->lang->line("function_more")?></option>
                 <?php endif; ?>
                 <?php 
                     foreach($ajax["tender"] as $k => $v):
@@ -85,10 +85,10 @@ extract($data);
         <!-- Product Search Button -->
         <div class="input-group mb-2 input-group-sm">
             <?php if($show===true) :?>
-                <input type="text" class="form-control item-input" id="item-input" placeholder="items code">
+                <input type="text" class="form-control item-input" id="item-input" placeholder="<?=$this->lang->line("item_code")?>">
                 <div class="input-group-append">
-                    <button class='btn btn-outline-secondary btn-sm' type='button' id='item-search'>Search</button>
-                    <button type='button' class='btn btn-secondary btn-sm' data-toggle='modal' data-target='#items_modal'>More...</button>
+                    <button class='btn btn-outline-secondary btn-sm' type='button' id='item-search'><?=$this->lang->line("function_search")?></button>
+                    <button type='button' class='btn btn-secondary btn-sm' data-toggle='modal' data-target='#items_modal'><?=$this->lang->line("function_more")?></button>
                 </div>
             <?php endif;?>
             
@@ -100,16 +100,16 @@ extract($data);
         <!-- Product view -->
         <table class="table table-sm table-striped" id="tbl">
             <thead>
-                <th>item code</th>
-                <th>eng name</th>
-                <th>chi_name</th>
+                <th><?=$this->lang->line("item_code")?></th>
+                <th><?=$this->lang->line("item_eng_name")?></th>
+                <th><?=$this->lang->line("item_chi_name")?></th>
                 <th></th>
-                <th>qty</th>
+                <th><?=$this->lang->line("item_qty")?></th>
                 <th></th>
-                <th>unit</th>
-                <th>price</th>
-                <th>discount</th>
-                <th>subtotal</th>
+                <th><?=$this->lang->line("item_unit")?></th>
+                <th><?=$this->lang->line("item_price")?></th>
+                <th><?=$this->lang->line("item_discount")?></th>
+                <th><?=$this->lang->line("item_subtotal")?></th>
             </thead>
             <!-- render items-list here -->
             <tbody id="tdisplay">
@@ -150,15 +150,15 @@ extract($data);
             <tbody>
                 <tr>
                     <td class="col-sm-10"></td>
-                    <td align="right">Total: </td>
-                    <td id="total"><?php echo number_format($total,2,".","");?></td>
+                    <td align="right"><?=$this->lang->line("common_total")?>: </td>
+                    <td id="total"><?=number_format($total,2,".",",")?></td>
                 </tr>
             </tbody>        
         </table>
         <!-- Product view END -->
         <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
         <div class="input-group mb-2 input-group-sm">
-            <textarea  class="form-control" rows="3" id="i-remark" placeholder="Remark" <?=($show===true) ? "" : "disabled"?>></textarea>
+            <textarea  class="form-control" rows="3" id="i-remark" placeholder="<?=$this->lang->line("item_remark")?>" <?=($show===true) ? "" : "disabled"?>></textarea>
         </div>
         <input type="hidden" name="i-post" id="i-post" value="" />
         <input type="hidden" name="i-prefix" id="i-prefix" value="<?=$prefix?>" />
@@ -300,7 +300,7 @@ extract($data);
             total += subtotal
             $('#subtotal_'+i).text(subtotal.toFixed(2))
         });
-        $('#total').text(total.toFixed(2))
+        $('#total').text(number_format(total.toFixed(2),","))
 
         // get update value from existing table
         refresh()
@@ -350,6 +350,7 @@ extract($data);
     //construct
     $(document).ready(function(){
         refresh()
+        recalc()
         if(toVoid){
             render()
         }
