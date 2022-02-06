@@ -542,7 +542,7 @@ $config['default_home'] = 'dushboard';
 |--------------------------------------------------------------------------
 */
 
-$config['api_url'] = 'http://13.209.150.150/erp_backend/api/v1';
+$config['api_url'] = 'http://54.168.20.230/erp_backend/api/v1';
 $config['DEBUG_MODE'] = false;
 $config['DEFAULT_PER_PAGE'] = 25;
 $config['DEFAULT_FIRST_PAGE'] = 1;
