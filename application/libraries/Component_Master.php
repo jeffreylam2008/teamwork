@@ -93,7 +93,7 @@ class Component_Master
         elseif (!$this->_CI->cache->get('master1') && !$this->CheckAPIHealth())
         {
             //echo 2;
-            $this->_master = $this->_CI->cache->file->get('master1');
+            $this->_master = $this->_CI->cache->get('master1');
         }
         // Cache empty, API network normal
         else{
@@ -103,7 +103,7 @@ class Component_Master
             $this->Remove();
             // fetch new data from API
             $this->Sync();
-            $this->_CI->cache->file->save('master1', $this->_master,$this->_CI->config->item("MASTER_FILE_REFRESH_TIME"));
+            $this->_CI->cache->save('master1', $this->_master,$this->_CI->config->item("MASTER_FILE_REFRESH_TIME"));
 
             // var_dump($this->_master);
         }
