@@ -558,7 +558,7 @@ $config['API_INVOKE_TIMEOUT'] = 1000;
 $config['URL_NETWORK'] = $config['api_url']."/network/status/";
 $config['URL_LOGIN'] = $config['api_url']."/systems/login/";
 $config['URL_SHOP'] = $config['api_url']."/systems/shops/";
-//$config['URL_MENU'] = $config['api_url']."/systems/menu/sidej";
+//$config['URL_MENU'] = $config['api_url']."/systems/menu/side";
 $config['URL_EMPLOYEES'] = $config['api_url']."/systems/employees/";
 $config['URL_EMPLOYEES_CODE'] = $config['api_url']."/systems/employees/code/";
 $config['URL_MENU_SIDE'] = $config['api_url']."/systems/menu/side?l=".$config['language'];
