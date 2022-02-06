@@ -9,7 +9,7 @@
             <div class="modal-body">
             <!-- content -->
                 <div class="container-fluid">
-                    <p><?=$this->lang->line("label_delete_msg")?><u><?=$to_deleted_num?></u>?</p>
+                    <p><?=$this->lang->line("label_delete_msg3")?><u><?=$to_deleted_num?></u>?</p>
                 </div>
             <!-- content end -->
             </div>

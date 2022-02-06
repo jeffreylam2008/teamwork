@@ -58,8 +58,8 @@
                 <th><?=$this->lang->line("purchase_number")?></th>
                 <th><?=$this->lang->line("purchase_reference_number")?></th>
                 <th><?=$this->lang->line("purchase_shop_code")?></th>
-                <th><?=$this->lang->line("purchase_supplier")?></th>
-                <th><?=$this->lang->line("purchase_payment_method")?></th>
+                <th><?=$this->lang->line("supplier")?></th>
+                <th><?=$this->lang->line("payment_method")?></th>
                 <th><?=$this->lang->line("purchase_remark")?></th>
                 <th><?=$this->lang->line("common_total")?></th>
                 <th><?=$this->lang->line("label_create_date")?></th>
@@ -80,7 +80,7 @@
                     echo "<td><a href='".$edit_url.$val['trans_code']."'>".$val['trans_code']."</a></td>";
                     echo "<td>".$val['refer_code']."</td>";
                     echo "<td>(".$val['shop_code'].") - ".$val['shop_name']."</td>";
-                    echo "<td>".$val['supp_code']."</td>";
+                    echo "<td>(".$val['supp_code'].") - ".$val['supp_name']."</td>";
                     echo "<td>".$val['payment_method']."</td>";
                     echo "<td>".$val['remark']."</td>";
                     echo "<td>$".number_format($val['total'],2,".",",")."</td>";

@@ -57,7 +57,7 @@
         <!-- Payment Method button -->
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <label class="input-group-text"><?=$this->lang->line("customer_payment_method")?></label>
+                <label class="input-group-text"><?=$this->lang->line("payment_method")?></label>
             </div>
             <select class="custom-select custom-select-sm" id="i-paymentmethod" disabled>
                 <?php if(!empty($paymentmethod) && $paymentmethod != -1): ?>

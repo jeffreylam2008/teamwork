@@ -65,7 +65,7 @@ extract($data);
         <!-- Payment Method button -->
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <label class="input-group-text"><?=$this->lang->line("purchase_payment_method")?></label>
+                <label class="input-group-text"><?=$this->lang->line("payment_method")?></label>
             </div>
             <select class="custom-select custom-select-sm" id="i-paymentmethod" <?=($show===true) ? "" : "disabled"?>>
                 <?php if(!empty($paymentmethod)): ?>
@@ -177,6 +177,7 @@ extract($data);
     var custname = ""
     var cust_pmcode = ""
     var ftotal = 0
+    var atleastoneitem_msg = "<?=$this->lang->line('label_atleastoneitem_msg')?>"
     var custTbl = $('#cust-list').DataTable({
         "select": {
             items: 'column'
@@ -511,7 +512,7 @@ extract($data);
             _valid = 1
         }
         if($.isEmptyObject(_inputs["items"])){
-            alert("At least one input")
+            alert(atleastoneitem_msg)
             _valid = 1
         }
         if(_valid == 0){

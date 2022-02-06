@@ -25,7 +25,7 @@
 
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text" id=""><?=$this->lang->line("invoice_date")?></span>
+                <span class="input-group-text" id=""><?=$this->lang->line("date")?></span>
             </div>
             <input type="text" class="form-control" id="i-date" value="<?=$date?>" disabled />
         </div>
@@ -56,7 +56,7 @@
         <!-- Payment Method button -->
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <label class="input-group-text"><?=$this->lang->line("customer_payment_method")?></label>
+                <label class="input-group-text"><?=$this->lang->line("payment_method")?></label>
             </div>
             <select class="custom-select custom-select-sm" id="i-paymentmethod">
                 <?php if(!empty($paymentmethod)): ?>

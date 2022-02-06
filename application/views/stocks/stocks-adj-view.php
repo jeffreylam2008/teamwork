@@ -9,29 +9,29 @@
     <form class="" method="POST" id="this-form" action="<?=$submit_to?>">
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text" id="">Transaction Number</span>
+                <span class="input-group-text" id=""><?=$this->lang->line("adjustment_number")?></span>
             </div>            
             <input type="text" class="form-control" id="i-adj-num" value="<?=$adj_num?>" disabled>
         </div>
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text" id="">Reference Number</span>
+                <span class="input-group-text" id=""><?=$this->lang->line("adjustment_reference_number")?></span>
             </div>
             <input type="text" class="form-control" id="i-refer-num" value="<?=$refer_num?>" disabled>
         </div>
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text" id="">Date</span>
+                <span class="input-group-text" id=""><?=$this->lang->line("date")?></span>
             </div>
             <input type="text" class="form-control" id="i-date" value="<?=$date?>" disabled>
         </div>
         <!-- Product Search Button -->
         <div class="input-group mb-2 input-group-sm">
 
-            <input type="text" class="form-control item-input" id="item-input" placeholder="items code">
+            <input type="text" class="form-control item-input" id="item-input" placeholder="<?=$this->lang->line("item_code")?>">
             <div class="input-group-append">
-                <button class='btn btn-outline-secondary btn-sm' type='button' id='item-search'>Search</button>
-                <button type='button' class='btn btn-secondary btn-sm' data-toggle='modal' data-target='#items_modal'>More...</button>
+                <button class='btn btn-outline-secondary btn-sm' type='button' id='item-search'><?=$this->lang->line("function_search")?></button>
+                <button type='button' class='btn btn-secondary btn-sm' data-toggle='modal' data-target='#items_modal'><?=$this->lang->line("function_more")?></button>
             </div>
 
             <!-- items Modal -->
@@ -42,14 +42,14 @@
         <!-- Product view -->
         <table class="table table-sm table-striped" id="tbl">
             <thead>
-                <th>Item code</th>
-                <th>Eng name</th>
-                <th>Chi_name</th>
-                <th>Current Stock</th>
+                <th><?=$this->lang->line("item_code")?></th>
+                <th><?=$this->lang->line("item_eng_name")?></th>
+                <th><?=$this->lang->line("item_chi_name")?></th>
+                <th><?=$this->lang->line("item_Stockonhand")?></th>
                 <th></th>
-                <th>QTY</th>
+                <th><?=$this->lang->line("item_qty")?></th>
                 <th></th>
-                <th>Unit</th>
+                <th><?=$this->lang->line("item_unit")?></th>
                 <!--<th>price</th>
                 <th>discount</th>
                 <th>subtotal</th>-->
@@ -100,13 +100,13 @@
                 <tr>
                     <td class="col-sm-10"></td>
                     <!--<td align="right">Total: </td>
-                    <td id="total"><?php echo number_format($total,2,".","");?></td>-->
+                    <td id="total"><?=number_format($total,2,".","");?></td>-->
                 </tr>
             </tbody>        
         </table>
         <!-- Product view END -->
         <div class="input-group mb-2 input-group-sm">
-            <textarea  class="form-control" rows="3" id="i-remark" placeholder="Remark"><?=$remark?></textarea>
+            <textarea  class="form-control" rows="3" id="i-remark" placeholder="<?=$this->lang->line("item_remark")?>"><?=$remark?></textarea>
         </div>       
         <input type="hidden" name="i-post" id="i-post" value="" />
         <input type="hidden" class="form-control" id="i-prefix" value="<?=$prefix?>">
@@ -125,17 +125,40 @@
     var custname = ""
     var cust_pmcode = ""
     var ftotal = 0
+    var atleastoneitem_msg = "<?=$this->lang->line('label_atleastoneitem_msg')?>"
     var custTbl = $('#cust-list').DataTable({
         "select": {
             items: 'column'
         },
         "iDisplayLength": <?=$default_per_page?>,
+        "language": {
+            "lengthMenu" : "<?=$this->lang->line('function_page_showing')?> _MENU_",
+            "search": "<?=$this->lang->line('function_search')?> :",
+            "info": "<?=$this->lang->line('function_page_showing')?> _START_ <?=$this->lang->line('function_page_to')?> _END_ <?=$this->lang->line('function_page_of')?> _TOTAL_ <?=$this->lang->line('function_page_entries')?>",
+            "paginate": {
+                "first": "<?=$this->lang->line('function_first')?>",
+                "last": "<?=$this->lang->line('function_last')?>",
+                "next": "<?=$this->lang->line('function_next')?>",
+                "previous": "<?=$this->lang->line('function_previous')?>"
+            }
+        }
     });
     var itemTbl =$('#items-list').DataTable({
         "select": {
             items: 'column'
         },
         "iDisplayLength": <?=$default_per_page?>,
+        "language": {
+            "lengthMenu" : "<?=$this->lang->line('function_page_showing')?> _MENU_",
+            "search": "<?=$this->lang->line('function_search')?> :",
+            "info": "<?=$this->lang->line('function_page_showing')?> _START_ <?=$this->lang->line('function_page_to')?> _END_ <?=$this->lang->line('function_page_of')?> _TOTAL_ <?=$this->lang->line('function_page_entries')?>",
+            "paginate": {
+                "first": "<?=$this->lang->line('function_first')?>",
+                "last": "<?=$this->lang->line('function_last')?>",
+                "next": "<?=$this->lang->line('function_next')?>",
+                "previous": "<?=$this->lang->line('function_previous')?>"
+            }
+        }
     });
 
     //testing here
@@ -476,7 +499,7 @@
             _valid = 1
         }
         if($.isEmptyObject(_inputs["items"])){
-            alert("At least one input")
+            alert(atleastoneitem_msg)
             _valid = 1
         }
         if(_valid == 0){

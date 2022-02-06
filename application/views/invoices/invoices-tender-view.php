@@ -49,7 +49,7 @@
     <!-- Payment Method -->
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <label class="input-group-text"><?=$this->lang->line("customer_payment_method")?></label>
+            <label class="input-group-text"><?=$this->lang->line("payment_method")?></label>
         </div>
         <input type="text" class="form-control" value="(<?=$paymentmethod?>) <?=$paymentmethodname?>" disabled />
     </div>
@@ -93,7 +93,7 @@
             <tr>
                 <td colspan="6"></td>
                 <td align="right"><?=$this->lang->line("common_total")?>: </td>
-                <td>$<?=number_format($total,2,".",",")?></td>
+                <td>$<?=$total?></td>
             </tr>
         </tbody>
     </table>

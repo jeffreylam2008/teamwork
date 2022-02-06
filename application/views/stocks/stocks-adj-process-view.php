@@ -1,33 +1,29 @@
-<div>
-    <?php 
-       
-        $data = json_decode($_POST["i-post"],true);
-        // echo "<pre>";
-        // var_dump($data);
-        // echo "</pre>";
-        extract($data);
 
-    ?>
+<?php 
+    // echo "<pre>";
+    // var_dump($data);
+    // echo "</pre>";
+    extract($data);
 
-</div>
+?>
 
 <div class="container-fluid">
 
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <span class="input-group-text" id="">Transaction Number</span>
+            <span class="input-group-text" id=""><?=$this->lang->line("adjustment_number")?></span>
         </div>            
         <input type="text" class="form-control" id="i-adj-num" value="<?=$adj_num?>" disabled>
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <span class="input-group-text" id="">Reference Number</span>
+            <span class="input-group-text" id=""><?=$this->lang->line("adjustment_reference_number")?></span>
         </div>
         <input type="text" class="form-control" id="i-refer-num" value="<?=$refer_num?>" disabled>
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <span class="input-group-text" id="">Date</span>
+            <span class="input-group-text" id=""><?=$this->lang->line("date")?></span>
         </div>
         <input type="text" class="form-control" id="i-date" value="<?=$date?>" disabled>
     </div>
@@ -35,12 +31,12 @@
         <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Item Code</th>
-                <th scope="col">English Name</th>
-                <th scope="col">Chinese Name</th>
-                <th scope="col">Current Stock</th>
-                <th scope="col">Qty</th>
-                <th scope="col">Unit</th>
+                <th scope="col"><?=$this->lang->line("item_code")?></th>
+                <th scope="col"><?=$this->lang->line("item_eng_name")?></th>
+                <th scope="col"><?=$this->lang->line("item_chi_name")?></th>
+                <th scope="col"><?=$this->lang->line("item_Stockonhand")?></th>
+                <th scope="col"><?=$this->lang->line("item_qty")?></th>
+                <th scope="col"><?=$this->lang->line("item_unit")?></th>
             </tr>
         </thead>
         <!-- render items-list here -->

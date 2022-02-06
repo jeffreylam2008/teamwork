@@ -624,9 +624,11 @@ class Purchases extends CI_Controller
 		$_cur_num = "";
 		$_cur_num = $this->session->userdata('cur_purchasesnum');
 		$_transaction = $this->session->userdata('transaction');
+		$_login = $this->session->userdata('login');
 		$alert = "danger";
 		$this->load->view('function-bar', [
 			"btn" => [
+				["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/purchases/order/'.$_login['preference']) ,"style" => "","show" => true],
 				["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "donew", "url"=> base_url('/purchases/order/donew'),"style" => "","show" => true],
 			]
 		]);
@@ -682,7 +684,7 @@ class Purchases extends CI_Controller
 	}
 
 	/**
-	 * Discard Operation
+	 * Discard Operation only for new creation
 	 * To discard Invoice 
 	 */
 	public function discard()
@@ -716,7 +718,7 @@ class Purchases extends CI_Controller
 		$this->load->view('function-bar', [
 			"btn" => [
 				[
-					"name" => "<i class='fas fa-chevron-left'></i> Back",
+					"name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"),
 					"type"=>"button",
 					"id" => "back", 
 					"url"=> base_url('/purchases/order/'.$_login["preference"]),
@@ -745,6 +747,7 @@ class Purchases extends CI_Controller
 					'alertstyle' => $alert
 				]);
 			}
+			header("Refresh: 5; url='".base_url('purchases/order')."'");
 		}
 	}
 	/**
@@ -824,6 +827,7 @@ class Purchases extends CI_Controller
 		if(!empty($_num))
 		{
 			$_api_body = json_encode($_transaction,true);
+			// echo $_api_body;
 			if($_api_body != null)
 			{
 				// save invoice 

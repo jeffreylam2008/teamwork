@@ -59,7 +59,7 @@ extract($data);
         <!-- supplier Modal button -->
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text"><?=$this->lang->line("purchase_supplier")?></span>
+                <span class="input-group-text"><?=$this->lang->line("supplier")?></span>
             </div>
             <input type="text" class="form-control" value="<?=$data['supp_code']?>" id="i-suppliers" disabled="" />
             <input type="text" class="form-control" value="<?=$data['supp_name']?>" id="i-suppliers-name" disabled="">
@@ -71,7 +71,7 @@ extract($data);
         <!-- Payment Method button -->
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <label class="input-group-text"><?=$this->lang->line("purchase_payment_method")?></label>
+                <label class="input-group-text"><?=$this->lang->line("payment_method")?></label>
             </div>
             <select class="custom-select custom-select-sm" id="i-paymentmethod" <?=($show===true) ? "" : "disabled"?>>
                 <?php if(!empty($paymentmethod)): ?>
@@ -183,6 +183,7 @@ extract($data);
     var suppname = ""
     var supp_pmcode = ""
     var ftotal = 0
+    var atleastoneitem_msg = "<?=$this->lang->line('label_atleastoneitem_msg')?>"
     var suppTbl = $('#supp-list').DataTable({
         "select": {
             items: 'column'
@@ -512,7 +513,7 @@ extract($data);
             _valid = 1
         }
         if($.isEmptyObject(_inputs["items"])){
-            alert("At least one input")
+            alert(atleastoneitem_msg)
             _valid = 1
         }
         if(_valid == 0){

@@ -71,8 +71,8 @@
                 <th><?=$this->lang->line("stock_tran_number")?></th>
                 <th><?=$this->lang->line("stock_reference_number")?></th>
                 <th><?=$this->lang->line("stock_shop_code")?></th>
-                <th><?=$this->lang->line("stock_customer")?></th>
-                <th><?=$this->lang->line("stock_supplier")?></th>
+                <th><?=$this->lang->line("customer")?></th>
+                <th><?=$this->lang->line("supplier")?></th>
                 <th><?=$this->lang->line("common_total")?></th>
                 <th><?=$this->lang->line("stock_remark")?></th>
                 <th><?=$this->lang->line("label_create_date")?></th>
@@ -97,7 +97,7 @@
                     echo "<td>(".$val['shop_code'].") - ".$val['shop_name']."</td>";
                     echo "<td>".$cust."</td>";
                     echo "<td>".$supp."</td>";
-                    echo "<td>".$val['total'] ."</td>";
+                    echo "<td>$".number_format($val['total'],2,".",",") ."</td>";
                     echo "<td>".$val['remark']."</td>";
                     echo "<td>".$val['create_date']."</td>";
                     //echo "<td>".$val['modify_date']."</td>";

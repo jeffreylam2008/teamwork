@@ -59,7 +59,7 @@
                 <th><?=$this->lang->line("quotation_number")?></th>
                 <th><?=$this->lang->line("company")?></th>
                 <th><?=$this->lang->line("customer")?></th>
-                <th><?=$this->lang->line("customer_payment_method")?></th>
+                <th><?=$this->lang->line("payment_method")?></th>
                 <th><?=$this->lang->line("common_total")?></th>
                 <th><?=$this->lang->line("label_create_date")?></th>
                 <th><?=$this->lang->line("label_modify_date")?></th>
@@ -77,9 +77,9 @@
                 {
                     echo "<tr>";
                     echo "<td><a href='".$edit_url.$val['trans_code']."'>".$val['trans_code']."</a></td>";
-                    echo "<td>".$val['quotation_code']."</td>";
+                    echo "<td><a href='".$quotation_url.$val['quotation_code']."'>".$val['quotation_code']."</td>";
                     echo "<td>(".$val['shop_code'].") - ".$val['shop_name']."</td>";
-                    echo "<td>".$val['customer']."</td>";
+                    echo "<td>(".$val['cust_code'].") - ".$val['cust_name']."</td>";
                     echo "<td>".$val['payment_method']."</td>";
                     echo "<td>$".number_format($val['total'],2,".","")."</td>";
                     echo "<td>".$val['create_date']."</td>";

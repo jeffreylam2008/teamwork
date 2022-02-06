@@ -40,7 +40,7 @@
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <span class="input-group-text"><?=$this->lang->line("purchase_supplier")?></span>
+            <span class="input-group-text"><?=$this->lang->line("supplier")?></span>
         </div>
         <input type="text" class="form-control" value="(<?=$supp_code?>) <?=$supp_name?>" disabled />
     </div>
@@ -48,7 +48,7 @@
     <!-- Payment Method -->
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <label class="input-group-text"><?=$this->lang->line("purchase_payment_method")?></label>
+            <label class="input-group-text"><?=$this->lang->line("payment_method")?></label>
         </div>
         <input type="text" class="form-control" value="(<?=$paymentmethod?>) <?=$paymentmethodname?>" disabled />
     </div>
@@ -81,8 +81,8 @@
                 <td><?=$chi_name?></td>
                 <td><?=$qty?></td>
                 <td><?=$unit?></td>
-                <td>$<?=number_format($price,2,".","")?></td>
-                <td>$<?=number_format($subtotal,2,".","")?></td>
+                <td>$<?=$price?></td>
+                <td>$<?=$subtotal?></td>
                 <!--<td><button class='btn btn-danger btn-sm' id='item-del' type='button'>X</button></td>-->
             </tr>
         <?php

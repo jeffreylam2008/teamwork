@@ -10,10 +10,12 @@ class Invoices extends CI_Controller
 	var $_profile = "";
 	var $_param = "";
 	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
-
+	var $_master = [];
 	public function __construct()
 	{
 		parent::__construct();
+		$this->component_master->init();
+		$this->_master = $this->component_master->FatehAll();  
 		$_query = $this->input->get();
 		$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
 		$this->_default_per_page = $this->config->item('DEFAULT_PER_PAGE');
@@ -42,33 +44,42 @@ class Invoices extends CI_Controller
 		if(!empty($this->component_login->CheckToken()))
 		{
 			// API data
-			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
-			$this->component_api->CallGet();
-			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
-			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
-			$this->component_api->CallGet();
-			$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
-			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
-			$this->component_api->CallGet();
-			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+			// $this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
+			// $this->component_api->CallGet();
+			// $_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+			// $_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
+			// $this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
+			// $this->component_api->CallGet();
+			// $_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
+			// $_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
+			// $this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
+			// $this->component_api->CallGet();
+			// $_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+			// $_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
+			
+			// from data cache 
+			
+			//var_dump($_API_EMP);
+			$_API_EMP = $this->component_master->FetchByKey("employees", "username", $this->_profile['username']); 
+			$_API_SHOP = $this->component_master->FetchByKey("shops", "shop_code", $this->_profile['shopcode']);
+			$_API_MENU = $this->_master['menu'];
 			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
+
+
 			$this->component_api->SetConfig("url", $this->config->item('URL_INVOICES_PREFIX'));
 			$this->component_api->CallGet();
 			$_API_PREFIX = json_decode($this->component_api->GetConfig("result"), true);
 			$_API_PREFIX = !empty($_API_PREFIX['query']) ? $_API_PREFIX['query'] : [];
-
 			// dummy data
 			// sidebar session
 			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
 			switch($this->_param)
 			{
 				case "invoices/edit":
-					$this->_param = "invoices/invlist";
+					$this->_param = "invoices/index";
 				break;
 				case "invoices/tender":
-					$this->_param = "invoices/invlist";
+					$this->_param = "invoices/index";
 				break;
 			}
 			
@@ -82,6 +93,7 @@ class Invoices extends CI_Controller
 				"today" => date("Y-m-d"),
 				"prefix" => $_API_PREFIX
 			];
+			
 			if(!empty($_query))
 			{
 				//Set user preference
@@ -112,7 +124,7 @@ class Invoices extends CI_Controller
 		}
 		else
 		{
-			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
+			// redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
 		}		
 	}
 	/**
@@ -202,6 +214,7 @@ class Invoices extends CI_Controller
 				"data" => $_data,
 				"submit_to" => base_url("/invoices/list"),
 				"edit_url" => base_url("invoices/edit/"),
+				"quotation_url" => base_url("quotations/edit/"),
 				"default_per_page" => $this->_default_per_page,
 				"page" => $this->_page,
 				"ad_start_date" => $_start_date,
@@ -331,25 +344,33 @@ class Invoices extends CI_Controller
 		// echo "</pre>";
 
 			// fatch items API
-			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
-			$this->component_api->CallGet();
-			$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SHOPS = $this->_master['items'];
+			// $this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
+			// $this->component_api->CallGet();
+			// $_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
 			$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
+			
 			// fatch shop code and shop detail API
-			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
-			$this->component_api->CallGet();
-			$_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SHOPS = $this->_master['shops'];
+			// $this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
+			// $this->component_api->CallGet();
+			// $_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
 			$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
+			
 			// fatch customer API
-			$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
-			$this->component_api->CallGet();
-			$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_CUSTOMERS = $this->_master['customers'];
+			// $this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
+			// $this->component_api->CallGet();
+			// $_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
 			$_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : "";
+			
 			// fatch payment method API
-			$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
-			$this->component_api->CallGet();
-			$_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
+			$_API_PAYMENTS = $this->_master['paymentmethods'];
+			// $this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
+			// $this->component_api->CallGet();
+			// $_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
 			$_API_PAYMENTS = !empty($_API_PAYMENTS['query']) ? $_API_PAYMENTS['query'] : "";
+			
 			//fatch DN number and set DN prefix
 			$this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE_PREFIX'));
 			$this->component_api->CallGET();
@@ -450,24 +471,31 @@ class Invoices extends CI_Controller
 						$_show_void_btn = false;
 					}
 					// fatch items API
-					$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
-					$this->component_api->CallGet();
-					$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+					$_API_SHOPS = $this->_master['items'];
+					// $this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
+					// $this->component_api->CallGet();
+					// $_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
 					$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
+					
 					// fatch shop code and shop detail API
-					$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
-					$this->component_api->CallGet();
-					$_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
+					$_API_SHOPS = $this->_master['shops'];
+					// $this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
+					// $this->component_api->CallGet();
+					// $_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
 					$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
+					
 					// fatch customer API
-					$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
-					$this->component_api->CallGet();
-					$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
+					$_API_CUSTOMERS = $this->_master['customers'];
+					// $this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
+					// $this->component_api->CallGet();
+					// $_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
 					$_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : "";
+					
 					// fatch payment method API
-					$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
-					$this->component_api->CallGet();
-					$_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
+					$_API_PAYMENTS = $this->_master['paymentmethods'];
+					// $this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
+					// $this->component_api->CallGet();
+					// $_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
 					$_API_PAYMENTS = !empty($_API_PAYMENTS['query']) ? $_API_PAYMENTS['query'] : "";
 
 					// function bar with next, preview and save button

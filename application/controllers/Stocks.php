@@ -378,10 +378,10 @@ class Stocks extends CI_Controller
 			]);
 
 			$this->load->view('title-bar', [
-				"title" => "Goods Received Note"
+				"title" => $this->lang->line("grn")
 			]);
 			
-			$this->load->view("stocks/goods-recevied-view", [
+			$this->load->view("stocks/goods-recevied-create-view", [
 				"submit_to" => base_url("stocks/process"),
 				"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
 				"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
@@ -445,16 +445,16 @@ class Stocks extends CI_Controller
 			}
 
 			$this->load->view('title-bar', [
-				"title" => "Goods Received Note"
+				"title" => $this->lang->line("grn")
 			]);
 
 			// function bar
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/stocks/grn/'.$_data['formtype'].'/'.$_data['grn_num']) ,"style" => "","show" => true],
-					["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
-					["name" => "Save", "type"=>"button", "id" => "save", "url"=> base_url('/stocks/grn/'.$_the_form_type) , "style" => "","show" => $_show_save_btn],
-					["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
+					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/stocks/grn/'.$_data['formtype'].'/'.$_data['grn_num']) ,"style" => "","show" => true],
+					["name" => "<i class='far fa-file-alt'></i> ".$this->lang->line("function_preview"), "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
+					["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=> base_url('/stocks/grn/'.$_the_form_type) , "style" => "","show" => $_show_save_btn],
+					["name" => "<i class='fas fa-print'></i> ".$this->lang->line("function_reprint"), "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
 				]
 			]);
 
@@ -574,14 +574,14 @@ class Stocks extends CI_Controller
 			
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/stocks/'.$_login['preference']) ,"style" => "","show" => true],
-					["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
-					["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => true],
-					["name" => "Adjustment", "type"=>"button", "id" => "adjustment", "url"=> base_url('/stocks/donewadj/'.$_input) , "style" => "btn btn-outline-warning" , "show" => true]
+					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/stocks/'.$_login['preference']) ,"style" => "","show" => true],
+					["name" => "<i class='far fa-file-alt'></i> ".$this->lang->line("function_preview"), "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
+					["name" => "<i class='fas fa-print'></i> ".$this->lang->line("function_reprint"), "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => true],
+					["name" => "<i class='fas fa-sliders-h'></i> ".$this->lang->line("adjustment"), "type"=>"button", "id" => "adjustment", "url"=> base_url('/stocks/donewadj/'.$_input) , "style" => "btn btn-outline-warning" , "show" => true]
 				]
 			]);
 			$this->load->view('title-bar', [
-				"title" => "Goods Received Note"
+				"title" => $this->lang->line("grn")
 			]);
 			//view content
 			$this->load->view("stocks/goods-recevied-detail-view", [
@@ -681,7 +681,7 @@ class Stocks extends CI_Controller
 			]);
 
 			$this->load->view('title-bar', [
-				"title" => "Stock Adjustment"
+				"title" => $this->lang->line("adjustment_new_titles")
 			]);
 			
 			$this->load->view("stocks/stocks-adj-view",[
@@ -733,19 +733,20 @@ class Stocks extends CI_Controller
 			}
 
 			$this->load->view('title-bar', [
-				"title" => "Stock Adjustment"
+				"title" => $this->lang->line("adjustment_new_titles")
 			]);
 			// function bar
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/stocks/adj/'.$_data['formtype'].'/'.$_data['adj_num'].'/'.$_data['refer_num']) ,"style" => "","show" => true],
+					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/stocks/adj/'.$_data['formtype'].'/'.$_data['adj_num'].'/'.$_data['refer_num']) ,"style" => "","show" => true],
 					//["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
-					["name" => "Save", "type"=>"button", "id" => "save", "url"=> base_url('/stocks/adj/'.$_the_form_type) , "style" => "","show" => $_show_save_btn],
+					["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=> base_url('/stocks/adj/'.$_the_form_type) , "style" => "","show" => $_show_save_btn],
 					//["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
 				]
 			]);
 
 			$this->load->view("stocks/stocks-adj-process-view",[
+				"data" => $_transaction[$_cur_adj_num],
 				"preview_url" => base_url('/ThePrint/adjustment/preview'),
 				"print_url" => base_url('/ThePrint/adjustment/save')
 			]);
@@ -844,13 +845,13 @@ class Stocks extends CI_Controller
 			
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/stocks/'.$_login['preference']) ,"style" => "","show" => true],
+					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/stocks/'.$_login['preference']) ,"style" => "","show" => true],
 					//["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
 					//["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => true]
 				]
 			]);
 			$this->load->view('title-bar', [
-				"title" => "Stock Adjustment"
+				"title" => $this->lang->line("adjustment_edit_titles")
 			]);
 			//view content
 			$this->load->view("stocks/stocks-adj-detail-view", [

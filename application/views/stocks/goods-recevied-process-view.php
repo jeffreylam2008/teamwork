@@ -15,33 +15,33 @@
 
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <span class="input-group-text" >GRN Number</span>
+            <span class="input-group-text" ><?=$this->lang->line("grn_number")?></span>
         </div>
         
         <input type="text" class="form-control" value="<?=$grn_num?>" disabled />
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <span class="input-group-text" >PO number</span>
+            <span class="input-group-text" ><?=$this->lang->line("purchase_number")?></span>
         </div>
         <input type="text" class="form-control" value="<?=$po_num?>" disabled />
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <span class="input-group-text" >Date</span>
+            <span class="input-group-text" ><?=$this->lang->line("date")?></span>
         </div>
         <input type="text" class="form-control" value="<?=$date?>" disabled />
     </div>
     <!-- Company -->
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <span class="input-group-text">Company</span>
+            <span class="input-group-text"><?=$this->lang->line("company")?></span>
         </div>
         <input type="text" class="form-control" value="(<?=$shop_code?>) <?=$shopname?>" disabled />
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <span class="input-group-text">Supplier</span>
+            <span class="input-group-text"><?=$this->lang->line("supplier")?></span>
         </div>
         <input type="text" class="form-control" value="(<?=$supp_code?>) <?=$supp_name?>" disabled />
     </div>
@@ -49,7 +49,7 @@
     <!-- Payment Method -->
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <label class="input-group-text">Payment Method</label>
+            <label class="input-group-text"><?=$this->lang->line("payment_method")?></label>
         </div>
         <?php if($paymentmethod != -1) :?>
         <input type="text" class="form-control" value="(<?=$paymentmethod?>) <?=$paymentmethodname?>" disabled />
@@ -62,14 +62,14 @@
         <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Item Code</th>
-                <th scope="col">English Name</th>
-                <th scope="col">Chinese Name</th>
-                <th scope="col">Current Stock</th>
-                <th scope="col">Qty</th>
-                <th scope="col">Unit</th>
-                <th scope="col">Unit Price</th>
-                <th scope="col">Total</th>
+                <th scope="col"><?=$this->lang->line("item_code")?></th>
+                <th scope="col"><?=$this->lang->line("item_eng_name")?></th>
+                <th scope="col"><?=$this->lang->line("item_chi_name")?></th>
+                <th scope="col"><?=$this->lang->line("item_Stockonhand")?></th>
+                <th scope="col"><?=$this->lang->line("item_qty")?></th>
+                <th scope="col"><?=$this->lang->line("item_unit")?></th>
+                <th scope="col"><?=$this->lang->line("item_price")?></th>
+                <th scope="col"><?=$this->lang->line("item_subtotal")?></th>
                 <th scope="col"></th>
             </tr>
         </thead>
@@ -98,14 +98,14 @@
         ?>
             <tr>
                 <td colspan="7"></td>
-                <td align="right">Total: </td>
+                <td align="right"><?=$this->lang->line("common_total")?>: </td>
                 <td>$<?=$total?></td>
             </tr>
         </tbody>
     </table>
     
     <div class="input-group mb-2 input-group-sm">
-        <textarea  class="form-control" rows="10" placeholder="Remark" disabled><?=$remark?></textarea>
+        <textarea  class="form-control" rows="10" placeholder="<?=$this->lang->line("item_remark")?>" disabled><?=$remark?></textarea>
     </div>
 </div>
 

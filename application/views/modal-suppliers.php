@@ -4,7 +4,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="">Suppliers List</h5>
+                    <h5 class="modal-title" id=""><?=$this->lang->line("supplier_list")?></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -18,8 +18,8 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Code</th>
-                                    <th scope="col">Name</th>
+                                    <th scope="col"><?=$this->lang->line("supplier_id")?></th>
+                                    <th scope="col"><?=$this->lang->line("supplier_name")?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -45,8 +45,8 @@
                 </div>
                 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="supp-ok" data-dismiss="modal">OK</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?=$this->lang->line("function_close")?></button>
+                    <button type="button" class="btn btn-primary" id="supp-ok" data-dismiss="modal"><?=$this->lang->line("function_ok")?></button>
                 </div>
             </div>
         </div>

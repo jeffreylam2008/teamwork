@@ -14,7 +14,7 @@
             <th><?=$this->lang->line('customer_name')?></th>
             <th><?=$this->lang->line('customer_delivery_addr')?></th>
             <th><?=$this->lang->line('customer_contact_number')?></th>
-            <th><?=$this->lang->line('customer_payment_method')?></th>
+            <th><?=$this->lang->line('payment_method')?></th>
             <th><?=$this->lang->line('customer_status')?></th>
         </tr>
     <thead>

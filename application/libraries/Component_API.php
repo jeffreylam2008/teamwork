@@ -3,14 +3,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Component_API
 {
-    var $_config = [
+    private $_config = [
         "url" => "",
         "result" => "",
         "body" => []
     ];
+    protected $_CI;
+
     public function __construct()
 	{
-        
+        $this->_CI =& get_instance();  
     }
     public function SetConfig($func, $val)
     {
@@ -31,7 +33,7 @@ class Component_API
                 CURLOPT_CUSTOMREQUEST => "GET",
                 CURLOPT_RETURNTRANSFER => 1,
                 CURLOPT_NOSIGNAL => 1,
-                CURLOPT_TIMEOUT_MS => 20000
+                CURLOPT_TIMEOUT_MS => $this->_CI->config->item("API_INVOKE_TIMEOUT")
             ]);
             $resp = curl_exec($curl);
             $_err_detail["Error"] = curl_error($curl);
@@ -57,7 +59,8 @@ class Component_API
             curl_setopt_array($curl, [
                 CURLOPT_CUSTOMREQUEST => "POST",
                 CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_POSTFIELDS => $this->_config["body"]
+                CURLOPT_POSTFIELDS => $this->_config["body"],
+                CURLOPT_TIMEOUT_MS => $this->_CI->config->item("API_INVOKE_TIMEOUT")
             ]);
             $resp = curl_exec($curl);
             if(!$resp){
@@ -78,7 +81,8 @@ class Component_API
             curl_setopt_array($curl, [
                 CURLOPT_CUSTOMREQUEST => "PATCH",
                 CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_POSTFIELDS => $this->_config["body"]
+                CURLOPT_POSTFIELDS => $this->_config["body"],
+                CURLOPT_TIMEOUT_MS => $this->_CI->config->item("API_INVOKE_TIMEOUT")
             ]);
 
             $resp = curl_exec($curl);
@@ -99,7 +103,8 @@ class Component_API
             $curl = curl_init($this->_config["url"]);
             curl_setopt_array($curl, [
                 CURLOPT_CUSTOMREQUEST => "DELETE",
-                CURLOPT_RETURNTRANSFER => 1
+                CURLOPT_RETURNTRANSFER => 1,
+                CURLOPT_TIMEOUT_MS => $this->_CI->config->item("API_INVOKE_TIMEOUT")
             ]);
 
             $resp = curl_exec($curl);

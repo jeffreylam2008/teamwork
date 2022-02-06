@@ -46,7 +46,7 @@ class Login extends CI_Controller
 		$_api_body["password"] = $this->input->post('i-password',true);
 		$_api_body["shopcode"] = $this->input->post('i-shops',true);
 		$_api_body = json_encode($_api_body, true);
-		//echo $_api_body;
+		// echo $_api_body;
 		// echo "<br>";
 		$this->component_api->SetConfig("body", $_api_body);
 		$this->component_api->SetConfig("url", $this->config->item('URL_LOGIN'));
@@ -93,7 +93,7 @@ class Login extends CI_Controller
 			$_e_code = urlencode($_result['error']['code']);
 			$_e_msg = urlencode($_result['error']['message']);
 			$_url = urlencode($this->input->get('url'));
-			redirect(base_url("login?url=".$_url."&e_code=".$_e_code."&e_msg=".$_e_msg),"refresh");
+			//redirect(base_url("login?url=".$_url."&e_code=".$_e_code."&e_msg=".$_e_msg),"refresh");
 		}
 	}
 }

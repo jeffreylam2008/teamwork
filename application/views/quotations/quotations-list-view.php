@@ -57,7 +57,7 @@
                 <th><?=$this->lang->line("quotation_number")?></th>
                 <th><?=$this->lang->line("company")?></th>
                 <th><?=$this->lang->line("customer_name")?></th>
-                <th><?=$this->lang->line("customer_payment_method")?></th>
+                <th><?=$this->lang->line("payment_method")?></th>
                 <th><?=$this->lang->line("common_total")?></th>
                 <th><?=$this->lang->line("common_is_convert")?></th>
                 <th><?=$this->lang->line("label_create_date")?></th>
@@ -79,7 +79,7 @@
                 echo "<tr>";
                 echo "<td><a href='".$url.$val['trans_code']."'>".$val['trans_code']."</a></td>";
                 echo "<td>(".$val['shop_code'].") - ".$val['shop_name']."</td>";
-                echo "<td>".$val['customer']."</td>";
+                echo "<td>(".$val['cust_code'].") - ".$val['cust_name']."</td>";
                 echo "<td>".$val['payment_method']."</td>";
                 echo "<td>$".$val['total']."</td>";
                 echo $val['is_convert'] ? "<td>YES</td>":"<td>NO</td>";

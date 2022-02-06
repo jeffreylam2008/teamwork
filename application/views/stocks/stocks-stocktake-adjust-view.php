@@ -8,13 +8,13 @@
             <div class="modal-body">
             <!-- content -->
                 <div class="container-fluid">
-                    <p>Are you sure to adjust stock based on this stocktake record (<?=$to_deleted_num?>) ?</p>
+                    <p><?=$this->lang->line("label_stocktakeadjust_msg")?> (<?=$to_deleted_num?>) ?</p>
                 </div>
             <!-- content end -->
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="canceled" data-dismiss="modal">No</button>
-                <button type="button" class="btn btn-danger" id="confirmed" data-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-secondary" id="canceled" data-dismiss="modal"><?=$this->lang->line("function_cancel")?></button>
+                <button type="button" class="btn btn-danger" id="confirmed" data-dismiss="modal"><?=$this->lang->line("function_yes")?></button>
             </div>
         </div>
     </div>

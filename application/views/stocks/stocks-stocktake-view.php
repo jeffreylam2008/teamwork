@@ -102,11 +102,23 @@
     var items = []
     var selecteditemcode = ""
     var ftotal = 0
+    var atleastoneitem_msg = "<?=$this->lang->line('label_atleastoneitem_msg')?>"
     var itemTbl =$('#items-list').DataTable({
         "select": {
             items: 'column'
         },
         "iDisplayLength": <?=$default_per_page?>,
+        "language": {
+            "lengthMenu" : "<?=$this->lang->line('function_page_showing')?> _MENU_",
+            "search": "<?=$this->lang->line('function_search')?> :",
+            "info": "<?=$this->lang->line('function_page_showing')?> _START_ <?=$this->lang->line('function_page_to')?> _END_ <?=$this->lang->line('function_page_of')?> _TOTAL_ <?=$this->lang->line('function_page_entries')?>",
+            "paginate": {
+                "first": "<?=$this->lang->line('function_first')?>",
+                "last": "<?=$this->lang->line('function_last')?>",
+                "next": "<?=$this->lang->line('function_next')?>",
+                "previous": "<?=$this->lang->line('function_previous')?>"
+            }
+        }
     });
 
     //testing here
@@ -339,7 +351,7 @@
             _valid = 1
         }
         if($.isEmptyObject(_inputs["items"])){
-            alert("At least one input")
+            alert(atleastoneitem_msg)
             _valid = 1
         }
         if(_valid == 0){

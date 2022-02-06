@@ -98,7 +98,7 @@
 
 							<div class="form-row">
 								<div class="col-4">
-									<label for="t1"><?=$this->lang->line("customer_payment_method")?></label>
+									<label for="t1"><?=$this->lang->line("payment_method")?></label>
 									<select class="custom-select custom-select-sm" id="i-paymentmethod" name="i-pm_code" >
 										<?php 
 											if(!empty($pm_code) && $pm_code != "-1"):

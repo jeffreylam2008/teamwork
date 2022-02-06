@@ -11,21 +11,21 @@
         <!-- Suppliers -->
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text">GRN Number</span>
+                <span class="input-group-text"><?=$this->lang->line("grn_number")?></span>
             </div>
             <input type="text" class="form-control" value="<?=$grn_num?>" id="i-grn-num" disabled="" />
         </div>
 
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text" id="">Reference Number</span>
+                <span class="input-group-text" id=""><?=$this->lang->line("grn_reference_number")?></span>
             </div>
             <input type="text" class="form-control" id="i-po-num" value="<?=$refer_num?>" disabled="" />
         </div>
 
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text" id="">Date</span>
+                <span class="input-group-text" id=""><?=$this->lang->line("date")?></span>
             </div>
             <input type="text" class="form-control" id="i-date" value="<?=$date?>" disabled >
         </div>
@@ -33,18 +33,17 @@
         <!-- Company -->
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <label class="input-group-text">Company</label>
+                <label class="input-group-text"><?=$this->lang->line("company")?></label>
             </div>
             <select class="custom-select custom-select-sm" id="i-shopcode" disabled>
                 <option value="<?=$shop_code?>"><?=$shopname?></option>
             </select>
         </div>
 
-        
         <!-- Start Suppliers -->
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <span class="input-group-text">Suppliers</span>
+                <span class="input-group-text"><?=$this->lang->line("supplier")?></span>
             </div>
             <input type="text" class="form-control" value="<?=$supp_code?>" id="i-suppliers" disabled="" />
             <input type="text" class="form-control" value="<?=$supp_name?>" id="i-suppliers-name" disabled="">
@@ -54,7 +53,7 @@
         <!-- Payment Method button -->
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
-                <label class="input-group-text">Payment Method</label>
+                <label class="input-group-text"><?=$this->lang->line("payment_method")?></label>
             </div>
             <select class="custom-select custom-select-sm" id="i-paymentmethod" disabled>
                 <?php if(!empty($paymentmethod) && $paymentmethod != -1): ?>
@@ -86,15 +85,15 @@
         </div>
         <table class="table table-sm table-striped" id="tbl">
             <thead>
-                <th>Item code</th>
-                <th>Eng name</th>
-                <th>Chi_name</th>
+                <th><?=$this->lang->line("item_code")?></th>
+                <th><?=$this->lang->line("item_eng_name")?></th>
+                <th><?=$this->lang->line("item_chi_name")?></th>
                 <th></th>
-                <th>QTY</th>
+                <th><?=$this->lang->line("item_qty")?></th>
                 <th></th>
-                <th>Unit</th>
-                <th>Price ($)</th>
-                <th>Subtotal</th>
+                <th><?=$this->lang->line("item_unit")?></th>
+                <th><?=$this->lang->line("item_price")?></th>
+                <th><?=$this->lang->line("item_subtotal")?></th>
             </thead>
             <!-- render items-list here -->
             <tbody id="tdisplay">
@@ -122,7 +121,7 @@
                     <td class="col-1">
                        <input type="text" class="form-control form-control-sm item-input" id="price_<?=$k?>" value="<?=$price?>" disabled />
                     </td>
-                    <td class="col-2" id="subtotal_<?=$k?>">$ <?=number_format($subtotal,2,".","")?></td>
+                    <td class="col-2" id="subtotal_<?=$k?>">$ <?=$subtotal?></td>
                 </tr>
             <?php
                     $total += $subtotal;

@@ -63,10 +63,10 @@ class Quotations extends CI_Controller
 			switch($this->_param)
 			{
 				case "quotations/edit":
-					$this->_param = "quotations/qualist";
+					$this->_param = "quotations/index";
 				break;
 				case "quotations/tender":
-					$this->_param = "quotations/qualist";
+					$this->_param = "quotations/index";
 				break;
 			}
 			// header data
