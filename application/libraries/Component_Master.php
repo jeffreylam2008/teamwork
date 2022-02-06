@@ -87,17 +87,17 @@ class Component_Master
         if (($this->_CI->cache->get('master1')) && !$this->CheckAPIHealth())
         {
             // bad.......No network, No cache
-            echo 1;
+            // echo 1;
         }
         // Cache exist, API network down
         elseif (!$this->_CI->cache->get('master1') && !$this->CheckAPIHealth())
         {
-            echo 2;
+            // echo 2;
             $this->_master = $this->_CI->cache->get('master1');
         }
         // Cache empty, API network normal
         else{
-            echo 3;
+            // echo 3;
             // use local data
             // clear previous cache
             $this->Remove();
