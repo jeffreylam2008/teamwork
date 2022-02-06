@@ -17,6 +17,8 @@ class Master extends CI_Controller
         echo "fetch all";
         $_master = $this->component_master->FatehAll();     
         echo "<pre>";
+
+        var_dump($_master);
         foreach($_master as $k => $v)
         {
             var_dump($k);
