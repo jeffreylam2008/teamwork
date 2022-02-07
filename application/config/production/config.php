@@ -31,7 +31,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://13.209.150.150/webapp/';
+$config['base_url'] = 'http://54.168.20.230/webapp/';
 
 /*
 |--------------------------------------------------------------------------
