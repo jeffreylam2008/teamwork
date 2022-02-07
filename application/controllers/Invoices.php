@@ -344,7 +344,7 @@ class Invoices extends CI_Controller
 		// echo "</pre>";
 
 			// fatch items API
-			$_API_SHOPS = $this->_master['items'];
+			$_API_ITEMS = $this->_master['items'];
 			// $this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
 			// $this->component_api->CallGet();
 			// $_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
