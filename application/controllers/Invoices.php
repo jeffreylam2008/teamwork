@@ -471,31 +471,31 @@ class Invoices extends CI_Controller
 						$_show_void_btn = false;
 					}
 					// fatch items API
-					$_API_SHOPS = $this->_master['items'];
-					// $this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
-					// $this->component_api->CallGet();
-					// $_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+					//$_API_SHOPS = $this->_master['items'];
+					$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
+					$this->component_api->CallGet();
+					$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
 					$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
 					
 					// fatch shop code and shop detail API
-					$_API_SHOPS = $this->_master['shops'];
-					// $this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
-					// $this->component_api->CallGet();
-					// $_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
+					//$_API_SHOPS = $this->_master['shops'];
+					$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
+					$this->component_api->CallGet();
+					$_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
 					$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
 					
 					// fatch customer API
-					$_API_CUSTOMERS = $this->_master['customers'];
-					// $this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
-					// $this->component_api->CallGet();
-					// $_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
+					//$_API_CUSTOMERS = $this->_master['customers'];
+					$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
+					$this->component_api->CallGet();
+					$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
 					$_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : "";
 					
 					// fatch payment method API
-					$_API_PAYMENTS = $this->_master['paymentmethods'];
-					// $this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
-					// $this->component_api->CallGet();
-					// $_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
+					//$_API_PAYMENTS = $this->_master['paymentmethods'];
+					$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
+					$this->component_api->CallGet();
+					$_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
 					$_API_PAYMENTS = !empty($_API_PAYMENTS['query']) ? $_API_PAYMENTS['query'] : "";
 
 					// function bar with next, preview and save button
