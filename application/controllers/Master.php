@@ -18,11 +18,11 @@ class Master extends CI_Controller
         $_master = $this->component_master->FatehAll();     
         echo "<pre>";
 
-        var_dump($_master);
-        foreach($_master as $k => $v)
-        {
-            var_dump($k);
-        }
+         var_dump($_master);
+        // foreach($_master as $k => $v)
+        // {
+        //     var_dump($k);
+        // }
         echo "</pre>";
     } 
 }

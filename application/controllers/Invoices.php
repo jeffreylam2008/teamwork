@@ -14,7 +14,7 @@ class Invoices extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		$this->component_master->init();
+		$this->component_master->Init();
 		$this->_master = $this->component_master->FatehAll();  
 		$_query = $this->input->get();
 		$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];

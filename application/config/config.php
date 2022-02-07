@@ -552,7 +552,7 @@ $config['APP_LOG_FILE'] = "applog.log";
 // $config['MASTER_FILE_CUSTOMERS'] = "./files/CUSTOMERS.json";
 // $config['MASTER_FILE_PAYMENT_METHODS'] = "./files/PAYMENT_METHODS.json";
 // $config['MASTER_FILE_MENU'] = "./files/MENU.json";
-$config['MASTER_FILE_REFRESH_TIME'] = 604800;
+$config['MASTER_FILE_REFRESH_TIME'] = 50;
 $config['API_INVOKE_TIMEOUT'] = 1000;
 
 $config['URL_NETWORK'] = $config['api_url']."/network/status/";
