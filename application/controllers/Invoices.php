@@ -344,32 +344,32 @@ class Invoices extends CI_Controller
 		// echo "</pre>";
 
 			// fatch items API
-			$_API_ITEMS = $this->_master['items'];
+			// $_API_ITEMS = $this->_master['items'];
 			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
 			$this->component_api->CallGet();
 			$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
-			// $_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
+			$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
 			
 			// fatch shop code and shop detail API
-			$_API_SHOPS = $this->_master['shops'];
+			// $_API_SHOPS = $this->_master['shops'];
 			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
 			$this->component_api->CallGet();
 			$_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
-			// $_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
+			$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
 			
 			// fatch customer API
-			$_API_CUSTOMERS = $this->_master['customers'];
+			//$_API_CUSTOMERS = $this->_master['customers'];
 			$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
 			$this->component_api->CallGet();
 			$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
-			// $_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : "";
+			$_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : "";
 			
 			// fatch payment method API
-			$_API_PAYMENTS = $this->_master['paymentmethods'];
+			//$_API_PAYMENTS = $this->_master['paymentmethods'];
 			$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
 			$this->component_api->CallGet();
 			$_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
-			// $_API_PAYMENTS = !empty($_API_PAYMENTS['query']) ? $_API_PAYMENTS['query'] : "";
+			$_API_PAYMENTS = !empty($_API_PAYMENTS['query']) ? $_API_PAYMENTS['query'] : "";
 			
 			//fatch DN number and set DN prefix
 			$this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE_PREFIX'));
