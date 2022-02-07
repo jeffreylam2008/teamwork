@@ -55,9 +55,14 @@ class Component_Master
         $this->_master['paymentmethods'] = json_decode($this->_CI->component_api->GetConfig("result"),true);
 
         // items
-        $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('URL_PAYMENT_TERMS'));
+        $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('URL_ITEMS'));
         $this->_CI->component_api->CallGet();
         $this->_master['items'] = json_decode($this->_CI->component_api->GetConfig("result"), true);
+
+        // payment terms
+        $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('URL_PAYMENT_TERMS'));
+        $this->_CI->component_api->CallGet();
+        $this->_master['paymentterms'] = json_decode($this->_CI->component_api->GetConfig("result"), true);
 
         // categories
         $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('URL_CATEGORIES'));
