@@ -14,8 +14,8 @@ class Invoices extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		$this->component_master->Init();
-		$this->_master = $this->component_master->FatehAll();  
+		// $this->component_master->Init();
+		// $this->_master = $this->component_master->FatehAll();  
 		$_query = $this->input->get();
 		$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
 		$this->_default_per_page = $this->config->item('DEFAULT_PER_PAGE');
@@ -44,26 +44,26 @@ class Invoices extends CI_Controller
 		if(!empty($this->component_login->CheckToken()))
 		{
 			// API data
-			// $this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
-			// $this->component_api->CallGet();
-			// $_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
-			// $_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
-			// $this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
-			// $this->component_api->CallGet();
-			// $_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
-			// $_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
-			// $this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
-			// $this->component_api->CallGet();
-			// $_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
-			// $_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
+			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
+			$this->component_api->CallGet();
+			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
+			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
+			$this->component_api->CallGet();
+			$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
+			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
+			$this->component_api->CallGet();
+			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
 			
 			// from data cache 
 			
 			//var_dump($_API_EMP);
-			$_API_EMP = $this->component_master->FetchByKey("employees", "username", $this->_profile['username']); 
-			$_API_SHOP = $this->component_master->FetchByKey("shops", "shop_code", $this->_profile['shopcode']);
-			$_API_MENU = $this->_master['menu'];
-			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
+			// $_API_EMP = $this->component_master->FetchByKey("employees", "username", $this->_profile['username']); 
+			// $_API_SHOP = $this->component_master->FetchByKey("shops", "shop_code", $this->_profile['shopcode']);
+			// $_API_MENU = $this->_master['menu'];
+			// $_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
 
 
 			$this->component_api->SetConfig("url", $this->config->item('URL_INVOICES_PREFIX'));
@@ -345,31 +345,31 @@ class Invoices extends CI_Controller
 
 			// fatch items API
 			$_API_ITEMS = $this->_master['items'];
-			// $this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
-			// $this->component_api->CallGet();
-			// $_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
+			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
+			$this->component_api->CallGet();
+			$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+			// $_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
 			
 			// fatch shop code and shop detail API
 			$_API_SHOPS = $this->_master['shops'];
-			// $this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
-			// $this->component_api->CallGet();
-			// $_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
+			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
+			$this->component_api->CallGet();
+			$_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
+			// $_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
 			
 			// fatch customer API
 			$_API_CUSTOMERS = $this->_master['customers'];
-			// $this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
-			// $this->component_api->CallGet();
-			// $_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : "";
+			$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
+			$this->component_api->CallGet();
+			$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
+			// $_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : "";
 			
 			// fatch payment method API
 			$_API_PAYMENTS = $this->_master['paymentmethods'];
-			// $this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
-			// $this->component_api->CallGet();
-			// $_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
-			$_API_PAYMENTS = !empty($_API_PAYMENTS['query']) ? $_API_PAYMENTS['query'] : "";
+			$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
+			$this->component_api->CallGet();
+			$_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
+			// $_API_PAYMENTS = !empty($_API_PAYMENTS['query']) ? $_API_PAYMENTS['query'] : "";
 			
 			//fatch DN number and set DN prefix
 			$this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE_PREFIX'));
