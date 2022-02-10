@@ -1,0 +1,1 @@
+<img src="<?=base_url('/assets/img/loading.gif');?>" width="100" height="100"></img> 

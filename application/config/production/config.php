@@ -31,7 +31,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://54.168.20.230/webapp/';
+$config['base_url'] = 'http://13.209.150.150/webapp/';
 
 /*
 |--------------------------------------------------------------------------
@@ -542,7 +542,8 @@ $config['default_home'] = 'dushboard';
 |--------------------------------------------------------------------------
 */
 
-$config['api_url'] = 'http://54.168.20.230/erp_backend/api/v1';
+
+$config['api_url'] = 'http://46.137.246.181/erp_backend/api/v1';
 $config['DEBUG_MODE'] = false;
 $config['DEFAULT_PER_PAGE'] = 25;
 $config['DEFAULT_FIRST_PAGE'] = 1;
@@ -576,6 +577,7 @@ $config['URL_INVENTORY_HAS_TRANSACTION_SUPPLIERS'] = $config['api_url']."/invent
 $config['URL_INVENTORY'] = $config['api_url']."/inventory/invoices/";
 $config['URL_INVOICES_NEXT_NUM'] = $config['api_url']."/inventory/invoices/getnextnum/";
 $config['URL_INVOICES_PREFIX'] = $config['api_url']."/inventory/invoices/getprefix/";
+$config['URL_INVOICES_HEADER'] = $config['api_url']."/inventory/invoices/view/header/username/";
 $config['URL_QUOTATIONS'] = $config['api_url']."/inventory/quotations/";
 $config['URL_QUOTATIONS_NEXT_NUM'] = $config['api_url']."/inventory/quotations/getnextnum/";
 $config['URL_QUOTATIONS_PREFIX'] = $config['api_url']."/inventory/quotations/getprefix/";
@@ -606,3 +608,4 @@ $config['URL_PURCHASES_ORDER_PREFIX'] = $config['api_url']."/purchases/order/get
 $config['URL_DUSHBOARD_MONTHLY_INVOICES'] = $config['api_url']."/inventory/invoices/transaction/h/count/";
 $config['URL_DUSHBOARD_MONTHLY_PURCHASES'] = $config['api_url']."/purchases/order/transaction/h/count/";
 $config['URL_BACKUP'] = $config['api_url']."/systems/backup/";
+$config['URL_MASTER'] = $config['api_url']."/systems/master/";

@@ -79,10 +79,7 @@ class Component_Master
     {
         
     }
-    public function Find($src, $what, $bywhere)
-    {
 
-    }
     public function FatehAll()
     {
         return $this->_master;
@@ -108,13 +105,7 @@ class Component_Master
             // echo 3;
             // use local data
             // clear previous cache
-            if($this->CheckAPIHealth())
-            {
-                $this->Remove();
-                // fetch new data from API
-                $this->Sync();
-                $this->_CI->cache->file->save('master1', $this->_master,$this->_CI->config->item("MASTER_FILE_REFRESH_TIME"));
-            }
+            $this->Update();
             // var_dump($this->_master);
         }
     }

@@ -402,7 +402,7 @@ extract($data);
         if(cust_code != "")
         {
             let the_url = "<?=$quote_fetch_url?>"+cust_code;
-            let response = await fetch(the_url);
+            let response = await fetch(the_url, { method: 'GET', mode: 'cors', headers: {} });
             if (response.ok) { // if HTTP-status is 200-299
                 // get the response body (the method explained below)
                 let json = await response.json();
@@ -433,7 +433,7 @@ extract($data);
         if(custcode != "" && selecteditemcode != "")
         {
             let the_url = "<?=$quote_item_fetch_url?>/cust/"+custcode+"/item/"+selecteditemcode;
-            let response = await fetch(the_url);
+            let response = await fetch(the_url, { method: 'GET', mode: 'cors', headers: {} });
             if (response.ok) { // if HTTP-status is 200-299
                 // get the response body (the method explained below)
                 let json = await response.json();
