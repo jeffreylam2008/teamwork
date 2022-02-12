@@ -64,12 +64,12 @@ class Component_API
             ]);
             $resp = curl_exec($curl);
             $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            $resp['http_code'] = $code;
             if(!$resp){
                 $_err_detail["Error"] = curl_error($curl);
                 $_err_detail["Code"]  = $curl ;
-                $_err_detail["http_code"] = $code;
                 $_err = json_encode($_err_detail,true);
-                $resp['resp_err'] = $err;
+                $this->SetConfig("result_err",$_err);
             }
             curl_close($curl);
             $this->SetConfig("result",$resp);
