@@ -63,11 +63,13 @@ class Component_API
                 CURLOPT_TIMEOUT_MS => $this->_CI->config->item("API_INVOKE_TIMEOUT")
             ]);
             $resp = curl_exec($curl);
+            $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             if(!$resp){
                 $_err_detail["Error"] = curl_error($curl);
                 $_err_detail["Code"]  = $curl ;
+                $_err_detail["http_code"] = $code;
                 $_err = json_encode($_err_detail,true);
-                $this->SetConfig("result",$_err);
+                $resp['resp_err'] = $err;
             }
             curl_close($curl);
             $this->SetConfig("result",$resp);
