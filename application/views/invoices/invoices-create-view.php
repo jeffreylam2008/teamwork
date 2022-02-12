@@ -387,7 +387,6 @@ extract($data);
             }
             // not in list then add one
             else{
-                
                 item.qty = 1
                 var subtotal = item.qty * item.price
                 items.push(item)
@@ -411,7 +410,7 @@ extract($data);
                     tmpl += "<tr>"
                         +"<td>"+json.query[item].prefix+"</td>"
                         +"<td>"+json.query[item].create_date+"</td>"
-                        +"<td>"+json.query[item].item_code+"</td>"
+                        +"<td><a href='#' id='btn-item' data-item-code='"+json.query[item].item_code+"'>"+json.query[item].item_code+"</a></td>"
                         +"<td>"+json.query[item].chi_name+"</td>"
                         +"<td>"+json.query[item].unit+"</td>"
                         +"<td>"+json.query[item].qty+"</td>"
@@ -601,6 +600,13 @@ extract($data);
             if(selecteditemcode != ""){
                 lookup(selecteditemcode,dbItems)
             }
+        }
+    });
+
+    $(document).on("click", "#btn-item", function(){
+        const item = $(this).data('item-code');
+        if(item != ""){
+            lookup(item,dbItems)
         }
     });
 

@@ -236,6 +236,7 @@ class Invoices extends CI_Controller
 	 */
 	public function donew()
 	{
+		
 		if(!empty($this->session->userdata('transaction')))
 		{
 			$this->session->unset_userdata('transaction');

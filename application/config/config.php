@@ -542,8 +542,8 @@ $config['default_home'] = 'dushboard';
 |--------------------------------------------------------------------------
 */
 //$config['api_url'] = 'http://13.209.150.150/erp_backend/api/v1';
-//$config['api_url'] = 'http://46.137.246.181/erp_backend/api/v1';
-$config['api_url'] = 'http://192.168.20.114/erp_backend/api/v1';
+$config['api_url'] = 'http://46.137.246.181/erp_backend/api/v1';
+// $config['api_url'] = 'http://192.168.20.114/erp_backend/api/v1';
 $config['DEBUG_MODE'] = true;
 $config['DEFAULT_PER_PAGE'] = 25;
 $config['DEFAULT_FIRST_PAGE'] = 1;
