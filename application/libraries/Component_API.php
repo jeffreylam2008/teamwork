@@ -36,23 +36,20 @@ class Component_API
                 CURLOPT_TIMEOUT_MS => $this->_CI->config->item("API_INVOKE_TIMEOUT")
             ]);
             $resp = curl_exec($curl);
-            $_err_detail["Error"] = curl_error($curl);
-            $_err_detail["Code"]  = curl_errno($curl);
+            $resp = json_decode($resp,true);
+            $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            $resp['http_code'] = $code;
+            $resp["API_Error"] = curl_error($curl);
+            $resp["API_errCode"]  = curl_errno($curl);
             curl_close($curl);
-
-            if($_err_detail["Code"] > 0){
-                $_err = json_encode($_err_detail,true);
-                $this->SetConfig("result",$_err);
-            }
-            else
-            {
-                $this->SetConfig("result",$resp);
-            }
+            $resp = json_encode($resp, true);
+            $this->SetConfig("result",$resp);
         }
     }
 
     public function CallPost()
     {
+        $resp = [];
         if(!empty($this->_config["url"]))
         {
             $curl = curl_init($this->_config["url"]);
@@ -63,15 +60,13 @@ class Component_API
                 CURLOPT_TIMEOUT_MS => $this->_CI->config->item("API_INVOKE_TIMEOUT")
             ]);
             $resp = curl_exec($curl);
+            $resp = json_decode($resp,true);
             $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             $resp['http_code'] = $code;
-            if(!$resp){
-                $_err_detail["Error"] = curl_error($curl);
-                $_err_detail["Code"]  = $curl ;
-                $_err = json_encode($_err_detail,true);
-                $this->SetConfig("result_err",$_err);
-            }
+            $resp["API_Error"] = curl_error($curl);
+            $resp["API_errCode"]  = curl_errno($curl);
             curl_close($curl);
+            $resp = json_encode($resp, true);
             $this->SetConfig("result",$resp);
         }
     }
@@ -88,13 +83,13 @@ class Component_API
             ]);
 
             $resp = curl_exec($curl);
-            if(!$resp){
-                $_err_detail["Error"] = curl_error($curl);
-                $_err_detail["Code"]  = $curl ;
-                $_err = json_encode($_err_detail,true);
-                $this->SetConfig("result",$_err);
-            }
+            $resp = json_decode($resp,true);
+            $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            $resp['http_code'] = $code;
+            $resp["API_Error"] = curl_error($curl);
+            $resp["API_errCode"]  = curl_errno($curl);
             curl_close($curl);
+            $resp = json_encode($resp, true);
             $this->SetConfig("result",$resp);
         }
     }
@@ -110,13 +105,13 @@ class Component_API
             ]);
 
             $resp = curl_exec($curl);
-            if(!$resp){
-                $_err_detail["Error"] = curl_error($curl);
-                $_err_detail["Code"]  = $curl ;
-                $_err = json_encode($_err_detail,true);
-                $this->SetConfig("result",$_err);
-            }
+            $resp = json_decode($resp,true);
+            $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            $resp['http_code'] = $code;
+            $resp["API_Error"] = curl_error($curl);
+            $resp["API_errCode"]  = curl_errno($curl);
             curl_close($curl);
+            $resp = json_encode($resp, true);
             $this->SetConfig("result",$resp);
         }
     }
