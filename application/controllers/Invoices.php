@@ -676,6 +676,10 @@ class Invoices extends CI_Controller
 					$result["error"]['message'] = "API-Error"; 
 				}
 
+				echo "<pre>";
+				var_dump($result);
+				echo "</pre>";
+
 				// create DN
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE'));
@@ -701,11 +705,17 @@ class Invoices extends CI_Controller
 					$result["error"]['code'] = "99999";
 					$result["error"]['message'] = "API-Error";
 				}
+				
+				echo "<pre>";
+				var_dump($result);
+				echo "</pre>";
+
+				
 				unset($_transaction[$_cur_invoicenum]);
 				$this->session->set_userdata('cur_quotationnum',"");
 				$this->session->set_userdata('transaction',$_transaction);
-				
-				header("Refresh: 10; url='list/'");
+
+				//header("Refresh: 10; url='list/'");
 			}
 		}
 		else
