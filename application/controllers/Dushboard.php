@@ -27,15 +27,15 @@ class Dushboard extends CI_Controller
 			// fatch master
 			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
 			$this->component_api->CallGet();
-			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_EMP = $this->component_api->GetConfig("result");
 			$_API_EMP = $_API_EMP['query'];
 			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
 			$this->component_api->CallGet();
-			$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SHOP = $this->component_api->GetConfig("result");
 			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
 			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
 			$this->component_api->CallGet();
-			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_MENU = $this->component_api->GetConfig("result");
 			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
 
 			// sidebar session
@@ -79,19 +79,22 @@ class Dushboard extends CI_Controller
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_DUSHBOARD_MONTHLY_INVOICES')."?year=".date('Y')."&month=".date('m')."");
 		$this->component_api->CallGet();
-		$_API_MONTHLY_INVOICES = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_MONTHLY_INVOICES = $this->component_api->GetConfig("result");
+		// echo "<pre>";
+		// var_dump($_API_MONTHLY_INVOICES);
+		// echo "</pre>";
 		$_API_MONTHLY_INVOICES = !empty($_API_MONTHLY_INVOICES['query']) ? $_API_MONTHLY_INVOICES['query'] : "";
 		$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS_COUNT'));
 		$this->component_api->CallGet();
-		$_API_CUSTOMERS_COUNT = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_CUSTOMERS_COUNT = $this->component_api->GetConfig("result");
 		$_API_CUSTOMERS_COUNT = !empty($_API_CUSTOMERS_COUNT['query']) ? $_API_CUSTOMERS_COUNT['query'] : "";
 		$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS_COUNT'));
 		$this->component_api->CallGet();
-		$_API_ITEMS_COUNT = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_ITEMS_COUNT = $this->component_api->GetConfig("result");
 		$_API_ITEMS_COUNT = !empty($_API_ITEMS_COUNT['query']) ? $_API_ITEMS_COUNT['query'] : "";
 		$this->component_api->SetConfig("url", $this->config->item('URL_DUSHBOARD_MONTHLY_PURCHASES')."?year=".date('Y')."&month=".date('m')."");
 		$this->component_api->CallGet();
-		$_API_MONTHLY_PURCHASES = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_MONTHLY_PURCHASES = $this->component_api->GetConfig("result");
 		$_API_MONTHLY_PURCHASES = !empty($_API_MONTHLY_PURCHASES['query']) ? $_API_MONTHLY_PURCHASES['query'] : "";
 
 		

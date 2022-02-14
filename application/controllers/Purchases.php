@@ -43,22 +43,22 @@ class Purchases extends CI_Controller
 			// API data
 			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
 			$this->component_api->CallGet();
-			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_EMP = $this->component_api->GetConfig("result");
 			$_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
 
 			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
 			$this->component_api->CallGet();
-			$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SHOP = $this->component_api->GetConfig("result");
 			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
 
 			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
 			$this->component_api->CallGet();
-			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_MENU = $this->component_api->GetConfig("result");
 			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
 			
 			$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_PREFIX'));
 			$this->component_api->CallGet();
-			$_API_PREFIX = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_PREFIX = $this->component_api->GetConfig("result");
 			$_API_PREFIX = !empty($_API_PREFIX['query']) ? $_API_PREFIX['query'] : [];
 			
 
@@ -168,7 +168,7 @@ class Purchases extends CI_Controller
 				//echo $this->config->item('URL_PURCHASES_ORDER').$_query;
 			}
 			$this->component_api->CallGet();
-			$_data = json_decode($this->component_api->GetConfig("result"), true);
+			$_data = $this->component_api->GetConfig("result");
 			$_data = !empty($_data['query']) ? $_data['query'] : [];
 		}
 		
@@ -221,7 +221,7 @@ class Purchases extends CI_Controller
 		}
 		$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_NEXT_NUM'));
 		$this->component_api->CallGet();
-		$_API_NEXT = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_NEXT = $this->component_api->GetConfig("result");
 		$_API_NEXT = !empty($_API_NEXT['query']) ? $_API_NEXT['query'] : "";
 		redirect(base_url("purchases/order/create/".$_API_NEXT),"refresh");
 	}
@@ -244,7 +244,7 @@ class Purchases extends CI_Controller
 		// get next transaction number
 		$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_NEXT_NUM'));
 		$this->component_api->CallGet();
-		$_API_NEXT = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_NEXT = $this->component_api->GetConfig("result");
 		$_API_NEXT = !empty($_API_NEXT['query']) ? $_API_NEXT['query'] : "";
 		// transaction retrieve
 		$_transaction[$_API_NEXT] = $_API_PURCHASES;
@@ -302,19 +302,19 @@ class Purchases extends CI_Controller
 			// fatch items API
 			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
 			$this->component_api->CallGet();
-			$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_ITEMS = $this->component_api->GetConfig("result");
 			$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
 
 			// fatch shop code and shop detail API
 			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
 			$this->component_api->CallGet();
-			$_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SHOPS = $this->component_api->GetConfig("result");
 			$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
 
 			// fatch customer API
 			$this->component_api->SetConfig("url", $this->config->item('URL_SUPPLIERS'));
 			$this->component_api->CallGet();
-			$_API_SUPPLIERS = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SUPPLIERS = $this->component_api->GetConfig("result");
 			$_API_SUPPLIERS = !empty($_API_SUPPLIERS['query']) ? $_API_SUPPLIERS['query'] : "";
 
 			// fatch payment method API
@@ -551,17 +551,17 @@ class Purchases extends CI_Controller
 					// fatch items API
 					$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
 					$this->component_api->CallGet();
-					$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+					$_API_ITEMS = $this->component_api->GetConfig("result");
 					$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
 					// fatch shop code and shop detail API
 					$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
 					$this->component_api->CallGet();
-					$_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
+					$_API_SHOPS = $this->component_api->GetConfig("result");
 					$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
 					// fatch customer API
 					$this->component_api->SetConfig("url", $this->config->item('URL_SUPPLIERS'));
 					$this->component_api->CallGet();
-					$_API_SUPPLIERS = json_decode($this->component_api->GetConfig("result"), true);
+					$_API_SUPPLIERS = $this->component_api->GetConfig("result");
 					$_API_SUPPLIERS = !empty($_API_SUPPLIERS['query']) ? $_API_SUPPLIERS['query'] : "";
 					// fatch payment method API
 					$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
@@ -760,14 +760,14 @@ class Purchases extends CI_Controller
 		$_temp = [];
 		$this->component_api->SetConfig("url", $this->config->item('URL_PO_GRN_NEXT_NUM'));
 		$this->component_api->CallGet();
-		$_API_NEXT = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_NEXT = $this->component_api->GetConfig("result");
 		$_API_NEXT = !empty($_API_NEXT['query']) ? $_API_NEXT['query'] : "";
 		
 		if(!empty($_API_NEXT))
 		{
 			$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_GRN').$_num);
 			$this->component_api->CallGet();
-			$_API_GET_GRN = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_GET_GRN = $this->component_api->GetConfig("result");
 			$_API_GET_GRN = !empty($_API_GET_GRN['query']) ? $_API_GET_GRN['query'] : "";
 			
 			// send settlement 
@@ -794,7 +794,7 @@ class Purchases extends CI_Controller
 		$_total = 0;
 		$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_SETTLEMENT').$_num);
 		$this->component_api->CallGet();
-		$_API_SETTLEMENT = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_SETTLEMENT = $this->component_api->GetConfig("result");
 		$_API_SETTLEMENT = !empty($_API_SETTLEMENT['query']) ? $_API_SETTLEMENT['query'] : "";
 
 		// set current invoice number to session

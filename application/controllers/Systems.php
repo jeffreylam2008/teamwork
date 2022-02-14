@@ -45,15 +45,15 @@ class Systems extends CI_Controller
 			// fatch master
 			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
 			$this->component_api->CallGet();
-			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_EMP = $this->component_api->GetConfig("result");
 			$_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
 			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
 			$this->component_api->CallGet();
-			$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SHOP = $this->component_api->GetConfig("result");
 			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
 			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
 			$this->component_api->CallGet();
-			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_MENU = $this->component_api->GetConfig("result");
 			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
 
 			// sidebar session

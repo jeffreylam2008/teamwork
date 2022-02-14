@@ -12,7 +12,7 @@ class Export extends CI_Controller
         $_new_array = [];
         $this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
 		$this->component_api->CallGet();
-		$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_ITEMS = $this->component_api->GetConfig("result");
         $_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : [];
         
         $_new_array[0][0] = "item Code";
@@ -39,7 +39,7 @@ class Export extends CI_Controller
     {
         $this->component_api->SetConfig("url", $this->config->item('URL_BACKUP')."products/");
 		$this->component_api->CallGet();
-		$_API = json_decode($this->component_api->GetConfig("result"), true);
+		$_API = $this->component_api->GetConfig("result");
         $_API = !empty($_API['query']) ? $_API['query'] : [];
         $_new_array = [];
         $_new_array[0][] = "item Code";
@@ -71,7 +71,7 @@ class Export extends CI_Controller
     {
         $this->component_api->SetConfig("url", $this->config->item('URL_BACKUP')."categories/");
 		$this->component_api->CallGet();
-		$_API = json_decode($this->component_api->GetConfig("result"), true);
+		$_API = $this->component_api->GetConfig("result");
         $_API = !empty($_API['query']) ? $_API['query'] : [];
         $_new_array = [];
         $_new_array[0][] = "categories code";
@@ -91,7 +91,7 @@ class Export extends CI_Controller
     {
         $this->component_api->SetConfig("url", $this->config->item('URL_BACKUP')."customers/");
 		$this->component_api->CallGet();
-		$_API = json_decode($this->component_api->GetConfig("result"), true);
+		$_API = $this->component_api->GetConfig("result");
         $_API = !empty($_API['query']) ? $_API['query'] : [];
         $_new_array = [];
         $_new_array[0][] = "Customer code";
@@ -165,7 +165,7 @@ class Export extends CI_Controller
     {
         $this->component_api->SetConfig("url", $this->config->item('URL_BACKUP')."suppliers/");
 		$this->component_api->CallGet();
-		$_API = json_decode($this->component_api->GetConfig("result"), true);
+		$_API = $this->component_api->GetConfig("result");
         $_API = !empty($_API['query']) ? $_API['query'] : [];
         $_new_array = [];
         $_new_array[0][] = "Supplier code";
@@ -203,7 +203,7 @@ class Export extends CI_Controller
     {
         $this->component_api->SetConfig("url", $this->config->item('URL_BACKUP')."paymentmethods/");
 		$this->component_api->CallGet();
-		$_API = json_decode($this->component_api->GetConfig("result"), true);
+		$_API = $this->component_api->GetConfig("result");
         $_API = !empty($_API['query']) ? $_API['query'] : [];
         $_new_array = [];
         $_new_array[0][] = "payment method code";
@@ -224,7 +224,7 @@ class Export extends CI_Controller
     {
         $this->component_api->SetConfig("url", $this->config->item('URL_BACKUP')."paymentterms/");
 		$this->component_api->CallGet();
-		$_API = json_decode($this->component_api->GetConfig("result"), true);
+		$_API = $this->component_api->GetConfig("result");
         $_API = !empty($_API['query']) ? $_API['query'] : [];
         $_new_array = [];
         $_new_array[0][] = "payment term code";

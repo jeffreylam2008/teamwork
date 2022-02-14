@@ -43,15 +43,15 @@ class Stocks extends CI_Controller
 			// API data
 			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
 			$this->component_api->CallGet();
-			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_EMP = $this->component_api->GetConfig("result");
 			$_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
 			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
 			$this->component_api->CallGet();
-			$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SHOP = $this->component_api->GetConfig("result");
 			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
 			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
 			$this->component_api->CallGet();
-			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_MENU = $this->component_api->GetConfig("result");
 			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
 
 			// sidebar session
@@ -177,7 +177,7 @@ class Stocks extends CI_Controller
 				$this->component_api->SetConfig("url", $this->config->item('URL_STOCKS').$_q);
 			}
 			$this->component_api->CallGet();
-			$_data = json_decode($this->component_api->GetConfig("result"), true);
+			$_data = $this->component_api->GetConfig("result");
 			$_data = $_data != null ? $_data : "";
 		}
 		
@@ -239,7 +239,7 @@ class Stocks extends CI_Controller
 			 // Call API
 			 $this->component_api->SetConfig("url", $this->config->item('URL_TRANSACTIONS').$_input);
 			 $this->component_api->CallGet();
-			 $_API_TRANSACTIONS = json_decode($this->component_api->GetConfig("result"), true);
+			 $_API_TRANSACTIONS = $this->component_api->GetConfig("result");
 			 $_API_TRANSACTIONS = !empty($_API_TRANSACTIONS['query']) ? $_API_TRANSACTIONS['query'] : "";
 			 // echo "<pre>";
 			 // print_r($_API_TRANSACTIONS);
@@ -300,7 +300,7 @@ class Stocks extends CI_Controller
 		}
 		$this->component_api->SetConfig("url", $this->config->item('URL_PO_GRN_NEXT_NUM'));
 		$this->component_api->CallGet();
-		$_API_GRN_NUM = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_GRN_NUM = $this->component_api->GetConfig("result");
 		$_API_GRN_NUM = !empty($_API_GRN_NUM['query']) ? $_API_GRN_NUM['query'] : "";
 		redirect(base_url("stocks/grn/create/".$_API_GRN_NUM),"refresh");
 	}
@@ -319,15 +319,15 @@ class Stocks extends CI_Controller
 			// API call
 			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
 			$this->component_api->CallGet();
-			$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_ITEMS = $this->component_api->GetConfig("result");
 			$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
 			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
 			$this->component_api->CallGet();
-			$_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SHOPS = $this->component_api->GetConfig("result");
 			$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
 			$this->component_api->SetConfig("url", $this->config->item('URL_SUPPLIERS'));
 			$this->component_api->CallGet();
-			$_API_SUPPLIERS = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SUPPLIERS = $this->component_api->GetConfig("result");
 			$_API_SUPPLIERS = !empty($_API_SUPPLIERS['query']) ? $_API_SUPPLIERS['query'] : "";
 			// fatch payment method API
 			$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
@@ -553,11 +553,11 @@ class Stocks extends CI_Controller
 			// Call API
 			$this->component_api->SetConfig("url", $this->config->item('URL_PO_GRN').$_input);
 			$this->component_api->CallGet();
-			$_API_GRN = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_GRN = $this->component_api->GetConfig("result");
 			$_API_GRN = !empty($_API_GRN['query']) ? $_API_GRN['query'] : "";
 			$this->component_api->SetConfig("url", $this->config->item('URL_SUPPLIERS'));
 			$this->component_api->CallGet();
-			$_API_SUPPLIERS = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SUPPLIERS = $this->component_api->GetConfig("result");
 			$_API_SUPPLIERS = !empty($_API_SUPPLIERS['query']) ? $_API_SUPPLIERS['query'] : "";
 
 			$_login = $this->session->userdata("login");
@@ -612,13 +612,13 @@ class Stocks extends CI_Controller
 		
 		$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ADJ_NEXT_NUM'));
 		$this->component_api->CallGet();
-		$_API = json_decode($this->component_api->GetConfig("result"), true);
+		$_API = $this->component_api->GetConfig("result");
 		$_API = !empty($_API['query']) ? $_API['query'] : "";
 		if(!empty($_trans_code))
 		{
 			$this->component_api->SetConfig("url", $this->config->item('URL_PO_GRN').$_trans_code);
 			$this->component_api->CallGet();
-			$_API_GRN = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_GRN = $this->component_api->GetConfig("result");
 			$_API_GRN = !empty($_API_GRN['query']) ? $_API_GRN['query'] : "";
 			$_transaction[$_API] = $_API_GRN;
 			$_transaction[$_API]['adj_num'] = $_API;
@@ -650,7 +650,7 @@ class Stocks extends CI_Controller
 			$_API_PREFIX = !empty($_API_PREFIX['query']) ? $_API_PREFIX['query'] : "";
 			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
 			$this->component_api->CallGet();
-			$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_ITEMS = $this->component_api->GetConfig("result");
 			$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
 
 			if((substr($_adj_num , 0 , 3) === $_API_PREFIX))
@@ -831,7 +831,7 @@ class Stocks extends CI_Controller
 			// Call API
 			$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ADJ').$_input);
 			$this->component_api->CallGet();
-			$_API = json_decode($this->component_api->GetConfig("result"), true);
+			$_API = $this->component_api->GetConfig("result");
 			$_API = !empty($_API['query']) ? $_API['query'] : "";
 
 			
@@ -881,7 +881,7 @@ class Stocks extends CI_Controller
 		
 		$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ST_NEXT_NUM'));
 		$this->component_api->CallGet();
-		$_API = json_decode($this->component_api->GetConfig("result"), true);
+		$_API = $this->component_api->GetConfig("result");
 		$_API = !empty($_API['query']) ? $_API['query'] : "";
 
 		$this->session->set_userdata('cur_stocktake_num',$_API);
@@ -906,7 +906,7 @@ class Stocks extends CI_Controller
 			$_API_PREFIX = !empty($_API_PREFIX['query']) ? $_API_PREFIX['query'] : "";
 			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
 			$this->component_api->CallGet();
-			$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_ITEMS = $this->component_api->GetConfig("result");
 			$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
 
 			if((substr($_stocktake_num , 0 , 2) === $_API_PREFIX))
@@ -1105,7 +1105,7 @@ class Stocks extends CI_Controller
 			// Call API
 			$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ST').$_input);
 			$this->component_api->CallGet();
-			$_API = json_decode($this->component_api->GetConfig("result"), true);
+			$_API = $this->component_api->GetConfig("result");
 			$_API = !empty($_API['query']) ? $_API['query'] : "";
 			if(!empty($_API))
 			{
@@ -1228,7 +1228,7 @@ class Stocks extends CI_Controller
 		// Call API
 		$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ST').$_input);
 		$this->component_api->CallGet();
-		$_API = json_decode($this->component_api->GetConfig("result"), true);
+		$_API = $this->component_api->GetConfig("result");
 		$_API = !empty($_API['query']) ? $_API['query'] : "";
 		if(!empty($_API))
 		{
@@ -1236,11 +1236,11 @@ class Stocks extends CI_Controller
 	
 			$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ADJ_NEXT_NUM'));
 			$this->component_api->CallGet();
-			$_API_ADJ = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_ADJ = $this->component_api->GetConfig("result");
 			$_API_ADJ = !empty($_API_ADJ['query']) ? $_API_ADJ['query'] : "";
 			$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ADJ_PREFIX'));
 			$this->component_api->CallGet();
-			$_API_PREFIX = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_PREFIX = $this->component_api->GetConfig("result");
 			$_API_PREFIX = !empty($_API_PREFIX['query']) ? $_API_PREFIX['query'] : "";
 
 			if(!empty($_API_ADJ))

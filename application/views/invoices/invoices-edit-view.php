@@ -159,7 +159,7 @@ extract($data);
                 <tr>
                     <td class="col-sm-10"></td>
                     <td align="right"><?=$this->lang->line("common_total")?>: </td>
-                    <td id="total"><?=number_format($total,2,".",",")?></td>
+                    <td id="total"><?=number_format($total,2,".","")?></td>
                 </tr>
             </tbody>        
         </table>

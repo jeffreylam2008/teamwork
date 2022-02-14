@@ -25,7 +25,7 @@ class Logout extends CI_Controller
         // API Call
 		$this->component_api->SetConfig("url", $this->config->item('api_url')."/systems/logout/".$_login['token']);
 		$this->component_api->CallPatch();
-        $_result = json_decode($this->component_api->GetConfig("result"), true);
+        $_result = $this->component_api->GetConfig("result");
         // clear session 
 
         $this->session->set_userdata('login',"");

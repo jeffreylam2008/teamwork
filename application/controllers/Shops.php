@@ -36,11 +36,11 @@ class Shops extends CI_Controller
 			// fatch employee API
 			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
 			$this->component_api->CallGet();
-			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_EMP = $this->component_api->GetConfig("result");
 			$_API_EMP = $_API_EMP['query'];
 			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
 			$this->component_api->CallGet();
-			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_MENU = $this->component_api->GetConfig("result");
 			$_API_MENU = $_API_MENU['query'];
 
 			// sidebar session
@@ -109,7 +109,7 @@ class Shops extends CI_Controller
 		// Call API
 		$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
 		$this->component_api->CallGet();
-		$_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_SHOPS = $this->component_api->GetConfig("result");
 		$_API_SHOPS = $_API_SHOPS['query'];
 		
 		$_login = $this->session->userdata("login");
@@ -136,7 +136,7 @@ class Shops extends CI_Controller
 
 		$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$shop_code);
 		$this->component_api->CallGet();
-		$_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_SHOPS = $this->component_api->GetConfig("result");
 		$_API_SHOPS = $_API_SHOPS['query'];
 
 		if(empty($_API_SHOPS["previous"]))

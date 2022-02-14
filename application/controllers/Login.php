@@ -17,7 +17,7 @@ class Login extends CI_Controller
 	{	
 		$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
 		$this->component_api->CallGet();
-		$_shop = json_decode($this->component_api->GetConfig("result"), true);
+		$_shop = $this->component_api->GetConfig("result");
 		// error handling here 
 		$_e_code = "";
 		$_e_msg = "";
@@ -51,8 +51,10 @@ class Login extends CI_Controller
 		$this->component_api->SetConfig("body", $_api_body);
 		$this->component_api->SetConfig("url", $this->config->item('URL_LOGIN'));
 		$this->component_api->CallPost();
-		$_result = json_decode($this->component_api->GetConfig("result"), true);
-		//var_dump($_result);
+		$_result = $this->component_api->GetConfig("result");
+		echo "<pre>";
+		var_dump($_result);
+		echo "</pre>";
 		// has token return from API
 		if(!empty($_result['query']))
 		{
@@ -93,7 +95,7 @@ class Login extends CI_Controller
 			$_e_code = urlencode($_result['error']['code']);
 			$_e_msg = urlencode($_result['error']['message']);
 			$_url = urlencode($this->input->get('url'));
-			//redirect(base_url("login?url=".$_url."&e_code=".$_e_code."&e_msg=".$_e_msg),"refresh");
+			redirect(base_url("login?url=".$_url."&e_code=".$_e_code."&e_msg=".$_e_msg),"refresh");
 		}
 	}
 }

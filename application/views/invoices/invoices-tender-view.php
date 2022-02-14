@@ -83,7 +83,7 @@
                 <td><?=$qty?></td>
                 <td><?=$unit?></td>
                 <td>$<?=$price?></td>
-                <td>$<?=$subtotal?></td>
+                <td>$<?=number_format($subtotal,2,".","")?></td>
                 <!--<td><button class='btn btn-danger btn-sm' id='item-del' type='button'>X</button></td>-->
             </tr>
         <?php
@@ -93,7 +93,7 @@
             <tr>
                 <td colspan="6"></td>
                 <td align="right"><?=$this->lang->line("common_total")?>: </td>
-                <td>$<?=$total?></td>
+                <td><b>$<?=$total?></b></td>
             </tr>
         </tbody>
     </table>

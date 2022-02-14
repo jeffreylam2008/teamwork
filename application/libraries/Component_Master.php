@@ -17,7 +17,7 @@ class Component_Master
     {
         $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('URL_NETWORK'));
         $this->_CI->component_api->CallGet();
-        $result = json_decode($this->_CI->component_api->GetConfig("result"),true);
+        $result = $this->_CI->component_api->GetConfig("result");
 
         // API call here
         // network has error
@@ -37,42 +37,42 @@ class Component_Master
         // menu
         $this->_CI->component_api->SetConfig("url", $this->_CI->config->item("URL_MENU_SIDE"));
         $this->_CI->component_api->CallGet();
-        $this->_master['menu'] = json_decode($this->_CI->component_api->GetConfig("result"),true);
+        $this->_master['menu'] = $this->_CI->component_api->GetConfig("result");
 
         // Shops
         $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('URL_SHOP'));
         $this->_CI->component_api->CallGet();
-        $this->_master['shops'] = json_decode($this->_CI->component_api->GetConfig("result"), true);
+        $this->_master['shops'] = $this->_CI->component_api->GetConfig("result");
 
         // employee
         $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('URL_EMPLOYEES'));
         $this->_CI->component_api->CallGet();
-        $this->_master['employees'] = json_decode($this->_CI->component_api->GetConfig("result"),true);
+        $this->_master['employees'] = $this->_CI->component_api->GetConfig("result");
 
         // payment method
         $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('URL_PAYMENT_METHODS'));
         $this->_CI->component_api->CallGet();
-        $this->_master['paymentmethods'] = json_decode($this->_CI->component_api->GetConfig("result"),true);
+        $this->_master['paymentmethods'] = $this->_CI->component_api->GetConfig("result");
 
         // items
         $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('URL_ITEMS'));
         $this->_CI->component_api->CallGet();
-        $this->_master['items'] = json_decode($this->_CI->component_api->GetConfig("result"), true);
+        $this->_master['items'] = $this->_CI->component_api->GetConfig("result");
 
         // payment terms
         $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('URL_PAYMENT_TERMS'));
         $this->_CI->component_api->CallGet();
-        $this->_master['paymentterms'] = json_decode($this->_CI->component_api->GetConfig("result"), true);
+        $this->_master['paymentterms'] = $this->_CI->component_api->GetConfig("result");
 
         // categories
         $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('URL_CATEGORIES'));
         $this->_CI->component_api->CallGet();
-        $this->_master['categories'] = json_decode($this->_CI->component_api->GetConfig("result"), true);
+        $this->_master['categories'] = $this->_CI->component_api->GetConfig("result");
 
         // customers
         $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('URL_CUSTOMERS'));
         $this->_CI->component_api->CallGet();
-        $this->_master['customers'] = json_decode($this->_CI->component_api->GetConfig("result"), true);
+        $this->_master['customers'] = $this->_CI->component_api->GetConfig("result");
     
     }
     public function ToFile($filename)

@@ -43,19 +43,19 @@ class DeliveryNote extends CI_Controller
             // API data
 			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
 			$this->component_api->CallGet();
-			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_EMP = $this->component_api->GetConfig("result");
 			$_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
 			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
 			$this->component_api->CallGet();
-			$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SHOP = $this->component_api->GetConfig("result");
 			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
 			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
 			$this->component_api->CallGet();
-			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_MENU = $this->component_api->GetConfig("result");
 			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
 			$this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE_PREFIX'));
 			$this->component_api->CallGet();
-			$_API_PREFIX = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_PREFIX = $this->component_api->GetConfig("result");
 			$_API_PREFIX = !empty($_API_PREFIX['query']) ? $_API_PREFIX['query'] : [];
 			// sidebar session
 			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
@@ -124,7 +124,7 @@ class DeliveryNote extends CI_Controller
 		}
 		$this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE_NEXT_NUM'));
 		$this->component_api->CallGet();
-		$_API_INV = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_INV = $this->component_api->GetConfig("result");
 		$_API_INV = !empty($_API_INV['query']) ? $_API_INV['query'] : "";
 		redirect(base_url("stocks/dn/create/".$_API_INV),"refresh");
 	}
@@ -162,17 +162,17 @@ class DeliveryNote extends CI_Controller
 		// fatch items API
 		$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
 		$this->component_api->CallGet();
-		$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_ITEMS = $this->component_api->GetConfig("result");
 		$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
 		// fatch shop code and shop detail API
 		$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
 		$this->component_api->CallGet();
-		$_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_SHOPS = $this->component_api->GetConfig("result");
 		$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
 		// fatch customer API
 		$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
 		$this->component_api->CallGet();
-		$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_CUSTOMERS = $this->component_api->GetConfig("result");
 		$_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : "";
 		// fatch payment method API
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
@@ -304,7 +304,7 @@ class DeliveryNote extends CI_Controller
 		// Call API
 		$this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE').$_input);
 		$this->component_api->CallGet();
-		$_API_DN = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_DN = $this->component_api->GetConfig("result");
 		$_API_DN = !empty($_API_DN['query']) ? $_API_DN['query'] : "";
 
 		$_login = $this->session->userdata("login");

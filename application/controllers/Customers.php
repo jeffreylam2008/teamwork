@@ -45,15 +45,15 @@ class Customers extends CI_Controller
 			// fatch master
 			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
 			$this->component_api->CallGet();
-			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_EMP = $this->component_api->GetConfig("result");
 			$_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
 			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
 			$this->component_api->CallGet();
-			$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SHOP = $this->component_api->GetConfig("result");
 			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
 			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
 			$this->component_api->CallGet();
-			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_MENU = $this->component_api->GetConfig("result");
 			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
 
 			// sidebar session
@@ -125,23 +125,23 @@ class Customers extends CI_Controller
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
 		$this->component_api->CallGet();
-		$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_CUSTOMERS = $this->component_api->GetConfig("result");
 		$_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : [];
 
 		// Get payment method
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
 		$this->component_api->CallGet();
-		$_API_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_PAYMENT_METHOD = $this->component_api->GetConfig("result");
 		$_API_PAYMENT_METHOD = !empty($_API_PAYMENT_METHOD['query']) ? $_API_PAYMENT_METHOD['query'] : [];
 		
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_TERMS'));
 		$this->component_api->CallGet();
-		$_API_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_PAYMENT_TERM = $this->component_api->GetConfig("result");
 		$_API_PAYMENT_TERM = !empty($_API_PAYMENT_TERM['query']) ? $_API_PAYMENT_TERM['query'] : [];
 
 		$this->component_api->SetConfig("url", $this->config->item('URL_DISTRICT'));
 		$this->component_api->CallGet();
-		$_API_DISTRICT = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_DISTRICT = $this->component_api->GetConfig("result");
 		$_API_DISTRICT = !empty($_API_DISTRICT['query']) ? $_API_DISTRICT['query'] : [];
 
 		// get user preference
@@ -200,23 +200,23 @@ class Customers extends CI_Controller
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS').$cust_code);
 		$this->component_api->CallGet();
-		$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_CUSTOMERS = $this->component_api->GetConfig("result");
 		$_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : [];
 
 		// Get payment method
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
 		$this->component_api->CallGet();
-		$_API_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_PAYMENT_METHOD = $this->component_api->GetConfig("result");
 		$_API_PAYMENT_METHOD = !empty($_API_PAYMENT_METHOD['query']) ? $_API_PAYMENT_METHOD['query'] : [];
 		
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_TERMS'));
 		$this->component_api->CallGet();
-		$_API_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_PAYMENT_TERM = $this->component_api->GetConfig("result");
 		$_API_PAYMENT_TERM = !empty($_API_PAYMENT_TERM['query']) ? $_API_PAYMENT_TERM['query'] : [];
 
 		$this->component_api->SetConfig("url", $this->config->item('URL_DISTRICT'));
 		$this->component_api->CallGet();
-		$_API_DISTRICT = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_DISTRICT = $this->component_api->GetConfig("result");
 		$_API_DISTRICT = !empty($_API_DISTRICT['query']) ? $_API_DISTRICT['query'] : [];
 		
 		if(!empty($cust_code))
@@ -278,23 +278,23 @@ class Customers extends CI_Controller
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS').$cust_code);
 		$this->component_api->CallGet();
-		$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_CUSTOMERS = $this->component_api->GetConfig("result");
 		$_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : [];
 
 		// Get payment method
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
 		$this->component_api->CallGet();
-		$_API_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_PAYMENT_METHOD = $this->component_api->GetConfig("result");
 		$_API_PAYMENT_METHOD = !empty($_API_PAYMENT_METHOD['query']) ? $_API_PAYMENT_METHOD['query'] : [];
 		
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_TERMS'));
 		$this->component_api->CallGet();
-		$_API_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_PAYMENT_TERM = $this->component_api->GetConfig("result");
 		$_API_PAYMENT_TERM = !empty($_API_PAYMENT_TERM['query']) ? $_API_PAYMENT_TERM['query'] : [];
 
 		$this->component_api->SetConfig("url", $this->config->item('URL_DISTRICT'));
 		$this->component_api->CallGet();
-		$_API_DISTRICT = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_DISTRICT = $this->component_api->GetConfig("result");
 		$_API_DISTRICT = !empty($_API_DISTRICT['query']) ? $_API_DISTRICT['query'] : [];
 	
 		// echo "<pre>";
@@ -359,7 +359,7 @@ class Customers extends CI_Controller
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY_HAS_TRANSACTION_CUSTOMERS').$cust_code);
 		$this->component_api->CallGet();
-		$_data = json_decode($this->component_api->GetConfig("result"), true);
+		$_data = $this->component_api->GetConfig("result");
 		$_data = $_data['query'] != null ? $_data['query'] : [];
 
 		if(!empty($_data))

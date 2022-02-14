@@ -24,8 +24,13 @@ class Component_API
     }
     public function CallGet()
     {
+        $resp = ['query'=>"", "error" => ['code'=> "", "message"=>""]];
+        $alert = "danger";
         if(!empty($this->_config["url"]))
         {
+            // echo "<pre>";
+            // var_dump($this->_config["url"]);
+            // echo "</pre>";
             $curl = curl_init($this->_config["url"]);
             //curl_setopt($ch, CURLOPT_HEADER, 0);
             //curl_setopt($ch, CURLOPT_POST, 1);
@@ -42,14 +47,44 @@ class Component_API
             $resp["API_Error"] = curl_error($curl);
             $resp["API_errCode"]  = curl_errno($curl);
             curl_close($curl);
-            $resp = json_encode($resp, true);
+            // echo "<pre>";
+            // var_dump($resp);
+            // echo "</pre>";
+            switch($code)
+            {
+                case 200:
+                    
+                break;
+                case 404:
+                    $this->_CI->load->view('error-handle', [
+                        'message'=> "Systems Error: Data Source Error - ".$resp["API_Error"], 
+                        'code' => "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"], 
+                        'alertstyle' => $alert
+                    ]);
+                break;
+                case 405:
+                    $this->_CI->load->view('error-handle', [
+                        'message'=> "Systems Error: Data Source Error - ".$resp["API_Error"], 
+                        'code' => "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"], 
+                        'alertstyle' => $alert
+                    ]);
+                break;
+                case 500:
+                    $this->_CI->load->view('error-handle', [
+                        'message' => "Systems Error: Server Error - ".$resp["API_Error"],
+                        'code'=> "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"], 
+                        'alertstyle' => $alert
+                    ]);
+                break;
+            }
             $this->SetConfig("result",$resp);
         }
     }
 
     public function CallPost()
     {
-        $resp = [];
+        $resp = ['query'=>"", "error" => ['code'=> "", "message"=>""]];
+        $alert = "danger";
         if(!empty($this->_config["url"]))
         {
             $curl = curl_init($this->_config["url"]);
@@ -66,12 +101,40 @@ class Component_API
             $resp["API_Error"] = curl_error($curl);
             $resp["API_errCode"]  = curl_errno($curl);
             curl_close($curl);
-            $resp = json_encode($resp, true);
+            switch($code)
+            {
+                case 200:
+                    
+                break;
+                case 404:
+                    $this->_CI->load->view('error-handle', [
+                        'message'=> "Systems Error: Data Source Error - ".$resp["API_Error"], 
+                        'code' => "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"], 
+                        'alertstyle' => $alert
+                    ]);
+                break;
+                case 405:
+                    $this->_CI->load->view('error-handle', [
+                        'message'=> "Systems Error: Data Source Error - ".$resp["API_Error"], 
+                        'code' => "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"], 
+                        'alertstyle' => $alert
+                    ]);
+                break;
+                case 500:
+                    $this->_CI->load->view('error-handle', [
+                        'message' => "Systems Error: Server Error - ".$resp["API_Error"],
+                        'code'=> "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"], 
+                        'alertstyle' => $alert
+                    ]);
+                break;
+            }
             $this->SetConfig("result",$resp);
         }
     }
     public function CallPatch()
     {
+        $resp = ['query'=>"", "error" => ['code'=> "", "message"=>""]];
+        $alert = "danger";
         if(!empty($this->_config["url"]))
         {
             $curl = curl_init($this->_config["url"]);
@@ -89,12 +152,40 @@ class Component_API
             $resp["API_Error"] = curl_error($curl);
             $resp["API_errCode"]  = curl_errno($curl);
             curl_close($curl);
-            $resp = json_encode($resp, true);
+            switch($code)
+            {
+                case 200:
+                    
+                break;
+                case 404:
+                    $this->_CI->load->view('error-handle', [
+                        'message'=> "Systems Error: Data Source Error - ".$resp["API_Error"], 
+                        'code' => "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"], 
+                        'alertstyle' => $alert
+                    ]);
+                break;
+                case 405:
+                    $this->_CI->load->view('error-handle', [
+                        'message'=> "Systems Error: Data Source Error - ".$resp["API_Error"], 
+                        'code' => "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"], 
+                        'alertstyle' => $alert
+                    ]);
+                break;
+                case 500:
+                    $this->_CI->load->view('error-handle', [
+                        'message' => "Systems Error: Server Error - ".$resp["API_Error"],
+                        'code'=> "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"], 
+                        'alertstyle' => $alert
+                    ]);
+                break;
+            }
             $this->SetConfig("result",$resp);
         }
     }
     public function CallDelete()
     {
+        $resp = ['query'=>"", "error" => ['code'=> "", "message"=>""]];
+        $alert = "danger";
         if(!empty($this->_config["url"]))
         {
             $curl = curl_init($this->_config["url"]);
@@ -111,7 +202,33 @@ class Component_API
             $resp["API_Error"] = curl_error($curl);
             $resp["API_errCode"]  = curl_errno($curl);
             curl_close($curl);
-            $resp = json_encode($resp, true);
+            switch($code)
+            {
+                case 200:
+                    
+                break;
+                case 404:
+                    $this->_CI->load->view('error-handle', [
+                        'message'=> "Systems Error: Data Source Error - ".$resp["API_Error"], 
+                        'code' => "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"], 
+                        'alertstyle' => $alert
+                    ]);
+                break;
+                case 405:
+                    $this->_CI->load->view('error-handle', [
+                        'message'=> "Systems Error: Data Source Error - ".$resp["API_Error"], 
+                        'code' => "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"], 
+                        'alertstyle' => $alert
+                    ]);
+                break;
+                case 500:
+                    $this->_CI->load->view('error-handle', [
+                        'message' => "Systems Error: Server Error - ".$resp["API_Error"],
+                        'code'=> "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"], 
+                        'alertstyle' => $alert
+                    ]);
+                break;
+            }
             $this->SetConfig("result",$resp);
         }
     }

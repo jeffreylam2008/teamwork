@@ -45,15 +45,15 @@ class Suppliers extends CI_Controller
 			// fatch master
 			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
 			$this->component_api->CallGet();
-			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_EMP = $this->component_api->GetConfig("result");
 			$_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
 			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
 			$this->component_api->CallGet();
-			$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SHOP = $this->component_api->GetConfig("result");
 			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
 			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
 			$this->component_api->CallGet();
-			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_MENU = $this->component_api->GetConfig("result");
 			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
 
 			// sidebar session
@@ -126,17 +126,17 @@ class Suppliers extends CI_Controller
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_SUPPLIERS'));
 		$this->component_api->CallGet();
-		$_API_SUPPLIERS = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_SUPPLIERS = $this->component_api->GetConfig("result");
 		$_API_SUPPLIERS = !empty($_API_SUPPLIERS['query']) ? $_API_SUPPLIERS['query'] : [];
 
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
 		$this->component_api->CallGet();
-		$_API_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_PAYMENT_METHOD = $this->component_api->GetConfig("result");
 		$_API_PAYMENT_METHOD = !empty($_API_PAYMENT_METHOD['query']) ? $_API_PAYMENT_METHOD['query'] : [];
 		
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_TERMS'));
 		$this->component_api->CallGet();
-		$_API_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_PAYMENT_TERM = $this->component_api->GetConfig("result");
 		$_API_PAYMENT_TERM = !empty($_API_PAYMENT_TERM['query']) ? $_API_PAYMENT_TERM['query'] : [];
 		// echo "<pre>";
 		// print_r($_API_SUPPLIERS);
@@ -200,18 +200,18 @@ class Suppliers extends CI_Controller
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_SUPPLIERS').$supp_code);
 		$this->component_api->CallGet();
-		$_API_SUPPLIERS = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_SUPPLIERS = $this->component_api->GetConfig("result");
 		$_API_SUPPLIERS = !empty($_API_SUPPLIERS['query']) ? $_API_SUPPLIERS['query'] : [];
 
 		// Get payment method
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
 		$this->component_api->CallGet();
-		$_API_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_PAYMENT_METHOD = $this->component_api->GetConfig("result");
 		$_API_PAYMENT_METHOD = !empty($_API_PAYMENT_METHOD['query']) ? $_API_PAYMENT_METHOD['query'] : [];
 		
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_TERMS'));
 		$this->component_api->CallGet();
-		$_API_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_PAYMENT_TERM = $this->component_api->GetConfig("result");
 		$_API_PAYMENT_TERM = !empty($_API_PAYMENT_TERM['query']) ? $_API_PAYMENT_TERM['query'] : [];
 
 		if(!empty($supp_code))
@@ -272,18 +272,18 @@ class Suppliers extends CI_Controller
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_SUPPLIERS').$supp_code);
 		$this->component_api->CallGet();
-		$_API_SUPPLIERS = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_SUPPLIERS = $this->component_api->GetConfig("result");
 		$_API_SUPPLIERS = !empty($_API_SUPPLIERS['query']) ? $_API_SUPPLIERS['query'] : [];
 
 		// Get payment method
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
 		$this->component_api->CallGet();
-		$_API_PAYMENT_METHOD = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_PAYMENT_METHOD = $this->component_api->GetConfig("result");
 		$_API_PAYMENT_METHOD = !empty($_API_PAYMENT_METHOD['query']) ? $_API_PAYMENT_METHOD['query'] : [];
 
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_TERMS'));
 		$this->component_api->CallGet();
-		$_API_PAYMENT_TERM = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_PAYMENT_TERM = $this->component_api->GetConfig("result");
 		$_API_PAYMENT_TERM = !empty($_API_PAYMENT_TERM['query']) ? $_API_PAYMENT_TERM['query'] : [];
 
 		// echo "<pre>";
@@ -345,13 +345,16 @@ class Suppliers extends CI_Controller
 		$_comfirm_show = true;
 		$_count = "";
 		// API data
-		$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY_HAS_TRANSACTION_SUPPLIERS').$supp_code);
+		$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_HAS_TRANSACTION_SUPPLIERS').$supp_code);
 		$this->component_api->CallGet();
-		$_data = json_decode($this->component_api->GetConfig("result"), true);
+		$_data = $this->component_api->GetConfig("result");
 		$_data = $_data['query'] != null ? $_data['query'] : [];
-
+		echo "<pre>";
+		var_dump($_data);
+		echo "</pre>";		
 		if(!empty($_data))
 		{
+
 		   $_login = $this->session->userdata("login");
 			// configure message 
 			if($_data['has'])
@@ -430,7 +433,7 @@ class Suppliers extends CI_Controller
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_SUPPLIERS').$supp_code);
 		$this->component_api->CallDelete();
-		$result = json_decode($this->component_api->GetConfig("result"),true);
+		$result = $this->component_api->GetConfig("result");
 		if(isset($result['error']['message']) || isset($result['error']['code']))
 		{
 			$_login = $this->session->userdata('login');
@@ -472,7 +475,7 @@ class Suppliers extends CI_Controller
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('URL_SUPPLIERS'));
 				$this->component_api->CallPost();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
+				$result = $this->component_api->GetConfig("result");
 				
 				if(isset($result['error']['message']) || isset($result['error']['code']))
 				{

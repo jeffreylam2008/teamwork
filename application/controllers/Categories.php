@@ -44,15 +44,15 @@ class Categories extends CI_Controller
 			// fatch employee API
 			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
 			$this->component_api->CallGet();
-			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_EMP = $this->component_api->GetConfig("result");
 			$_API_EMP = $_API_EMP['query'];
 			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
 			$this->component_api->CallGet();
-			$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SHOP = $this->component_api->GetConfig("result");
 			$_API_SHOP = $_API_SHOP['query'];
 			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
 			$this->component_api->CallGet();
-			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_MENU = $this->component_api->GetConfig("result");
 			$_API_MENU = $_API_MENU['query'];
 
 			// sidebar session
@@ -129,7 +129,7 @@ class Categories extends CI_Controller
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES'));
 		$this->component_api->CallGet();
-		$_API_CATEGORIES = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_CATEGORIES = $this->component_api->GetConfig("result");
 		$_API_CATEGORIES = !empty($_API_CATEGORIES['query']) ? $_API_CATEGORIES['query'] : "";
 
 		// function bar with next, preview and save button
@@ -177,7 +177,7 @@ class Categories extends CI_Controller
 		//$_cate =  $this->session->userdata['cate_list'];
 		$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES').$cate_code);
 		$this->component_api->CallGet();
-		$_API_CATEGORIES = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_CATEGORIES = $this->component_api->GetConfig("result");
 		$_API_CATEGORIES = $_API_CATEGORIES['query'];
 
 		$_login = $this->session->userdata("login");
@@ -222,7 +222,7 @@ class Categories extends CI_Controller
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES_HAS_ITEM').$cate_code);
 		$this->component_api->CallGet();
-		$_data = json_decode($this->component_api->GetConfig("result"), true);
+		$_data = $this->component_api->GetConfig("result");
 
 		if(isset($_data))
 		{	

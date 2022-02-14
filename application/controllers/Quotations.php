@@ -43,19 +43,19 @@ class Quotations extends CI_Controller
 			// API data
 			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
 			$this->component_api->CallGet();
-			$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_EMP = $this->component_api->GetConfig("result");
 			$_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
 			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
 			$this->component_api->CallGet();
-			$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_SHOP = $this->component_api->GetConfig("result");
 			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
 			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
 			$this->component_api->CallGet();
-			$_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_MENU = $this->component_api->GetConfig("result");
 			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
 			$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS_PREFIX'));
 			$this->component_api->CallGet();
-			$_API_PREFIX = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_PREFIX = $this->component_api->GetConfig("result");
 			$_API_PREFIX = !empty($_API_PREFIX['query']) ? $_API_PREFIX['query'] : [];
 			
 			// sidebar session
@@ -161,7 +161,7 @@ class Quotations extends CI_Controller
 				$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS').$_query);
 			}
 			$this->component_api->CallGet();
-			$_data = json_decode($this->component_api->GetConfig("result"), true);
+			$_data = $this->component_api->GetConfig("result");
 			$_data = $_data != null ? $_data : "";
 		}
 		if(!empty($_data['error']['code']) && $_data['error']['code'] != "00000")
@@ -213,7 +213,7 @@ class Quotations extends CI_Controller
 		}
 		$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS_NEXT_NUM'));
 		$this->component_api->CallGet();
-		$_API_QTA = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_QTA = $this->component_api->GetConfig("result");
 		$_API_QTA = !empty($_API_QTA['query']) ? $_API_QTA['query'] : "";
 		redirect(base_url("quotations/create/".$_API_QTA),"refresh");
 	}
@@ -237,7 +237,7 @@ class Quotations extends CI_Controller
 		// get next Invoice number
 		$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS_NEXT_NUM'));
 		$this->component_api->CallGet();
-		$_API_QTA_NUM = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_QTA_NUM = $this->component_api->GetConfig("result");
 		$_API_QTA_NUM = !empty($_API_QTA_NUM['query']) ? $_API_QTA_NUM['query'] : "";
 		// transaction retrieve
 		$_transaction[$_API_QTA_NUM] = $_API_QTA;
@@ -286,17 +286,17 @@ class Quotations extends CI_Controller
 				// fatch items API
 				$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
 				$this->component_api->CallGet();
-				$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+				$_API_ITEMS = $this->component_api->GetConfig("result");
 				$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
 				// fatch shop code and shop detail API
 				$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
 				$this->component_api->CallGet();
-				$_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
+				$_API_SHOPS = $this->component_api->GetConfig("result");
 				$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
 				// fatch customer API
 				$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
 				$this->component_api->CallGet();
-				$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
+				$_API_CUSTOMERS = $this->component_api->GetConfig("result");
 				$_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : "";
 				// fatch payment method API
 				$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
@@ -382,17 +382,17 @@ class Quotations extends CI_Controller
 					// fatch items API
 					$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
 					$this->component_api->CallGet();
-					$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
+					$_API_ITEMS = $this->component_api->GetConfig("result");
 					$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
 					// fatch shop code and shop detail API
 					$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
 					$this->component_api->CallGet();
-					$_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
+					$_API_SHOPS = $this->component_api->GetConfig("result");
 					$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
 					// fatch customer API
 					$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
 					$this->component_api->CallGet();
-					$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
+					$_API_CUSTOMERS = $this->component_api->GetConfig("result");
 					$_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : "";
 					// fatch payment method API
 					$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
@@ -472,6 +472,7 @@ class Quotations extends CI_Controller
 			$_transaction[$_cur_num]['customer'] = $_API_CUSTOMERS['query'];
 
 			// save print data to session
+			$this->session->set_userdata('cur_invoicenum',$_cur_invoicenum);
 			$this->session->set_userdata('transaction',$_transaction);
 
 			// show save button

@@ -158,7 +158,7 @@ extract($data);
                         <tr>
                             <td class="col-sm-10"></td>
                             <td align="right"><?=$this->lang->line("common_total")?>: </td>
-                            <td id="total"><?=number_format($total,2,".",",")?></td>
+                            <td id="total"><?=number_format($total,2,".","")?></td>
                         </tr>
                     </tbody>        
                 </table>
@@ -213,6 +213,8 @@ extract($data);
         },
         "iDisplayLength": <?=$default_per_page?>,
         "language": {
+            "emptyTable" : "<?=$this->lang->line('label_emptytable')?>",
+            "infoEmpty":   "<?=$this->lang->line('label_infoEmpty')?>",
             "lengthMenu" : "<?=$this->lang->line('function_page_showing')?> _MENU_",
             "search": "<?=$this->lang->line('function_search')?> :",
             "info": "<?=$this->lang->line('function_page_showing')?> _START_ <?=$this->lang->line('function_page_to')?> _END_ <?=$this->lang->line('function_page_of')?> _TOTAL_ <?=$this->lang->line('function_page_entries')?>",
@@ -230,6 +232,8 @@ extract($data);
         },
         "iDisplayLength": <?=$default_per_page?>,
         "language": {
+            "emptyTable" : "<?=$this->lang->line('label_emptytable')?>",
+            "infoEmpty":   "<?=$this->lang->line('label_infoEmpty')?>",
             "lengthMenu" : "<?=$this->lang->line('function_page_showing')?> _MENU_",
             "search": "<?=$this->lang->line('function_search')?> :",
             "info": "<?=$this->lang->line('function_page_showing')?> _START_ <?=$this->lang->line('function_page_to')?> _END_ <?=$this->lang->line('function_page_of')?> _TOTAL_ <?=$this->lang->line('function_page_entries')?>",
@@ -400,7 +404,7 @@ extract($data);
     {
         if(cust_code != "")
         {
-            let the_url = "<?=$quote_fetch_url?>"+cust_code;
+            let the_url = "<?=$quote_fetch_url?>/cust/"+cust_code;
             let response = await fetch(the_url, { method: 'GET', mode: 'cors', headers: {} });
             if (response.ok) { // if HTTP-status is 200-299
                 // get the response body (the method explained below)

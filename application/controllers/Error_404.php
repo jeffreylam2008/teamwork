@@ -28,11 +28,11 @@ class Error_404 extends CI_Controller
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_username);
 		$this->component_api->CallGet();
-		$_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_EMP = $this->component_api->GetConfig("result");
 		$_API_EMP = $_API_EMP['query'];
 		$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
 		$this->component_api->CallGet();
-		$_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_SHOP = $this->component_api->GetConfig("result");
 		$_API_SHOP = $_API_SHOP['query'];
 		$this->_inv_header_param["topNav"] = [
 			"isLogin" => true,

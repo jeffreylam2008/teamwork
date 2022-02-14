@@ -34,11 +34,11 @@ class Component_Login
         // API Call: check validation token in Server side 
         $this->_CI->component_api->SetConfig("url", $this->_CI->config->item('URL_LOGIN').$this->_token);
         $this->_CI->component_api->CallGet();
-        $_api_result = json_decode($this->_CI->component_api->GetConfig("result"),true);
+        $_API = $this->_CI->component_api->GetConfig("result");
 
-        if(!empty($_api_result['query']))
+        if(!empty($_API['query']))
         {
-            return $_api_result['query'];
+            return $_API['query'];
         }
         else
         {

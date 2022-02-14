@@ -49,21 +49,13 @@ class Invoices extends CI_Controller
 			// API data
 			$this->component_api->SetConfig("url", $this->config->item('URL_INVOICES_HEADER').$this->_profile['username'].'/?lang='.$this->config->item('language'));
 			$this->component_api->CallGet();
-			$_API_HEADER = json_decode($this->component_api->GetConfig("result"), true);
+			$_API_HEADER = $this->component_api->GetConfig("result");
 			$this->_API_HEADER = !empty($_API_HEADER['query']) ? $_API_HEADER['query'] : ['employee' => "", 'menu' => "", "prefix", "dn"=> ["dn_num"=>"", "dn_prefix"=>""]];
-			// $this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
-			// $this->component_api->CallGet();
-			// $_API_EMP = json_decode($this->component_api->GetConfig("result"), true);
-			// $_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
-			// $this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
-			// $this->component_api->CallGet();
-			// $_API_SHOP = json_decode($this->component_api->GetConfig("result"), true);
-			// $_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
-			// $this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
-			// $this->component_api->CallGet();
-			// $_API_MENU = json_decode($this->component_api->GetConfig("result"), true);
-			// $_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
 			
+			// echo "<pre>";
+			// var_dump($_API_HEADER);
+			// echo "/<pre>";
+
 			// from data cache 			
 			//var_dump($_API_EMP);
 			// $_API_EMP = $this->component_master->FetchByKey("employees", "username", $this->_profile['username']); 
@@ -73,7 +65,7 @@ class Invoices extends CI_Controller
 
 			// $this->component_api->SetConfig("url", $this->config->item('URL_INVOICES_PREFIX'));
 			// $this->component_api->CallGet();
-			// $_API_PREFIX = json_decode($this->component_api->GetConfig("result"), true);
+			// $_API_PREFIX = $this->component_api->GetConfig("result");
 			// $_API_PREFIX = !empty($_API_PREFIX['query']) ? $_API_PREFIX['query'] : [];
 			// dummy data
 			// sidebar session
@@ -184,50 +176,40 @@ class Invoices extends CI_Controller
 				$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY').$_query);
 			}
 			$this->component_api->CallGet();
-			$_data = json_decode($this->component_api->GetConfig("result"), true);
-			$_data = $_data != null ? $_data : "";
+			$_data = $this->component_api->GetConfig("result");
+			// $_data = $_data != null ? $_data : "";
 		}
 		// echo "<pre>";
 		// var_dump($_data);
 		// echo "</pre>";
-		
-		if(!empty($_data['error']['code']) && $_data['error']['code'] != "00000")
-		{
-			$this->load->view("error-handle", [
-				"alertstyle" => "danger",
-				"code" => $_data['error']['code'],
-				"message" => $_data['error']['message']
-			]);
-		}
-		else
-		{
-			// Function bar
-			$this->load->view('function-bar', [
-				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> base_url("invoices/donew/"), "style" => "", "show" => true, "extra" => ""]
-				]
-			]);
-			// Function bar
-			$this->load->view('function-bar', [
-				"btn" => [
-					["name" => "<i class='fas fa-search'></i> ".$this->lang->line("function_search"), "type"=>"button", "id" => "i-search", "url"=> "#", "style" => "", "show" => true, "extra" => ""],
-					["name" => "<i class='fas fa-undo-alt'></i> ".$this->lang->line("function_clear"), "type"=>"button", "id" => "i-clear", "url"=> "#", "style" => "btn btn-secondary", "show" => true, "extra" => ""]
-				]
-			]);
-			// View Content
-			$this->load->view("invoices/invoices-list-view", [
-				"data" => $_data,
-				"submit_to" => base_url("/invoices/list"),
-				"edit_url" => base_url("invoices/edit/"),
-				"quotation_url" => base_url("quotations/edit/"),
-				"default_per_page" => $this->_default_per_page,
-				"page" => $this->_page,
-				"ad_start_date" => $_start_date,
-				"ad_end_date" => $_end_date,
-				"ad_invoice_num" => $_invoice_num,
-				"ad_cust_code" => $_cust_code
-			]);
-		}
+
+		// Function bar
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> base_url("invoices/donew/"), "style" => "", "show" => true, "extra" => ""]
+			]
+		]);
+		// Function bar
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-search'></i> ".$this->lang->line("function_search"), "type"=>"button", "id" => "i-search", "url"=> "#", "style" => "", "show" => true, "extra" => ""],
+				["name" => "<i class='fas fa-undo-alt'></i> ".$this->lang->line("function_clear"), "type"=>"button", "id" => "i-clear", "url"=> "#", "style" => "btn btn-secondary", "show" => true, "extra" => ""]
+			]
+		]);
+		// View Content
+		$this->load->view("invoices/invoices-list-view", [
+			"data" => $_data['query'],
+			"submit_to" => base_url("/invoices/list"),
+			"edit_url" => base_url("invoices/edit/"),
+			"quotation_url" => base_url("quotations/edit/"),
+			"default_per_page" => $this->_default_per_page,
+			"page" => $this->_page,
+			"ad_start_date" => $_start_date,
+			"ad_end_date" => $_end_date,
+			"ad_invoice_num" => $_invoice_num,
+			"ad_cust_code" => $_cust_code
+		]);
+
 		$this->load->view("footer");
 	}
 	/**
@@ -243,8 +225,12 @@ class Invoices extends CI_Controller
 		}
 		$this->component_api->SetConfig("url", $this->config->item('URL_INVOICES_NEXT_NUM'));
 		$this->component_api->CallGet();
-		$_API_NEXT = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_NEXT = $this->component_api->GetConfig("result");
 		$_API_NEXT = !empty($_API_NEXT['query']) ? $_API_NEXT['query'] : "";
+		// echo "<pre>";
+		// var_dump($_API_NEXT);
+		// echo "</pre>";
+
 		redirect(base_url("invoices/create/".$_API_NEXT),"refresh");
 	}
 	/**
@@ -261,12 +247,12 @@ class Invoices extends CI_Controller
 		//fatch existing transaction
 		$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY').$_num);
 		$this->component_api->CallGet();
-		$_API_INV = json_decode($this->component_api->GetConfig("result"),true);
+		$_API_INV = $this->component_api->GetConfig("result");
 		$_API_INV = !empty($_API_INV['query']) ? $_API_INV['query'] : "";
 		// get next Invoice number
 		$this->component_api->SetConfig("url", $this->config->item('URL_INVOICES_NEXT_NUM'));
 		$this->component_api->CallGet();
-		$_API_NEXT = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_NEXT = $this->component_api->GetConfig("result");
 		$_API_NEXT = !empty($_API_NEXT['query']) ? $_API_NEXT['query'] : "";
 
 		$_transaction[$_API_NEXT] = $_API_INV;
@@ -285,9 +271,8 @@ class Invoices extends CI_Controller
 		$_transaction = [];
 		$this->component_api->SetConfig("url", $this->config->item('URL_INVOICES_NEXT_NUM'));
 		$this->component_api->CallGet();
-		$_API_NEXT = json_decode($this->component_api->GetConfig("result"), true);
+		$_API_NEXT = $this->component_api->GetConfig("result");
 		$_API_NEXT = !empty($_API_NEXT['query']) ? $_API_NEXT['query'] : "";
-
 
 		if(!empty($_quotation))
 		{
@@ -321,8 +306,6 @@ class Invoices extends CI_Controller
 		{
 			$_show_discard_btn = true;
 			// create invoice	
-			// if((substr($_invoice_num , 0 , 3) === $this->_inv_header_param["topNav"]['prefix']))
-			// {
 			// For back button after submit to tender page
 			if(!empty($this->session->userdata('transaction')) && !empty($this->session->userdata('cur_invoicenum')))
 			{
@@ -343,7 +326,6 @@ class Invoices extends CI_Controller
 				$this->session->set_userdata('cur_invoicenum',$_invoice_num);
 				$this->session->set_userdata('transaction',$_transaction);
 			}
-			// }
 
 		// echo "<pre>";
 		// var_dump($_SESSION);
@@ -352,51 +334,19 @@ class Invoices extends CI_Controller
 			// fatch items API
 			$this->component_api->SetConfig("url", $this->config->item('URL_MASTER'));
 			$this->component_api->CallGet();
-			$_API_MASTER = json_decode($this->component_api->GetConfig("result"), true);
-			$_API_MASTER = !empty($_API_MASTER['query']) ? $_API_MASTER['query'] : "";
+			$_API_MASTER = $this->component_api->GetConfig("result");
 
-			// // $_API_ITEMS = $this->_master['items'];
-			// $this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
-			// $this->component_api->CallGet();
-			// $_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
-			// $_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
-
-
-			// echo "<pre>";
-			// var_dump($_API_ITEMS);
-			// echo "</pre>";
-			
-			// // fatch shop code and shop detail API
-			// //$_API_SHOPS = $this->_master['shops'];
-			// $this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
-			// $this->component_api->CallGet();
-			// $_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
-			// $_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
-			
-			// // fatch customer API
-			// // $_API_CUSTOMERS = $this->_master['customers'];
-			// $this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
-			// $this->component_api->CallGet();
-			// $_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
-			// $_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : "";
-			
-			// // fatch payment method API
-			// // $_API_PAYMENTS = $this->_master['paymentmethods'];
-			// $this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
-			// $this->component_api->CallGet();
-			// $_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
-			// $_API_PAYMENTS = !empty($_API_PAYMENTS['query']) ? $_API_PAYMENTS['query'] : "";
-			
-			//fatch DN number and set DN prefix
-			// $this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE_PREFIX'));
-			// $this->component_api->CallGET();
-			// $_API_DN_PREFIX = json_decode($this->component_api->GetConfig("result"),true);
-			// $_API_DN_PREFIX = !empty($_API_DN_PREFIX['query']) ? $_API_DN_PREFIX['query'] : "";
-			// $this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE_NEXT_NUM'));
-			// $this->component_api->CallGET();
-			// $_API_DN_NUM = json_decode($this->component_api->GetConfig("result"),true);
-			// $_API_DN_NUM = !empty($_API_DN_NUM['query']) ? $_API_DN_NUM['query'] : "";			
-
+			if(empty($_API_MASTER['query']))
+			{
+				$_API_MASTER['items'] = [];
+				$_API_MASTER['shops'] = [];
+				$_API_MASTER['customers'] =[];
+				$_API_MASTER['paymentmethod'] = [];
+			}
+			else
+			{
+				$_API_MASTER = $_API_MASTER['query'];
+			}
 			// function bar with next, preview and save button
 			$this->load->view('function-bar', [
 				"btn" => [
@@ -413,7 +363,7 @@ class Invoices extends CI_Controller
 				"prefix" => $this->_inv_header_param['topNav']['prefix'],
 				"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
 				"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
-				"quote_fetch_url" => $this->config->item('URL_QUOTATIONS')."getinfo/cust/",
+				"quote_fetch_url" => $this->config->item('URL_QUOTATIONS')."getinfo",
 				"quote_item_fetch_url" => $this->config->item('URL_INVENTORY')."getinfo",
 				"invoice_num" => $_invoice_num,
 				"date" => date("Y-m-d H:i:s"),
@@ -455,7 +405,7 @@ class Invoices extends CI_Controller
 		{
 			$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY').$_invoice_num);
 			$this->component_api->CallGet();
-			$_transaction = json_decode($this->component_api->GetConfig("result"),true);
+			$_transaction = $this->component_api->GetConfig("result");
 			$_transaction = $_transaction != null ? $_transaction : "";
 
 			$this->session->set_userdata('cur_invoicenum',$_invoice_num);
@@ -487,32 +437,24 @@ class Invoices extends CI_Controller
 						$_show_void_btn = false;
 					}
 					// fatch items API
-					//$_API_SHOPS = $this->_master['items'];
-					$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
+					$this->component_api->SetConfig("url", $this->config->item('URL_MASTER'));
 					$this->component_api->CallGet();
-					$_API_ITEMS = json_decode($this->component_api->GetConfig("result"), true);
-					$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
-					
-					// fatch shop code and shop detail API
-					//$_API_SHOPS = $this->_master['shops'];
-					$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
-					$this->component_api->CallGet();
-					$_API_SHOPS = json_decode($this->component_api->GetConfig("result"), true);
-					$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
-					
-					// fatch customer API
-					//$_API_CUSTOMERS = $this->_master['customers'];
-					$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
-					$this->component_api->CallGet();
-					$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"), true);
-					$_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : "";
-					
-					// fatch payment method API
-					//$_API_PAYMENTS = $this->_master['paymentmethods'];
-					$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
-					$this->component_api->CallGet();
-					$_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
-					$_API_PAYMENTS = !empty($_API_PAYMENTS['query']) ? $_API_PAYMENTS['query'] : "";
+					$_API_MASTER = $this->component_api->GetConfig("result");
+					if(empty($_API_MASTER['query']))
+					{
+						$_API_MASTER['items'] = [];
+						$_API_MASTER['shops'] = [];
+						$_API_MASTER['customers'] =[];
+						$_API_MASTER['paymentmethod'] = [];
+					}
+					else
+					{
+						$_API_MASTER = $_API_MASTER['query'];
+					}
+					// echo "<pre>";
+					// var_dump($_API_MASTER);
+					// echo "</pre>";
+
 
 					// function bar with next, preview and save button
 					$this->load->view('function-bar', [
@@ -534,14 +476,13 @@ class Invoices extends CI_Controller
 						"prefix" => $this->_inv_header_param['topNav']['prefix'],
 						"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
 						"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
-						"quotation" => "",
 						"invoice_num" => $_invoice_num,
 						"date" => date("Y-m-d H:i:s"),
 						"ajax" => [
-							"items" => $_API_ITEMS,
-							"shop_code" => $_API_SHOPS,
-							"customers" => $_API_CUSTOMERS,
-							"tender" => $_API_PAYMENTS
+							"items" => $_API_MASTER['items'],
+							"shop_code" => $_API_MASTER['shops'],
+							"customers" => $_API_MASTER['customers'],
+							"tender" => $_API_MASTER['paymentmethod']
 						],
 						"data" => $_transaction['query'],
 						"show" => $_show_void_btn,
@@ -578,11 +519,12 @@ class Invoices extends CI_Controller
 
 			$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS').$_data['cust_code']);
 			$this->component_api->CallGet();
-			$_API_CUSTOMER = json_decode($this->component_api->GetConfig("result"),true);
+			$_API_CUSTOMER = $this->component_api->GetConfig("result");
 			$_API_CUSTOMER = !empty($_API_CUSTOMER['query']) ? $_API_CUSTOMER['query'] : "";
 
 			$_transaction[$_cur_invoicenum] = $_data;
-			$_transaction[$_cur_invoicenum]['customer'] = $_API_CUSTOMER;
+			$_transaction[$_cur_invoicenum]['customer']['name'] = $_API_CUSTOMER['name'];
+			$_transaction[$_cur_invoicenum]['customer']['delivery_addr'] = $_API_CUSTOMER['delivery_addr'];
 			$this->session->set_userdata('cur_invoicenum',$_cur_invoicenum);
 			$this->session->set_userdata('transaction',$_transaction);
 
@@ -632,19 +574,24 @@ class Invoices extends CI_Controller
 	 * Save Create Process
 	 * To save new invoice creation
 	 */
-	 public function save()
-	 {
-		 $_cur_invoicenum = $this->session->userdata('cur_invoicenum');
-		 $_transaction = $this->session->userdata('transaction');
-		 $alert = "danger";
-		 $this->load->view('function-bar', [
-			 "btn" => [
-				 ["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "donew", "url"=> base_url('/invoices/donew'),"style" => "","show" => true],
-			 ]
-		 ]);
-		 if(!empty($_transaction[$_cur_invoicenum]) && isset($_transaction[$_cur_invoicenum]))
-		 {
+	public function save()
+	{
+		$_login = $this->session->userdata('login');
+		$_cur_invoicenum = $this->session->userdata('cur_invoicenum');
+		$_transaction = $this->session->userdata('transaction');
+		$alert = "danger";
+		$invoice_ok = true;
+		$result = [];
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "donew", "url"=> base_url('/invoices/donew'),"style" => "","show" => true],
+			]
+		]);
+		if(!empty($_transaction[$_cur_invoicenum]) && isset($_transaction[$_cur_invoicenum]))
+		{
 			$_api_body = json_encode($_transaction[$_cur_invoicenum],true);
+			
+			// $_api_body = '{"trans_code":"INV220240","prefix":"INV","quotation":"","employee_code":"12332","date":"2022-02-12 17:24:01","shopcode":"HQ01","dn_prefix":"DN","dn_num":"DN220200","cust_code":"C150302","cust_name":"\u5b56\u5bf6\u8eca\u4ed4\u9eb5","items":[{"item_code":"AME","eng_name":"Aromatherapy Machine","chi_name":"\u9999\u85b0\u6a5f","qty":1,"unit":"","price":"100.00","price_special":0,"subtotal":"100.00","stockonhand":"87"}],"total":"100.00","remark":"","paymentmethod":"PM001","shopname":"TeamWork Ltd","paymentmethodname":"Cash","formtype":"create","void":"true","customer":{"uid":"2","cust_code":"C150302","mail_addr":"\u65b0\u754c\u8475\u6d8c\u8475\u8c50\u885718-26\u865f\u6c38\u5eb7\u5de5\u696d\u5927\u5ec83\u6a13 H\u5ba4","shop_addr":"\u65b0\u754c\u8475\u6d8c\u8475\u8c50\u885718-26\u865f\u6c38\u5eb7\u5de5\u696d\u5927\u5ec83\u6a13 H\u5ba4","employee_code":null,"attn_1":"\u6234\u5148\u751f","phone_1":"67979233","fax_1":"","email_1":"","attn_2":null,"phone_2":"","fax_2":null,"email_2":null,"statement_remark":"","name":"\u5b56\u5bf6\u8eca\u4ed4\u9eb5","pm_code":"PM001","pt_code":"PT004","remark":"Vent Cleaner 4x5L $450","district_code":null,"delivery_addr":"\u65b0\u754c\u8475\u6d8c\u8475\u8c50\u885718-26\u865f\u6c38\u5eb7\u5de5\u696d\u5927\u5ec83\u6a13 H\u5ba4","from_time":null,"to_time":null,"delivery_remark":"","status":"Active","create_date":null,"modify_date":null,"previous":"C150301","next":"C150401","district_chi":null,"district_eng":null,"region":null,"username":null,"default_shopcode":null,"payment_method":"Cash","terms":null,"company_BR":"","company_sign":"","group_name":"","attn":"","tel":"67979233","fax":"","email":""}}';
 			// echo "<pre>";
 			// var_dump($_api_body);
 			// echo "</pre>";
@@ -655,16 +602,45 @@ class Invoices extends CI_Controller
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY'));
 				$this->component_api->CallPost();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
-				echo "<pre>";
-				var_dump($result);
-				echo "</pre>";
-				if(isset($result["error"]['code']))
+				$result = $this->component_api->GetConfig("result");
+				// echo "<pre>";
+				// var_dump($result);
+				// echo "</pre>";
+
+				switch($result["http_code"])
 				{
-					switch($result["error"]['code'])
+					case 200:
+						$alert = "success";
+					break;
+					case 404:
+						$invoice_ok = false;
+						$alert = "danger";
+					break;
+				}
+
+				$this->load->view('error-handle', [
+					'message' => $result["error"]['message'], 
+					'code'=> $result["error"]['code'], 
+					'alertstyle' => $alert
+				]);
+				// Invoice cannot be create
+				if($invoice_ok)
+				{
+					// create DN
+					$this->component_api->SetConfig("body", $_api_body);
+					$this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE'));
+					$this->component_api->CallPost();
+					$result = $this->component_api->GetConfig("result");
+					// echo "<pre>";
+					// var_dump($result);
+					// echo "</pre>";
+					switch($result["http_code"])
 					{
-						case "00000":
+						case 200:
 							$alert = "success";
+						break;
+						case 404:
+							$alert = "danger";
 						break;
 					}
 					$this->load->view('error-handle', [
@@ -673,50 +649,6 @@ class Invoices extends CI_Controller
 						'alertstyle' => $alert
 					]);
 				}
-				else
-				{
-					$result["error"]['code'] = "99999";
-					$result["error"]['message'] = "API-Error"; 
-				}
-
-
-
-				// create DN
-				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE'));
-				$this->component_api->CallPost();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
-				echo "<pre>";
-				var_dump($result);
-				echo "</pre>";
-
-				if(isset($result["error"]['code']))
-				{
-					switch($result["error"]['code'])
-					{
-						case "00000":
-							$alert = "success";
-						break;
-					}
-					$this->load->view('error-handle', [
-						'message' => $result["error"]['message'], 
-						'code'=> $result["error"]['code'],
-						'alertstyle' => $alert
-					]);
-				}
-				else
-				{
-					$result["error"]['code'] = "99999";
-					$result["error"]['message'] = "API-Error";
-				}
-				
-				
-				
-				unset($_transaction[$_cur_invoicenum]);
-				$this->session->set_userdata('cur_quotationnum',"");
-				$this->session->set_userdata('transaction',$_transaction);
-
-				//header("Refresh: 10; url='list/'");
 			}
 		}
 		else
@@ -730,18 +662,26 @@ class Invoices extends CI_Controller
 				'alertstyle' => $alert
 			]);
 		}
-	 }
+		unset($_transaction[$_cur_invoicenum]);
+		$this->session->set_userdata('cur_invoicenum',"");
+		$this->session->set_userdata('cur_quotationnum',"");
+		$this->session->set_userdata('transaction',[]);
+
+		header("Refresh: 10; url='".base_url('/invoices/list'.$_login["preference"])."'");
+	}
 	/**
 	 * Save Edit Process
 	 * To save Invoice edit
 	 */
 	public function saveedit()
 	{
+		$alert = "danger";
+		$_login = $this->session->userdata('login');
 		$_cur_invoicenum = $this->session->userdata('cur_invoicenum');
 		$_transaction = $this->session->userdata('transaction');
 		$this->load->view('function-bar', [
 			"btn" => [
-				["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "donew", "url"=> base_url('/invoices/donew'),"style" => "","show" => true],
+				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "donew", "url"=> base_url('/invoices/donew'),"style" => "","show" => true],
 			]
 		]);
 		if(!empty($_cur_invoicenum))
@@ -756,33 +696,42 @@ class Invoices extends CI_Controller
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY').$_cur_invoicenum);
 				$this->component_api->CallPatch();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
-			
-			// echo "<pre>";
-			// var_dump($result);
-			// echo "</pre>";
-				if(isset($result["error"]['code']))
+				$result = $this->component_api->GetConfig("result");
+				// echo "<pre>";
+				// var_dump($result);
+				// echo "</pre>";
+				switch($result["http_code"])
 				{
-					$alert = "danger";
-					switch($result["error"]['code'])
-					{
-						case "00000":
-							$alert = "success";
-						break;
-					}					
-					
-					$this->load->view('error-handle', [
-						'message' => $result["error"]['message'], 
-						'code'=> $result["error"]['code'], 
-						'alertstyle' => $alert
-					]);
-					unset($_transaction[$_cur_invoicenum]);
-					$this->session->set_userdata('cur_invoicenum',"");
-					$this->session->set_userdata('transaction',$_transaction);
-					header("Refresh: 10; url='list/'");
+					case 200:
+						$alert = "success";
+					break;
 				}
+
+				
+				$this->load->view('error-handle', [
+					'message' => $result["error"]['message'], 
+					'code'=> $result["error"]['code'], 
+					'alertstyle' => $alert
+				]);
+				
 			}
 		}
+		else
+		{
+			$alert = "danger";
+			$result["error"]['code'] = "90000";
+			$result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again"; 
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+		}
+		unset($_transaction[$_cur_invoicenum]);
+		$this->session->set_userdata('cur_quotationnum',"");
+		$this->session->set_userdata('transaction',[]);
+
+		header("Refresh: 10; url='".base_url('/invoices/list'.$_login["preference"])."'");
 	}
 	/**
 	* Save void operation
@@ -793,17 +742,12 @@ class Invoices extends CI_Controller
 	{
 		$_login = $this->session->userdata('login');
 		$_transaction = $this->session->userdata('transaction');
-
+		$alert = "danger";
+		$invoice_ok = true;
+		$result = [];
 		$this->load->view('function-bar', [
 			"btn" => [
-				[
-					"name" => "<i class='fas fa-chevron-left'></i> Back",
-					"type"=>"button",
-					"id" => "back", 
-					"url"=> base_url('/invoices/list'.$_login["preference"]),
-				 	"style" => "",
-				 	"show" => true
-				]
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/invoices/list'.$_login["preference"]), "style" => "", "show" => true]
 			]
 		]);
 		if(!empty($_num))
@@ -812,65 +756,79 @@ class Invoices extends CI_Controller
 			{
 				$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ADJ_NEXT_NUM'));
 				$this->component_api->CallGet();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
+				$result = $this->component_api->GetConfig("result");
 				$_transaction['adj_num'] = !empty($result['query']) ? $result['query'] : "";
 				$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ADJ_PREFIX'));
 				$this->component_api->CallGet();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
+				$result = $this->component_api->GetConfig("result");
 				$_transaction['prefix'] = !empty($result['query']) ? $result['query'] : "";
-				$_transaction['remark'] = "Stock ajustment - Void";
- 				$_api_body = json_encode($_transaction,true);
-				// echo "<pre>";
-				// var_dump($_api_body);
-				// echo "</pre>";
+				$_transaction['remark'] = "Stock ajustment - Invoice Void";
 				// echo "<pre>";
 				// var_dump($_transaction);
 				// echo "</pre>";
-				$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY').$_num);
-				$this->component_api->CallDelete();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
-				if(isset($result["error"]))
+				$_api_body = json_encode($_transaction, true);
+				if($_api_body != null)
 				{
-					switch($result["error"]['code'])
+					// echo "<pre>";
+					// var_dump($_api_body);
+					// echo "</pre>";
+					$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY').$_num);
+					$this->component_api->CallDelete();
+					$result = $this->component_api->GetConfig("result");
+					switch($result["http_code"])
 					{
-						case "00000":
+						case 200:
 							$alert = "success";
 						break;
+						case 404:
+							$invoice_ok = false;
+							$alert = "danger";
+						break;
+					}		
+					$this->load->view('error-handle', [
+						'message' => $result["error"]['message'], 
+						'code'=> $result["error"]['code'], 
+						'alertstyle' => $alert
+					]);
+					if($invoice_ok)
+					{
+						//Get next Ajustment number
+						$this->component_api->SetConfig("body", $_api_body);
+						$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ADJ'));
+						$this->component_api->CallPost();
+						$result = $this->component_api->GetConfig("result");
+						switch($result["http_code"])
+						{
+							case 200:
+								$alert = "success";
+							break;
+							case 404:
+								$alert = "danger";
+							break;
+						}			
+						$this->load->view('error-handle', [
+							'message' => $result["error"]['message'], 
+							'code'=> $result["error"]['code'], 
+							'alertstyle' => $alert
+						]);
 					}
-					$this->load->view('error-handle', [
-						'message' => $result["error"]['message'], 
-						'code'=> $result["error"]['code'], 
-						'alertstyle' => $alert
-					]);
-				}
-
-				//Get next Ajustment number
-				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ADJ'));
-				$this->component_api->CallPost();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
-				if(isset($result["error"]))
-				{
-					$alert = "danger";
-
-					switch($result["error"]['code'])
-					{
-						case "00000":
-							$alert = "success";
-						break;
-					}					
-					
-					$this->load->view('error-handle', [
-						'message' => $result["error"]['message'], 
-						'code'=> $result["error"]['code'], 
-						'alertstyle' => $alert
-					]);
-					$this->session->set_userdata('cur_invoicenum',"");
-					$this->session->set_userdata('transaction',[]);
-					header("Refresh: 10; url='".base_url('/invoices/list'.$_login["preference"])."'");
 				}
 			}
+			else
+			{
+				$alert = "danger";
+				$result["error"]['code'] = "90000";
+				$result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again"; 
+				$this->load->view('error-handle', [
+					'message' => $result["error"]['message'], 
+					'code'=> $result["error"]['code'], 
+					'alertstyle' => $alert
+				]);
+			}
 		}
+		$this->session->set_userdata('cur_invoicenum',"");
+		$this->session->set_userdata('transaction',[]);
+		header("Refresh: 10; url='".base_url('/invoices/list'.$_login["preference"])."'");
 	}
 	/**
 	 * Discard Operation

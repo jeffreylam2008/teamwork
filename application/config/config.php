@@ -542,8 +542,8 @@ $config['default_home'] = 'dushboard';
 |--------------------------------------------------------------------------
 */
 //$config['api_url'] = 'http://13.209.150.150/erp_backend/api/v1';
-$config['api_url'] = 'http://46.137.246.181/erp_backend/api/v1';
-// $config['api_url'] = 'http://192.168.20.114/erp_backend/api/v1';
+//$config['api_url'] = 'http://46.137.246.181/erp_backend/api/v1';
+$config['api_url'] = 'http://192.168.20.114/erp_backend/api/v1';
 $config['DEBUG_MODE'] = true;
 $config['DEFAULT_PER_PAGE'] = 25;
 $config['DEFAULT_FIRST_PAGE'] = 1;
@@ -555,7 +555,7 @@ $config['APP_LOG_FILE'] = "applog.log";
 // $config['MASTER_FILE_PAYMENT_METHODS'] = "./files/PAYMENT_METHODS.json";
 // $config['MASTER_FILE_MENU'] = "./files/MENU.json";
 $config['MASTER_FILE_REFRESH_TIME'] = 60000000;
-$config['API_INVOKE_TIMEOUT'] = 10000;
+$config['API_INVOKE_TIMEOUT'] = 1000;
 
 $config['URL_NETWORK'] = $config['api_url']."/network/status/";
 $config['URL_LOGIN'] = $config['api_url']."/systems/login/";
@@ -573,7 +573,6 @@ $config['URL_PAYMENT_METHODS'] = $config['api_url']."/systems/payments/methods/"
 $config['URL_PAYMENT_TERMS'] = $config['api_url']."/systems/payments/terms/";
 $config['URL_DISTRICT'] = $config['api_url']."/systems/district/";
 $config['URL_INVENTORY_HAS_TRANSACTION_CUSTOMERS'] = $config['api_url']."/inventory/invoices/transaction/h/INV/customers/";
-$config['URL_INVENTORY_HAS_TRANSACTION_SUPPLIERS'] = $config['api_url']."/inventory/invoices/transaction/h/INV/suppliers/";
 $config['URL_INVENTORY'] = $config['api_url']."/inventory/invoices/";
 $config['URL_INVOICES_NEXT_NUM'] = $config['api_url']."/inventory/invoices/getnextnum/";
 $config['URL_INVOICES_PREFIX'] = $config['api_url']."/inventory/invoices/getprefix/";
@@ -605,6 +604,7 @@ $config['URL_PURCHASES_ORDER_GRN'] = $config['api_url']."/purchases/order/getgrn
 $config['URL_PURCHASES_ORDER_SETTLEMENT'] = $config['api_url']."/purchases/order/settlement/po/";
 $config['URL_PURCHASES_ORDER_NEXT_NUM'] = $config['api_url']."/purchases/order/getnextnum/";
 $config['URL_PURCHASES_ORDER_PREFIX'] = $config['api_url']."/purchases/order/getprefix/";
+$config['URL_PURCHASES_ORDER_HAS_TRANSACTION_SUPPLIERS'] = $config['api_url']."/purchases/order/transaction/h/PO/suppliers/";
 $config['URL_DUSHBOARD_MONTHLY_INVOICES'] = $config['api_url']."/inventory/invoices/transaction/h/count/";
 $config['URL_DUSHBOARD_MONTHLY_PURCHASES'] = $config['api_url']."/purchases/order/transaction/h/count/";
 $config['URL_BACKUP'] = $config['api_url']."/systems/backup/";
