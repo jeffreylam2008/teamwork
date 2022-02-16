@@ -580,6 +580,7 @@ $config['URL_INVOICES_HEADER'] = $config['api_url']."/inventory/invoices/view/he
 $config['URL_QUOTATIONS'] = $config['api_url']."/inventory/quotations/";
 $config['URL_QUOTATIONS_NEXT_NUM'] = $config['api_url']."/inventory/quotations/getnextnum/";
 $config['URL_QUOTATIONS_PREFIX'] = $config['api_url']."/inventory/quotations/getprefix/";
+$config['URL_QUOTATIONS_HEADER'] = $config['api_url']."/inventory/quotations/view/header/username/";
 $config['URL_STOCKS'] = $config['api_url']."/stocks/";
 $config['URL_STOCKSONHAND'] = $config['api_url']."/stocks/onhand/";
 $config['URL_DELIVERY_NOTE'] = $config['api_url']."/stocks/dn/";

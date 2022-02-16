@@ -53,7 +53,14 @@ class Component_API
             switch($code)
             {
                 case 200:
-                    
+                    if(!isset($resp['query']))
+                    {
+                        $this->_CI->load->view('error-handle', [
+                            'message'=> "Systems Error: Adnormal Data Response - Data Source Error - ".$resp["API_Error"], 
+                            'code' => "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"], 
+                            'alertstyle' => $alert
+                        ]);
+                    }
                 break;
                 case 404:
                     $this->_CI->load->view('error-handle', [
@@ -104,7 +111,14 @@ class Component_API
             switch($code)
             {
                 case 200:
-                    
+                    if(!isset($resp['query']))
+                    {
+                        $this->_CI->load->view('error-handle', [
+                            'message'=> "Systems Error: Adnormal Data Response - Data Source Error - ".$resp["API_Error"], 
+                            'code' => "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"], 
+                            'alertstyle' => $alert
+                        ]);
+                    }
                 break;
                 case 404:
                     $this->_CI->load->view('error-handle', [
@@ -155,7 +169,14 @@ class Component_API
             switch($code)
             {
                 case 200:
-                    
+                    if(!isset($resp['query']))
+                    {
+                        $this->_CI->load->view('error-handle', [
+                            'message'=> "Systems Error: Adnormal Data Response - Data Source Error - ".$resp["API_Error"], 
+                            'code' => "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"], 
+                            'alertstyle' => $alert
+                        ]);
+                    }
                 break;
                 case 404:
                     $this->_CI->load->view('error-handle', [
@@ -205,7 +226,14 @@ class Component_API
             switch($code)
             {
                 case 200:
-                    
+                    if(!isset($resp['query']))
+                    {
+                        $this->_CI->load->view('error-handle', [
+                            'message'=> "Systems Error: Adnormal Data Response - Data Source Error - ".$resp["API_Error"], 
+                            'code' => "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"], 
+                            'alertstyle' => $alert
+                        ]);
+                    }
                 break;
                 case 404:
                     $this->_CI->load->view('error-handle', [

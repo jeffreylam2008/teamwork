@@ -52,9 +52,9 @@ class Login extends CI_Controller
 		$this->component_api->SetConfig("url", $this->config->item('URL_LOGIN'));
 		$this->component_api->CallPost();
 		$_result = $this->component_api->GetConfig("result");
-		echo "<pre>";
-		var_dump($_result);
-		echo "</pre>";
+		// echo "<pre>";
+		// var_dump($_result);
+		// echo "</pre>";
 		// has token return from API
 		if(!empty($_result['query']))
 		{

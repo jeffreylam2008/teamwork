@@ -10,7 +10,7 @@ class Quotations extends CI_Controller
 	var $_profile = "";
 	var $_param = "";
 	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
-	
+	var $_API_HEADER;
 	public function __construct()
 	{
 		parent::__construct();
@@ -40,23 +40,27 @@ class Quotations extends CI_Controller
 		// // login session
 		if(!empty($this->component_login->CheckToken()))
 		{
+			$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS_HEADER').$this->_profile['username'].'/?lang='.$this->config->item('language'));
+			$this->component_api->CallGet();
+			$_API_HEADER = $this->component_api->GetConfig("result");
+			$this->_API_HEADER = !empty($_API_HEADER['query']) ? $_API_HEADER['query'] : ['employee' => "", 'menu' => "", "prefix", "dn"=> ["dn_num"=>"", "dn_prefix"=>""]];
 			// API data
-			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
-			$this->component_api->CallGet();
-			$_API_EMP = $this->component_api->GetConfig("result");
-			$_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
-			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
-			$this->component_api->CallGet();
-			$_API_SHOP = $this->component_api->GetConfig("result");
-			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
-			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
-			$this->component_api->CallGet();
-			$_API_MENU = $this->component_api->GetConfig("result");
-			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
-			$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS_PREFIX'));
-			$this->component_api->CallGet();
-			$_API_PREFIX = $this->component_api->GetConfig("result");
-			$_API_PREFIX = !empty($_API_PREFIX['query']) ? $_API_PREFIX['query'] : [];
+			// $this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
+			// $this->component_api->CallGet();
+			// $_API_EMP = $this->component_api->GetConfig("result");
+			// $_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
+			// $this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
+			// $this->component_api->CallGet();
+			// $_API_SHOP = $this->component_api->GetConfig("result");
+			// $_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
+			// $this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
+			// $this->component_api->CallGet();
+			// $_API_MENU = $this->component_api->GetConfig("result");
+			// $_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
+			// $this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS_PREFIX'));
+			// $this->component_api->CallGet();
+			// $_API_PREFIX = $this->component_api->GetConfig("result");
+			// $_API_PREFIX = !empty($_API_PREFIX['query']) ? $_API_PREFIX['query'] : [];
 			
 			// sidebar session
 			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
@@ -72,12 +76,12 @@ class Quotations extends CI_Controller
 			// header data
 			$this->_inv_header_param["topNav"] = [
 				"isLogin" => true,
-				"username" => $_API_EMP['username'],
-				"employee_code" => $_API_EMP['employee_code'],
-				"shop_code" => $_API_SHOP['shop_code'],
-				"shop_name" => $_API_SHOP['name'],
+				"username" => $this->_API_HEADER['employee']['username'],
+				"employee_code" => $this->_API_HEADER['employee']['employee_code'],
+				"shop_code" => $this->_API_HEADER['employee']['shop_code'],
+				"shop_name" => $this->_API_HEADER['employee']['shop_name'],
 				"today" => date("Y-m-d"),
-				"prefix" => $_API_PREFIX
+				"prefix" => $this->_API_HEADER['prefix']['prefix']
 			];
 			if(!empty($_query))
 			{
@@ -90,7 +94,7 @@ class Quotations extends CI_Controller
 				$this->session->set_userdata("login", $_login);
 			}
 			// fatch side bar API
-			$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
+			$this->component_sidemenu->SetConfig("nav_list", $this->_API_HEADER['menu']);
 			$this->component_sidemenu->SetConfig("active", $this->_param);
 			$this->component_sidemenu->Proccess();
 
@@ -162,9 +166,12 @@ class Quotations extends CI_Controller
 			}
 			$this->component_api->CallGet();
 			$_data = $this->component_api->GetConfig("result");
-			$_data = $_data != null ? $_data : "";
+
+			// echo "<pre>";
+			// var_dump($_data);
+			// echo "</pre>";
 		}
-		if(!empty($_data['error']['code']) && $_data['error']['code'] != "00000")
+		if(!$_data['error']['code'] == "00000")
 		{
 			$this->load->view("error-handle", [
 				"alertstyle" => "danger",
@@ -185,9 +192,8 @@ class Quotations extends CI_Controller
 					["name" => "<i class='fas fa-undo-alt'></i> ".$this->lang->line("function_clear"), "type"=>"button", "id" => "i-clear", "url"=> "#", "style" => "btn btn-secondary", "show" => true, "extra" => ""]
 				]
 			]);
-
 			$this->load->view("quotations/quotations-list-view", [
-				'data' => $_data,
+				'data' => $_data['query'],
 				"submit_to" => base_url("/quotations/list"),
 				"url" => base_url("quotations/edit/"),
 				"default_per_page" => $this->_default_per_page,
@@ -197,6 +203,7 @@ class Quotations extends CI_Controller
 				"ad_quotation_num" => $_quotation_num,
 				"ad_cust_code" => $_cust_code
 			]);
+			$this->load->view("footer");
 		}
 	}
 
@@ -213,9 +220,12 @@ class Quotations extends CI_Controller
 		}
 		$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS_NEXT_NUM'));
 		$this->component_api->CallGet();
-		$_API_QTA = $this->component_api->GetConfig("result");
-		$_API_QTA = !empty($_API_QTA['query']) ? $_API_QTA['query'] : "";
-		redirect(base_url("quotations/create/".$_API_QTA),"refresh");
+		$_API_NEXT = $this->component_api->GetConfig("result");
+		$_API_NEXT = !empty($_API_NEXT['query']) ? $_API_NEXT['query'] : "";
+		// echo "<pre>";
+		// var_dump($_API_NEXT);
+		// echo "</pre>";
+		redirect(base_url("quotations/create/".$_API_NEXT),"refresh");
 	}
 	/**
 	 * Quotation Copy 
@@ -237,14 +247,14 @@ class Quotations extends CI_Controller
 		// get next Invoice number
 		$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS_NEXT_NUM'));
 		$this->component_api->CallGet();
-		$_API_QTA_NUM = $this->component_api->GetConfig("result");
-		$_API_QTA_NUM = !empty($_API_QTA_NUM['query']) ? $_API_QTA_NUM['query'] : "";
+		$_API_NEXT = $this->component_api->GetConfig("result");
+		$_API_NEXT = !empty($_API_NEXT['query']) ? $_API_NEXT['query'] : "";
 		// transaction retrieve
-		$_transaction[$_API_QTA_NUM] = $_API_QTA;
-		$_transaction[$_API_QTA_NUM]['date'] = date("Y-m-d H:i:s");
-		$this->session->set_userdata('cur_quotationnum',$_API_QTA_NUM);
+		$_transaction[$_API_NEXT] = $_API_QTA;
+		$_transaction[$_API_NEXT]['date'] = date("Y-m-d H:i:s");
+		$this->session->set_userdata('cur_quotationnum',$_API_NEXT);
 		$this->session->set_userdata('transaction',$_transaction);
-		redirect(base_url("quotations/create/".$_API_QTA_NUM),"refresh");
+		redirect(base_url("quotations/create/".$_API_NEXT),"refresh");
 	}
 	/**
 	 * Create Process
@@ -262,85 +272,80 @@ class Quotations extends CI_Controller
 			$_show_discard_btn = true;
 
 			// create new quotation
-			if(substr($_num , 0 , 3) === $this->_inv_header_param["topNav"]['prefix'])
+		
+			// For back button after submit to tender page
+			if(!empty($this->session->userdata('transaction')) && !empty($this->session->userdata('cur_quotationnum')))
 			{
-				// For back button after submit to tender page
-				if(!empty($this->session->userdata('transaction')) && !empty($this->session->userdata('cur_quotationnum')))
-				{
-					$_num = $this->session->userdata('cur_quotationnum');
-					$_transaction = $this->session->userdata('transaction');
-					$_transaction[$_num]['quotation'] = $_num;
-				}
-				// For new create
-				else 
-				{
-					$this->session->set_userdata('cur_quotationnum',$_num);
-					$this->session->set_userdata('transaction',$_transaction);
-					$_transaction[$_num]['items'] = [];
-					$_transaction[$_num]['cust_code'] = "";
-					$_transaction[$_num]['cust_name'] = "";
-					$_transaction[$_num]['paymentmethod'] = "";
-					$_transaction[$_num]['paymentmethodname'] = "";
-					$_transaction[$_num]['remark'] = "";
-				}
-				// fatch items API
-				$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
-				$this->component_api->CallGet();
-				$_API_ITEMS = $this->component_api->GetConfig("result");
-				$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
-				// fatch shop code and shop detail API
-				$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
-				$this->component_api->CallGet();
-				$_API_SHOPS = $this->component_api->GetConfig("result");
-				$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
-				// fatch customer API
-				$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
-				$this->component_api->CallGet();
-				$_API_CUSTOMERS = $this->component_api->GetConfig("result");
-				$_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : "";
-				// fatch payment method API
-				$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
-				$this->component_api->CallGet();
-				$_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
-				$_API_PAYMENTS = !empty($_API_PAYMENTS['query']) ? $_API_PAYMENTS['query'] : "";
-						
-				
-				// var_dump($_theprint_data);
-				// function bar with next, preview and save button
-				$this->load->view('function-bar', [
-					"btn" => [
-						["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
-						["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('/quotations/discard'), "style" => "btn btn-danger", "show" => $_show_discard_btn]
-					]
-				]);
-				$this->load->view('title-bar', [
-					"title" => $this->lang->line("quotation_new_titles")
-				]);
-				// present form view
-				$this->load->view('quotations/quotations-create-view', [
-					"function_bar" => $this->load->view('function-bar', [
-						"btn" => [
-							["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "new", "url"=>base_url('/customers/?new=1'), "style" => "", "show" => true]
-						 ]
-					],true),
-					"submit_to" => base_url("/quotations/tender"),
-					"prefix" => $this->_inv_header_param['topNav']['prefix'],
-					"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
-					"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
-					"quotation" => $_num,
-					"date" => date("Y-m-d H:i:s"),
-					"ajax" => [
-						"items" => $_API_ITEMS,
-						"shop_code" => $_API_SHOPS,
-						"customers" => $_API_CUSTOMERS,
-						"tender" => $_API_PAYMENTS
-					],
-					"data" => $_transaction[$_num],
-					"default_per_page" => $this->_default_per_page
-				]);
-				// persent footer view
-				$this->load->view('footer');
+				$_num = $this->session->userdata('cur_quotationnum');
+				$_transaction = $this->session->userdata('transaction');
+				$_transaction[$_num]['quotation'] = $_num;
 			}
+			// For new create
+			else 
+			{
+				$this->session->set_userdata('cur_quotationnum',$_num);
+				$this->session->set_userdata('transaction',$_transaction);
+				$_transaction[$_num]['items'] = [];
+				$_transaction[$_num]['cust_code'] = "";
+				$_transaction[$_num]['cust_name'] = "";
+				$_transaction[$_num]['paymentmethod'] = "";
+				$_transaction[$_num]['paymentmethodname'] = "";
+				$_transaction[$_num]['remark'] = "";
+			}
+			// fatch items API
+			$this->component_api->SetConfig("url", $this->config->item('URL_MASTER'));
+			$this->component_api->CallGet();
+			$_API_MASTER = $this->component_api->GetConfig("result");
+
+			if(empty($_API_MASTER['query']))
+			{
+				$_API_MASTER['items'] = [];
+				$_API_MASTER['shops'] = [];
+				$_API_MASTER['customers'] =[];
+				$_API_MASTER['paymentmethod'] = [];
+			}
+			else
+			{
+				$_API_MASTER = $_API_MASTER['query'];
+			}
+					
+			
+			// var_dump($_theprint_data);
+			// function bar with next, preview and save button
+			$this->load->view('function-bar', [
+				"btn" => [
+					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
+					["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('/quotations/discard'), "style" => "btn btn-danger", "show" => $_show_discard_btn]
+				]
+			]);
+			$this->load->view('title-bar', [
+				"title" => $this->lang->line("quotation_new_titles")
+			]);
+			// present form view
+			$this->load->view('quotations/quotations-create-view', [
+				"submit_to" => base_url("/quotations/tender"),
+				"prefix" => $this->_inv_header_param['topNav']['prefix'],
+				"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
+				"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
+				"quotation" => $_num,
+				"date" => date("Y-m-d H:i:s"),
+				"ajax" => [
+					"items" => $_API_MASTER['items'],
+					"shop_code" => $_API_MASTER['shops'],
+					"customers" => $_API_MASTER['customers'],
+					"tender" => $_API_MASTER['paymentmethod']
+				],
+				"data" => $_transaction[$_num],
+				"default_per_page" => $this->_default_per_page,
+				"function_bar" => $this->load->view('function-bar', [
+					"btn" => [
+						["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "new", "url"=>base_url('/customers/?new=1'), "style" => "", "show" => true]
+						]
+				],true)
+			]);
+			// persent footer view
+			$this->load->view('footer');
+
 		}
 	}
 	/**
@@ -361,14 +366,14 @@ class Quotations extends CI_Controller
 			// Check Quotation exist
 			$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS').$_num);
 			$this->component_api->CallGet();
-			$_transaction = json_decode($this->component_api->GetConfig("result"),true);
+			$_transaction = $this->component_api->GetConfig("result");
 			$_transaction = $_transaction != null ? $_transaction : "";
-			
+
+			// set current invoice number to session
+			$this->session->set_userdata('cur_quotationnum',$_num);
+			$this->session->set_userdata('transaction',$_transaction['query']);
 			if(!empty($_transaction))
 			{
-				// set current invoice number to session
-				$this->session->set_userdata('cur_quotationnum',$_num);
-				$this->session->set_userdata('transaction',$_transaction);
 				$_login = $this->session->userdata('login');
 
 				if($_transaction['has'])
@@ -380,25 +385,20 @@ class Quotations extends CI_Controller
 					}
 
 					// fatch items API
-					$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
+					$this->component_api->SetConfig("url", $this->config->item('URL_MASTER'));
 					$this->component_api->CallGet();
-					$_API_ITEMS = $this->component_api->GetConfig("result");
-					$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
-					// fatch shop code and shop detail API
-					$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
-					$this->component_api->CallGet();
-					$_API_SHOPS = $this->component_api->GetConfig("result");
-					$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
-					// fatch customer API
-					$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
-					$this->component_api->CallGet();
-					$_API_CUSTOMERS = $this->component_api->GetConfig("result");
-					$_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : "";
-					// fatch payment method API
-					$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
-					$this->component_api->CallGet();
-					$_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
-					$_API_PAYMENTS = !empty($_API_PAYMENTS['query']) ? $_API_PAYMENTS['query'] : "";
+					$_API_MASTER = $this->component_api->GetConfig("result");
+					if(empty($_API_MASTER['query']))
+					{
+						$_API_MASTER['items'] = [];
+						$_API_MASTER['shops'] = [];
+						$_API_MASTER['customers'] =[];
+						$_API_MASTER['paymentmethod'] = [];
+					}
+					else
+					{
+						$_API_MASTER = $_API_MASTER['query'];
+					}
 					// echo "<pre>";
 					// var_dump($_transaction['query']);
 					// echo "</pre>";
@@ -430,10 +430,10 @@ class Quotations extends CI_Controller
 						"quotation" => $_num,
 						"date" => date("Y-m-d H:i:s"),
 						"ajax" => [
-							"items" => $_API_ITEMS,
-							"shop_code" => $_API_SHOPS,
-							"customers" => $_API_CUSTOMERS,
-							"tender" => $_API_PAYMENTS
+							"items" => $_API_MASTER['items'],
+							"shop_code" => $_API_MASTER['shops'],
+							"customers" => $_API_MASTER['customers'],
+							"tender" => $_API_MASTER['paymentmethod']
 						],
 						"data" => $_transaction['query'],
 						"show" => $_show_void_btn,
@@ -443,7 +443,7 @@ class Quotations extends CI_Controller
 				}
 				else
 				{
-					redirect(base_url("quotations/list/"),"refresh");
+					//redirect(base_url("quotations/list/"),"refresh");
 				}
 			}
 		}
@@ -462,17 +462,18 @@ class Quotations extends CI_Controller
 			$_cur_num = $this->session->userdata('cur_quotationnum');
 			$_show_save_btn = false;
 			$_show_reprint_btn = false;
-			$_transaction[$_cur_num] = $_data;
 
 			// API Call
-			$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS').$_transaction[$_cur_num]['cust_code']);
+			$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS').$_data['cust_code']);
 			$this->component_api->CallGet();
-			$_API_CUSTOMERS = json_decode($this->component_api->GetConfig("result"),true);
+			$_API_CUSTOMER = $this->component_api->GetConfig("result");
+			$_API_CUSTOMER = !empty($_API_CUSTOMER['query']) ? $_API_CUSTOMER['query'] : "";
 			// Append API result to transaction array
-			$_transaction[$_cur_num]['customer'] = $_API_CUSTOMERS['query'];
-
+			$_transaction[$_cur_num]= $_data;
+			$_transaction[$_cur_num]['customer']['name'] = $_API_CUSTOMER['name'];
+			$_transaction[$_cur_num]['customer']['delivery_addr'] = $_API_CUSTOMER['delivery_addr'];
 			// save print data to session
-			$this->session->set_userdata('cur_invoicenum',$_cur_invoicenum);
+			$this->session->set_userdata('cur_invoicenum',$_cur_num);
 			$this->session->set_userdata('transaction',$_transaction);
 
 			// show save button
@@ -514,6 +515,7 @@ class Quotations extends CI_Controller
 				"preview_url" => base_url('/ThePrint/quotations/preview'),
 				"print_url" => base_url('/ThePrint/quotations/save')
 			]);
+			$this->load->view("footer");
 		}
 	}
 	/**

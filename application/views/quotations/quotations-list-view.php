@@ -71,17 +71,15 @@
         // echo "<pre>";
         // var_dump($data);
         // echo "</pre>";
-            
-            extract($data);
-            foreach($query as $key => $val)
+
+            foreach($data as $key => $val)
             {
-                
                 echo "<tr>";
                 echo "<td><a href='".$url.$val['trans_code']."'>".$val['trans_code']."</a></td>";
                 echo "<td>(".$val['shop_code'].") - ".$val['shop_name']."</td>";
                 echo "<td>(".$val['cust_code'].") - ".$val['cust_name']."</td>";
                 echo "<td>".$val['payment_method']."</td>";
-                echo "<td>$".$val['total']."</td>";
+                echo "<td>$".number_format($val['total'],2,".","")."</td>";
                 echo $val['is_convert'] ? "<td>YES</td>":"<td>NO</td>";
                 echo "<td>".$val['create_date']."</td>";
                 echo "<td>".$val['modify_date']."</td>";

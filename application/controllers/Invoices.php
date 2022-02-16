@@ -182,35 +182,45 @@ class Invoices extends CI_Controller
 		// echo "<pre>";
 		// var_dump($_data);
 		// echo "</pre>";
+		if(!$_data['error']['code'] == "00000")
+		{
+			$this->load->view("error-handle", [
+				"alertstyle" => "danger",
+				"code" => $_data['error']['code'],
+				"message" => $_data['error']['message']
+			]);
+		}
+		else
+		{
+			// Function bar
+			$this->load->view('function-bar', [
+				"btn" => [
+					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> base_url("invoices/donew/"), "style" => "", "show" => true, "extra" => ""]
+				]
+			]);
+			// Function bar
+			$this->load->view('function-bar', [
+				"btn" => [
+					["name" => "<i class='fas fa-search'></i> ".$this->lang->line("function_search"), "type"=>"button", "id" => "i-search", "url"=> "#", "style" => "", "show" => true, "extra" => ""],
+					["name" => "<i class='fas fa-undo-alt'></i> ".$this->lang->line("function_clear"), "type"=>"button", "id" => "i-clear", "url"=> "#", "style" => "btn btn-secondary", "show" => true, "extra" => ""]
+				]
+			]);
+			// View Content
+			$this->load->view("invoices/invoices-list-view", [
+				"data" => $_data['query'],
+				"submit_to" => base_url("/invoices/list"),
+				"edit_url" => base_url("invoices/edit/"),
+				"quotation_url" => base_url("quotations/edit/"),
+				"default_per_page" => $this->_default_per_page,
+				"page" => $this->_page,
+				"ad_start_date" => $_start_date,
+				"ad_end_date" => $_end_date,
+				"ad_invoice_num" => $_invoice_num,
+				"ad_cust_code" => $_cust_code
+			]);
 
-		// Function bar
-		$this->load->view('function-bar', [
-			"btn" => [
-				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> base_url("invoices/donew/"), "style" => "", "show" => true, "extra" => ""]
-			]
-		]);
-		// Function bar
-		$this->load->view('function-bar', [
-			"btn" => [
-				["name" => "<i class='fas fa-search'></i> ".$this->lang->line("function_search"), "type"=>"button", "id" => "i-search", "url"=> "#", "style" => "", "show" => true, "extra" => ""],
-				["name" => "<i class='fas fa-undo-alt'></i> ".$this->lang->line("function_clear"), "type"=>"button", "id" => "i-clear", "url"=> "#", "style" => "btn btn-secondary", "show" => true, "extra" => ""]
-			]
-		]);
-		// View Content
-		$this->load->view("invoices/invoices-list-view", [
-			"data" => $_data['query'],
-			"submit_to" => base_url("/invoices/list"),
-			"edit_url" => base_url("invoices/edit/"),
-			"quotation_url" => base_url("quotations/edit/"),
-			"default_per_page" => $this->_default_per_page,
-			"page" => $this->_page,
-			"ad_start_date" => $_start_date,
-			"ad_end_date" => $_end_date,
-			"ad_invoice_num" => $_invoice_num,
-			"ad_cust_code" => $_cust_code
-		]);
-
-		$this->load->view("footer");
+			$this->load->view("footer");
+		}
 	}
 	/**
 	 * Invoice Number Generation
@@ -396,7 +406,6 @@ class Invoices extends CI_Controller
 	{
 		// variable initial
 		$_transaction = [];
-		$_trans = [];
 		$_show_void_btn = false;
 		$_show_next_btn = true;
 		$_show_copy_btn = true;
