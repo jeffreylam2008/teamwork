@@ -286,8 +286,7 @@ class Invoices extends CI_Controller
 
 		if(!empty($_quotation))
 		{
-			$_temp = $this->session->userdata('transaction');
-			$_transaction[$_API_NEXT] = $_temp['query'];
+			$_transaction[$_API_NEXT] = $this->session->userdata('transaction');
 			$_transaction[$_API_NEXT]['invoicenum'] = $_API_NEXT;
 			$_transaction[$_API_NEXT]['date'] = date("Y-m-d H:i:s");
 			$_transaction[$_API_NEXT]['prefix'] = $this->_inv_header_param["topNav"]['prefix'];
@@ -295,7 +294,7 @@ class Invoices extends CI_Controller
 			$this->session->set_userdata('cur_invoicenum', $_API_NEXT);
 		}
 		// echo "<pre>";
-		// var_dump($_transaction);
+		// var_dump($_temp);
 		// echo "</pre>";
 		
 		redirect(base_url("invoices/create/".$_API_NEXT."/".$_quotation),"refresh");
@@ -600,7 +599,7 @@ class Invoices extends CI_Controller
 		{
 			$_api_body = json_encode($_transaction[$_cur_invoicenum],true);
 			
-			// $_api_body = '{"trans_code":"INV220240","prefix":"INV","quotation":"","employee_code":"12332","date":"2022-02-12 17:24:01","shopcode":"HQ01","dn_prefix":"DN","dn_num":"DN220200","cust_code":"C150302","cust_name":"\u5b56\u5bf6\u8eca\u4ed4\u9eb5","items":[{"item_code":"AME","eng_name":"Aromatherapy Machine","chi_name":"\u9999\u85b0\u6a5f","qty":1,"unit":"","price":"100.00","price_special":0,"subtotal":"100.00","stockonhand":"87"}],"total":"100.00","remark":"","paymentmethod":"PM001","shopname":"TeamWork Ltd","paymentmethodname":"Cash","formtype":"create","void":"true","customer":{"uid":"2","cust_code":"C150302","mail_addr":"\u65b0\u754c\u8475\u6d8c\u8475\u8c50\u885718-26\u865f\u6c38\u5eb7\u5de5\u696d\u5927\u5ec83\u6a13 H\u5ba4","shop_addr":"\u65b0\u754c\u8475\u6d8c\u8475\u8c50\u885718-26\u865f\u6c38\u5eb7\u5de5\u696d\u5927\u5ec83\u6a13 H\u5ba4","employee_code":null,"attn_1":"\u6234\u5148\u751f","phone_1":"67979233","fax_1":"","email_1":"","attn_2":null,"phone_2":"","fax_2":null,"email_2":null,"statement_remark":"","name":"\u5b56\u5bf6\u8eca\u4ed4\u9eb5","pm_code":"PM001","pt_code":"PT004","remark":"Vent Cleaner 4x5L $450","district_code":null,"delivery_addr":"\u65b0\u754c\u8475\u6d8c\u8475\u8c50\u885718-26\u865f\u6c38\u5eb7\u5de5\u696d\u5927\u5ec83\u6a13 H\u5ba4","from_time":null,"to_time":null,"delivery_remark":"","status":"Active","create_date":null,"modify_date":null,"previous":"C150301","next":"C150401","district_chi":null,"district_eng":null,"region":null,"username":null,"default_shopcode":null,"payment_method":"Cash","terms":null,"company_BR":"","company_sign":"","group_name":"","attn":"","tel":"67979233","fax":"","email":""}}';
+			//$_api_body = '{"trans_code":"INV220246","prefix":"INV","quotation":"QTA220203","employee_code":"12332","date":"2022-02-18 19:45:52","shopcode":"HQ01","dn_prefix":"DN","dn_num":"DN220200","cust_code":"C150402","cust_name":"Fantastic Cafe (\u67f4\u7063)","items":[{"item_code":"AG0405","eng_name":"\u9152\u7cbe\u6d88\u6bd2?\u55b1Hand Sanitizer Gel","chi_name":"AG Alcohol Gel","qty":2,"unit":"4X5L","price":"320.00","price_special":0,"subtotal":"640","stockonhand":"161"},{"item_code":"AG0120","eng_name":"\u9152\u7cbe\u6d88\u6bd2?\u55b1Hand Sanitizer Gel","chi_name":"AG Alcohol Gel","qty":1,"unit":"20 x 450ml","price":"500.00","price_special":0,"subtotal":"500","stockonhand":"122"}],"total":"1140.00","remark":"","paymentmethod":"PM002","shopname":"TeamWork Ltd","paymentmethodname":"Cheque","formtype":"create","void":"true","customer":{"name":"Fantastic Cafe (\u67f4\u7063)","delivery_addr":"\u9999\u6e2f\u67f4\u7063\u5229\u773e\u885724\u865f\u6771\u8cbf\u5ee3\u58346\/F"}}';
 			// echo "<pre>";
 			// var_dump($_api_body);
 			// echo "</pre>";
@@ -690,6 +689,7 @@ class Invoices extends CI_Controller
 		$_transaction = $this->session->userdata('transaction');
 		$this->load->view('function-bar', [
 			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "Back", "url"=> base_url('/invoices/list'.$_login['preference']), "style" => "", "show" => true],
 				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "donew", "url"=> base_url('/invoices/donew'),"style" => "","show" => true],
 			]
 		]);
@@ -714,6 +714,9 @@ class Invoices extends CI_Controller
 					case 200:
 						$alert = "success";
 					break;
+					case 404:
+						$alert = "danger";
+					break;
 				}
 
 				
@@ -727,7 +730,6 @@ class Invoices extends CI_Controller
 		}
 		else
 		{
-			$alert = "danger";
 			$result["error"]['code'] = "90000";
 			$result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again"; 
 			$this->load->view('error-handle', [
@@ -825,7 +827,6 @@ class Invoices extends CI_Controller
 			}
 			else
 			{
-				$alert = "danger";
 				$result["error"]['code'] = "90000";
 				$result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again"; 
 				$this->load->view('error-handle', [

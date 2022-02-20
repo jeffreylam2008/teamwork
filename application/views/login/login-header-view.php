@@ -24,8 +24,8 @@
         <!-- validate plugin 1.17.0 -->
         <script src="<?=base_url("/assets/js/jquery.validate-1.19.1.min.js");?>"></script>
         <script src="<?=base_url("/assets/js/additional-methods.min.js");?>"></script>
-
         <script src="<?=base_url('/assets/js/bootstrap.datepicker.min.js');?>"></script>
+        <script src="<?=base_url('/assets/js/custom.js');?>"></script>
 
         <!-- CSS -->
         <link rel="stylesheet" type="text/css" href="<?=base_url('/assets/css/bootstrap.css');?>">

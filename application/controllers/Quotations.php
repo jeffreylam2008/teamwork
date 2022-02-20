@@ -242,7 +242,7 @@ class Quotations extends CI_Controller
 		//fatch existing transaction
 		$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS').$_old_num);
 		$this->component_api->CallGet();
-		$_API_QTA = json_decode($this->component_api->GetConfig("result"),true);
+		$_API_QTA = $this->component_api->GetConfig("result");
 		$_API_QTA = !empty($_API_QTA['query']) ? $_API_QTA['query'] : "";
 		// get next Invoice number
 		$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS_NEXT_NUM'));
@@ -526,69 +526,69 @@ class Quotations extends CI_Controller
 	{
 		$_cur_num = $this->session->userdata('cur_quotationnum');
 		$_transaction = $this->session->userdata('transaction');
+		$_login = $this->session->userdata('login');
+		$alert = "danger";
 		// echo "<pre>";
 		// var_dump($_transaction);
 		// echo "</pre>";
 
 		$this->load->view('function-bar', [
 			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "Back", "url"=> base_url('/quotations/list'.$_login['preference']), "style" => "", "show" => true],
 				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "donew", "url"=> base_url('/quotations/donew'),"style" => "","show" => true],
 			]
 		]);
-		if(!empty($_cur_num))
+		if(!empty($_transaction[$_cur_num]) && isset($_transaction[$_cur_num]))
 		{
 			$_api_body = json_encode($_transaction[$_cur_num],true);
+			
 			// echo "<pre>";
 			// echo ($_api_body);
 			// echo "</pre>";
+			
 
 			if($_api_body != null)
 			{
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS'));
 				$this->component_api->CallPost();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
+				$result = $this->component_api->GetConfig("result");
 
-				if(isset($result["error"]['code']))
+				switch($result["http_code"])
 				{
-					
-					$alert = "danger";
-					switch($result["error"]['code'])
-					{
-						case "00000":
-							$alert = "success";
-						break;
-					}					
-					
-					$this->load->view('error-handle', [
-						'message' => $result["error"]['message'], 
-						'code'=> $result["error"]['code'], 
-						'alertstyle' => $alert
-					]);
-					unset($_transaction[$_cur_num]);
-					$this->session->set_userdata('cur_quotationnum',"");
-					$this->session->set_userdata('transaction',$_transaction);
-					
-					header("Refresh: 10; url='donew/'");
+					case 200:
+						$alert = "success";
+					break;
+					case 404:
+						$invoice_ok = false;
+						$alert = "danger";
+					break;
 				}
-				else
-				{
-					$alert = "danger";
-					$result["error"]['code'] = "99999";
-					$result["error"]['message'] = "API-Error"; 
-						
-					$this->load->view('error-handle', [
-						'message' => $result["error"]['message'], 
-						'code'=> $result["error"]['code'], 
-						'alertstyle' => $alert
-					]);
-					unset($_transaction[$_cur_num]);
-					$this->session->set_userdata('cur_quotationnum',"");
-					$this->session->set_userdata('transaction',$_transaction);
-				}
+					
+					
+				$this->load->view('error-handle', [
+					'message' => $result["error"]['message'], 
+					'code'=> $result["error"]['code'], 
+					'alertstyle' => $alert
+				]);
 			}
-			
 		}
+		else
+		{
+			$alert = "danger";
+			$result["error"]['code'] = "90000";
+			$result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again"; 
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+		}
+		unset($_transaction[$_cur_num]);
+		$this->session->set_userdata('cur_quotationnum',"");
+		$this->session->set_userdata('transaction',[]);
+		
+		header("Refresh: 10; url='".base_url('/quotations/list'.$_login["preference"])."'");
 	}
 	/**
 	 * Save Edit Process
@@ -597,15 +597,19 @@ class Quotations extends CI_Controller
 	public function saveedit()
 	{
 		// session
+		$alert = "danger";
+		$_login = $this->session->userdata('login');
 		$_cur_num = $this->session->userdata('cur_quotationnum');
 		$_transaction = $this->session->userdata('transaction');
+		
 		// echo "<pre>";
 		// var_dump($_cur_num);
 		// echo "</pre>";
 
 		$this->load->view('function-bar', [
 			"btn" => [
-				["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "donew", "url"=> base_url('/quotations/donew'),"style" => "","show" => true],
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "Back", "url"=> base_url('/quotations/list'.$_login['preference']), "style" => "", "show" => true],
+				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "donew", "url"=> base_url('/quotations/donew'),"style" => "","show" => true],
 			]
 		]);
 		if(!empty($_cur_num))
@@ -620,31 +624,39 @@ class Quotations extends CI_Controller
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS').$_cur_num);
 				$this->component_api->CallPatch();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
+				$result = $this->component_api->GetConfig("result");
 
-				if(isset($result["error"]['code']))
+				switch($result["http_code"])
 				{
-					$alert = "danger";
-					switch($result["error"]['code'])
-					{
-						case "00000":
-							$alert = "success";
-						break;
-					}					
+					case 200:
+						$alert = "success";
+					break;
+					case 404:
+						$alert = "danger";
+					break;
+				}	
 					
-					$this->load->view('error-handle', [
-						'message' => $result["error"]['message'], 
-						'code'=> $result["error"]['code'], 
-						'alertstyle' => $alert
-					]);
-
-					unset($_transaction[$_cur_num]);
-					$this->session->set_userdata('cur_invoicenum',"");
-					$this->session->set_userdata('transaction',$_transaction);
-					header("Refresh: 10; url='list/'");
-				}
+				$this->load->view('error-handle', [
+					'message' => $result["error"]['message'], 
+					'code'=> $result["error"]['code'], 
+					'alertstyle' => $alert
+				]);
 			}
 		}
+		else
+		{
+			$result["error"]['code'] = "90000";
+			$result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again"; 
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+		}
+		unset($_transaction[$_cur_num]);
+		$this->session->set_userdata('cur_quotationnum',"");
+		$this->session->set_userdata('transaction',$_transaction);
+		header("Refresh: 10; url='".base_url('/quotations/list/'.$_login["preference"])."'");
 	}
 	/**
 	 * Save void quotation
@@ -654,37 +666,48 @@ class Quotations extends CI_Controller
 	public function savevoid($_num="")
 	{
 		$_login = $this->session->userdata('login');
+		$alert = "danger";
+		$invoice_ok = true;
+		$result = [];
+
 		$this->load->view('function-bar', [
 			"btn" => [
-				["name" => "<i class='fas fa-chevron-left'></i> Back", "type"=>"button", "id" => "back", "url"=> base_url('/quotations/list'.$_login["preference"]),"style" => "","show" => true],
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/quotations/list'.$_login["preference"]),"style" => "","show" => true],
 			]
 		]);
 		if(!empty($_num))
 		{
 			$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS').$_num);
 			$this->component_api->CallDelete();
-			$result = json_decode($this->component_api->GetConfig("result"),true);
-
-			if(isset($result["error"]['code']))
+			$result = $this->component_api->GetConfig("result");
+			switch($result["http_code"])
 			{
-				$alert = "danger";
-				switch($result["error"]['code'])
-				{
-					case "00000":
-						$alert = "success";
-					break;
-				}					
-				
-				$this->load->view('error-handle', [
-					'message' => $result["error"]['message'], 
-					'code'=> $result["error"]['code'], 
-					'alertstyle' => $alert
-				]);
-				$this->session->set_userdata('cur_invoicenum',"");
-				$this->session->set_userdata('transaction',[]);
-				header("Refresh: 10; url='".base_url('/quotations/list'.$_login["preference"])."'");
-			}
+				case 200:
+					$alert = "success";
+				break;
+				case 404:
+					$alert = "danger";
+				break;
+			}							
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
 		}
+		else
+		{
+			$result["error"]['code'] = "90000";
+			$result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again"; 
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+		}
+		$this->session->set_userdata('cur_invoicenum',"");
+		$this->session->set_userdata('transaction',[]);
+		header("Refresh: 10; url='".base_url('/quotations/list'.$_login["preference"])."'");
 	}
 	/**
 	 * Discard quotation while creating

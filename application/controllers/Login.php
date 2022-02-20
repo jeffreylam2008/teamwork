@@ -15,19 +15,23 @@ class Login extends CI_Controller
 
 	public function index()
 	{	
-		$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
-		$this->component_api->CallGet();
-		$_shop = $this->component_api->GetConfig("result");
-		// error handling here 
 		$_e_code = "";
 		$_e_msg = "";
+		$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
+		$this->component_api->CallGet();
+		$_API = $this->component_api->GetConfig("result");
+		
+		if(empty($_API['query']))
+		{
+			$_API['query'] = [];
+		}
 		if(!empty($this->input->get("e_code")))
 		{
 			$_e_code = $this->input->get("e_code");
 			$_e_msg = $this->input->get("e_msg");
 		}
 		$this->load->view('login/login-view', [
-			"shop" => $_shop['query'],
+			"shop" => $_API['query'],
 			"submit"=>"login/process/?url=".urlencode($this->input->get('url')),
 			"e_code"=> $_e_code,
 			"e_msg" => $_e_msg,
@@ -52,9 +56,15 @@ class Login extends CI_Controller
 		$this->component_api->SetConfig("url", $this->config->item('URL_LOGIN'));
 		$this->component_api->CallPost();
 		$_result = $this->component_api->GetConfig("result");
+
 		// echo "<pre>";
 		// var_dump($_result);
 		// echo "</pre>";
+		if(!isset($_result['error']) && isset($_result['http_code']))
+		{
+			$_result['error']['code'] = $_result['API_errCode'];
+			$_result['error']['message'] = $_result['API_Error'];
+		}
 		// has token return from API
 		if(!empty($_result['query']))
 		{
@@ -91,7 +101,6 @@ class Login extends CI_Controller
 		{
 			// something went wrong 
 			// No url perpare
-
 			$_e_code = urlencode($_result['error']['code']);
 			$_e_msg = urlencode($_result['error']['message']);
 			$_url = urlencode($this->input->get('url'));
