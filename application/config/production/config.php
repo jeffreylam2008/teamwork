@@ -544,7 +544,7 @@ $config['default_home'] = 'dushboard';
 
 
 $config['api_url'] = 'http://46.137.246.181/erp_backend/api/v1';
-$config['DEBUG_MODE'] = false;
+$config['DEBUG_MODE'] = true;
 $config['DEFAULT_PER_PAGE'] = 25;
 $config['DEFAULT_FIRST_PAGE'] = 1;
 $config['APP_LOG_PATH'] = $_SERVER['DOCUMENT_ROOT']."/webapp/logs/";
