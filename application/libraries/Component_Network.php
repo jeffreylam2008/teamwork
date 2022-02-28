@@ -6,7 +6,8 @@ class Component_Network
     private $_ip;
     public function __construct()
 	{
-        $this->_ip = gethostbyname(trim(`hostname`));       
+        $this->_ip = getenv("REMOTE_ADDR");       
+        
     }
     public function GetIP()
     {
