@@ -214,9 +214,11 @@ class Quotations extends CI_Controller
 	 */
 	public function donew()
 	{
-		if(!empty($this->session->userdata('transaction')))
+		$_session_trans_num = $this->session->userdata('cur_quotationnum');
+		if(!empty($_SESSION['transaction'][$_session_trans_num]))
 		{
-			$this->session->unset_userdata('transaction');
+			unset($_SESSION['transaction'][$_session_trans_num]);
+			unset($_SESSION['cur_quotationnum']);
 		}
 		$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS_NEXT_NUM'));
 		$this->component_api->CallGet();
@@ -235,10 +237,10 @@ class Quotations extends CI_Controller
 	public function docopy($_old_num)
 	{
 		$_transaction = [];
-		if(!empty($this->session->userdata('transaction')))
-		{
-			$this->session->unset_userdata('transaction');
-		}
+		// if(!empty($this->session->userdata('transaction')))
+		// {
+		// 	$this->session->unset_userdata('transaction');
+		// }
 		//fatch existing transaction
 		$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS').$_old_num);
 		$this->component_api->CallGet();
@@ -266,50 +268,45 @@ class Quotations extends CI_Controller
 		// variable initial
 		$_show_discard_btn = false;
 		$_transaction = [];
+		$_API_MASTER = ['items' => "", 'shops' => "", 'customers'=> "", 'paymentmethod' => ""];
 
 		if(!empty($_num))
 		{
 			$_show_discard_btn = true;
 
 			// create new quotation
-		
 			// For back button after submit to tender page
-			if(!empty($this->session->userdata('transaction')) && !empty($this->session->userdata('cur_quotationnum')))
+			if(!empty($_SESSION['cur_quotationnum']))
 			{
-				$_num = $this->session->userdata('cur_quotationnum');
-				$_transaction = $this->session->userdata('transaction');
+				$_num = $_SESSION['cur_quotationnum'];
+			}
+			if(!empty($_SESSION['transaction'][$_num]))
+			{
+				$_transaction[$_num] = $_SESSION['transaction'][$_num];
 				$_transaction[$_num]['quotation'] = $_num;
 			}
 			// For new create
 			else 
 			{
-				$this->session->set_userdata('cur_quotationnum',$_num);
-				$this->session->set_userdata('transaction',$_transaction);
 				$_transaction[$_num]['items'] = [];
 				$_transaction[$_num]['cust_code'] = "";
 				$_transaction[$_num]['cust_name'] = "";
 				$_transaction[$_num]['paymentmethod'] = "";
 				$_transaction[$_num]['paymentmethodname'] = "";
 				$_transaction[$_num]['remark'] = "";
+				$_transaction[$_num]['quotation'] = $_num;
+				$_SESSION['cur_quotationnum'] = $_num;
+				$_SESSION['transaction'][$_num] = $_transaction[$_num];
 			}
 			// fatch items API
 			$this->component_api->SetConfig("url", $this->config->item('URL_MASTER'));
 			$this->component_api->CallGet();
 			$_API_MASTER = $this->component_api->GetConfig("result");
 
-			if(empty($_API_MASTER['query']))
-			{
-				$_API_MASTER['items'] = [];
-				$_API_MASTER['shops'] = [];
-				$_API_MASTER['customers'] =[];
-				$_API_MASTER['paymentmethod'] = [];
-			}
-			else
+			if(!empty($_API_MASTER['query']))
 			{
 				$_API_MASTER = $_API_MASTER['query'];
-			}
-					
-			
+			}			
 			// var_dump($_theprint_data);
 			// function bar with next, preview and save button
 			$this->load->view('function-bar', [
@@ -327,7 +324,6 @@ class Quotations extends CI_Controller
 				"prefix" => $this->_inv_header_param['topNav']['prefix'],
 				"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
 				"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
-				"quotation" => $_num,
 				"date" => date("Y-m-d H:i:s"),
 				"ajax" => [
 					"items" => $_API_MASTER['items'],
@@ -545,33 +541,30 @@ class Quotations extends CI_Controller
 			// echo "<pre>";
 			// echo ($_api_body);
 			// echo "</pre>";
-			
 
-			if($_api_body != null)
+			$this->component_api->SetConfig("body", $_api_body);
+			$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS'));
+			$this->component_api->CallPost();
+			$result = $this->component_api->GetConfig("result");
+
+			switch($result["http_code"])
 			{
-				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS'));
-				$this->component_api->CallPost();
-				$result = $this->component_api->GetConfig("result");
-
-				switch($result["http_code"])
-				{
-					case 200:
-						$alert = "success";
-					break;
-					case 404:
-						$invoice_ok = false;
-						$alert = "danger";
-					break;
-				}
-					
-					
-				$this->load->view('error-handle', [
-					'message' => $result["error"]['message'], 
-					'code'=> $result["error"]['code'], 
-					'alertstyle' => $alert
-				]);
+				case 200:
+					$alert = "success";
+				break;
+				case 404:
+					$invoice_ok = false;
+					$alert = "danger";
+				break;
 			}
+				
+				
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+			
 		}
 		else
 		{
@@ -619,29 +612,28 @@ class Quotations extends CI_Controller
 
 			// echo ($_api_body);
 	
-			if($_api_body != null)
-			{
-				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS').$_cur_num);
-				$this->component_api->CallPatch();
-				$result = $this->component_api->GetConfig("result");
 
-				switch($result["http_code"])
-				{
-					case 200:
-						$alert = "success";
-					break;
-					case 404:
-						$alert = "danger";
-					break;
-				}	
-					
-				$this->load->view('error-handle', [
-					'message' => $result["error"]['message'], 
-					'code'=> $result["error"]['code'], 
-					'alertstyle' => $alert
-				]);
-			}
+			$this->component_api->SetConfig("body", $_api_body);
+			$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS').$_cur_num);
+			$this->component_api->CallPatch();
+			$result = $this->component_api->GetConfig("result");
+
+			switch($result["http_code"])
+			{
+				case 200:
+					$alert = "success";
+				break;
+				case 404:
+					$alert = "danger";
+				break;
+			}	
+				
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+
 		}
 		else
 		{

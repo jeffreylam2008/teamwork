@@ -170,6 +170,9 @@ class Component_API
         $alert = "danger";
         if(!empty($this->_config["url"]))
         {
+            //  echo "<pre>";
+            // var_dump($this->_config["url"]);
+            // echo "</pre>";
             $curl = curl_init($this->_config["url"]);
             curl_setopt_array($curl, [
                 CURLOPT_CUSTOMREQUEST => "PATCH",

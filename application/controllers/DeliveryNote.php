@@ -118,10 +118,10 @@ class DeliveryNote extends CI_Controller
 	 */
 	public function donew()
 	{
-		if(!empty($this->session->userdata('transaction')))
-		{
-			$this->session->unset_userdata('transaction');
-		}
+		// if(!empty($this->session->userdata('transaction')))
+		// {
+		// 	$this->session->unset_userdata('transaction');
+		// }
 		$this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE_NEXT_NUM'));
 		$this->component_api->CallGet();
 		$_API_INV = $this->component_api->GetConfig("result");

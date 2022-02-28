@@ -68,20 +68,6 @@ class Component_Sidemenu
      */
     private function build_menu($rows, $parent=0, $set_active="")
     {  
-        // /*
-		// id - 1 login
-		// id - 2 Dushboard
-		// id - 3 product
-		// 	-> 23 items
-        //         -> 43 Add
-        //             -> 899 detail 
-        //     -> 54 categories
-        //     -> 62 settings
-		// id - 22 administration
-		// 	-> 71 setttings
-		// 		-> 44 test items
-        // */
-        
         foreach ($rows as $row)
         {
             if ($row['parent_id'] == $parent){

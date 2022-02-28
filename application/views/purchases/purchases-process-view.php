@@ -82,7 +82,7 @@
                 <td><?=$qty?></td>
                 <td><?=$unit?></td>
                 <td>$<?=$price?></td>
-                <td>$<?=$subtotal?></td>
+                <td>$<?=number_format($subtotal,2,".","")?></td>
                 <!--<td><button class='btn btn-danger btn-sm' id='item-del' type='button'>X</button></td>-->
             </tr>
         <?php

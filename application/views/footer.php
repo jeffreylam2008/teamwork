@@ -8,6 +8,8 @@
             echo "<pre>";
             var_dump($_SESSION);
             echo "</pre>";
+
+            echo $this->component_network->GetIP();
         }
             
         ?>

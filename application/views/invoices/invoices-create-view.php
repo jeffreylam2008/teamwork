@@ -463,7 +463,7 @@ extract($data);
         }
     }
     $(window).on('beforeunload', function(){
-        return "Any changes will be lost";
+        return "lost"; 
     });
     $(document).on("submit", "form", function(event){
         // disable unload warning

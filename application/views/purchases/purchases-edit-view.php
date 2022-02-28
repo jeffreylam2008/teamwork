@@ -143,7 +143,7 @@ extract($data);
                     <td>
                         <input type="text" class="form-control form-control-sm item-input" id="price_<?=$k?>" value="<?=$price?>" />
                     </td>
-                    <td id="subtotal_<?=$k?>"><?=$subtotal?></td>
+                    <td id="subtotal_<?=$k?>"><?=number_format($subtotal,2,".","")?></td>
                     <!-- <td class='col-1'><button class='btn btn-danger btn-sm w-90' data-del-itemcode='<?=$item_code?>' id='del_<?=$k?>' type='button'><i class='fas fa-trash-alt'></i></button></td> -->
                 </tr>
             <?php

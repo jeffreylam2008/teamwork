@@ -11,9 +11,9 @@ class ThePrint extends CI_Controller
     {
         //define variable
         $_cur_invoicenum = $this->session->userdata('cur_invoicenum');
-        $_transaction = $this->session->userdata('transaction');
+        $_transaction = $this->component_transactions->Get($_cur_invoicenum);
 
-        if(isset($_transaction[$_cur_invoicenum]) && !empty($_transaction[$_cur_invoicenum])){
+        if(isset($_transaction) && !empty($_transaction)){
             // read data from session
             // echo "<pre>";
             // var_dump($_transaction[$_cur_invoicenum]);
@@ -22,13 +22,13 @@ class ThePrint extends CI_Controller
             {
                 case "preview":
                     $this->load->view('invoices/invoices-print-view', [
-                        "data" => $_transaction[$_cur_invoicenum],
+                        "data" => $_transaction,
                         "preview" => true
                     ]);
                 break;
                 case "save":
                     $this->load->view('invoices/invoices-print-view', [
-                        "data" => $_transaction[$_cur_invoicenum],
+                        "data" => $_transaction,
                         "preview" => false
                     ]);
                 break;
@@ -38,9 +38,9 @@ class ThePrint extends CI_Controller
     public function quotations($_option)
     {
         $_cur_num = $this->session->userdata('cur_quotationnum');
-        $_transaction = $this->session->userdata('transaction');
+        $_transaction = $this->component_transactions->Get($_cur_num);
        
-        if(isset($_transaction[$_cur_num]) && !empty($_transaction[$_cur_num])){
+        if(isset($_transaction) && !empty($_transaction)){
             // read data from session
             // echo "<pre>";
             // var_dump($_transaction[$_cur_num]);
@@ -49,13 +49,13 @@ class ThePrint extends CI_Controller
             {
                 case "preview":
                     $this->load->view('quotations/quotations-print-view', [
-                        "data" => $_transaction[$_cur_num],
+                        "data" => $_transaction,
                         "preview" => true
                     ]);
                 break;
                 case "save":
                     $this->load->view('quotations/quotations-print-view', [
-                        "data" => $_transaction[$_cur_num],
+                        "data" => $_transaction,
                         "preview" => false
                     ]);
                 break;
@@ -64,15 +64,14 @@ class ThePrint extends CI_Controller
     }
     public function grn($_option)
     {
-        
         $_cur_num = $this->session->userdata('cur_grnnum');
-        $_transaction = $this->session->userdata('transaction');
+        $_transaction = $this->component_transactions->Get($_cur_num);
         // echo "<pre>";
         // var_dump($_transaction[$_cur_num]);
         // echo "</pre>";
         // // API Call
        
-        if(isset($_transaction[$_cur_num]) && !empty($_transaction[$_cur_num])){
+        if(isset($_transaction) && !empty($_transaction)){
             // read data from session
             // echo "<pre>";
             // var_dump($_transaction[$_cur_num]);
@@ -81,13 +80,13 @@ class ThePrint extends CI_Controller
             {
                 case "preview":
                     $this->load->view('stocks/goods-recevied-print-view', [
-                        "data" => $_transaction[$_cur_num],
+                        "data" => $_transaction,
                         "preview" => true
                     ]);
                 break;
                 case "save":
                     $this->load->view('stocks/goods-recevied-print-view', [
-                        "data" => $_transaction[$_cur_num],
+                        "data" => $_transaction,
                         "preview" => false
                     ]);
                 break;
@@ -97,24 +96,23 @@ class ThePrint extends CI_Controller
     public function dn($_option)
     {
         $_cur_num = $this->session->userdata('cur_dnnum');
-        $_transaction = $this->session->userdata('transaction');
+        $_transaction = $this->component_transactions->Get($_cur_num);
 
         // // API Call
-       
-        if(isset($_transaction[$_cur_num]) && !empty($_transaction[$_cur_num])){
+        if(isset($_transaction) && !empty($_transaction)){
             // read data from session
 
             switch($_option)
             {
                 case "preview":
                     $this->load->view('stocks/dn/delivery-note-print-view', [
-                        "data" => $_transaction[$_cur_num],
+                        "data" => $_transaction,
                         "preview" => true
                     ]);
                 break;
                 case "save":
                     $this->load->view('stocks/dn/delivery-note-print-view', [
-                        "data" => $_transaction[$_cur_num],
+                        "data" => $_transaction,
                         "preview" => false
                     ]);
                 break;
@@ -124,18 +122,18 @@ class ThePrint extends CI_Controller
     public function stocktake($_option)
     {
         $_cur_num = $this->session->userdata('cur_stocktake_num');
-        $_transaction = $this->session->userdata('transaction');
+        $_transaction = $this->component_transactions->Get($_cur_num);
 
         // // API Call
        
-        if(isset($_transaction[$_cur_num]) && !empty($_transaction[$_cur_num])){
+        if(isset($_transaction) && !empty($_transaction)){
             // read data from session
 
             switch($_option)
             {
                 case "preview":
                     $this->load->view('stocks/stocks-stocktake-print-view', [
-                        "data" => $_transaction[$_cur_num],
+                        "data" => $_transaction,
                         "preview" => true
                     ]);
                 break;
@@ -151,18 +149,18 @@ class ThePrint extends CI_Controller
     public function purchases($_option)
     {
         $_cur_num = $this->session->userdata('cur_purchases_num');
-        $_transaction = $this->session->userdata('transaction');
+        $_transaction = $this->component_transactions->Get($_cur_num);
 
         // // API Call
        
-        if(isset($_transaction[$_cur_num]) && !empty($_transaction[$_cur_num]))
+        if(isset($_transaction) && !empty($_transaction))
         {
             // read data from session
             switch($_option)
             {
                 case "preview":
                     $this->load->view('purchases/purchases-print-view', [
-                        "data" => $_transaction[$_cur_num],
+                        "data" => $_transaction,
                         "preview" => true
                     ]);
                 break;

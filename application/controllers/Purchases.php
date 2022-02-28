@@ -10,7 +10,7 @@ class Purchases extends CI_Controller
 	var $_profile = "";
 	var $_param = "";
     var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
-    
+    var $_API_HEADER;
     public function __construct()
 	{
         parent::__construct();
@@ -41,26 +41,10 @@ class Purchases extends CI_Controller
 		if(!empty($this->component_login->CheckToken()))
 		{
 			// API data
-			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
+			$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_HEADER').$this->_profile['username'].'/?lang='.$this->config->item('language'));
 			$this->component_api->CallGet();
-			$_API_EMP = $this->component_api->GetConfig("result");
-			$_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
-
-			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
-			$this->component_api->CallGet();
-			$_API_SHOP = $this->component_api->GetConfig("result");
-			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
-
-			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
-			$this->component_api->CallGet();
-			$_API_MENU = $this->component_api->GetConfig("result");
-			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
-			
-			$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_PREFIX'));
-			$this->component_api->CallGet();
-			$_API_PREFIX = $this->component_api->GetConfig("result");
-			$_API_PREFIX = !empty($_API_PREFIX['query']) ? $_API_PREFIX['query'] : [];
-			
+			$_API_HEADER = $this->component_api->GetConfig("result");
+			$this->_API_HEADER = !empty($_API_HEADER['query']) ? $_API_HEADER['query'] : ['employee' => "", 'menu' => "", "prefix", "dn"=> ["dn_num"=>"", "dn_prefix"=>""]];
 
 			// sidebar session
 			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
@@ -76,12 +60,12 @@ class Purchases extends CI_Controller
 			// header data
 			$this->_inv_header_param["topNav"] = [
 				"isLogin" => true,
-				"username" => $_API_EMP['username'],
-				"employee_code" => $_API_EMP['employee_code'],
-				"shop_code" => $_API_SHOP['shop_code'],
-				"shop_name" => $_API_SHOP['name'],
+				"username" => $this->_API_HEADER['employee']['username'],
+				"employee_code" => $this->_API_HEADER['employee']['employee_code'],
+				"shop_code" => $this->_API_HEADER['employee']['shop_code'],
+				"shop_name" => $this->_API_HEADER['employee']['shop_name'],
 				"today" => date("Y-m-d"),
-				"prefix" => $_API_PREFIX
+				"prefix" => $this->_API_HEADER['prefix']['prefix']
 			];
 			if(!empty($_query))
 			{
@@ -94,7 +78,7 @@ class Purchases extends CI_Controller
 				$this->session->set_userdata("login", $_login);
 			}
 			// fatch side bar API
-			$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
+			$this->component_sidemenu->SetConfig("nav_list", $this->_API_HEADER['menu']);
 			$this->component_sidemenu->SetConfig("active", $this->_param);
 			$this->component_sidemenu->Proccess();
 
@@ -129,31 +113,21 @@ class Purchases extends CI_Controller
 			$_GET['i-start-date'] = date("Y-m-d", strtotime('-5 days'));
 			$_GET['i-end-date'] = date("Y-m-d");
 		}
-		// if(!empty($_GET['i-num']))
-		// {
-		// 	$_GET['i-start-date'] = "";
-		// 	$_GET['i-end-date'] = "";
-		// 	$_GET['i-supp-code'] = "";
-		// }
-		// if(!empty($_GET['i-supp-code']))
-		// {
-		// 	$_GET['i-num'] = "";
-		// }
 		$_query = [
 			'i-num' => $this->input->get("i-num"),
 			'i-start-date' => $this->input->get('i-start-date'),
 			'i-end-date' => $this->input->get('i-end-date'),
-			'i-supp-code' => $this->input->get('i-supp-code')
+			'i-supp-code' => $this->input->get('i-supp-code'),
+			'page' => htmlspecialchars($this->_page),
+			'show' => htmlspecialchars($this->_default_per_page)
 		];
 
 		if(!empty($_query))
 		{
 			//Set user preference
-			$_query['page'] = htmlspecialchars($this->_page);
-			$_query['show'] = htmlspecialchars($this->_default_per_page);
-			$_q = $this->component_uri->QueryToString($_query);
+			$_q_str = $this->component_uri->QueryToString($_query);
 			$_login = $this->session->userdata['login'];
-			$_login['preference'] = $_q;
+			$_login['preference'] = $_q_str;
 			$this->session->set_userdata("login", $_login);
 
 			if(!empty($_query['i-supp-code']))
@@ -164,20 +138,32 @@ class Purchases extends CI_Controller
 			else
 			{
 				// fatch items API
-				$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER').$_q);
+				$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER').$_q_str);
 				//echo $this->config->item('URL_PURCHASES_ORDER').$_query;
 			}
 			$this->component_api->CallGet();
 			$_data = $this->component_api->GetConfig("result");
-			$_data = !empty($_data['query']) ? $_data['query'] : [];
 		}
+		// echo "<pre>";
+		// var_dump($_data);
+		// echo "</pre>";
 		
-		if(!empty($_data['Error']))
+		switch($_data["http_code"])
 		{
+			case 200:
+				$alert = "success";
+			break;
+			case 404:
+				$alert = "danger";
+			break;
+		}
+		if(!$_data['error']['code'] == "00000")
+		{
+			
 			$this->load->view("error-handle", [
 				"alertstyle" => "danger",
-				"code" => $_data['Code'],
-				"message" => $_data['Error']
+				"code" => $_data['error']['code'],
+				"message" => $_data['error']['message']
 			]);
 		}
 		else
@@ -195,7 +181,7 @@ class Purchases extends CI_Controller
 				]
 			]);
 			$this->load->view("purchases/purchases-list-view", [
-				"data" => $_data,
+				"data" => $_data['query'],
 				"submit_to" => base_url("/purchases/order/"),
 				"edit_url" => base_url("/purchases/order/edit/"),
 				"default_per_page" => $this->_default_per_page,
@@ -215,10 +201,10 @@ class Purchases extends CI_Controller
 	 */
 	public function donew()
 	{
-		if(!empty($this->session->userdata('transaction')))
-		{
-			$this->session->unset_userdata('transaction');
-		}
+		// if(!empty($this->session->userdata('transaction')))
+		// {
+		// 	$this->session->unset_userdata('transaction');
+		// }
 		$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_NEXT_NUM'));
 		$this->component_api->CallGet();
 		$_API_NEXT = $this->component_api->GetConfig("result");
@@ -232,14 +218,14 @@ class Purchases extends CI_Controller
 	public function docopy($_old_num)
 	{
 		$_transaction = [];
-		if(!empty($this->session->userdata('transaction')))
-		{
-			$this->session->unset_userdata('transaction');
-		}
+		// if(!empty($this->session->userdata('transaction')))
+		// {
+		// 	$this->session->unset_userdata('transaction');
+		// }
 		//fatch existing transaction
 		$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER').$_old_num);
 		$this->component_api->CallGet();
-		$_API_PURCHASES = json_decode($this->component_api->GetConfig("result"),true);
+		$_API_PURCHASES = $this->component_api->GetConfig("result");
 		$_API_PURCHASES = !empty($_API_PURCHASES['query']) ? $_API_PURCHASES['query'] : "";
 		// get next transaction number
 		$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_NEXT_NUM'));
@@ -272,57 +258,47 @@ class Purchases extends CI_Controller
 		if(!empty($_num))
 		{
 			$_show_discard_btn = true;
-			// create invoice	
-			if((substr($_num , 0 , 2) === $this->_inv_header_param["topNav"]['prefix']))
+
+			// For back button after submit to tender page
+			if(!empty($this->session->userdata('transaction')) && !empty($this->session->userdata('cur_purchasesnum')))
 			{
-				// For back button after submit to tender page
-				if(!empty($this->session->userdata('transaction')) && !empty($this->session->userdata('cur_purchasesnum')))
-				{
-					$_num = $this->session->userdata('cur_purchasesnum');
-					$_transaction = $this->session->userdata('transaction');
-				}
-				// For new create
-				else 
-				{
-					$this->session->set_userdata('cur_purchasesnum',$_num);
-					$this->session->set_userdata('transaction',$_transaction);
-					$_transaction[$_num]['refernum'] = "";
-					$_transaction[$_num]['items'] = [];
-					$_transaction[$_num]['supp_code'] = "";
-					$_transaction[$_num]['supp_name'] = "";
-					$_transaction[$_num]['paymentmethod'] = "";
-					$_transaction[$_num]['paymentmethodname'] = "";
-					$_transaction[$_num]['remark'] = "";
-				}
+				$_num = $this->session->userdata('cur_purchasesnum');
+				$_transaction = $this->session->userdata('transaction');
 			}
+			// For new create
+			else 
+			{
+				$_transaction[$_num]['refernum'] = "";
+				$_transaction[$_num]['items'] = [];
+				$_transaction[$_num]['supp_code'] = "";
+				$_transaction[$_num]['supp_name'] = "";
+				$_transaction[$_num]['paymentmethod'] = "";
+				$_transaction[$_num]['paymentmethodname'] = "";
+				$_transaction[$_num]['remark'] = "";
+				$this->session->set_userdata('cur_purchasesnum',$_num);
+				$this->session->set_userdata('transaction',$_transaction);
+			}
+
 		 // echo "<pre>";
 		 // var_dump($_SESSION);
 		 // echo "</pre>";
  
 			// fatch items API
-			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
+			$this->component_api->SetConfig("url", $this->config->item('URL_MASTER'));
 			$this->component_api->CallGet();
-			$_API_ITEMS = $this->component_api->GetConfig("result");
-			$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
+			$_API_MASTER = $this->component_api->GetConfig("result");
 
-			// fatch shop code and shop detail API
-			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
-			$this->component_api->CallGet();
-			$_API_SHOPS = $this->component_api->GetConfig("result");
-			$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
-
-			// fatch customer API
-			$this->component_api->SetConfig("url", $this->config->item('URL_SUPPLIERS'));
-			$this->component_api->CallGet();
-			$_API_SUPPLIERS = $this->component_api->GetConfig("result");
-			$_API_SUPPLIERS = !empty($_API_SUPPLIERS['query']) ? $_API_SUPPLIERS['query'] : "";
-
-			// fatch payment method API
-			$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
-			$this->component_api->CallGet();
-			$_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
-			$_API_PAYMENTS = !empty($_API_PAYMENTS['query']) ? $_API_PAYMENTS['query'] : "";
-			
+			if(empty($_API_MASTER['query']))
+			{
+				$_API_MASTER['items'] = [];
+				$_API_MASTER['shops'] = [];
+				$_API_MASTER['customers'] =[];
+				$_API_MASTER['paymentmethod'] = [];
+			}
+			else
+			{
+				$_API_MASTER = $_API_MASTER['query'];
+			}
 
 			// function bar with next, preview and save button
 
@@ -344,16 +320,16 @@ class Purchases extends CI_Controller
 				"purchasesnum" => $_num,
 				"date" => date("Y-m-d H:i:s"),
 				"ajax" => [
-					"items" => $_API_ITEMS,
-					"shop_code" => $_API_SHOPS,
-					"suppliers" => $_API_SUPPLIERS,
-					"tender" => $_API_PAYMENTS
+					"items" => $_API_MASTER['items'],
+					"shop_code" => $_API_MASTER['shops'],
+					"suppliers" => $_API_MASTER['suppliers'],
+					"tender" => $_API_MASTER['paymentmethod']
 				],
 				"data" => $_transaction[$_num],
 				"default_per_page" => $this->_default_per_page,
 				"function_bar" => $this->load->view('function-bar', [
 					"btn" => [
-						["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "new", "url"=>base_url('/'), "style" => "", "show" => true]
+						["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "new", "url"=>base_url('/suppliers/?new=1'), "style" => "", "show" => true]
 					]
 				],true)
 			]);
@@ -431,56 +407,45 @@ class Purchases extends CI_Controller
 	 */
 	public function save()
 	{
-		$_transaction = [];
-		$_cur_num = "";
+		$_login = $this->session->userdata('login');
 		$_cur_num = $this->session->userdata('cur_purchasesnum');
 		$_transaction = $this->session->userdata('transaction');
-		$_login = $this->session->userdata('login');
 		$alert = "danger";
 		$this->load->view('function-bar', [
 			"btn" => [
-				["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/purchases/order/'.$_login['preference']) ,"style" => "","show" => true],
-				["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "donew", "url"=> base_url('/purchases/order/donew'),"style" => "","show" => true]
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/purchases/order/'.$_login['preference']) ,"style" => "","show" => true],
+				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "donew", "url"=> base_url('/purchases/order/donew'),"style" => "","show" => true]
 			]
 		]);
 
 		if(!empty($_transaction[$_cur_num]) && isset($_transaction[$_cur_num]))
 		{
 			$_api_body = json_encode($_transaction[$_cur_num],true);
-			//echo $_api_body;
-			if($_api_body != null)
+			// echo "<pre>";
+			// var_dump($_api_body);
+			// echo "</pre>";
+
+			// save invoice 
+			$this->component_api->SetConfig("body", $_api_body);
+			$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER'));
+			$this->component_api->CallPost();
+			$result = $this->component_api->GetConfig("result");
+			
+			switch($result["http_code"])
 			{
-				// save invoice 
-				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER'));
-				$this->component_api->CallPost();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
-				
-				if(isset($result["error"]['code']))
-				{
-					switch($result["error"]['code'])
-					{
-						case "00000":
-							$alert = "success";
-						break;
-					}
-					$this->load->view('error-handle', [
-						'message' => $result["error"]['message'], 
-						'code'=> $result["error"]['code'], 
-						'alertstyle' => $alert
-					]);
-				}
-				else
-				{
-					$result["error"]['code'] = "99999";
-					$result["error"]['message'] = "API-Error"; 
-				}
-				unset($_transaction[$_cur_num]);
-				$this->session->set_userdata('cur_purchasesnum',"");
-				$this->session->set_userdata('transaction',$_transaction);
-				
-				header("Refresh: 5; url='".base_url('purchases/order')."'");
-		   }
+				case 200:
+					$alert = "success";
+				break;
+				case 404:
+					$alert = "danger";
+				break;
+			}
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+
 		}
 		else
 		{
@@ -493,6 +458,12 @@ class Purchases extends CI_Controller
 			   'alertstyle' => $alert
 		   ]);
 		}
+						
+		unset($_transaction[$_cur_num]);
+		$this->session->set_userdata('cur_purchasesnum',"");
+		$this->session->set_userdata('transaction',[]);
+		
+		header("Refresh: 5; url='".base_url('purchases/order'.$_login["preference"])."'");
 	}
 
 	/**
@@ -513,14 +484,20 @@ class Purchases extends CI_Controller
 			// Check Quotation exist
 			$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER').$_num);
 			$this->component_api->CallGet();
-			$_transaction = json_decode($this->component_api->GetConfig("result"),true);
+			$_transaction = $this->component_api->GetConfig("result");
 			$_transaction = $_transaction != null ? $_transaction : "";
+			
+			// set current invoice number to session
+			$this->session->set_userdata('cur_purchasesnum',$_num);
+			$this->session->set_userdata('transaction',$_transaction['query']);
 			
 			// echo "<pre>";
 			// var_dump($_transaction);
 			// echo "</pre>";
 			if(!empty($_transaction))
 			{	
+				$_login = $this->session->userdata('login');
+
 				// already has GRN so transaction cannot be void
 				if($_transaction['query']['has_grn'] > 0)
 				{
@@ -541,33 +518,25 @@ class Purchases extends CI_Controller
 				{
 					$_grn_btn_name = $this->lang->line("function_good_received");
 				}
-				// set current invoice number to session
-				$this->session->set_userdata('cur_purchasesnum',$_num);
-				$this->session->set_userdata('transaction',$_transaction);
-				$_login = $this->session->userdata('login');
+				
 
 				if($_transaction['has'])
 				{
 					// fatch items API
-					$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
+					$this->component_api->SetConfig("url", $this->config->item('URL_MASTER'));
 					$this->component_api->CallGet();
-					$_API_ITEMS = $this->component_api->GetConfig("result");
-					$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
-					// fatch shop code and shop detail API
-					$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
-					$this->component_api->CallGet();
-					$_API_SHOPS = $this->component_api->GetConfig("result");
-					$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
-					// fatch customer API
-					$this->component_api->SetConfig("url", $this->config->item('URL_SUPPLIERS'));
-					$this->component_api->CallGet();
-					$_API_SUPPLIERS = $this->component_api->GetConfig("result");
-					$_API_SUPPLIERS = !empty($_API_SUPPLIERS['query']) ? $_API_SUPPLIERS['query'] : "";
-					// fatch payment method API
-					$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
-					$this->component_api->CallGet();
-					$_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
-					$_API_PAYMENTS = !empty($_API_PAYMENTS['query']) ? $_API_PAYMENTS['query'] : "";
+					$_API_MASTER = $this->component_api->GetConfig("result");
+					if(empty($_API_MASTER['query']))
+					{
+						$_API_MASTER['items'] = [];
+						$_API_MASTER['shops'] = [];
+						$_API_MASTER['customers'] =[];
+						$_API_MASTER['paymentmethod'] = [];
+					}
+					else
+					{
+						$_API_MASTER = $_API_MASTER['query'];
+					}
 
 					// function bar with next, preview and save button
 					$this->load->view('function-bar', [
@@ -591,10 +560,10 @@ class Purchases extends CI_Controller
 						"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
 						"date" => date("Y-m-d H:i:s"),
 						"ajax" => [
-							"items" => $_API_ITEMS,
-							"shop_code" => $_API_SHOPS,
-							"suppliers" => $_API_SUPPLIERS,
-							"tender" => $_API_PAYMENTS
+							"items" => $_API_MASTER['items'],
+							"shop_code" => $_API_MASTER['shops'],
+							"customers" => $_API_MASTER['customers'],
+							"tender" => $_API_MASTER['paymentmethod']
 						],
 						"data" => $_transaction['query'],
 						"show" => $_show_void_btn,
@@ -628,51 +597,40 @@ class Purchases extends CI_Controller
 		$alert = "danger";
 		$this->load->view('function-bar', [
 			"btn" => [
-				["name" => "Back", "type"=>"button", "id" => "back", "url"=> base_url('/purchases/order/'.$_login['preference']) ,"style" => "","show" => true],
-				["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "donew", "url"=> base_url('/purchases/order/donew'),"style" => "","show" => true],
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/purchases/order/'.$_login['preference']) ,"style" => "","show" => true],
+				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "donew", "url"=> base_url('/purchases/order/donew'),"style" => "","show" => true],
 			]
 		]);
 		if(!empty($_transaction[$_cur_num]) && isset($_transaction[$_cur_num]))
 		{
 			$_api_body = json_encode($_transaction[$_cur_num],true);
 			//  echo $_api_body;
-			if($_api_body != null)
+			// echo "<pre>";
+			// echo ($_api_body);
+			// echo "</pre>";
+			// save invoice 
+			$this->component_api->SetConfig("body", $_api_body);
+			$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER').$_cur_num);
+			$this->component_api->CallPatch();
+			$result = $this->component_api->GetConfig("result");
+			
+			switch($result["http_code"])
 			{
-				// save invoice 
-				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER').$_cur_num);
-				$this->component_api->CallPatch();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
-				
-				if(isset($result["error"]['code']))
-				{
-					switch($result["error"]['code'])
-					{
-						case "00000":
-							$alert = "success";
-						break;
-					}
-					$this->load->view('error-handle', [
-						'message' => $result["error"]['message'], 
-						'code'=> $result["error"]['code'], 
-						'alertstyle' => $alert
-					]);
-				}
-				else
-				{
-					$result["error"]['code'] = "99999";
-					$result["error"]['message'] = "API-Error"; 
-				}
-				unset($_transaction[$_cur_num]);
-				$this->session->set_userdata('cur_purchasesnum',"");
-				$this->session->set_userdata('transaction',$_transaction);
-				
-				header("Refresh: 5; url='".base_url('purchases/order')."'");
-		   }
+				case 200:
+					$alert = "success";
+				break;
+				case 404:
+					$alert = "danger";
+				break;
+			}
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
 		}
 		else
 		{
-		   $alert = "danger";
 		   $result["error"]['code'] = "90000";
 		   $result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again"; 
 		   $this->load->view('error-handle', [
@@ -681,6 +639,11 @@ class Purchases extends CI_Controller
 			   'alertstyle' => $alert
 		   ]);
 		}
+		unset($_transaction[$_cur_num]);
+		$this->session->set_userdata('cur_purchasesnum',"");
+		$this->session->set_userdata('transaction',$_transaction);
+		
+		header("Refresh: 5; url='".base_url('purchases/order')."'");
 	}
 
 	/**
@@ -713,8 +676,9 @@ class Purchases extends CI_Controller
 	*/
 	public function savevoid($_num = "")
 	{
+		$alert = "danger";
 		$_login = $this->session->userdata('login');
-		
+		$result = [];
 		$this->load->view('function-bar', [
 			"btn" => [
 				[
@@ -731,23 +695,24 @@ class Purchases extends CI_Controller
 		{
 			$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER').$_num);
 			$this->component_api->CallDelete();
-			$result = json_decode($this->component_api->GetConfig("result"),true);
-			if(isset($result["error"]))
+			$result = $this->component_api->GetConfig("result");
+
+			switch($result["http_code"])
 			{
-				$alert = "danger";
-				switch($result["error"]['code'])
-				{
-					case "00000":
-						$alert = "success";
-					break;
-				}
-				$this->load->view('error-handle', [
-					'message' => $result["error"]['message'], 
-					'code'=> $result["error"]['code'], 
-					'alertstyle' => $alert
-				]);
-			}
-			header("Refresh: 5; url='".base_url('purchases/order')."'");
+				case 200:
+					$alert = "success";
+				break;
+				case 404:
+					$alert = "danger";
+				break;
+			}			
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'],
+				'alertstyle' => $alert
+			]);
+
+			//header("Refresh: 5; url='".base_url('purchases/order'.$_login["preference"])."'");
 		}
 	}
 	/**
@@ -768,22 +733,27 @@ class Purchases extends CI_Controller
 			$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_GRN').$_num);
 			$this->component_api->CallGet();
 			$_API_GET_GRN = $this->component_api->GetConfig("result");
+			// echo "<pre>";
+			// var_dump($_API_GET_GRN);
+			// echo "</pre>";
 			$_API_GET_GRN = !empty($_API_GET_GRN['query']) ? $_API_GET_GRN['query'] : "";
 			
-			// send settlement 
-			if($_API_GET_GRN['settlement'])
-			{
-				$this->session->set_userdata('transaction', $_API_GET_GRN);
-				redirect(base_url("purchases/order/settlement/".$_num),"refresh");
-			}
-			
-			$_transaction[$_API_NEXT] = $_API_GET_GRN;
-			$_transaction[$_API_NEXT]['trans_code'] = $_API_NEXT;
-			$_transaction[$_API_NEXT]['po_num'] = $_num;
-			$this->session->set_userdata('cur_grnnum', $_API_NEXT);
-			$this->session->set_userdata('transaction', $_transaction);
-			redirect(base_url("stocks/grn/create/".$_API_NEXT."/".$_num),"refresh");
-		} 
+			if(!empty($_API_GET_GRN)){
+				// send settlement 
+				if($_API_GET_GRN['settlement'])
+				{
+					$this->session->set_userdata('transaction', $_API_GET_GRN);
+					redirect(base_url("purchases/order/settlement/".$_num),"refresh");
+				}
+
+				$_transaction[$_API_NEXT] = $_API_GET_GRN;
+				$_transaction[$_API_NEXT]['trans_code'] = $_API_NEXT;
+				$_transaction[$_API_NEXT]['po_num'] = $_num;
+				$this->session->set_userdata('cur_grnnum', $_API_NEXT);
+				$this->session->set_userdata('transaction', $_transaction);
+			}			
+		}
+		redirect(base_url("stocks/grn/create/".$_API_NEXT."/".$_num),"refresh");
 	}
 	/**
 	 * Settlement

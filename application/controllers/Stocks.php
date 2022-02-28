@@ -10,7 +10,7 @@ class Stocks extends CI_Controller
 	var $_profile = "";
 	var $_param = "";
     var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
-    
+    var $_API_HEADER;
     public function __construct()
 	{
         parent::__construct();
@@ -41,19 +41,23 @@ class Stocks extends CI_Controller
 		if(!empty($this->component_login->CheckToken()))
 		{
 			// API data
-			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
-			$this->component_api->CallGet();
-			$_API_EMP = $this->component_api->GetConfig("result");
-			$_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
-			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
-			$this->component_api->CallGet();
-			$_API_SHOP = $this->component_api->GetConfig("result");
-			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
-			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
-			$this->component_api->CallGet();
-			$_API_MENU = $this->component_api->GetConfig("result");
-			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
+			// $this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
+			// $this->component_api->CallGet();
+			// $_API_EMP = $this->component_api->GetConfig("result");
+			// $_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
+			// $this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
+			// $this->component_api->CallGet();
+			// $_API_SHOP = $this->component_api->GetConfig("result");
+			// $_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
+			// $this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
+			// $this->component_api->CallGet();
+			// $_API_MENU = $this->component_api->GetConfig("result");
+			// $_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
 
+			$this->component_api->SetConfig("url", $this->config->item('URL_STOCKS_HEADER').$this->_profile['username'].'/?lang='.$this->config->item('language'));
+			$this->component_api->CallGet();
+			$_API_HEADER = $this->component_api->GetConfig("result");
+			$this->_API_HEADER = !empty($_API_HEADER['query']) ? $_API_HEADER['query'] : ['employee' => "", 'menu' => "", "prefix", "dn"=> ["dn_num"=>"", "dn_prefix"=>""]];
 			// sidebar session
 			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
 			switch($this->_param)
@@ -86,10 +90,10 @@ class Stocks extends CI_Controller
 			// header data
 			$this->_inv_header_param["topNav"] = [
 				"isLogin" => true,
-				"username" => $_API_EMP['username'],
-				"employee_code" => $_API_EMP['employee_code'],
-				"shop_code" => $_API_SHOP['shop_code'],
-				"shop_name" => $_API_SHOP['name'],
+				"username" => $this->_API_HEADER['employee']['username'],
+				"employee_code" => $this->_API_HEADER['employee']['employee_code'],
+				"shop_code" => $this->_API_HEADER['employee']['shop_code'],
+				"shop_name" => $this->_API_HEADER['employee']['shop_name'],
 				"today" => date("Y-m-d")
 			];
 			if(!empty($_query))
@@ -103,7 +107,7 @@ class Stocks extends CI_Controller
 				$this->session->set_userdata("login", $_login);
 			}
 			// fatch side bar API
-			$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
+			$this->component_sidemenu->SetConfig("nav_list", $this->_API_HEADER['menu']);
 			$this->component_sidemenu->SetConfig("active", $this->_param);
 			$this->component_sidemenu->Proccess();
 
@@ -294,15 +298,15 @@ class Stocks extends CI_Controller
 	 */
 	public function donewgrn()
 	{
-		if(!empty($this->session->userdata('transaction')))
-		{
-			$this->session->unset_userdata('transaction');
-		}
+		// if(!empty($this->session->userdata('transaction')))
+		// {
+		// 	$this->session->unset_userdata('transaction');
+		// }
 		$this->component_api->SetConfig("url", $this->config->item('URL_PO_GRN_NEXT_NUM'));
 		$this->component_api->CallGet();
-		$_API_GRN_NUM = $this->component_api->GetConfig("result");
-		$_API_GRN_NUM = !empty($_API_GRN_NUM['query']) ? $_API_GRN_NUM['query'] : "";
-		redirect(base_url("stocks/grn/create/".$_API_GRN_NUM),"refresh");
+		$_API_GET_GRN = $this->component_api->GetConfig("result");
+		$_API_GET_GRN = !empty($_API_GET_GRN['query']) ? $_API_GET_GRN['query'] : "";
+		redirect(base_url("stocks/grn/create/".$_API_GET_GRN),"refresh");
 	}
 	
 	/**
@@ -317,53 +321,46 @@ class Stocks extends CI_Controller
 		{
 			$_show_discard_btn = true;
 			// API call
-			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
+			// fatch items API
+			$this->component_api->SetConfig("url", $this->config->item('URL_MASTER'));
 			$this->component_api->CallGet();
-			$_API_ITEMS = $this->component_api->GetConfig("result");
-			$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
-			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
-			$this->component_api->CallGet();
-			$_API_SHOPS = $this->component_api->GetConfig("result");
-			$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : "";
-			$this->component_api->SetConfig("url", $this->config->item('URL_SUPPLIERS'));
-			$this->component_api->CallGet();
-			$_API_SUPPLIERS = $this->component_api->GetConfig("result");
-			$_API_SUPPLIERS = !empty($_API_SUPPLIERS['query']) ? $_API_SUPPLIERS['query'] : "";
-			// fatch payment method API
-			$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
-			$this->component_api->CallGet();
-			$_API_PAYMENTS = json_decode($this->component_api->GetConfig("result"),true);
-			$_API_PAYMENTS = !empty($_API_PAYMENTS['query']) ? $_API_PAYMENTS['query'] : "";
-			$this->component_api->SetConfig("url", $this->config->item('URL_PO_GRN_PREFIX'));
-			$this->component_api->CallGet();
-			$_API_GRN_PREFIX = json_decode($this->component_api->GetConfig("result"),true);
-			$_API_GRN_PREFIX = !empty($_API_GRN_PREFIX['query']) ? $_API_GRN_PREFIX['query'] : "";
+			$_API_MASTER = $this->component_api->GetConfig("result");
 
-			if((substr($_grn_num , 0 , 3) === $_API_GRN_PREFIX))
+			if(empty($_API_MASTER['query']))
 			{
-				// For back button after submit to tender page
-				if(!empty($this->session->userdata('transaction')) && !empty($this->session->userdata('cur_grnnum')))
-				{
-					$_grn_num = $this->session->userdata('cur_grnnum');
-					$_transaction = $this->session->userdata('transaction');
-					$_transaction[$_grn_num]['prefix'] = $_API_GRN_PREFIX;
-				}
-				// For new create
-				else 
-				{
-					$_transaction[$_grn_num]['items'] = [];
-					$_transaction[$_grn_num]['po_num'] = "";
-					$_transaction[$_grn_num]['supp_code'] = "";
-					$_transaction[$_grn_num]['supp_name'] = "";
-					$_transaction[$_grn_num]['paymentmethod'] = "";
-					$_transaction[$_grn_num]['paymentmethodname'] = "";
-					$_transaction[$_grn_num]['remark'] = "";
-					$_transaction[$_grn_num]['prefix'] = $_API_GRN_PREFIX;
-					
-					$this->session->set_userdata('cur_grnnum',$_grn_num);
-					$this->session->set_userdata('transaction',$_transaction);
-				}
+				$_API_MASTER['items'] = [];
+				$_API_MASTER['shops'] = [];
+				$_API_MASTER['customers'] =[];
+				$_API_MASTER['paymentmethod'] = [];
 			}
+			else
+			{
+				$_API_MASTER = $_API_MASTER['query'];
+			}
+
+			// For back button after submit to tender page
+			if(!empty($this->session->userdata('transaction')) && !empty($this->session->userdata('cur_grnnum')))
+			{
+				$_grn_num = $this->session->userdata('cur_grnnum');
+				$_transaction = $this->session->userdata('transaction');
+				$_transaction[$_grn_num]['prefix'] = $_API_GRN_PREFIX;
+			}
+			// For new create
+			else 
+			{
+				$_transaction[$_grn_num]['items'] = [];
+				$_transaction[$_grn_num]['po_num'] = "";
+				$_transaction[$_grn_num]['supp_code'] = "";
+				$_transaction[$_grn_num]['supp_name'] = "";
+				$_transaction[$_grn_num]['paymentmethod'] = "";
+				$_transaction[$_grn_num]['paymentmethodname'] = "";
+				$_transaction[$_grn_num]['remark'] = "";
+				$_transaction[$_grn_num]['prefix'] = $_API_GRN_PREFIX;
+				
+				$this->session->set_userdata('cur_grnnum',$_grn_num);
+				$this->session->set_userdata('transaction',$_transaction);
+			}
+
 
 		// echo "<pre>";
 		// var_dump($_transaction);
@@ -390,10 +387,10 @@ class Stocks extends CI_Controller
 				"grn_num" => $_grn_num,
 				"date" => date("Y-m-d H:i:s"),
 				"ajax" => [
-					"items" => $_API_ITEMS,
-					"shop_code" => $_API_SHOPS,
-					"suppliers" => $_API_SUPPLIERS,
-					"tender" => $_API_PAYMENTS
+					"items" => $_API_MASTER['items'],
+					"shop_code" => $_API_MASTER['shops'],
+					"customers" => $_API_MASTER['customers'],
+					"tender" => $_API_MASTER['paymentmethod']
 				],
 				"data" => $_transaction[$_grn_num],
 				"function_bar" => $this->load->view('function-bar', [
@@ -605,10 +602,10 @@ class Stocks extends CI_Controller
 	public function donewadj($_trans_code = "")
 	{
 		$_transaction = [];
-		if(!empty($this->session->userdata('transaction')))
-		{
-			$this->session->unset_userdata('transaction');
-		}
+		// if(!empty($this->session->userdata('transaction')))
+		// {
+		// 	$this->session->unset_userdata('transaction');
+		// }
 		
 		$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ADJ_NEXT_NUM'));
 		$this->component_api->CallGet();
@@ -874,18 +871,18 @@ class Stocks extends CI_Controller
 	public function donew_stocktake()
 	{
 		$_transaction = [];
-		if(!empty($this->session->userdata('transaction')))
-		{
-			$this->session->unset_userdata('transaction');
-		}
+		// if(!empty($this->session->userdata('transaction')))
+		// {
+		// 	$this->session->unset_userdata('transaction');
+		// }
 		
 		$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ST_NEXT_NUM'));
 		$this->component_api->CallGet();
 		$_API = $this->component_api->GetConfig("result");
 		$_API = !empty($_API['query']) ? $_API['query'] : "";
 
-		$this->session->set_userdata('cur_stocktake_num',$_API);
-		$this->session->set_userdata('transaction',$_transaction);
+		// $this->session->set_userdata('cur_stocktake_num',$_API);
+		// $this->session->set_userdata('transaction',$_transaction);
 	
 		redirect(base_url("stocks/stocktake/create/".$_API),"refresh");
 	}
@@ -909,26 +906,23 @@ class Stocks extends CI_Controller
 			$_API_ITEMS = $this->component_api->GetConfig("result");
 			$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : "";
 
-			if((substr($_stocktake_num , 0 , 2) === $_API_PREFIX))
+			// For back button after submit to tender page
+			if(!empty($this->session->userdata('transaction')) && !empty($this->session->userdata('cur_stocktake_num')))
 			{
-				
-				// For back button after submit to tender page
-				if(!empty($this->session->userdata('transaction')) && !empty($this->session->userdata('cur_stocktake_num')))
-				{
-					$_stocktake_num = $this->session->userdata('cur_stocktake_num');
-					$_transaction = $this->session->userdata('transaction');
-				}
-				// For new create
-				else 
-				{
-					$_transaction[$_stocktake_num]['trans_code'] = $_stocktake_num;
-					$_transaction[$_stocktake_num]['date'] = date("Y-m-d H:i:s");
-					$_transaction[$_stocktake_num]['items'] = [];
-					$_transaction[$_stocktake_num]['remark'] = "";	
-					$this->session->set_userdata('cur_stocktake_num',$_stocktake_num);
-					
-				}
+				$_stocktake_num = $this->session->userdata('cur_stocktake_num');
+				$_transaction = $this->session->userdata('transaction');
 			}
+			// For new create
+			else 
+			{
+				$_transaction[$_stocktake_num]['trans_code'] = $_stocktake_num;
+				$_transaction[$_stocktake_num]['date'] = date("Y-m-d H:i:s");
+				$_transaction[$_stocktake_num]['items'] = [];
+				$_transaction[$_stocktake_num]['remark'] = "";	
+				$this->session->set_userdata('cur_stocktake_num',$_stocktake_num);
+				
+			}
+		
 			$this->load->view('function-bar', [
 				"btn" => [
 					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/stocks') ,"style" => "","show" => true],
