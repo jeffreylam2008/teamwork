@@ -357,7 +357,16 @@
         render()
         recalc()
     }
+    function doUnLoad(){
+        // while unload then redirect
+        $(window).on('unload', function(e){
+            e.preventDefault();        
+            window.location.replace("<?=$discard_url?>");
+            window.onbeforeunload = null;
+        });
+    }
     $(window).on('beforeunload', function(){
+        doUnLoad();
         return "Any changes will be lost";
     });
     $(document).on("submit", "form", function(event){

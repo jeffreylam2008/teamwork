@@ -462,14 +462,30 @@ extract($data);
             }
         }
     }
+    function doUnLoad(){
+        // while unload then redirect
+        $(window).on('unload', function(e){
+            e.preventDefault();        
+            window.location.replace("<?=$discard_url?>");
+            window.onbeforeunload = null;
+        });
+    }
+    // before page unload
     $(window).on('beforeunload', function(){
-        return "lost"; 
+        doUnLoad();
+        return "Any changes will be lost";
     });
+    
+    // free unload on submit button  
     $(document).on("submit", "form", function(event){
-        // disable unload warning
         $(window).off('beforeunload');
     });
-    //construct
+
+    $("#discard").on("click", function(){
+        $(window).off('beforeunload');
+    });
+
+    // constructor call function
     $(document).ready(function(){
         refresh()
         render()
@@ -663,6 +679,4 @@ extract($data);
             $("#this-form").submit();
         }
     });
-
-    
 </script>

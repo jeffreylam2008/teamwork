@@ -147,17 +147,17 @@ class Stocks extends CI_Controller
 			'i-start-date' => $this->input->get('i-start-date'),
 			'i-end-date' => $this->input->get('i-end-date'),
 			'i-cust-code' => $this->input->get('i-cust-code'),
-			'i-supp-code' => $this->input->get('i-supp-code')
+			'i-supp-code' => $this->input->get('i-supp-code'),
+			'page' => htmlspecialchars($this->_page),
+			'show' => htmlspecialchars($this->_default_per_page),
 		];
 		
 		if(!empty($_query))
 		{
 			//Set user preference
-			$_query['page'] = htmlspecialchars($this->_page);
-			$_query['show'] = htmlspecialchars($this->_default_per_page);
-			$_q = $this->component_uri->QueryToString($_query);
+			$_q_str = $this->component_uri->QueryToString($_query);
 			$_login = $this->session->userdata('login');
-			$_login['preference'] = $_q;
+			$_login['preference'] = $_q_str;
 			$this->session->set_userdata("login", $_login);
 			
 			// echo "<pre>";
@@ -178,22 +178,21 @@ class Stocks extends CI_Controller
 			else
 			{
 				// fatch items API
-				$this->component_api->SetConfig("url", $this->config->item('URL_STOCKS').$_q);
+				$this->component_api->SetConfig("url", $this->config->item('URL_STOCKS').$_q_str);
 			}
 			$this->component_api->CallGet();
 			$_data = $this->component_api->GetConfig("result");
-			$_data = $_data != null ? $_data : "";
 		}
 		
-			// echo "<pre>";
-			// var_dump($_data);
-			// echo "</pre>";
-		if(!empty($_data['Error']))
+		// echo "<pre>";
+		// var_dump($_data);
+		// echo "</pre>";
+		if(!$_data['error']['code'] == "00000")
 		{
 			$this->load->view("error-handle", [
 				"alertstyle" => "danger",
-				"code" => $_data['Code'],
-				"message" => $_data['Error']
+				"code" => $_data['error']['code'],
+				"message" => $_data['error']['message']
 			]);
 		}
 		else

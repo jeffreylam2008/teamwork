@@ -75,7 +75,7 @@
             foreach($data as $key => $val)
             {
                 echo "<tr>";
-                echo "<td><a href='".$url.$val['trans_code']."'>".$val['trans_code']."</a></td>";
+                echo "<td><a href='".$edit_url.$val['trans_code']."'>".$val['trans_code']."</a></td>";
                 echo "<td>(".$val['shop_code'].") - ".$val['shop_name']."</td>";
                 echo "<td>(".$val['cust_code'].") - ".$val['cust_name']."</td>";
                 echo "<td>".$val['payment_method']."</td>";

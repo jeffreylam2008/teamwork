@@ -104,6 +104,13 @@
 </div>
 
 <script>
+    function doUnLoad(){
+        $(window).on('unload', function(e){
+            e.preventDefault();        
+            window.location.replace("<?=$discard_url?>");
+            window.onbeforeunload = null;
+        });
+    }
 
     $("#preview").on("click",function(){
         window.open('<?=$preview_url?>', '_blank', 'location=yes,height=1000,width=1100,scrollbars=yes,status=yes');
@@ -114,5 +121,16 @@
     $("#reprint").on("click",function(){
         window.open('<?=$print_url?>', '_blank', 'location=yes,height=1000,width=1100,scrollbars=yes,status=yes');
     })
+    // before page unload
+    $(window).on('beforeunload', function(){
+        doUnLoad();
+        return "Any changes will be lost";
+    });
 
+
+    // the button to free page unload
+    $("#back, #save, #preview, #reprint, #discard").on("click", function(){
+        $(window).off('beforeunload');
+    });
+   
 </script>

@@ -70,25 +70,31 @@ class Component_Sidemenu
     {  
         foreach ($rows as $row)
         {
+
             if ($row['parent_id'] == $parent){
-                $result[$row['id']] = $row;
-                
+                $result[$row['order']] = $row;
+
                 // If the result same as current URI 
-                if(strcmp($result[$row['id']]['param'], $set_active) == 0 )
+                if(strcmp($result[$row['order']]['param'], $set_active) == 0 )
                 {
                     // Set current
                     $this->config['current'] = $row['id'];
                 }
 
-                if ($this->has_children($rows,$row['id'])){
-                    $result[$row['id']]['child'] = $this->build_menu($rows,$row['id'],$set_active);
-                    $result[$row['id']]['isParent'] = false;
+                if ($this->has_children($rows,$row['id']))
+                {
+                    $result[$row['order']]['child'] = $this->build_menu($rows,$row['id'],$set_active);
+                    $result[$row['order']]['isParent'] = false;
                 }
-                else{
-                    $result[$row['id']]['isParent'] = true;
+                else
+                {
+                    $result[$row['order']]['isParent'] = true;
                 }
-            }
+            }   
         }
+        // echo "<pre>";
+        // var_dump($result);
+        // echo "</pre>";
         return $result;
     }
     /**

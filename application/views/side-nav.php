@@ -17,7 +17,6 @@
 
     function traversal($sideNav, $path, $param=""){
         $result = "";
-        
         foreach($sideNav as $key => $val)
         {
             // one and many item on menu with Parent and Children
@@ -42,7 +41,8 @@
                 {
                     $result .= "<div class='sub collapse' id='".$val["name"]."'>";
                 }
-                $result .= traversal($val["child"],$path, $param );
+
+                $result .= traversal($val["child"],$path, $param);
                 $result .= "</div>";
             }
             // Single item on menu with no Children

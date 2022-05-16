@@ -5,11 +5,17 @@
         <!--</div> end of row -->
         <?php
         if($this->config->item("DEBUG_MODE")){
+           
+            echo $this->component_network->GetIP();
+
+            echo "<br>";
+            echo "<pre>";
+            var_dump($_COOKIE);
+            echo "</pre>";
+
             echo "<pre>";
             var_dump($_SESSION);
             echo "</pre>";
-
-            echo $this->component_network->GetIP();
         }
             
         ?>

@@ -11,13 +11,15 @@ class Invoices extends CI_Controller
 	var $_param = "";
 	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
 	var $_API_HEADER;
+
 	public function __construct()
 	{
 		parent::__construct();
-		unset($_SESSION['transaction']);
+
 		// enable application cache 
 		// $this->component_master->Init();
 		// $this->_master = $this->component_master->FatehAll();  
+
 		
 		$_query = $this->input->get();
 		$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
@@ -40,13 +42,12 @@ class Invoices extends CI_Controller
 			$this->_profile = $this->session->userdata['login']['profile'];
 		}
 
-		// API call
+		// load library
 		$this->load->library("Component_Login",[$this->_token, "invoices/list"]);
-
+		
 		// // login session
 		if(!empty($this->component_login->CheckToken()))
 		{
-
 			// API data
 			$this->component_api->SetConfig("url", $this->config->item('URL_INVOICES_HEADER').$this->_profile['username'].'/?lang='.$this->config->item('language'));
 			$this->component_api->CallGet();
@@ -57,22 +58,13 @@ class Invoices extends CI_Controller
 			// var_dump($_API_HEADER);
 			// echo "/<pre>";
 
-			// from data cache 			
-			//var_dump($_API_EMP);
-			// $_API_EMP = $this->component_master->FetchByKey("employees", "username", $this->_profile['username']); 
-			// $_API_SHOP = $this->component_master->FetchByKey("shops", "shop_code", $this->_profile['shopcode']);
-			// $_API_MENU = $this->_master['menu'];
-			// $_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
-
-			// $this->component_api->SetConfig("url", $this->config->item('URL_INVOICES_PREFIX'));
-			// $this->component_api->CallGet();
-			// $_API_PREFIX = $this->component_api->GetConfig("result");
-			// $_API_PREFIX = !empty($_API_PREFIX['query']) ? $_API_PREFIX['query'] : [];
-			// dummy data
 			// sidebar session
 			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
 			switch($this->_param)
 			{
+				case "invoices/donew":
+					$this->_param = "invoices/index";
+				break;
 				case "invoices/edit":
 					$this->_param = "invoices/index";
 				break;
@@ -91,6 +83,7 @@ class Invoices extends CI_Controller
 				"today" => date("Y-m-d"),
 				"prefix" => $this->_API_HEADER['prefix']['prefix']
 			];
+			
 			
 			if(!empty($_query))
 			{
@@ -137,7 +130,8 @@ class Invoices extends CI_Controller
 		$_end_date = "";
 		$_invoice_num = "";
 		$_cust_code = "";
-
+		
+		// $this->component_transactions->Remove("b44872241c450018c4be7a37369790351db34c82");
 
 		if(empty($_GET['i-start-date']) && empty($_GET['i-end-date']))
 		{
@@ -155,7 +149,6 @@ class Invoices extends CI_Controller
 		];
 		if(!empty($_query))
 		{
-			
 			//Set user preference
 			if(!empty($_query['i-invoice-num'])){
 				$_query['i-start-date'] = $_query['i-end-date'];
@@ -195,7 +188,7 @@ class Invoices extends CI_Controller
 			// Function bar
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> base_url("invoices/donew/"), "style" => "", "show" => true, "extra" => ""]
+					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> base_url("/router/invoices/create/"), "style" => "", "show" => true, "extra" => ""]
 				]
 			]);
 			// Function bar
@@ -209,7 +202,7 @@ class Invoices extends CI_Controller
 			$this->load->view("invoices/invoices-list-view", [
 				"data" => $_data['query'],
 				"submit_to" => base_url("/invoices/list"),
-				"edit_url" => base_url("invoices/edit/"),
+				"edit_url" => base_url("/router/invoices/edit/"),
 				"quotation_url" => base_url("quotations/edit/"),
 				"default_per_page" => $this->_default_per_page,
 				"page" => $this->_page,
@@ -222,120 +215,49 @@ class Invoices extends CI_Controller
 			$this->load->view("footer");
 		}
 	}
-	/**
-	 * Invoice Number Generation
-	 * To generate new invoice number
-	 */
-	public function donew()
-	{
-		$_session_trans_num = $this->session->userdata('cur_invoicenum');
-		if(!empty($this->component_transactions->Get($_session_trans_num)))
-		{
-			$this->component_transactions->Remove($_session_trans_num);
-			$this->session->unset_userdata("cur_invoicenum");
-		}
-		$this->component_api->SetConfig("url", $this->config->item('URL_INVOICES_NEXT_NUM'));
-		$this->component_api->CallGet();
-		$_API_NEXT = $this->component_api->GetConfig("result");
-		$_API_NEXT = !empty($_API_NEXT['query']) ? $_API_NEXT['query'] : "";
-		redirect(base_url("invoices/create/".$_API_NEXT),"refresh");
-	}
-	/**
-	 * Copy Operation
-	 * @param _num Invoice number user's want to be copied
-	 */
-	public function docopy($_num)
-	{
-		$_transaction = [];
-
-		// get next Invoice number
-		$this->component_api->SetConfig("url", $this->config->item('URL_INVOICES_NEXT_NUM'));
-		$this->component_api->CallGet();
-		$_API_NEXT = $this->component_api->GetConfig("result");
-		$_API_NEXT = !empty($_API_NEXT['query']) ? $_API_NEXT['query'] : "";
-
-		$_transaction = $this->component_transactions->Get($_num);
-		$_transaction['date'] = date("Y-m-d H:i:s");
-		$this->session->set_userdata('cur_invoicenum',$_API_NEXT);
-		$this->component_transactions->Add($_API_NEXT,$_transaction);
-		redirect(base_url("invoices/create/".$_API_NEXT),"refresh");
-	}
-	/**
-	 * Convert Operation
-	 * @param _quotation quotation number user's will be converted
-	 */
-	public function convert($_quotation = "")
-	{
-		$_transaction = [];
-		$this->component_api->SetConfig("url", $this->config->item('URL_INVOICES_NEXT_NUM'));
-		$this->component_api->CallGet();
-		$_API_NEXT = $this->component_api->GetConfig("result");
-		$_API_NEXT = !empty($_API_NEXT['query']) ? $_API_NEXT['query'] : "";
-
-		if(!empty($_quotation))
-		{
-			$_transaction = $this->session->userdata('transaction');
-			$_transaction['invoicenum'] = $_API_NEXT;
-			$_transaction['date'] = date("Y-m-d H:i:s");
-			$_transaction['prefix'] = $this->_inv_header_param["topNav"]['prefix'];
-
-			$this->session->set_userdata('cur_invoicenum', $_API_NEXT);
-			$this->component_transactions->Add($_API_NEXT,$_transaction);
-		}
-		// echo "<pre>";
-		// var_dump($_temp);
-		// echo "</pre>";
-		redirect(base_url("invoices/create/".$_API_NEXT."/".$_quotation),"refresh");
-	}
+	
 	/**
 	 * Create Process
 	 * To create new inovice transaction
 	 * @param _invoice_num Invoice number
 	 * @param _quotation_num Quotation number
 	 */
-	public function create($_invoice_num = "", $_quotation_num = "")
+	public function create($_session_id = "", $_invoice_num = "", $_quotation_num = "")
 	{
 		// variable initial
 		$_show_discard_btn = false;
-		$_transaction = [];
 		$_API_MASTER = ['items' => "", 'shops' => "", 'customers'=> "", 'paymentmethod' => ""];
-		// echo "<pre>";
-		// var_dump($this->session->userdata('cur_invoicenum'));
-		// var_dump($this->session->userdata('transaction'));
-		// echo "</pre>";
 
-		if(!empty($_invoice_num))
+		if(!empty($_session_id) && !empty($_invoice_num))
 		{
+			$_transaction = [
+				"items" => [],
+				"quotation" => "",
+				"cust_code" => "",
+				"cust_name" => "",
+				"paymentmethod" => "",
+				"paymentmethodname" => "",
+				"remark" => "", 
+				"invoice_num" => $_invoice_num
+			];
 			$_show_discard_btn = true;
 			
+			$_data = $this->session->userdata($_session_id);
 			// create invoice	
 			// For back button after submit to tender page
-			if(!empty($this->session->userdata('cur_invoicenum')))
+			if( isset( $_data[$_invoice_num] ) && !empty( $_data[$_invoice_num] ) )
 			{
-				$_invoice_num = $this->session->userdata('cur_invoicenum');
-			}
-			if($this->component_transactions->Has($_invoice_num))
-			{
-				$_transaction = $this->component_transactions->Get($_invoice_num);
+				$_transaction = $_data[$_invoice_num];
 				$_transaction['invoice_num'] = $_invoice_num;
+				$_transaction['prefix'] = $this->_inv_header_param["topNav"]['prefix'];
+				$this->session->set_flashdata($_session_id, $_transaction);
 			}
 			// For new create
 			else
 			{
-				$_transaction = [
-					"items" => [],
-					"quotation" => "",
-					"cust_code" => "",
-					"cust_name" => "",
-					"paymentmethod" => "",
-					"paymentmethodname" => "",
-					"remark" => "",
-					"invoice_num" => $_invoice_num
-				];
-				$this->session->set_userdata('cur_invoicenum', $_invoice_num);
-				$this->component_transactions->Add($_invoice_num,$_transaction);
+				$_data[$_invoice_num] = $_transaction;
+				$this->session->set_flashdata($_session_id, $_data);
 			}
-
 		// echo "<pre>";
 		// var_dump($_SESSION);
 		// echo "</pre>";
@@ -352,9 +274,10 @@ class Invoices extends CI_Controller
 
 			// function bar with next, preview and save button
 			$this->load->view('function-bar', [
+
 				"btn" => [
 					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
-					["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('/invoices/discard'), "style" => "btn btn-danger", "show" => $_show_discard_btn]
+					["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('/router/invoices/discard/'.$_session_id), "style" => "btn btn-danger", "show" => $_show_discard_btn]
 				]
 			]);
 			$this->load->view('title-bar', [
@@ -362,7 +285,8 @@ class Invoices extends CI_Controller
 			]);
 			// present form view
 			$this->load->view('invoices/invoices-create-view', [
-				"submit_to" => base_url("/invoices/tender"),
+				"submit_to" => base_url("/invoices/tender/".$_session_id),
+				"discard_url" => base_url("/router/invoices/discard/".$_session_id),
 				"prefix" => $this->_inv_header_param['topNav']['prefix'],
 				"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
 				"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
@@ -389,12 +313,13 @@ class Invoices extends CI_Controller
 			$this->load->view('footer');
 		}
 	}
+	
 	/**
 	 * Edit Process
 	 * To edit inovice information
 	 * @param _invoice_num invoice number selected to be edit
 	 */
-	public function edit($_invoice_num = "")
+	public function edit($_session_id = "", $_invoice_num = "")
 	{
 		// variable initial
 		$_transaction = [];
@@ -409,11 +334,11 @@ class Invoices extends CI_Controller
 			$this->component_api->CallGet();
 			$_transaction = $this->component_api->GetConfig("result");
 			$_transaction = $_transaction != null ? $_transaction : "";
-			
-			$this->session->set_userdata('cur_invoicenum', $_invoice_num);
-			$this->component_transactions->Add($_invoice_num,$_transaction['query']);
-			// $this->session->set_userdata('cur_invoicenum',$_invoice_num);
-			// $this->session->set_userdata('transaction',$_transaction['query']);
+
+			$_data[$_invoice_num] = $_transaction['query'];
+			$_data['cur_invoicenum'] = $_invoice_num;
+			$this->session->set_flashdata($_session_id, $_data);
+
 		// echo "<pre>";
 		// var_dump($_transaction);
 		// echo "</pre>";
@@ -451,15 +376,13 @@ class Invoices extends CI_Controller
 					// echo "<pre>";
 					// var_dump($_API_MASTER);
 					// echo "</pre>";
-
-
 					// function bar with next, preview and save button
 					$this->load->view('function-bar', [
 						"btn" => [
 							["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "Back", "url"=> base_url('/invoices/list'.$_login['preference']), "style" => "", "show" => true],
 							["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => $_show_next_btn],
-							["name" => "<i class='far fa-copy'></i> ".$this->lang->line("function_copy"), "type"=>"button", "id" => "copy", "url"=> base_url('/invoices/copy/'.$_invoice_num), "style" => "btn btn-dark", "show" => $_show_copy_btn],
-							["name" => "<i class='fas fa-eraser'></i> ".$this->lang->line("function_void"), "type"=>"button", "id" => "discard", "url"=> base_url('/invoices/void/'.$_invoice_num), "style" => "btn btn-danger", "show" => $_show_void_btn]
+							["name" => "<i class='far fa-copy'></i> ".$this->lang->line("function_copy"), "type"=>"button", "id" => "copy", "url"=> base_url('/router/invoices/copy/'.$_session_id), "style" => "btn btn-dark", "show" => $_show_copy_btn],
+							["name" => "<i class='fas fa-eraser'></i> ".$this->lang->line("function_void"), "type"=>"button", "id" => "void", "url"=> base_url('/invoices/void/'.$_session_id.'/'.$_invoice_num), "style" => "btn btn-danger", "show" => $_show_void_btn],
 						]
 					]);
 					
@@ -469,11 +392,11 @@ class Invoices extends CI_Controller
 			
 					//show edit view
 					$this->load->view("invoices/invoices-edit-view", [
-						"submit_to" => base_url("/invoices/tender"),
+						"submit_to" => base_url("/invoices/tender/".$_session_id),
 						"prefix" => $this->_inv_header_param['topNav']['prefix'],
 						"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
 						"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
-						"invoice_num" => $_invoice_num,
+						// "invoice_num" => $_invoice_num,
 						"date" => date("Y-m-d H:i:s"),
 						"ajax" => [
 							"items" => $_API_MASTER['items'],
@@ -494,7 +417,7 @@ class Invoices extends CI_Controller
 				}
 				else
 				{
-					redirect(base_url("invoices/list/"),"refresh");
+					redirect(base_url("invoices/list/"),"auto");
 				}
 			}
 		}
@@ -503,7 +426,7 @@ class Invoices extends CI_Controller
 	 * Tender Process
 	 * To proceed tender information before save
 	 */
-	public function tender()
+	public function tender($_session_id)
 	{
 		if(isset($_POST["i-post"]))
 		{
@@ -513,6 +436,7 @@ class Invoices extends CI_Controller
 			$_cur_invoicenum = $_data['trans_code'];
 			$_show_save_btn = false;
 			$_show_reprint_btn = false;
+			$_show_discard_btn = true;
 
 			$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS').$_data['cust_code']);
 			$this->component_api->CallGet();
@@ -523,9 +447,14 @@ class Invoices extends CI_Controller
 			$_transaction['customer']['name'] = $_API_CUSTOMER['name'];
 			$_transaction['customer']['delivery_addr'] = $_API_CUSTOMER['delivery_addr'];
 			$_transaction['customer']['statement_remark'] = $_API_CUSTOMER['statement_remark'];
-			$this->session->set_userdata('cur_invoicenum', $_cur_invoicenum);
-			$this->component_transactions->Add($_cur_invoicenum,$_transaction);
 
+			$_sess[$_cur_invoicenum] = $_transaction;
+			$_sess['cur_invoicenum'] = $_cur_invoicenum;
+			$this->session->set_flashdata($_session_id, $_sess);
+			// echo "<pre>";
+			// var_dump($_sess);
+			// echo "</pre>";
+			
 			// show save button
 			if(isset($_transaction['void']))
 			{
@@ -546,24 +475,24 @@ class Invoices extends CI_Controller
 					$_the_form_type = "save";
 				break;
 			}
-			// echo "<pre>";
-			// var_dump($_transaction);
-			// echo "</pre>";
+
 			
 			// function bar
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/invoices/'.$_data['formtype'].'/'.$_data['trans_code']."/".$_data['quotation']) ,"style" => "","show" => true],
-					["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=> base_url("/invoices/".$_the_form_type) , "style" => "btn btn-primary", "show" => $_show_save_btn],
+					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/invoices/'.$_data['formtype']."/".$_session_id.'/'.$_data['trans_code']."/".$_data['quotation']) ,"style" => "","show" => true],
+					["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=> base_url("/invoices/".$_the_form_type."/".$_session_id) , "style" => "btn btn-primary", "show" => $_show_save_btn],
 					["name" => "<i class='far fa-file-alt'></i> ".$this->lang->line("function_preview"), "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
-					["name" => "<i class='fas fa-print'></i> ".$this->lang->line("function_reprint"), "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
+					["name" => "<i class='fas fa-print'></i> ".$this->lang->line("function_reprint"), "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn],
+					["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('/router/invoices/discard/'.$_session_id), "style" => "btn btn-danger", "show" => $_show_discard_btn]
 				]
 			]);
 			// render view
 			$this->load->view("invoices/invoices-tender-view", [
 				"data" => $_transaction,
-				"preview_url" => base_url('/ThePrint/invoices/preview'),
-				"print_url" => base_url('/ThePrint/invoices/save')
+				"discard_url" => base_url("/router/invoices/discard/".$_session_id),
+				"preview_url" => base_url('/ThePrint/invoices/preview/'.$_session_id),
+				"print_url" => base_url('/ThePrint/invoices/save/'.$_session_id)
 			]);
 			$this->load->view("footer");
 		}
@@ -572,25 +501,32 @@ class Invoices extends CI_Controller
 	 * Save Create Process
 	 * To save new invoice creation
 	 */
-	public function save()
+	public function save($_session_id)
 	{
+		$_transaction = [];
 		$_login = $this->session->userdata('login');
-		$_cur_invoicenum = $this->session->userdata('cur_invoicenum');
-		$_transaction = $this->component_transactions->Get($_cur_invoicenum);
+		$_data = $this->session->userdata($_session_id);
+		// echo "<pre>";
+		// var_dump($_data);
+		// echo "</pre>";
+		if(isset($_data) )
+		{
+			$_cur_invoicenum = $_data['cur_invoicenum'];
+			$_transaction = $_data[$_cur_invoicenum];
+		}
+
 		$alert = "danger";
 		$invoice_ok = true;
 		$result = [];
 		$this->load->view('function-bar', [
 			"btn" => [
 				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/invoices/list'.$_login['preference']) ,"style" => "","show" => true],
-				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "donew", "url"=> base_url('/invoices/donew'),"style" => "","show" => true],
+				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "donew", "url"=> base_url('/router/invoices/create/'),"style" => "","show" => true],
 			]
 		]);
+
 		if(!empty($_transaction) && isset($_transaction))
 		{
-			echo "<pre>";
-			var_dump($_transaction);
-			echo "</pre>";
 			$_api_body = json_encode($_transaction,true);
 			
 			//$_api_body = '{"trans_code":"INV220246","prefix":"INV","quotation":"QTA220203","employee_code":"12332","date":"2022-02-18 19:45:52","shopcode":"HQ01","dn_prefix":"DN","dn_num":"DN220200","cust_code":"C150402","cust_name":"Fantastic Cafe (\u67f4\u7063)","items":[{"item_code":"AG0405","eng_name":"\u9152\u7cbe\u6d88\u6bd2?\u55b1Hand Sanitizer Gel","chi_name":"AG Alcohol Gel","qty":2,"unit":"4X5L","price":"320.00","price_special":0,"subtotal":"640","stockonhand":"161"},{"item_code":"AG0120","eng_name":"\u9152\u7cbe\u6d88\u6bd2?\u55b1Hand Sanitizer Gel","chi_name":"AG Alcohol Gel","qty":1,"unit":"20 x 450ml","price":"500.00","price_special":0,"subtotal":"500","stockonhand":"122"}],"total":"1140.00","remark":"","paymentmethod":"PM002","shopname":"TeamWork Ltd","paymentmethodname":"Cheque","formtype":"create","void":"true","customer":{"name":"Fantastic Cafe (\u67f4\u7063)","delivery_addr":"\u9999\u6e2f\u67f4\u7063\u5229\u773e\u885724\u865f\u6771\u8cbf\u5ee3\u58346\/F"}}';
@@ -617,7 +553,6 @@ class Invoices extends CI_Controller
 					$alert = "danger";
 				break;
 			}
-
 			$this->load->view('error-handle', [
 				'message' => $result["error"]['message'], 
 				'code'=> $result["error"]['code'], 
@@ -649,7 +584,6 @@ class Invoices extends CI_Controller
 					'alertstyle' => $alert
 				]);
 			}
-		
 		}
 		else
 		{
@@ -662,28 +596,30 @@ class Invoices extends CI_Controller
 				'alertstyle' => $alert
 			]);
 		}
-		$this->component_transactions->Remove($_cur_invoicenum);
-		unset($_SESSION['cur_invoicenum']);
-
-		//header("Refresh: 10; url='".base_url('/invoices/list'.$_login["preference"])."'");
+		$this->load->view("footer");
+		header("Refresh: 10; url='".base_url('/invoices/list'.$_login["preference"])."'");
 	}
 	/**
 	 * Save Edit Process
 	 * To save Invoice edit
 	 */
-	public function saveedit()
+	public function saveedit($_session_id)
 	{
 		$alert = "danger";
 		$_login = $this->session->userdata('login');
-		$_cur_invoicenum = $this->session->userdata('cur_invoicenum');
-		$_transaction = $this->component_transactions->Get($_cur_invoicenum);
+		$_data = $this->session->userdata($_session_id);
+		if(isset($_data) )
+		{
+			$_cur_invoicenum = $_data['cur_invoicenum'];
+			$_transaction = $_data[$_cur_invoicenum];
+		}
 		$this->load->view('function-bar', [
 			"btn" => [
 				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "Back", "url"=> base_url('/invoices/list'.$_login['preference']), "style" => "", "show" => true],
-				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "donew", "url"=> base_url('/invoices/donew'),"style" => "","show" => true],
+				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "donew", "url"=> base_url('/router/invoices/create/'),"style" => "","show" => true],
 			]
 		]);
-		if(!empty($_cur_invoicenum))
+		if(!empty($_transaction) && isset($_transaction))
 		{
 			$_api_body = json_encode($_transaction,true);
 			// echo $_cur_invoicenum;
@@ -708,7 +644,6 @@ class Invoices extends CI_Controller
 				break;
 			}
 
-			
 			$this->load->view('error-handle', [
 				'message' => $result["error"]['message'], 
 				'code'=> $result["error"]['code'], 
@@ -725,8 +660,6 @@ class Invoices extends CI_Controller
 				'alertstyle' => $alert
 			]);
 		}
-		$this->component_transactions->Remove($_cur_invoicenum);
-		unset($_SESSION['cur_invoicenum']);
 
 		header("Refresh: 10; url='".base_url('/invoices/list'.$_login["preference"])."'");
 	}
@@ -735,11 +668,13 @@ class Invoices extends CI_Controller
 	* To remove invoice from the list
 	* @param num invoice number selected to be voided
 	*/
-	public function savevoid($_num = "")
+	public function savevoid($_session_id="")
 	{
 		$_login = $this->session->userdata('login');
-		$_cur_invoicenum = $this->session->userdata('cur_invoicenum');
-		$_transaction = $this->component_transactions->Get($_cur_invoicenum);
+		$_data = $this->session->userdata($_session_id);
+		
+		$_cur_invoicenum = $_data['cur_invoicenum'];
+		$_transaction = $_data[$_cur_invoicenum];
 		$alert = "danger";
 		$invoice_ok = true;
 		$result = [];
@@ -748,29 +683,53 @@ class Invoices extends CI_Controller
 				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/invoices/list'.$_login["preference"]), "style" => "", "show" => true]
 			]
 		]);
-		if(!empty($_num))
-		{
-			if(!empty($_transaction) && isset($_transaction))
-			{
-				$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ADJ_NEXT_NUM'));
-				$this->component_api->CallGet();
-				$result = $this->component_api->GetConfig("result");
-				$_transaction['adj_num'] = !empty($result['query']) ? $result['query'] : "";
-				$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ADJ_PREFIX'));
-				$this->component_api->CallGet();
-				$result = $this->component_api->GetConfig("result");
-				$_transaction['prefix'] = !empty($result['query']) ? $result['query'] : "";
-				$_transaction['remark'] = "Stock ajustment - Invoice Void";
-				// echo "<pre>";
-				// var_dump($_transaction);
-				// echo "</pre>";
-				$_api_body = json_encode($_transaction, true);
 
-				// echo "<pre>";
-				// var_dump($_api_body);
-				// echo "</pre>";
-				$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY').$_num);
-				$this->component_api->CallDelete();
+		if(!empty($_transaction) && isset($_transaction))
+		{
+			// echo "<pre>";
+			// var_dump($_transaction);
+			// echo "</pre>";
+			$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ADJ_NEXT_NUM'));
+			$this->component_api->CallGet();
+			$result = $this->component_api->GetConfig("result");
+			$_transaction['adj_num'] = !empty($result['query']) ? $result['query'] : "";
+			$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ADJ_PREFIX'));
+			$this->component_api->CallGet();
+			$result = $this->component_api->GetConfig("result");
+			$_transaction['prefix'] = !empty($result['query']) ? $result['query'] : "";
+			$_transaction['remark'] = "Stock ajustment - Invoice Void";
+			// echo "<pre>";
+			// var_dump($_transaction);
+			// echo "</pre>";
+			$_api_body = json_encode($_transaction, true);
+
+			// echo "<pre>";
+			// var_dump($_api_body);
+			// echo "</pre>";
+			$this->component_api->SetConfig("url", $this->config->item('URL_INVENTORY').$_cur_invoicenum);
+			$this->component_api->CallDelete();
+			$result = $this->component_api->GetConfig("result");
+			switch($result["http_code"])
+			{
+				case 200:
+					$alert = "success";
+				break;
+				case 404:
+					$invoice_ok = false;
+					$alert = "danger";
+				break;
+			}		
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+			if($invoice_ok)
+			{
+				//Get next Ajustment number
+				$this->component_api->SetConfig("body", $_api_body);
+				$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ADJ'));
+				$this->component_api->CallPost();
 				$result = $this->component_api->GetConfig("result");
 				switch($result["http_code"])
 				{
@@ -778,43 +737,9 @@ class Invoices extends CI_Controller
 						$alert = "success";
 					break;
 					case 404:
-						$invoice_ok = false;
 						$alert = "danger";
 					break;
-				}		
-				$this->load->view('error-handle', [
-					'message' => $result["error"]['message'], 
-					'code'=> $result["error"]['code'], 
-					'alertstyle' => $alert
-				]);
-				if($invoice_ok)
-				{
-					//Get next Ajustment number
-					$this->component_api->SetConfig("body", $_api_body);
-					$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ADJ'));
-					$this->component_api->CallPost();
-					$result = $this->component_api->GetConfig("result");
-					switch($result["http_code"])
-					{
-						case 200:
-							$alert = "success";
-						break;
-						case 404:
-							$alert = "danger";
-						break;
-					}			
-					$this->load->view('error-handle', [
-						'message' => $result["error"]['message'], 
-						'code'=> $result["error"]['code'], 
-						'alertstyle' => $alert
-					]);
-				}
-				
-			}
-			else
-			{
-				$result["error"]['code'] = "90000";
-				$result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again"; 
+				}			
 				$this->load->view('error-handle', [
 					'message' => $result["error"]['message'], 
 					'code'=> $result["error"]['code'], 
@@ -822,32 +747,33 @@ class Invoices extends CI_Controller
 				]);
 			}
 		}
-		$this->component_transactions->Remove($_cur_invoicenum);
-		unset($_SESSION['cur_invoicenum']);
-		header("Refresh: 10; url='".base_url('/invoices/list'.$_login["preference"])."'");
+		else
+		{
+			$result["error"]['code'] = "90000";
+			$result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again"; 
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+		}
+		$this->load->view("footer");
+		//header("Refresh: 10; url='".base_url('/invoices/list'.$_login["preference"])."'");
 	}
-	/**
-	 * Discard Operation
-	 * To discard Invoice 
-	 */
-	public function discard()
-	{
-		$_cur_invoicenum = $this->session->userdata('cur_invoicenum');
-		$this->component_transactions->Remove($_cur_invoicenum);
-		unset($_SESSION['cur_invoicenum']);
-		redirect(base_url("invoices/list"),"refresh");
-	}
+
 	/**
 	 * Void Operation
 	 * @param _num Invoice number user's selected to be voided 
 	 */
-	public function void($_num = "")
+	public function void($_session_id = "", $_num = "")
 	{
+		$this->session->keep_flashdata($_session_id);
 		$this->load->view("invoices/invoices-void-view", [
-			"submit_to" => base_url("invoices/void/confirmed/".$_num),
+			"submit_to" => base_url("invoices/void/confirmed/".$_session_id),
 			"to_deleted_num" => $_num,
-			"return_url" => base_url("invoices/edit/".$_num)
+			"return_url" => base_url("invoices/edit/".$_session_id."/".$_num)
 		]);
+		$this->load->view("footer");
 	}
 
 }

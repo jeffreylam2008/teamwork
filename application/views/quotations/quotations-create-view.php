@@ -366,15 +366,16 @@ extract($data);
         // disable unload warning
         $(window).off('beforeunload');
     });
+    $("#discard").on("click", function(){
+        // disable unload warning
+        $(window).off('beforeunload');
+    });
     //construct
     $(document).ready(function(){
         refresh()
         render()
     });
     /* /////////////////// END Libaray Session /////////////////////*/
-
-    
-    
     /** 
      * START customers_modal handler
      **/
@@ -495,7 +496,6 @@ extract($data);
     $("#next").on("click",function(){
         var _inputs = {};
         var _valid = 0;
-        _inputs["invoicenum"] = $("#i-invoicenum").val()
         _inputs["prefix"] = $("#i-prefix").val()
         _inputs["quotation"] = $("#i-quotation").val()
         _inputs["employee_code"] = $("#i-employeecode").val()

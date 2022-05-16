@@ -92,7 +92,12 @@
 </div>
 
 <script>
-
+$(window).on('beforeunload', function(){
+    return "Any changes will be lost";
+});
+$("#back, #save, #preview, #reprint, #discard").on("click", function(){
+    $(window).off('beforeunload');
+});
 $("#preview").on("click",function(){
     window.open('<?=$preview_url?>', '_blank', 'location=yes,height=500,width=900,scrollbars=yes,status=yes');
 })

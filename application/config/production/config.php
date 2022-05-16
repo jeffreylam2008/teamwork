@@ -544,7 +544,7 @@ $config['default_home'] = 'dushboard';
 
 
 $config['api_url'] = 'http://46.137.246.181/erp_backend/api/v1';
-$config['DEBUG_MODE'] = true;
+$config['DEBUG_MODE'] = false;
 $config['DEFAULT_PER_PAGE'] = 25;
 $config['DEFAULT_FIRST_PAGE'] = 1;
 $config['APP_LOG_PATH'] = $_SERVER['DOCUMENT_ROOT']."/webapp/logs/";
@@ -595,6 +595,7 @@ $config['URL_PO_GRN'] = $config['api_url']."/stocks/po/grn/";
 $config['URL_PO_GRN_NEXT_NUM'] = $config['api_url']."/stocks/po/grn/getnextnum/";
 $config['URL_PO_GRN_PREFIX'] = $config['api_url']."/stocks/po/grn/getprefix/";
 $config['URL_TRANSACTIONS'] = $config['api_url']."/transactions/";
+$config['URL_TRANSACTION_DISCARD'] = $config['api_url']."/transactions/discard/";
 $config['URL_STOCK_ADJ'] = $config['api_url']."/stocks/adj/";
 $config['URL_STOCK_ADJ_NEXT_NUM'] = $config['api_url']."/stocks/adj/getnextnum/";
 $config['URL_STOCK_ADJ_PREFIX'] = $config['api_url']."/stocks/adj/getprefix/";

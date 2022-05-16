@@ -106,6 +106,10 @@ $route['quotations/list/edit'] = 'error_404';
 $route['quotations/void/confirmed/(:any)'] = 'quotations/savevoid/$1';
 $route['quotations/copy/(:any)'] = 'quotations/docopy/$1';
 
+// general configure
+$route['administration/general'] = 'administration/index';
+$route['administration/save'] = 'administration/save';
+
 // Shops
 $route['administration/shops'] = 'shops/index';
 $route['administration/shops/page/(:any)'] = 'shops/index/$1';
@@ -184,8 +188,8 @@ $route['stocks/grn/save'] = 'stocks/grn_save';
 // stocks -> dn
 $route['stocks/dn/detail/(:any)'] = 'DeliveryNote/dn_detail/$1';
 $route['stocks/dn/donew'] = 'DeliveryNote/donew';
-$route['stocks/dn/create/(:any)'] = 'DeliveryNote/create/$1';
-$route['stocks/dn/save'] = 'DeliveryNote/save';
+$route['stocks/dn/create/(:any)/(:any)'] = 'DeliveryNote/create/$1/$2';
+$route['stocks/dn/save/(:any)'] = 'DeliveryNote/save/$1';
 
 // stocks -> adj
 $route['stocks/adj/create/(:any)'] = 'stocks/adjust/$1';

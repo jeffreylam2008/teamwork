@@ -7,11 +7,14 @@ class ThePrint extends CI_Controller
 	{
         parent::__construct();
     }
-    public function invoices($_option)
+    public function invoices($_option,$_session_id)
     {
         //define variable
-        $_cur_invoicenum = $this->session->userdata('cur_invoicenum');
-        $_transaction = $this->component_transactions->Get($_cur_invoicenum);
+        $_data = $this->session->userdata($_session_id);
+        $_cur_invoicenum = $_data['cur_invoicenum'];
+        $_transaction = $_data[$_cur_invoicenum];
+        $this->session->keep_flashdata($_session_id);
+
 
         if(isset($_transaction) && !empty($_transaction)){
             // read data from session
@@ -35,10 +38,13 @@ class ThePrint extends CI_Controller
             }
         }
     }
-    public function quotations($_option)
+    public function quotations($_option,$_session_id)
     {
-        $_cur_num = $this->session->userdata('cur_quotationnum');
-        $_transaction = $this->component_transactions->Get($_cur_num);
+        //define variable
+        $_data = $this->session->userdata($_session_id);
+        $_cur_num = $_data['cur_quotationnum'];
+        $_transaction = $_data[$_cur_num];
+        $this->session->keep_flashdata($_session_id);
        
         if(isset($_transaction) && !empty($_transaction)){
             // read data from session
@@ -93,10 +99,12 @@ class ThePrint extends CI_Controller
             }
         }
     }
-    public function dn($_option)
+    public function dn($_option,$_session_id)
     {
-        $_cur_num = $this->session->userdata('cur_dnnum');
-        $_transaction = $this->component_transactions->Get($_cur_num);
+        $_data = $this->session->userdata($_session_id);
+        $_cur_num = $_data['cur_dnnum'];
+        $_transaction = $_data[$_cur_num];
+        $this->session->keep_flashdata($_session_id);
 
         // // API Call
         if(isset($_transaction) && !empty($_transaction)){

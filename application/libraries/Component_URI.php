@@ -3,10 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Component_URI
 {
-    public function __construct()
-	{
-        
-    }
+
     public function QueryToString($input = "")
     {
         $str = "?";

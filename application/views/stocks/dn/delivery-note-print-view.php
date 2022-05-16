@@ -134,12 +134,10 @@ if(isset($items)){
     for($j=1; $j<=$page_separate; $j++)
     {
         $customer['cust_code'] = $cust_code;
-        $customer['name'] = $cust_name;
-        $customer['delivery_addr'] = $delivery_addr;
         PrintHeader($dn_num, $customer, $date, $shopcode, $shopname, $employee_code, $j);
         PrintBody($page[$j]);
         PrintFooter($total);
-        PrintRemark($delivery_remark);
+        PrintRemark($customer['statement_remark']);
         print "<p style=\"page-break-after: always;\"></p>";
     }
 

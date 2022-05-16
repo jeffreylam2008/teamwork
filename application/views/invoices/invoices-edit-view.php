@@ -348,7 +348,7 @@ extract($data);
     }
 
     $(window).on('beforeunload', function(){
-        return "Any changes will be lost";
+        return "will lost data";
     });
     $(document).on("submit", "form", function(event){
         // disable unload warning
