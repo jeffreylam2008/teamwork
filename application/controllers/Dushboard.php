@@ -3,10 +3,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Dushboard extends CI_Controller 
 {
-	var $_inv_header_param = [];	
+	var $_inv_header_param = [];
+	var $_default_per_page = "";	
 	var $_token = "";
 	var $_profile = "";
 	var $_param = "";
+	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
+	var $_API_HEADER;
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -24,34 +28,41 @@ class Dushboard extends CI_Controller
 		{
 			$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
 
-			// fatch master
-			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
+
+			// API data
+			$this->component_api->SetConfig("url", $this->config->item('URL_INVOICES_HEADER').$this->_profile['username'].'/?lang='.$this->config->item('language'));
 			$this->component_api->CallGet();
-			$_API_EMP = $this->component_api->GetConfig("result");
-			$_API_EMP = $_API_EMP['query'];
-			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
-			$this->component_api->CallGet();
-			$_API_SHOP = $this->component_api->GetConfig("result");
-			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
-			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
-			$this->component_api->CallGet();
-			$_API_MENU = $this->component_api->GetConfig("result");
-			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
+			$_API_HEADER = $this->component_api->GetConfig("result");
+			$this->_API_HEADER = !empty($_API_HEADER['query']) ? $_API_HEADER['query'] : ['employee' => "", 'menu' => "", "prefix", "dn"=> ["dn_num"=>"", "dn_prefix"=>""]];
+
+			// // fatch master
+			// $this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
+			// $this->component_api->CallGet();
+			// $_API_EMP = $this->component_api->GetConfig("result");
+			// $_API_EMP = $_API_EMP['query'];
+			// $this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
+			// $this->component_api->CallGet();
+			// $_API_SHOP = $this->component_api->GetConfig("result");
+			// $_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
+			// $this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
+			// $this->component_api->CallGet();
+			// $_API_MENU = $this->component_api->GetConfig("result");
+			// $_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
 
 			// sidebar session
-			$this->_param = strtolower($this->router->fetch_class()."/".$this->router->fetch_method());
+			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
 			
 			// header data
 			$this->_inv_header_param["topNav"] = [
 				"isLogin" => true,
-				"username" => $_API_EMP['username'],
-				"employee_code" => $_API_EMP['employee_code'],
-				"shop_code" => $_API_SHOP['shop_code'],
-				"shop_name" => $_API_SHOP['name'],
+				"username" => $this->_API_HEADER['employee']['username'],
+				"employee_code" => $this->_API_HEADER['employee']['employee_code'],
+				"shop_code" => $this->_API_HEADER['employee']['shop_code'],
+				"shop_name" => $this->_API_HEADER['employee']['shop_name'],
 				"today" => date("Y-m-d")
 			];
 
-			$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
+			$this->component_sidemenu->SetConfig("nav_list", $this->_API_HEADER['menu']);
 			$this->component_sidemenu->SetConfig("active", $this->_param);
 			$this->component_sidemenu->Proccess();
 
@@ -71,7 +82,7 @@ class Dushboard extends CI_Controller
 		}
 		else
 		{
-			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
+			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"auto");
 		}
 	}
 	public function index()

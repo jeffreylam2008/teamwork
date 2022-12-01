@@ -6,20 +6,21 @@ class Shops extends CI_Controller
 	var $_inv_header_param = [];
 	var $_default_per_page = "";
 	var $_page = "";
-	var $_query = [];
 	var $_token = "";
 	var $_profile = "";
 	var $_param = "";
 	var $_shops = [];
 	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
+	var $_API_HEADER;
+
 	public function __construct()
 	{
 		parent::__construct();
-		$_API_EMP = [];
+		$_query = $this->input->get();
 		$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
 		$this->_default_per_page = $this->config->item('DEFAULT_PER_PAGE');
 		$this->_page = $this->config->item('DEFAULT_FIRST_PAGE');
-		$this->_query = $this->input->get();
+
 
 		// dummy data
 		if(!empty($this->session->userdata['login']))
@@ -33,15 +34,11 @@ class Shops extends CI_Controller
 		// login session
 		if(!empty($this->component_login->CheckToken()))
 		{
-			// fatch employee API
-			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
+			// API data
+			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP_HEADER').$this->_profile['username'].'/?lang='.$this->config->item('language'));
 			$this->component_api->CallGet();
-			$_API_EMP = $this->component_api->GetConfig("result");
-			$_API_EMP = $_API_EMP['query'];
-			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
-			$this->component_api->CallGet();
-			$_API_MENU = $this->component_api->GetConfig("result");
-			$_API_MENU = $_API_MENU['query'];
+			$_API_HEADER = $this->component_api->GetConfig("result");
+			$this->_API_HEADER = !empty($_API_HEADER['query']) ? $_API_HEADER['query'] : ['employee' => "", 'menu' => "",];
 
 			// sidebar session
 			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
@@ -57,10 +54,10 @@ class Shops extends CI_Controller
 			// header data
 			$this->_inv_header_param["topNav"] = [
 				"isLogin" => true,
-				"username" => $_API_EMP['username'],
-				"employee_code" => $_API_EMP['employee_code'],
-				"shop_code" => $_API_EMP['default_shopcode'],
-				"shop_name" => $_API_EMP['name'],
+				"username" => $this->_API_HEADER['employee']['username'],
+				"employee_code" => $this->_API_HEADER['employee']['employee_code'],
+				"shop_code" => $this->_API_HEADER['employee']['shop_code'],
+				"shop_name" => $this->_API_HEADER['employee']['shop_name'],
 				"today" => date("Y-m-d")
 			];
 			// set preference 
@@ -72,16 +69,16 @@ class Shops extends CI_Controller
 			{
 				$this->_default_per_page = $this->input->get("show");
 			}
-			$this->_query['page'] = $this->_page;
-			$this->_query['show'] = $this->_default_per_page;
-			$this->_query = $this->component_uri->QueryToString($this->_query);
+			$_query['page'] = $this->_page;
+			$_query['show'] = $this->_default_per_page;
+			$_query = $this->component_uri->QueryToString($_query);
 
 			$_login = $this->session->userdata['login'];
-			$_login['preference'] = $this->_query;
+			$_login['preference'] = $_query;
 			$this->session->set_userdata("login", $_login);
 
 			// Set side menu config
-			$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
+			$this->component_sidemenu->SetConfig("nav_list", $this->_API_HEADER['menu']);
 			$this->component_sidemenu->SetConfig("active", $this->_param);
 			$this->component_sidemenu->Proccess();
 			

@@ -10,11 +10,11 @@ class DeliveryNote extends CI_Controller
 	var $_profile = "";
 	var $_param = "";
 	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
+	var $_API_HEADER;
 
     public function __construct()
 	{
         parent::__construct();
-
 		$_query = $this->input->get();
         $this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
 		$this->_default_per_page = $this->config->item('DEFAULT_PER_PAGE');
@@ -37,21 +37,28 @@ class DeliveryNote extends CI_Controller
 		}
         	
         // API call
-		$this->load->library("Component_Login",[$this->_token, "stocks/index"]);
+		$this->load->library("Component_Login",[$this->_token, "stocks"]);
 
         // // login session
         if(!empty($this->component_login->CheckToken()))
         {
-			// API data
-			$this->component_api->SetConfig("url", $this->config->item('URL_INVOICES_HEADER').$this->_profile['username'].'/?lang='.$this->config->item('language'));
+			//API data
+			$this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE_HEADER').$this->_profile['username'].'/?lang='.$this->config->item('language'));
 			$this->component_api->CallGet();
 			$_API_HEADER = $this->component_api->GetConfig("result");
 			$this->_API_HEADER = !empty($_API_HEADER['query']) ? $_API_HEADER['query'] : ['employee' => "", 'menu' => "", "prefix", "dn"=> ["dn_num"=>"", "dn_prefix"=>""]];
 			// sidebar session
-			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
+			$this->_param = $this->router->fetch_class().'/'.$this->router->fetch_method();
+	
 			switch($this->_param)
 			{
-				case "DeliveryNote/dn_detail":
+				case "DeliveryNote/create":
+					$this->_param = "stocks/index";
+				break;
+				case "DeliveryNote/process":
+					$this->_param = "stocks/index";
+				break;
+				case "DeliveryNote/edit":
 					$this->_param = "stocks/index";
 				break;
 			}
@@ -95,7 +102,7 @@ class DeliveryNote extends CI_Controller
 		}
 		else
 		{
-			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
+			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"auto");
 		}	
     }
 
@@ -111,15 +118,6 @@ class DeliveryNote extends CI_Controller
 
 		if(!empty($_session_id) && !empty($_dn_num))
 		{
-
-			$_transaction = [
-				"items" => [],
-				"dn_num" => $_dn_num,
-				"cust_code" => "",
-				"cust_name" => "",
-				"date" => date("Y-m-d H:i:s"),
-				"remark" => "", 
-			];
 			$_show_discard_btn = true;
 
 			// For back button after submit to tender page
@@ -129,76 +127,77 @@ class DeliveryNote extends CI_Controller
 				$_transaction = $_data[$_dn_num];
 				$_transaction['dn_num'] = $_dn_num;
 				$_transaction['prefix'] = $this->_inv_header_param["topNav"]['prefix'];
-				$this->session->set_flashdata($_session_id, $_transaction);
 			}
 			// For new create
 			else 
 			{
-				$_data[$_dn_num] = $_transaction;
-				$this->session->set_flashdata($_session_id, $_data);
+				$_transaction = [
+					"items" => [],
+					"dn_num" => $_dn_num,
+					"cust_code" => "",
+					"cust_name" => "",
+					"date" => date("Y-m-d H:i:s"),
+					"remark" => "", 
+				];
 			}
-		}
+			// save transation to session
+			$_sess[$_dn_num] = $_transaction;
+			$this->session->set_tempdata($_session_id, $_sess, 600);
 
-		// fatch items API
-		$this->component_api->SetConfig("url", $this->config->item('URL_MASTER'));
-		$this->component_api->CallGet();
-		$_API_MASTER = $this->component_api->GetConfig("result");
-		if(!empty($_API_MASTER['query']))
-		{
-			$_API_MASTER = $_API_MASTER['query'];
-		}
-		// //fatch DN number and set DN prefix
-		// $this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE_PREFIX'));
-		// $this->component_api->CallGET();
-		// $_API_DN_PREFIX = json_decode($this->component_api->GetConfig("result"),true);
-		// $_API_DN_PREFIX = !empty($_API_DN_PREFIX['query']) ? $_API_DN_PREFIX['query'] : "";
-		// $this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE_NEXT_NUM'));
-		// $this->component_api->CallGET();
-		// $_API_DN_NUM = json_decode($this->component_api->GetConfig("result"),true);
-		// $_API_DN_NUM = !empty($_API_DN_NUM['query']) ? $_API_DN_NUM['query'] : "";	
-		//function bar
-		$this->load->view('function-bar', [
-			"btn" => [
-				["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
-				["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('/router/dn/discard/'.$_session_id), "style" => "btn btn-danger", "show" => $_show_discard_btn]
-			]
-		]);
-		//view title
-		$this->load->view('title-bar', [
-			"title" => $this->lang->line("dn_new_titles")
-		]);
-		//view content
-		$this->load->view("stocks/dn/delivery-note-create-view", [
-			"submit_to" => base_url("/DeliveryNote/process/".$_session_id),
-			"discard_url" => base_url("/router/dn/discard/".$_session_id),
-			"data" => $_transaction,
-			"prefix" => $this->_inv_header_param['topNav']['prefix'],
-			"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
-			"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
-			"default_per_page" => $this->_default_per_page,
-			"preview_url" => base_url('/ThePrint/dn/preview'),
-			"print_url" => base_url('/ThePrint/dn/save'),
-			"ajax" => [
-				"items" => $_API_MASTER['items'],
-				"shop_code" => $_API_MASTER['shops'],
-				"customers" => $_API_MASTER['customers'],
-				"tender" => $_API_MASTER['paymentmethod']
-			],
-			"function_bar" => $this->load->view('function-bar', [
+			// fatch items API
+			$this->component_api->SetConfig("url", $this->config->item('URL_MASTER'));
+			$this->component_api->CallGet();
+			$_API_MASTER = $this->component_api->GetConfig("result");
+			if(!empty($_API_MASTER['query']))
+			{
+				$_API_MASTER = $_API_MASTER['query'];
+			}
+
+			//function bar
+			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "new", "url"=>base_url('/customers/?new=1'), "style" => "", "show" => true]
+					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/stocks') ,"style" => "","show" => true],
+					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
+					["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('/router/dn/discard/'.$_session_id), "style" => "btn btn-danger", "show" => $_show_discard_btn]
 				]
-			],true)
-		]);
-		// persent footer view
-		$this->load->view('footer');
+			]);
+			//view title
+			$this->load->view('title-bar', [
+				"title" => $this->lang->line("dn_new_titles")
+			]);
+			//view content
+			$this->load->view("stocks/dn/delivery-note-create-view", [
+				"submit_to" => base_url("/stocks/dn/process/".$_session_id),
+				"discard_url" => base_url("/router/dn/discard/".$_session_id),
+				"data" => $_sess[$_dn_num],
+				"prefix" => $this->_inv_header_param['topNav']['prefix'],
+				"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
+				"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
+				"default_per_page" => $this->_default_per_page,
+				"preview_url" => base_url('/ThePrint/dn/preview'),
+				"print_url" => base_url('/ThePrint/dn/save'),
+				"ajax" => [
+					"items" => $_API_MASTER['items'],
+					"shop_code" => $_API_MASTER['shops'],
+					"customers" => $_API_MASTER['customers'],
+					"tender" => $_API_MASTER['paymentmethod']
+				],
+				"function_bar" => $this->load->view('function-bar', [
+					"btn" => [
+						["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "new", "url"=>base_url('/customers/?new=1'), "style" => "", "show" => true]
+					]
+				],true)
+			]);
+			// persent footer view
+			$this->load->view('footer');
+		}
 	}
 
 	/**
 	 * Process
 	 * To confirm submit information
 	 */
-	public function process($_session_id)
+	public function process($_session_id = "")
 	{
 		if(isset($_POST["i-post"]))
 		{
@@ -220,14 +219,15 @@ class DeliveryNote extends CI_Controller
 			$_transaction['customer']['delivery_addr'] = $_API_CUSTOMER['delivery_addr'];
 			$_transaction['customer']['statement_remark'] = $_API_CUSTOMER['statement_remark'];
 			$_transaction['customer']['delivery_remark'] = $_API_CUSTOMER['delivery_remark'];
+
 			$_sess[$_cur_dnnum] = $_transaction;
 			$_sess['cur_dnnum'] = $_cur_dnnum;
-			$this->session->set_flashdata($_session_id, $_sess);
+			$this->session->set_tempdata($_session_id, $_sess, 600);
 
 			// show save button
 			if(isset($_transaction['void']))
 			{
-				if(filter_var($_transaction['void'], FILTER_VALIDATE_BOOLEAN))
+				if($_transaction['void'])
 				{
 					$_show_save_btn = true;
 				}
@@ -251,8 +251,8 @@ class DeliveryNote extends CI_Controller
 			// function bar
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/stocks/dn/'.$_data['formtype']."/".$_session_id.'/'.$_data['dn_num']) ,"style" => "","show" => true],
-					["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=> base_url("/stocks/dn/".$_the_form_type."/".$_session_id) , "style" => "btn btn-primary", "show" => $_show_save_btn],
+					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/stocks/dn/'.$_data['formtype'].'/'.$_session_id.'/'.$_data['dn_num']) ,"style" => "","show" => true],
+					["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=> base_url("/stocks/dn/".$_the_form_type.'/'.$_session_id) , "style" => "btn btn-primary", "show" => $_show_save_btn],
 					["name" => "<i class='far fa-file-alt'></i> ".$this->lang->line("function_preview"), "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
 					["name" => "<i class='fas fa-print'></i> ".$this->lang->line("function_reprint"), "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn],
 					["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('/router/dn/discard/'.$_session_id), "style" => "btn btn-danger", "show" => $_show_discard_btn],
@@ -271,23 +271,31 @@ class DeliveryNote extends CI_Controller
 	
 	/**
 	 * Show DN detail 
+	 * @param _session_id session_id
 	 * @param _dn_num transaction code
 	 */
-	 public function edit($_session_id = "", $_dn_num)
+	 public function edit($_session_id = "", $_dn_num = "")
 	 {
 		$_transaction = [];
+		$_login = $this->session->userdata("login");
+
 		// Call API
 		$this->component_api->SetConfig("url", $this->config->item('URL_DELIVERY_NOTE').$_dn_num);
 		$this->component_api->CallGet();
-		$_transaction = $this->component_api->GetConfig("result");
-		$_transaction = $_transaction != null ? $_transaction : "";
+		$result = $this->component_api->GetConfig("result");
 
-		$_data[$_dn_num] = $_transaction['query'];
-		$_data['cur_dnnum'] = $_dn_num;
-		$this->session->set_flashdata($_session_id, $_data);
-		if(!empty($_transaction))
+		if($result['http_code'] == 200)
 		{
-			$_login = $this->session->userdata("login");
+			$_transaction = $result != null ? $result : "";
+			$result = $_transaction != null ? $_transaction : "";
+
+
+			$_sess[$_dn_num] = $_transaction['query'];
+			$_sess['cur_dnnum'] = $_dn_num;
+			$this->session->set_tempdata($_session_id, $_sess, 600);
+
+
+			
 			if($_transaction['has'])
 			{
 
@@ -305,13 +313,14 @@ class DeliveryNote extends CI_Controller
 				]);
 				//view content
 				$this->load->view("stocks/dn/delivery-note-detail-view", [
-					"data" => $_transaction[$_dn_num],
+					"data" => $_transaction['query'],
+					"discard_url" => base_url("/router/dn/discard/".$_session_id),
 					"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
-					"preview_url" => base_url('/ThePrint/dn/preview'),
-					"print_url" => base_url('/ThePrint/dn/save'),
+					"preview_url" => base_url('/ThePrint/dn/preview/'.$_session_id),
+					"print_url" => base_url('/ThePrint/dn/save/'.$_session_id),
 					"function_bar" => $this->load->view('function-bar', [
 						"btn" => [
-							["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "new", "url"=>base_url('/customers/?new=1'), "style" => "", "show" => true]
+							["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "new", "url"=>base_url('/customers/?new=1'), "style" => "", "show" => true]
 							]
 					],true)
 				]);
@@ -319,17 +328,22 @@ class DeliveryNote extends CI_Controller
 		}
 		else
 		{
-			redirect(base_url("stocks/"),"auto");
+			$this->load->view('function-bar', [
+				"btn" => [
+					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "Back", "url"=> base_url('/stocks/'.$_login['preference']), "style" => "", "show" => true],
+				]
+			]);
 		}
 	 }
 
 	 /**
 	 * Save DN
+	 * @param _session_id session id
 	 */
-	public function save($_session_id)
+	public function save($_session_id = "")
 	{
 		$_transaction = [];
-		$_cur_dnnum = $this->session->userdata('cur_dnnum');
+		$_login = $this->session->userdata('login');
 		$_data = $this->session->userdata($_session_id);
 
 		if(isset($_data) )
@@ -341,7 +355,7 @@ class DeliveryNote extends CI_Controller
 		$result = [];
 		$this->load->view('function-bar', [
 			"btn" => [
-				["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "donew", "url"=> base_url('/stocks/dn/donew'),"style" => "","show" => true],
+				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "donew", "url"=> base_url('/router/dn/create'),"style" => "","show" => true],
 			]
 		]);
 		if(!empty($_transaction) && isset($_transaction))
@@ -384,6 +398,6 @@ class DeliveryNote extends CI_Controller
 		   ]);
 		}
 		$this->load->view("footer");
-		header("Refresh: 10; url='".base_url('/stocks')."'");
+		// header("Refresh: 10; url='".base_url('/stocks')."'");
 	}
 }

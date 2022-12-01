@@ -32,7 +32,7 @@ class Login extends CI_Controller
 		}
 		$this->load->view('login/login-view', [
 			"shop" => $_API['query'],
-			"submit"=>"login/process/?url=".urlencode($this->input->get('url')),
+			"submit"=> base_url('login/process/?url='.urlencode($this->input->get('url'))),
 			"e_code"=> $_e_code,
 			"e_msg" => $_e_msg,
 			"s_status" => $_SESSION
@@ -74,6 +74,7 @@ class Login extends CI_Controller
 				'username' => $this->input->post('i-username',true),
 				'shopcode' => $this->input->post('i-shops',true)
 			];
+			$_profile['preference'] = "";
 			// remember the password 
 			if($_rememberme)
 			{
@@ -89,12 +90,12 @@ class Login extends CI_Controller
 			if(!empty($this->input->get('url')))
 			{
 				// have url already
-				redirect($this->input->get('url')."?token=".$_profile['token'],"refresh");
+				redirect($this->input->get('url')."?token=".$_profile['token'],"auto");
 			}
 			else
 			{
 				// No url perpare
-				redirect(base_url($this->config->item('default_home')."/?token=".$_profile['token']),"refresh");
+				redirect(base_url($this->config->item('default_home')."/?token=".$_profile['token']),"auto");
 			}
 		}
 		else
@@ -104,7 +105,7 @@ class Login extends CI_Controller
 			$_e_code = urlencode($_result['error']['code']);
 			$_e_msg = urlencode($_result['error']['message']);
 			$_url = urlencode($this->input->get('url'));
-			redirect(base_url("login?url=".$_url."&e_code=".$_e_code."&e_msg=".$_e_msg),"refresh");
+			redirect(base_url("login?url=".$_url."&e_code=".$_e_code."&e_msg=".$_e_msg),"auto");
 		}
 	}
 }

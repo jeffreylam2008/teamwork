@@ -347,17 +347,38 @@ extract($data);
         }
     }
 
+    function doUnLoad(){
+        // while unload then redirect
+        $(window).on('unload', function(e){
+            e.preventDefault();        
+            // to fix page refresh
+            if(typeof document.activeElement.href !== "undefined")
+            {
+                // target url defined then discard current session
+                fetch("<?=$discard_url?>").then(function(response) {
+                    if(response.ok){
+                        window.location.replace(document.activeElement.href);
+                        window.onbeforeunload = null;
+                    }
+                });
+            }
+        });
+    }
+    // before page unload
     $(window).on('beforeunload', function(){
-        return "will lost data";
+        doUnLoad();
+        return "Any changes will be lost";
     });
+    
+    // free unload on submit button  
     $(document).on("submit", "form", function(event){
-        // disable unload warning
         $(window).off('beforeunload');
     });
-    $("#Back, #copy, #discard").on("click", function(){
+    // the DOM to ignore unload action
+    $("#copy, #discard").on("click", function(){
         $(window).off('beforeunload');
     });
-
+    
     //construct
     $(document).ready(function(){
         refresh()

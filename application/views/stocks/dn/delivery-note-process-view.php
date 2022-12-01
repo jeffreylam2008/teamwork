@@ -1,5 +1,6 @@
 <div>
     <?php 
+        $data = json_decode($_POST["i-post"],true);
         // echo "<pre>";
         // var_dump($data);
         // echo "</pre>";
@@ -39,9 +40,7 @@
 
 
     <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <!-- customer Modal -->
-    <?php include(APPPATH."views/modal-customers.php"); ?>
-    <!-- customer Modal End -->
+
 
     <!-- Customer Modal button -->
     <div class="input-group mb-2 input-group-sm">
@@ -50,7 +49,7 @@
         </div>
         <input type="text" class="form-control" value="<?=$cust_code?>" id="i-customer" disabled="" />
         <input type="text" class="form-control" value="<?=$cust_name?>" id="i-customer-name" disabled="">
-        <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#customers_modal"><?=$this->lang->line("function_more")?></button>
+        <!-- <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#customers_modal"><?=$this->lang->line("function_more")?></button> -->
     </div>
     <!-- Customer Modal button END -->
     <!-- Payment Method button -->
@@ -58,39 +57,21 @@
         <div class="input-group-prepend">
             <label class="input-group-text"><?=$this->lang->line("payment_method")?></label>
         </div>
-        <select class="custom-select custom-select-sm" id="i-paymentmethod">
+        <select class="custom-select custom-select-sm" id="i-paymentmethod" disabled="">
             <?php if(!empty($paymentmethod)): ?>
                 <option value="<?=$paymentmethod?>"><?=$paymentmethodname?></option>
             <?php else: ?>
                 <option value="-1"><?=$this->lang->line("function_select")?></option>
             <?php endif; ?>
-            <?php 
-                foreach($ajax["tender"] as $k => $v):
-            ?>
-                    <option value="<?=$v['pm_code']?>"><?=$v['payment_method']?></option>
-            <?php
-                endforeach;
-            ?>
+           
         </select>
-    </div>
-    <!-- Payment Method button END-->
-    <!-- Product Search Button -->
-    <div class="input-group mb-2 input-group-sm">
-        <input type="text" class="form-control item-input" id="item-input" placeholder="<?=$this->lang->line("item_code")?>">
-        <div class="input-group-append">
-            <button class="btn btn-outline-secondary btn-sm" type="button" id="item-search"><?=$this->lang->line("function_search")?></button>
-        </div>
-        <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#items_modal"><?=$this->lang->line("function_more")?></button>
-        <!-- items Modal -->
-        <?php include(APPPATH."views/modal-items.php"); ?>
-        <!-- items Modal End -->
     </div>
     <!-- Payment Method button END-->
 
     <!-- Products -->
     <div class="input-group mb-2 input-group-sm">
         <!-- items Modal -->
-        <?php include(APPPATH."views/modal-items.php"); ?>
+        <?php //include(APPPATH."views/modal-items.php"); ?>
     </div>
     <table class="table table-sm table-striped" id="tbl">
         <thead>
@@ -124,7 +105,7 @@
     </table>
 
     <div class="input-group mb-2 input-group-sm">
-        <textarea  class="form-control" rows="3" id="i-remark" placeholder="Remark" disabled></textarea>
+        <textarea  class="form-control" rows="3" id="i-remark" placeholder="<?=$this->lang->line("item_remark")?>" disabled></textarea>
     </div>
     <input type="hidden" name="i-post" id="i-post" value="" />
     <input type="hidden" name="i-prefix" id="i-prefix" value="<?=$dn_prefix?>" />
@@ -135,30 +116,49 @@
 
 
 <script>
-
+    // unload and redirect
     function doUnLoad(){
+        // console.log(document.activeElement.href);
+        // while unload then redirect
         $(window).on('unload', function(e){
-            e.preventDefault();        
-            window.location.replace("<?=$discard_url?>");
-            window.onbeforeunload = null;
+            e.preventDefault();
+            // to fix page refresh
+            if(typeof document.activeElement.href !== "undefined")
+            {
+                // target url defined then discard current session
+                fetch('<?=$discard_url?>').then(function(response) {
+                    if(response.ok){
+                        window.location.replace(document.activeElement.href);
+                        window.onbeforeunload = null;
+                    }
+                });
+            }
         });
     }
-    $("#preview").on("click",function(){
-        window.open('<?=$preview_url?>', '_blank', 'location=yes,height=500,width=900,scrollbars=yes,status=yes');
-    })
-    $("#save").on("click",function(){
-        window.open('<?=$print_url?>', '_blank', 'location=yes,height=500,width=900,scrollbars=yes,status=yes');
-    })
-    $("#reprint").on("click",function(){
-        window.open('<?=$print_url?>', '_blank', 'location=yes,height=500,width=900,scrollbars=yes,status=yes');
-    })
+    // unload window
     $(window).on('beforeunload', function(){
         doUnLoad();
         return "Any changes will be lost";
     });
-
     // the button to free page unload
-    $("#back, #save, #preview, #reprint, #discard").on("click", function(){
+    $("#back, #discard").on("click", function(){
+        doUnLoad();
         $(window).off('beforeunload');
     });
+    // Preview print pop up window 
+    $("#preview").on("click",function(){
+        $(window).off('beforeunload');
+        window.open('<?=$preview_url?>', '_blank', 'location=yes,height=500,width=900,scrollbars=yes,status=yes');
+    })
+    // Print receipt pop up window
+    $("#save").on("click",function(){
+        $(window).off('beforeunload');
+        window.open('<?=$print_url?>', '_blank', 'location=yes,height=500,width=900,scrollbars=yes,status=yes');
+    })
+    // Print receipt pop up window
+    $("#reprint").on("click",function(){
+        $(window).off('beforeunload');
+        window.open('<?=$print_url?>', '_blank', 'location=yes,height=500,width=900,scrollbars=yes,status=yes');
+    })
+
 </script>

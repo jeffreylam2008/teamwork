@@ -10,20 +10,24 @@ class Categories extends CI_Controller
 	var $_profile = "";
 	var $_param = "";
 	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
-
+	var $API_HEADER;
 
 	public function __construct()
 	{
 		parent::__construct();
 
-		$_API_EMP = [];
-		$_API_SHOP = [];
-		$_API_MENU = [];
+		$_query = $this->input->get();
 		$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
 		$this->_default_per_page = $this->config->item('DEFAULT_PER_PAGE');
 		$this->_page = $this->config->item('DEFAULT_FIRST_PAGE');
-		$_query = ["page" => "", "show"=>""];
-		$_query = $this->input->get();
+		if($this->input->get("page"))
+		{
+			$this->_page = $this->input->get("page");
+		}
+		if($this->input->get("show"))
+		{
+			$this->_default_per_page = $this->input->get("show");
+		}
 		// dummy data
 		// $this->session->sess_destroy();
 		// echo "<pre>";
@@ -41,19 +45,11 @@ class Categories extends CI_Controller
 		// login session
 		if(!empty($this->component_login->CheckToken()))
 		{
-			// fatch employee API
-			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
+			// API data
+			$this->component_api->SetConfig("url", $this->config->item('URL_CATEGOIRES_HEADER').$this->_profile['username'].'/?lang='.$this->config->item('language'));
 			$this->component_api->CallGet();
-			$_API_EMP = $this->component_api->GetConfig("result");
-			$_API_EMP = $_API_EMP['query'];
-			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
-			$this->component_api->CallGet();
-			$_API_SHOP = $this->component_api->GetConfig("result");
-			$_API_SHOP = $_API_SHOP['query'];
-			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
-			$this->component_api->CallGet();
-			$_API_MENU = $this->component_api->GetConfig("result");
-			$_API_MENU = $_API_MENU['query'];
+			$_API_HEADER = $this->component_api->GetConfig("result");
+			$this->_API_HEADER = !empty($_API_HEADER['query']) ? $_API_HEADER['query'] : ['employee' => "", 'menu' => "",];
 
 			// sidebar session
 			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
@@ -69,21 +65,14 @@ class Categories extends CI_Controller
 			// header data
 			$this->_inv_header_param["topNav"] = [
 				"isLogin" => true,
-				"username" => $_API_EMP['username'],
-				"employee_code" => $_API_EMP['employee_code'],
-				"shop_code" => $_API_SHOP['shop_code'],
-				"shop_name" => $_API_SHOP['name'],
+				"username" => $this->_API_HEADER['employee']['username'],
+				"employee_code" => $this->_API_HEADER['employee']['employee_code'],
+				"shop_code" => $this->_API_HEADER['employee']['shop_code'],
+				"shop_name" => $this->_API_HEADER['employee']['shop_name'],
 				"today" => date("Y-m-d")
 			];
 
-			if($this->input->get("page"))
-			{
-				$this->_page = $this->input->get("page");
-			}
-			if($this->input->get("show"))
-			{
-				$this->_default_per_page = $this->input->get("show");
-			}
+
 			$_query['page'] = htmlspecialchars($this->_page);
 			$_query['show'] = htmlspecialchars($this->_default_per_page);
 			$_query = $this->component_uri->QueryToString($_query);
@@ -92,7 +81,7 @@ class Categories extends CI_Controller
 			$this->session->set_userdata("login", $_login);
 
 			// fatch side bar 
-			$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
+			$this->component_sidemenu->SetConfig("nav_list", $this->_API_HEADER['menu']);
 			$this->component_sidemenu->SetConfig("active", $this->_param);
 			$this->component_sidemenu->Proccess();
 

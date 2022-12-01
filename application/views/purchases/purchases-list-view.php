@@ -35,7 +35,7 @@
         <div class="col-6">
             <div class="input-group input-group-sm mb-3">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1"><?=$this->lang->line("quotation_number")?></span>
+                    <span class="input-group-text" id="basic-addon1"><?=$this->lang->line("purchase_number")?></span>
                 </div>
                 <input type="text" class="form-control" id="i-num" name="i-num" value="<?=$ad_num?>" placeholder="#" />
             </div>

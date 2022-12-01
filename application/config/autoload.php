@@ -79,7 +79,7 @@ $autoload['libraries'] = array("Component_Sidemenu","Component_URI","Component_A
 |	$autoload['drivers'] = array('cache' => 'cch');
 |
 */
-$autoload['drivers'] = array("cache");
+$autoload['drivers'] = array("");
 
 /*
 | -------------------------------------------------------------------

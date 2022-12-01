@@ -7,10 +7,12 @@ class Items extends CI_Controller
 	var $_default_per_page = "";
 	var $_page = "";
 	var $_i_all_cate = "";
+	var $_i_srh_item = "";
 	var $_token = "";
 	var $_profile = "";
 	var $_param = "";
 	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
+	var $_API_HEADER;
 	/**
 	 * Constructor
 	 */
@@ -34,6 +36,11 @@ class Items extends CI_Controller
 		{
 			$this->_i_all_cate = $this->input->get("i-all-cate");
 		}
+		if($this->input->get("i-srh-item"))
+		{
+			$this->_i_srh_item = $this->input->get("i-srh-item");
+		}
+
 
 		// dummy data
 		//$this->session->sess_destroy();
@@ -54,18 +61,10 @@ class Items extends CI_Controller
 		if(!empty($this->component_login->CheckToken()))
 		{
 			// API data
-			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
+			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS_HEADER').$this->_profile['username'].'/?lang='.$this->config->item('language'));
 			$this->component_api->CallGet();
-			$_API_EMP = $this->component_api->GetConfig("result");
-			$_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
-			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
-			$this->component_api->CallGet();
-			$_API_SHOP = $this->component_api->GetConfig("result");
-			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
-			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
-			$this->component_api->CallGet();
-			$_API_MENU = $this->component_api->GetConfig("result");
-			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
+			$_API_HEADER = $this->component_api->GetConfig("result");
+			$this->_API_HEADER = !empty($_API_HEADER['query']) ? $_API_HEADER['query'] : ['employee' => "", 'menu' => "",];
 
 			// sidebar session
 			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
@@ -81,10 +80,10 @@ class Items extends CI_Controller
 			// header data
 			$this->_inv_header_param["topNav"] = [
 				"isLogin" => true,
-				"username" => $_API_EMP['username'],
-				"employee_code" => $_API_EMP['employee_code'],
-				"shop_code" => $_API_SHOP['shop_code'],
-				"shop_name" => $_API_SHOP['name'],
+				"username" => $this->_API_HEADER['employee']['username'],
+				"employee_code" => $this->_API_HEADER['employee']['employee_code'],
+				"shop_code" => $this->_API_HEADER['employee']['shop_code'],
+				"shop_name" => $this->_API_HEADER['employee']['shop_name'],
 				"today" => date("Y-m-d")
 			];
 			if(!empty($_query))
@@ -99,7 +98,7 @@ class Items extends CI_Controller
 			}
 			
 			// Navigator
-			$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
+			$this->component_sidemenu->SetConfig("nav_list", $this->_API_HEADER['menu']);
 			$this->component_sidemenu->SetConfig("active", $this->_param);
 			$this->component_sidemenu->Proccess();
 
@@ -118,7 +117,7 @@ class Items extends CI_Controller
 		}
 		else
 		{
-			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
+			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"auto");
 		}
 	}
 
@@ -139,13 +138,23 @@ class Items extends CI_Controller
 			$_modalshow = 1;
 		}
 		//  Call API
-		$_where_arr = explode("/", $this->_i_all_cate);
-		$_trim_where = implode("/",array_filter($_where_arr));
-		$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS_CATE').$_trim_where);
+		if(isset($this->_i_srh_item) && !empty($this->_i_srh_item))
+		{
+			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS').$this->_i_srh_item);
+		}
+		else
+		{
+			$_where_arr = explode("/", $this->_i_all_cate);
+			$_trim_where = implode("/",array_filter($_where_arr));
+			$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS_CATE').$_trim_where);
+		}
 		$this->component_api->CallGet();
 		$_API_ITEMS = $this->component_api->GetConfig("result");
 		$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : [];
-		
+		// echo "<pre>";
+		// var_dump($_API_ITEMS);
+		// echo "</pre>";
+
 		$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES'));
 		$this->component_api->CallGet();
 		$_API_CATEGORIES = $this->component_api->GetConfig("result");
@@ -163,7 +172,7 @@ class Items extends CI_Controller
 			// function bar with next, preview and save button
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> "#", "style" => "", "show" => true, "extra" => "data-toggle='modal' data-target='#modal01'"],
+					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> "#", "style" => "btn btn-primary", "show" => true, "extra" => "data-toggle='modal' data-target='#modal01'"],
 					["name" => "<i class='fas fa-search'></i> ".$this->lang->line("function_search"), "type"=>"button", "id" => "search", "url"=> "#", "style" => "", "show" => true, "extra" => ""]
 				]
 			]);
@@ -217,33 +226,32 @@ class Items extends CI_Controller
 		$_API_ITEMS = $this->component_api->GetConfig("result");
 		$_API_ITEMS = !empty($_API_ITEMS['query']) ? $_API_ITEMS['query'] : [];
 		
-
 		$this->component_api->SetConfig("url", $this->config->item('URL_STOCKSONHAND').$item_code);
 		$this->component_api->CallGet();
 		$_API_ONHAND = $this->component_api->GetConfig("result");
 		$_API_ONHAND = !empty($_API_ONHAND['query']) ? $_API_ONHAND['query'] : [];
 
-		$_API_ITEMS['stockonhand'] = $_API_ONHAND['qty'];
-		$_API_ITEMS['desc'] = trim($_API_ITEMS['desc']);
+		$_API_ITEMS[0]['stockonhand'] = $_API_ONHAND['qty'];
+		$_API_ITEMS[0]['desc'] = trim($_API_ITEMS[0]['desc']);
 		if(empty($_API_ITEMS['image_body']))
 		{
-			$_API_ITEMS['image_body'] = "data:image/png;base64,".base64_encode(file_get_contents(base_url("/assets/img/empty-img.jpg")));	
+			$_API_ITEMS[0]['image_body'] = "data:image/png;base64,".base64_encode(file_get_contents(base_url("/assets/img/empty-img.jpg")));	
 			$_remove_img = true;
 		}
 		else
 		{
-			$_API_ITEMS['image_body'] = "data:image/png;base64,".$_API_ITEMS['image_body'];	
+			$_API_ITEMS[0]['image_body'] = "data:image/png;base64,".$_API_ITEMS[0]['image_body'];	
 		}
 
 		$_login = $this->session->userdata("login");
 		// data convertion for items edit (next and previous functions)
-		if(!empty($_API_ITEMS))
+		if(!empty($_API_ITEMS[0]))
 		{
-			if(empty($_API_ITEMS["previous"]))
+			if(empty($_API_ITEMS[0]["previous"]))
 			{
 				$_previous_disable = "disabled";
 			}
-			if(empty($_API_ITEMS["next"]))
+			if(empty($_API_ITEMS[0]["next"]))
 			{
 				$_next_disable = "disabled";
 			}
@@ -253,8 +261,8 @@ class Items extends CI_Controller
 					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/products/items'.$_login["preference"]), "style" => "", "show" => true],
 					["name" => "<i class='fas fa-redo'></i> ".$this->lang->line("function_reset"), "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
 					["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
-					["name" => "<i class='fas fa-step-backward'></i> ".$this->lang->line("function_previous"), "type"=>"button", "id" => "previous", "url"=> base_url("/products/items/edit/".$_API_ITEMS["previous"].$_login["preference"]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
-					["name" => "<i class='fas fa-step-forward'></i> ".$this->lang->line("function_next"), "type"=>"button", "id" => "next", "url"=> base_url("/products/items/edit/".$_API_ITEMS["next"].$_login["preference"]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
+					["name" => "<i class='fas fa-step-backward'></i> ".$this->lang->line("function_previous"), "type"=>"button", "id" => "previous", "url"=> base_url("/products/items/edit/".$_API_ITEMS[0]["previous"].$_login["preference"]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
+					["name" => "<i class='fas fa-step-forward'></i> ".$this->lang->line("function_next"), "type"=>"button", "id" => "next", "url"=> base_url("/products/items/edit/".$_API_ITEMS[0]["next"].$_login["preference"]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
 				]
 			]);
 
@@ -263,7 +271,7 @@ class Items extends CI_Controller
 				//"categories_baseurl" => base_url("/products/categories/"),
 				"save_url" => base_url("/products/items/edit/save/"),
 				"categories_baseurl" => base_url("/products/categories/?new=1"),
-				"data" => $_API_ITEMS,
+				"data" => $_API_ITEMS[0],
 				"categories" => array_column($_API_CATEGORIES,"desc","cate_code"),
 				"types" => [1 => "Non Inventory", 2 => "Inventory", 3 => "Non Inventory - Point"],
 				"remove_img" => $_remove_img

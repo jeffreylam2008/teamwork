@@ -1,33 +1,40 @@
 <form name="form1" id="form1" action="" method="GET" > 
+    <?=$this->lang->line("function_search")?>: 
+
+    <div class="input-group flex-nowrap">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="addon-wrapping"><i class="fa-solid fa-magnifying-glass"></i></span>
+        </div>
+        <input type="text" class="form-control" placeholder="<?=$this->lang->line("function_search")?>" name="i-srh-item" aria-label="" aria-describedby="addon-wrapping">
+    </div>
+    
     <?=$this->lang->line("category")?>: 
     <div class='btn-group-toggle' id='cate_search' data-toggle='buttons'>
 
-    <?php
-    $index = 0;
-    // echo "<pre>";
-    // print_r($categories);
-    // echo "</pre>";
-    foreach($categories as $k => $v)
-    {
-        $active = "";
-
-        if(in_array($v['cate_code'], $where))
-        {
-            $active = "checked";
-        }
-        if($index % 5 == 0)
-            echo "<br>";
-        echo "<label class='btn btn-outline-secondary'>";
-        echo "<input type='checkbox' name='' value='".$v['cate_code']."' autocomplete='off'  ".$active." /> ";
-        echo $v['desc'];
-        echo "</label>&nbsp;";
-        $index++;
-    }
-
-    ?>
-    <input type="hidden" id="i-all-cate" name="i-all-cate" value="">
-    <input type="hidden" id="i-page" name="page" value="<?=$page?>" />
-    <input type="hidden" id="i-show" name="show" value="<?=$default_per_page?>" />
+        <?php
+            $index = 0;
+            // echo "<pre>";
+            // print_r($categories);
+            // echo "</pre>";
+            foreach($categories as $k => $v)
+            {
+                $active = "";
+                if(in_array($v['cate_code'], $where))
+                {
+                    $active = "checked";
+                }
+                if($index % 5 == 0)
+                    echo "<br>";
+                echo "<label class='btn btn-outline-secondary'>";
+                echo "<input type='checkbox' name='' value='".$v['cate_code']."' autocomplete='off'  ".$active." /> ";
+                echo $v['desc'];
+                echo "</label>&nbsp;";
+                $index++;
+            }
+        ?>
+        <input type="hidden" id="i-all-cate" name="i-all-cate" value="" />
+        <input type="hidden" id="i-page" name="page" value="<?=$page?>" />
+        <input type="hidden" id="i-show" name="show" value="<?=$default_per_page?>" />
     </div>
 </form>
 
@@ -131,7 +138,7 @@ $(document).ready(function() {
     
     // search button event
     $("#search").click(function(){
-        var cate = ""
+        var cate = "";
         $("#cate_search").children().each(function(i){
             if($(this).hasClass('active'))
             {
@@ -139,8 +146,7 @@ $(document).ready(function() {
                 cate += "/";
             } 
         });
-        
-        $("#i-all-cate").val(cate);
+        $("#i-all-cate").val(cate);     
         $("#form1").submit();
     });
     

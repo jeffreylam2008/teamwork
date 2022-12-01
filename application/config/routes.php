@@ -57,6 +57,13 @@ $route['default_controller'] = 'Dushboard';
 $route['404_override'] = 'error_404';
 $route['translate_uri_dashes'] = FALSE;
 
+// Login
+$route['login'] = 'login/index';
+$route['login/process'] = "login/dologin";
+
+// dushboard
+$route['dushboard'] = 'dushboard/index';
+
 // items
 $route['products/items/page/(:any)'] = 'items/index/$1';
 $route['products/items/page/(:any)/show/(:any)'] = 'items/index/$1/$2';
@@ -83,11 +90,12 @@ $route['products/categories/new'] = 'categories/create';
 $route['products/categories/save'] = 'categories/savecreate';
 $route['products/categories/edit/save/(:any)'] = 'categories/saveedit/$1';
 
-// invocies
+// // invocies
 $route['invoices'] = 'error_404';
 $route['invoices/create'] = 'error_404';
 $route['invoices/create/(:any)'] = 'invoices/create/$1';
 $route['invoices/create/(:any)/(:any)'] = 'invoices/create/$1/$2';
+$route['invoices/process/(:any)'] = 'invoices/process/$1';
 $route['invoices/list'] = 'invoices/index';
 $route['invoices/edit'] = 'error_404';
 $route['invoices/edit/(:any)'] = 'invoices/edit/$1';
@@ -95,16 +103,17 @@ $route['invoices/list/edit'] = 'error_404';
 $route['invoices/void/confirmed/(:any)'] = 'invoices/savevoid/$1';
 $route['invoices/copy/(:any)'] = 'invoices/docopy/$1';
 
-// quotations
+// // quotations
 $route['quotations'] = 'error_404';
 $route['quotations/create'] = 'error_404';
-$route['quotations/create/(:any)'] = 'quotations/create/$1';
+$route['quotations/create/(:any)/(:any)'] = 'quotations/create/$1/$2';
 $route['quotations/list'] = 'quotations/index';
+$route['quotations/list/edit'] = 'error_404';
 $route['quotations/edit'] = 'error_404';
 $route['quotations/edit/(:any)'] = 'quotations/edit/$1';
-$route['quotations/list/edit'] = 'error_404';
 $route['quotations/void/confirmed/(:any)'] = 'quotations/savevoid/$1';
 $route['quotations/copy/(:any)'] = 'quotations/docopy/$1';
+$route['quotations/tender/(:any)'] = 'quotations/tender/$1';
 
 // general configure
 $route['administration/general'] = 'administration/index';
@@ -160,68 +169,68 @@ $route['suppliers/delete/confirmed/(:any)'] = 'suppliers/savedel/$1';
 
 // purchases
 $route['purchases/order'] = 'purchases/index';
-$route['purchases/order/donew'] = 'purchases/donew';
-$route['purchases/order/create/(:any)'] = 'purchases/create/$1';  
-$route['purchases/order/process'] = 'purchases/confirm';
-$route['purchases/order/save'] = 'purchases/save';
+$route['purchases/order/create/(:any)/(:any)'] = 'purchases/create/$1/$2';  
+$route['purchases/order/process/(:any)'] = 'purchases/confirm/$1';
+$route['purchases/order/save/(:any)'] = 'purchases/save/$1';
 $route['purchases/order/discard'] = 'purchases/discard';
-$route['purchases/order/saveedit'] = 'purchases/saveedit';
-$route['purchases/order/edit/(:any)'] = 'purchases/edit/$1';
-$route['purchases/order/void/(:any)'] = 'purchases/void/$1';
-$route['purchases/order/void/confirmed/(:any)'] = 'purchases/savevoid/$1';
+$route['purchases/order/saveedit/(:any)'] = 'purchases/saveedit/$1';
+$route['purchases/order/edit/(:any)/(:any)'] = 'purchases/edit/$1/$2';
+$route['purchases/order/void/(:any)/(:any)'] = 'purchases/void/$1/$2';
+$route['purchases/order/confirmed/void/(:any)'] = 'purchases/savevoid/$1';
 $route['purchases/order/copy/(:any)'] = 'purchases/docopy/$1';
 $route['purchases/order/togrn/(:any)'] = 'purchases/togrn/$1';
-$route['purchases/order/settlement/(:any)'] = 'purchases/settlement/$1';
-$route['purchases/order/settlement/save/(:any)'] = 'purchases/savesettlement/$1';
+$route['purchases/order/settlement/(:any)/(:any)'] = 'purchases/settlement/$1/$2';
+$route['purchases/order/settlement/save/(:any)/(:any)'] = 'purchases/savesettlement/$1/$2';
 
 // stocks
 $route['stocks'] = 'stocks/index';
-$route['stocks/process'] = 'stocks/grn_confirm';
+// $route['stocks/process'] = 'stocks/grn_confirm';
 
 // stocks -> grn
-$route['stocks/grn/donew'] = 'stocks/donewgrn';
-$route['stocks/grn/detail/(:any)'] = 'stocks/grn_detail/$1';
-$route['stocks/grn/create/(:any)'] = 'stocks/grn/$1';
-$route['stocks/grn/create/(:any)/(:any)'] = 'stocks/grn/$1/$2';
-$route['stocks/grn/save'] = 'stocks/grn_save';
+//$route['stocks/grn/donew'] = 'stocks/donewgrn';
+$route['stocks/grn/edit/(:any)/(:any)'] = 'GoodReceivedNote/edit/$1/$2';
+$route['stocks/grn/create/(:any)/(:any)'] = 'GoodReceivedNote/create/$1/$2';
+$route['stocks/grn/create/(:any)/(:any)/(:any)'] = 'GoodReceivedNote/create/$1/$2/$3';
+$route['stocks/grn/process/(:any)'] = 'GoodReceivedNote/process/$1';
+$route['stocks/grn/save/(:any)'] = 'GoodReceivedNote/save/$1';
 
 // stocks -> dn
-$route['stocks/dn/detail/(:any)'] = 'DeliveryNote/dn_detail/$1';
-$route['stocks/dn/donew'] = 'DeliveryNote/donew';
+$route['stocks/dn/edit/(:any)/(:any)'] = 'DeliveryNote/edit/$1/$2';
 $route['stocks/dn/create/(:any)/(:any)'] = 'DeliveryNote/create/$1/$2';
+$route['stocks/dn/create/(:any)/(:any)/(:any)'] = 'DeliveryNote/create/$1/$2/$3';
+$route['stocks/dn/process/(:any)'] = 'DeliveryNote/process/$1';
 $route['stocks/dn/save/(:any)'] = 'DeliveryNote/save/$1';
 
-// stocks -> adj
-$route['stocks/adj/create/(:any)'] = 'stocks/adjust/$1';
-$route['stocks/adj/create/(:any)/(:any)'] = 'stocks/adjust/$1/$2';
-$route['stocks/adj/process'] = 'stocks/adj_confirm';
-$route['stocks/adj/detail/(:any)'] = 'stocks/adj_detail/$1';
-$route['stocks/adj/save'] = 'stocks/adj_save';
+// // stocks -> adjustment
+// $route['stocks/adj/create/'] = 'error_404';
+$route['stocks/adj/create/(:any)/(:any)'] = 'Adjustments/create/$1/$2';
+$route['stocks/adj/create/(:any)/(:any)/(:any)'] = 'Adjustments/create/$1/$2/$3';
+$route['stocks/adj/process/(:any)'] = 'Adjustments/process/$1';
+$route['stocks/adj/edit/(:any)/(:any)'] = 'Adjustments/edit/$1/$2';
+$route['stocks/adj/save/(:any)'] = 'Adjustments/save/$1';
 
-// stocks -> stocktake
-$route['stocks/stocktake/create/(:any)'] = 'stocks/stocktake/$1';
-$route['stocks/stocktake/process'] = 'stocks/stocktake_process';
-$route['stocks/stocktake/detail/(:any)'] = 'stocks/stocktake_detail/$1';
-$route['stocks/stocktake/save'] = 'stocks/stocktake_save';
-$route['stocks/stocktake/discard/(:any)'] = 'stocks/stocktake_discard/$1';
-$route['stocks/stocktake/discard/confirmed/(:any)'] = 'stocks/stocktake_save_discard/$1';
-$route['stocks/stocktake/adjust/(:any)'] = 'stocks/stocktake_adjust/$1';
-$route['stocks/stocktake/adjust/confirmed/(:any)'] = 'stocks/stocktake_save_adjust/$1';
+// // stocks -> stocktake
+// // $route['stocks/stocktake/create/(:any)'] = 'stocks/stocktake/$1';
+// // $route['stocks/stocktake/process'] = 'stocks/stocktake_process';
+// // $route['stocks/stocktake/detail/(:any)'] = 'stocks/stocktake_detail/$1';
+// // $route['stocks/stocktake/save'] = 'stocks/stocktake_save';
+// // $route['stocks/stocktake/discard/(:any)'] = 'stocks/stocktake_discard/$1';
+// // $route['stocks/stocktake/discard/confirmed/(:any)'] = 'stocks/stocktake_save_discard/$1';
+// // $route['stocks/stocktake/adjust/(:any)'] = 'stocks/stocktake_adjust/$1';
+// // $route['stocks/stocktake/adjust/confirmed/(:any)'] = 'stocks/stocktake_save_adjust/$1';
 
-// Login
-$route['login'] = 'login/index';
-$route['login/process'] = "login/dologin";
+// // Master file load
+// $route['master'] = 'master/index';
 
-// Master file load
-$route['master'] = 'master/index';
+// // testbed load
+ $route['TestBed'] = 'TestBed/index';
+
+// // Reports -> index
+// $route['reports'] = 'reports/index';
+// $route['reports/(:any)'] = 'reports/reports/$1';
+
+// // Systems
+// $route['systems/backup'] = 'systems/index';
 
 
-// Master file load
-$route['TestBed'] = 'TestBed/index';
-
-// Reports -> index
-$route['reports'] = 'reports/index';
-$route['reports/(:any)'] = 'reports/reports/$1';
-
-// Systems
-$route['systems/backup'] = 'systems/index';
+// $route['reroute/quotations/create/(:any)'] = 'reroute/quotations/create/$1';

@@ -16,7 +16,7 @@ function PrintHeader($num ="", $cust = "", $date  = "", $shopcode = "", $shopnam
             </tr>
             <tr>
                 <td></td>
-                <td><font size=3>".$cust['name']."</td>
+                <td><font size=3>".$cust['delivery_addr']."</td>
                 <td>&nbsp;</td>
                 <td><font size=3>".substr($date,0,-8)."</td>
                 <td valign='top'><font size=3>".$num."</font></td>
@@ -46,7 +46,11 @@ function PrintHeader($num ="", $cust = "", $date  = "", $shopcode = "", $shopnam
     ";
    // echo "<p style=\"page-break-after: always;\"></p>";
 }
-    
+
+
+
+
+
 function PrintBody($items=[])
 {
     print "
@@ -134,10 +138,13 @@ if(isset($items)){
     for($j=1; $j<=$page_separate; $j++)
     {
         $customer['cust_code'] = $cust_code;
+        $customer['delivery_addr'] = $delivery_addr;
+        $customer['name'] = $cust_name;
         PrintHeader($dn_num, $customer, $date, $shopcode, $shopname, $employee_code, $j);
         PrintBody($page[$j]);
         PrintFooter($total);
-        PrintRemark($customer['statement_remark']);
+        PrintRemark($remark);
+        PrintRemark($delivery_remark);
         print "<p style=\"page-break-after: always;\"></p>";
     }
 

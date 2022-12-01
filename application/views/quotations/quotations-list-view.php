@@ -79,7 +79,7 @@
                 echo "<td>(".$val['shop_code'].") - ".$val['shop_name']."</td>";
                 echo "<td>(".$val['cust_code'].") - ".$val['cust_name']."</td>";
                 echo "<td>".$val['payment_method']."</td>";
-                echo "<td>$".number_format($val['total'],2,".","")."</td>";
+                echo "<td>$".number_format($val['total'],2,".",",")."</td>";
                 echo $val['is_convert'] ? "<td>YES</td>":"<td>NO</td>";
                 echo "<td>".$val['create_date']."</td>";
                 echo "<td>".$val['modify_date']."</td>";

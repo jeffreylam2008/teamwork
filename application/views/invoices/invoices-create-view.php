@@ -466,8 +466,17 @@ extract($data);
         // while unload then redirect
         $(window).on('unload', function(e){
             e.preventDefault();        
-            window.location.replace("<?=$discard_url?>");
-            window.onbeforeunload = null;
+            // to fix page refresh
+            if(typeof document.activeElement.href !== "undefined")
+            {
+                // target url defined then discard current session
+                fetch("<?=$discard_url?>").then(function(response) {
+                    if(response.ok){
+                        window.location.replace(document.activeElement.href);
+                        window.onbeforeunload = null;
+                    }
+                });
+            }
         });
     }
     // before page unload
@@ -482,6 +491,7 @@ extract($data);
     });
 
     $("#discard").on("click", function(){
+        doUnLoad();
         $(window).off('beforeunload');
     });
 

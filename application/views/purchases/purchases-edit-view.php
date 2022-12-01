@@ -17,7 +17,7 @@ extract($data);
             <div class="input-group-prepend">
                 <span class="input-group-text" id=""><?=$this->lang->line("purchase_reference_number")?></span>
             </div>
-            <input type="text" class="form-control" id="i-refernum" value="<?=$refernum?>" disabled>
+            <input type="text" class="form-control" id="i-refernum" value="<?=$refer_num?>" disabled>
         </div>
         <div class="input-group mb-2 input-group-sm">
             <div class="input-group-prepend">
@@ -233,9 +233,15 @@ extract($data);
             +"<td>"+items[item].item_code+"</td>"
             +"<td>"+items[item].eng_name+"</td>"
             +"<td>"+items[item].chi_name+"</td>"
-            +"<td><input type='button' class='btn btn-secondary btn-sm w-70 float-right' id='minus_"+item+"' value='-' /></td>"
+            +"<td>"
+            +"<input type='button' class='btn btn-secondary btn-sm w-70 float-right' id='minus_"+item+"' value='-' />"
+            +"<input type='button' class='btn btn-warning btn-sm w-70 float-right' id='more_minus_"+item+"' value='-10' />"
+            +"</td>"
             +"<td><input type='text' class='form-control form-control-sm item-input' id='qty_"+item+"' value='"+items[item].qty+"' disabled /></td>"
-            +"<td><input type='button' class='btn btn-secondary btn-sm w-70' id='plus_"+item+"' value='+' /></td>"
+            +"<td>"
+            +"<input type='button' class='btn btn-secondary btn-sm w-70' id='plus_"+item+"' value='+' />"
+            +"<input type='button' class='btn btn-warning btn-sm w-70' id='more_plus_"+item+"' value='+10' />"
+            +"</td>"
             +"<td>"+items[item].unit+"</td>"
             +"<td><input type='text' class='form-control form-control-sm item-input' id='price_"+item+"' value='"+_price.toFixed(2)+"' /></td>"
             +"<td id='subtotal_"+item+"'>"+_subtotal.toFixed(2)+"</td>"
@@ -265,6 +271,17 @@ extract($data);
 
             });
             // minus function
+            $('#more_minus_'+i).on("click", function(){
+                var $qty = $('#qty_'+i)
+                if(parseInt($qty.val()) > 10){
+                    let new_qty = parseInt($qty.val()) - 10
+                    if(new_qty > 0)
+                        new_qty = "+"+new_qty
+                    $qty.val(new_qty)
+                    recalc()
+                }
+            });
+            // minus function
             $('#minus_'+i).on("click", function(){
             
                var $qty = $('#qty_'+i)
@@ -282,6 +299,17 @@ extract($data);
                     $qty.val(new_qty)
                     recalc()
                 }
+            });
+             // plus function
+             $('#more_plus_'+i).on("click",function(){
+                var $qty = $('#qty_'+i)
+                //if(parseInt( $qty.val()) >= 0 && parseInt( $qty.val()) < 10){
+                    let new_qty = parseInt( $qty.val()) + 10
+                    if(new_qty > 0)
+                        new_qty = "+"+new_qty
+                    $qty.val(new_qty.toString())
+                    recalc()
+                //}
             });
             // remove function
             $('#del_'+i).on("click",function(){
@@ -342,17 +370,39 @@ extract($data);
             recalc()
         }
     }
+    // unload and redirect
+    function doUnLoad(){
+        // console.log(document.activeElement.href);
+        // while unload then redirect
+        $(window).on('unload', function(e){
+            e.preventDefault();
+            // to fix page refresh
+            if(typeof document.activeElement.href !== "undefined")
+            {
+                // target url defined then discard current session
+                fetch("<?=$discard_url?>").then(function(response) {
+                    if(response.ok){
+                        window.location.replace(document.activeElement.href);
+                        window.onbeforeunload = null;
+                    }
+                });
+            }
+        });
+    }
+
     $(window).on('beforeunload', function(){
+        doUnLoad();
         return "Any changes will be lost";
     });
     $(document).on("submit", "form", function(event){
         // disable unload warning
         $(window).off('beforeunload');
     });
-    $("#Back, #copy, #discard, #grn").on("click", function(){
+    $("#Back, #togrn, #copy, #discard").on("click", function(){
+        doUnLoad();
+        // disable unload warning
         $(window).off('beforeunload');
     });
-
     //construct
     $(document).ready(function(){
         refresh()
@@ -480,9 +530,9 @@ extract($data);
     $("#next").on("click",function(){
         var _inputs = {};
         var _valid = 0;
-        _inputs["purchasesnum"] = $("#i-purchasesnum").val()
+        _inputs["purchases_num"] = $("#i-purchasesnum").val()
         _inputs["prefix"] = $("#i-prefix").val()
-        _inputs["refernum"] = $("#i-refernum").val()
+        _inputs["refer_num"] = $("#i-refernum").val()
         _inputs["employee_code"] = $("#i-employeecode").val()
         _inputs["date"] = $("#i-date").val()
         _inputs["shopcode"] = $("#i-shopcode").val()

@@ -168,7 +168,7 @@ class Quotations extends CI_Controller
 		{
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> base_url("/router/quotations/create/"), "style" => "", "show" => true, "extra" => ""]
+					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> base_url("/router/quotations/create/"), "style" => "btn btn-primary", "show" => true, "extra" => ""]
 				]
 			]);
 			$this->load->view('function-bar', [
@@ -206,15 +206,7 @@ class Quotations extends CI_Controller
 
 		if(!empty($_session_id) && !empty($_num))
 		{
-			$_transaction = [
-				'items' => [],
-				'cust_code' => "",
-				'cust_name' => "",
-				'paymentmethod' => "",
-				'paymentmethodname' => "",
-				'remark' => "",
-				'quotation' => $_num
-			];
+			
 			$_show_discard_btn = true;
 
 			$_data = $this->session->userdata($_session_id);
@@ -225,14 +217,25 @@ class Quotations extends CI_Controller
 			{
 				$_transaction = $_data[$_num];
 				$_transaction['quotation'] = $_num;
-				$this->session->set_flashdata($_session_id, $_transaction);
 			}
 			// For new create
 			else 
 			{
-				$_data[$_num] = $_transaction;
-				$this->session->set_flashdata($_session_id, $_data);
+				$_transaction = [
+					'items' => [],
+					'cust_code' => "",
+					'cust_name' => "",
+					'paymentmethod' => "",
+					'paymentmethodname' => "",
+					'remark' => "",
+					'quotation' => $_num
+				];
+				
 			}
+			// save transation to session
+			$_sess[$_num] = $_transaction;
+			$this->session->set_tempdata($_session_id, $_sess, 600);
+			
 			// fatch items API
 			$this->component_api->SetConfig("url", $this->config->item('URL_MASTER'));
 			$this->component_api->CallGet();
@@ -246,7 +249,8 @@ class Quotations extends CI_Controller
 			// function bar with next, preview and save button
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
+					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/quotations/list') ,"style" => "","show" => true],
+					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "btn btn-primary", "show" => true],
 					["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('/router/quotations/discard/'.$_session_id), "style" => "btn btn-danger", "show" => $_show_discard_btn]
 				]
 			]);
@@ -256,7 +260,9 @@ class Quotations extends CI_Controller
 			// present form view
 			$this->load->view('quotations/quotations-create-view', [
 				"submit_to" => base_url("/quotations/tender/".$_session_id),
+				"discard_url" => base_url("/router/quotations/discard/".$_session_id),
 				"prefix" => $this->_inv_header_param['topNav']['prefix'],
+				"data" => $_sess[$_num],
 				"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
 				"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
 				"date" => date("Y-m-d H:i:s"),
@@ -266,7 +272,7 @@ class Quotations extends CI_Controller
 					"customers" => $_API_MASTER['customers'],
 					"tender" => $_API_MASTER['paymentmethod']
 				],
-				"data" => $_transaction,
+				
 				"default_per_page" => $this->_default_per_page,
 				"function_bar" => $this->load->view('function-bar', [
 					"btn" => [
@@ -303,7 +309,7 @@ class Quotations extends CI_Controller
 
 			$_data[$_num] = $_transaction['query'];
 			$_data['cur_quotationnum'] = $_num;
-			$this->session->set_flashdata($_session_id, $_data);
+			$this->session->set_tempdata($_session_id, $_data, 600);
 
 			if(!empty($_transaction))
 			{
@@ -332,8 +338,8 @@ class Quotations extends CI_Controller
 					$this->load->view('function-bar', [
 						"btn" => [
 							["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "Back", "url"=> base_url('/quotations/list'.$_login['preference']), "style" => "", "show" => true],
-							["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
-							["name" => "<i class='fas fa-exchange-alt'></i> ".$this->lang->line("quotation_convert_to_invoice"), "type"=>"button", "id" => "convert", "url"=> base_url('/router/invoices/convert/'.$_session_id), "style" => "btn btn-success", "show" => $_show_convert_btn],
+							["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "btn btn-primary", "show" => true],
+							["name" => "<i class='fas fa-exchange-alt'></i> ".$this->lang->line("quotation_convert_to_invoice"), "type"=>"button", "id" => "convert", "url"=> base_url('/router/quotations/convert/'.$_session_id), "style" => "btn btn-success", "show" => $_show_convert_btn],
 							["name" => "<i class='far fa-copy'></i> ".$this->lang->line("function_copy"), "type"=>"button", "id" => "copy", "url"=> base_url('/router/quotations/copy/'.$_session_id), "style" => "btn btn-dark", "show" => true],
 							["name" => "<i class='fas fa-eraser'></i> ".$this->lang->line("function_cancel"), "type"=>"button", "id" => "void", "url"=> base_url('/quotations/void/'.$_session_id.'/'.$_num), "style" => "btn btn-danger", "show" => $_show_void_btn],
 						]
@@ -349,7 +355,8 @@ class Quotations extends CI_Controller
 								["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "new", "url"=>base_url('/customers/?new=1'), "style" => "", "show" => true]
 							]
 						],true),
-						"submit_to" => base_url("/quotations/tender"),
+						"submit_to" => base_url("/quotations/tender/".$_session_id),
+						"discard_url" => base_url("/router/quotations/discard/".$_session_id),
 						"prefix" => $this->_inv_header_param['topNav']['prefix'],
 						"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
 						"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
@@ -404,7 +411,7 @@ class Quotations extends CI_Controller
 			// save print data to session
 			$_sess[$_cur_num] = $_transaction;
 			$_sess['cur_quotationnum'] = $_cur_num;
-			$this->session->set_flashdata($_session_id, $_sess);
+			$this->session->set_tempdata($_session_id, $_sess, 600);
 
 			// show save button
 			if(isset($_transaction['void']))
@@ -435,7 +442,7 @@ class Quotations extends CI_Controller
 			$this->load->view('function-bar', [
 				"btn" => [
 					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/quotations/'.$_data['formtype']."/".$_session_id.'/'.$_data['quotation']) ,"style" => "","show" => true],
-					["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=> base_url("/quotations/".$_the_form_type."/".$_session_id), "style" => "","show" => $_show_save_btn],
+					["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=> base_url("/quotations/".$_the_form_type."/".$_session_id), "style" => "btn btn-primary","show" => $_show_save_btn],
 					["name" => "<i class='far fa-file-alt'></i> ".$this->lang->line("function_preview"), "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
 					["name" => "<i class='fas fa-print'></i> ".$this->lang->line("function_reprint"), "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn],
 					["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('/router/quotations/discard/'.$_session_id), "style" => "btn btn-danger", "show" => $_show_discard_btn]
@@ -444,6 +451,7 @@ class Quotations extends CI_Controller
 			// render view
 			$this->load->view("quotations/quotations-tender-view", [
 				"data" => $_transaction,
+				"discard_url" => base_url("/router/quotations/discard/".$_session_id),
 				"preview_url" => base_url('/ThePrint/quotations/preview/'.$_session_id),
 				"print_url" => base_url('/ThePrint/quotations/save/'.$_session_id)
 			]);
@@ -516,20 +524,24 @@ class Quotations extends CI_Controller
 			]);
 		}
 		$this->load->view("footer");
+		$this->session->unset_userdata($_session_id);
 		header("Refresh: 10; url='".base_url('/quotations/list'.$_login["preference"])."'");
 	}
 	/**
 	 * Save Edit Process
 	 * To save quotation edit
 	 */
-	public function saveedit()
+	public function saveedit($_session_id)
 	{
 		// session
 		$alert = "danger";
 		$_login = $this->session->userdata('login');
-		$_cur_num = $this->session->userdata('cur_quotationnum');
-        $_transaction = $this->component_transactions->Get($_cur_num);
-		
+		$_data = $this->session->userdata($_session_id);
+		if(isset($_data) )
+		{
+			$_cur_num = $_data['cur_quotationnum'];
+			$_transaction = $_data[$_cur_num];
+		}
 		
 		// echo "<pre>";
 		// var_dump($_cur_num);
@@ -545,10 +557,7 @@ class Quotations extends CI_Controller
 		{
 			$_api_body = json_encode($_transaction,true);
 			// echo $_cur_invoicenum;
-
 			// echo ($_api_body);
-	
-
 			$this->component_api->SetConfig("body", $_api_body);
 			$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS').$_cur_num);
 			$this->component_api->CallPatch();
@@ -581,8 +590,7 @@ class Quotations extends CI_Controller
 				'alertstyle' => $alert
 			]);
 		}
-		$this->component_transactions->Remove($_cur_num);
-		unset($_SESSION['cur_quotationnum']);
+		$this->session->unset_userdata($_session_id);
 		header("Refresh: 10; url='".base_url('/quotations/list/'.$_login["preference"])."'");
 	}
 	/**
@@ -590,13 +598,15 @@ class Quotations extends CI_Controller
 	 * To confirm void quotation 
 	 * @param _num quotation number
 	 */
-	public function savevoid($_num="")
+	public function savevoid($_session_id="")
 	{
 		$_login = $this->session->userdata('login');
-		$_cur_num = $this->session->userdata('cur_quotationnum');
-
+		// $_cur_num = $this->session->userdata('cur_quotationnum');
+		$_data = $this->session->userdata($_session_id);
+		
+		$_cur_num = $_data['cur_quotationnum'];
+		$_transaction = $_data[$_cur_num];
 		$alert = "danger";
-		$invoice_ok = true;
 		$result = [];
 
 		$this->load->view('function-bar', [
@@ -604,7 +614,7 @@ class Quotations extends CI_Controller
 				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/quotations/list'.$_login["preference"]),"style" => "","show" => true],
 			]
 		]);
-		if(!empty($_num))
+		if(!empty($_transaction) && isset($_transaction))
 		{
 			$this->component_api->SetConfig("url", $this->config->item('URL_QUOTATIONS').$_num);
 			$this->component_api->CallDelete();
@@ -634,8 +644,7 @@ class Quotations extends CI_Controller
 				'alertstyle' => $alert
 			]);
 		}
-
-		unset($_SESSION['cur_quotationnum']);
+		// $this->session->unset_userdata('cur_quotationnum');
 		header("Refresh: 10; url='".base_url('/quotations/list'.$_login["preference"])."'");
 	}
 
@@ -646,7 +655,7 @@ class Quotations extends CI_Controller
 	 */
 	public function void($_session_id = "",$_num = "")
 	{
-		$this->session->keep_flashdata($_session_id);
+		//$this->session->keep_flashdata($_session_id);
 		$this->load->view("quotations/quotations-void-view", [
 			"submit_to" => base_url("quotations/void/confirmed/".$_session_id),
 			"to_deleted_num" => $_num,

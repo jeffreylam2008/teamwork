@@ -4,9 +4,7 @@
         // var_dump($data);
         // echo "</pre>";
         extract($data);
-
     ?>
-
 </div>
 
 <div class="container-fluid">
@@ -15,15 +13,14 @@
         <div class="input-group-prepend">
             <span class="input-group-text"><?=$this->lang->line("purchase_number")?></span>
         </div>
-        
-        <input type="text" class="form-control" value="<?=$purchasesnum?>" disabled />
+        <input type="text" class="form-control" value="<?=$purchases_num?>" disabled />
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
             <span class="input-group-text" ><?=$this->lang->line("purchase_reference_number")?></span>
         </div>
         
-        <input type="text" class="form-control" value="<?=$refernum?>" disabled />
+        <input type="text" class="form-control" value="<?=$refer_num?>" disabled />
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
@@ -103,10 +100,42 @@
 </div>
 
 <script>
-
-// $("#preview").on("click",function(){
-//     window.open('<?=$preview_url?>', '_blank', 'location=yes,height=900,width=800,scrollbars=yes,status=yes');
-// })
+    // unload and redirect
+    function doUnLoad(){
+        // console.log(document.activeElement.href);
+        // while unload then redirect
+        $(window).on('unload', function(e){
+            e.preventDefault();
+            // to fix page refresh
+            if(typeof document.activeElement.href !== "undefined")
+            {
+                // target url defined then discard current session
+                fetch("<?=$discard_url?>").then(function(response) {
+                    if(response.ok){
+                        window.location.replace(document.activeElement.href);
+                        window.onbeforeunload = null;
+                    }
+                });
+            }
+        });
+    }
+    // unload window
+    $(window).on('beforeunload', function(){
+        doUnLoad();
+        return "Any changes will be lost";
+    });
+    // the button to free page unload
+    $("#back, #save, #preview, #reprint").on("click", function(){
+        $(window).off('beforeunload');
+    });
+     // the button to free page unload
+    $("#discard").on("click", function(){
+        doUnLoad();
+        $(window).off('beforeunload');
+    });
+    $("#preview").on("click",function(){
+        window.open('<?=$preview_url?>', '_blank', 'location=yes,height=900,width=800,scrollbars=yes,status=yes');
+    })
 // $("#save").on("click",function(){
 //     window.open('<?=$print_url?>', '_blank', 'location=yes,height=900,width=800,scrollbars=yes,status=yes');
 // })

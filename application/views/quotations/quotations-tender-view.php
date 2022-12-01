@@ -92,19 +92,49 @@
 </div>
 
 <script>
-$(window).on('beforeunload', function(){
-    return "Any changes will be lost";
-});
-$("#back, #save, #preview, #reprint, #discard").on("click", function(){
-    $(window).off('beforeunload');
-});
-$("#preview").on("click",function(){
-    window.open('<?=$preview_url?>', '_blank', 'location=yes,height=500,width=900,scrollbars=yes,status=yes');
-})
-$("#save").on("click",function(){
-    window.open('<?=$print_url?>', '_blank', 'location=yes,height=500,width=900,scrollbars=yes,status=yes');
-})
-$("#reprint").on("click",function(){
-    window.open('<?=$print_url?>', '_blank', 'location=yes,height=500,width=900,scrollbars=yes,status=yes');
-})
+    // unload and redirect
+    function doUnLoad(){
+        // console.log(document.activeElement.href);
+        // while unload then redirect
+        $(window).on('unload', function(e){
+            e.preventDefault();
+            // to fix page refresh
+            if(typeof document.activeElement.href !== "undefined")
+            {
+                // target url defined then discard current session
+                fetch("<?=$discard_url?>").then(function(response) {
+                    if(response.ok){
+                        window.location.replace(document.activeElement.href);
+                        window.onbeforeunload = null;
+                    }
+                });
+            }
+        });
+    }
+    // unload window
+    $(window).on('beforeunload', function(){
+        doUnLoad();
+        return "Any changes will be lost";
+    });
+    // the button to free page unload
+    $("#back, #save, #preview, #reprint").on("click", function(){
+        $(window).off('beforeunload');
+    });
+    // the button to free page unload
+    $("#discard").on("click", function(){
+        doUnLoad();
+        $(window).off('beforeunload');
+    });
+    // Preview print pop up window 
+    $("#preview").on("click",function(){
+        window.open('<?=$preview_url?>', '_blank', 'location=yes,height=500,width=900,scrollbars=yes,status=yes');
+    })
+    // Print receipt pop up window
+    $("#save").on("click",function(){
+        window.open('<?=$print_url?>', '_blank', 'location=yes,height=500,width=900,scrollbars=yes,status=yes');
+    })
+    // Print receipt pop up window
+    $("#reprint").on("click",function(){
+        window.open('<?=$print_url?>', '_blank', 'location=yes,height=500,width=900,scrollbars=yes,status=yes');
+    })
 </script>

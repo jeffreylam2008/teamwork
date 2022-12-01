@@ -9,8 +9,22 @@ class TestBed extends CI_Controller
     }
     public function index()
     {
-        echo $folder = $_SERVER['DOCUMENT_ROOT']."/webapp/logs";
-        error_log("error msg --\r\n", 3, $folder."/LOG.txt");
+        echo base_url().uri_string();
+    }
+    public function create()
+    {
+        echo "<h1> create </h1>";
+        echo base_url().uri_string();
+        echo "<br>";
+
+        echo "<a href='".$this->input->get("b_url")."'>back</a>";
+    }
+    public function edit()
+    {
+        echo "<h1> edit </h1>";
+        echo base_url().uri_string();
+        echo "<br>";
+        echo "<a href='".base_url()."TestBed/create?b_url=".base_url().uri_string()."'>create</a>";
     }
 
 }

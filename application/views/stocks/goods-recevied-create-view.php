@@ -417,13 +417,33 @@ function lookup(selecteditemcode, source)
     }
 }
 
+function doUnLoad(){
+    // console.log(document.activeElement.href);
+    // while unload then redirect
+    $(window).on('unload', function(e){
+        e.preventDefault();
+        fetch("<?=$discard_url?>").then(function(response) {
+            if(response.ok){
+                window.location.replace(document.activeElement.href);
+                window.onbeforeunload = null;
+            }   
+        });
+    });
+}
+
 $(window).on('beforeunload', function(){
+    doUnLoad();
     return "Any changes will be lost";
 });
+ // free unload on submit button  
 $(document).on("submit", "form", function(event){
     // disable unload warning
     $(window).off('beforeunload');
 });
+$("#discard").on("click", function(){
+    $(window).off('beforeunload');
+});
+
 //construct
 $(document).ready(function(){
     refresh()

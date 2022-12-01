@@ -337,14 +337,34 @@ extract($data);
             recalc()
         }
     }
+    function doUnLoad(){
+        // while unload then redirect
+        $(window).on('unload', function(e){
+            e.preventDefault();
+            // to fix page refresh
+            if(typeof document.activeElement.href !== "undefined")
+            {
+                // target url defined then discard current session
+                fetch("<?=$discard_url?>").then(function(response) {
+                    if(response.ok){
+                        window.location.replace(document.activeElement.href);
+                        window.onbeforeunload = null;
+                    }
+                });
+            }
+        });
+    }
     $(window).on('beforeunload', function(){
+        doUnLoad();
         return "Any changes will be lost";
     });
     $(document).on("submit", "form", function(event){
         // disable unload warning
         $(window).off('beforeunload');
     });
-    $("#convert, #discard, #Back, #copy").on("click", function(){
+    $("#Back, #convert, #copy, #void, #discard").on("click", function(){
+        doUnLoad();
+        // disable unload warning
         $(window).off('beforeunload');
     });
 

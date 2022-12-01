@@ -11,6 +11,9 @@ class Purchases extends CI_Controller
 	var $_param = "";
     var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
     var $_API_HEADER;
+	/**
+	 * Purchases constructor
+	 */
     public function __construct()
 	{
         parent::__construct();
@@ -44,7 +47,7 @@ class Purchases extends CI_Controller
 			$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_HEADER').$this->_profile['username'].'/?lang='.$this->config->item('language'));
 			$this->component_api->CallGet();
 			$_API_HEADER = $this->component_api->GetConfig("result");
-			$this->_API_HEADER = !empty($_API_HEADER['query']) ? $_API_HEADER['query'] : ['employee' => "", 'menu' => "", "prefix", "dn"=> ["dn_num"=>"", "dn_prefix"=>""]];
+			$this->_API_HEADER = !empty($_API_HEADER['query']) ? $_API_HEADER['query'] : ['employee' => "", 'menu' => "", "prefix" => "",];
 
 			// sidebar session
 			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
@@ -159,7 +162,6 @@ class Purchases extends CI_Controller
 		}
 		if(!$_data['error']['code'] == "00000")
 		{
-			
 			$this->load->view("error-handle", [
 				"alertstyle" => "danger",
 				"code" => $_data['error']['code'],
@@ -171,7 +173,7 @@ class Purchases extends CI_Controller
 			// Function bar
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> base_url("purchases/order/donew/"), "style" => "", "show" => true, "extra" => ""],
+					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> base_url("/router/purchases/create/"), "style" => "btn btn-primary", "show" => true, "extra" => ""],
 				]
 			]);
 			$this->load->view('function-bar', [
@@ -183,7 +185,7 @@ class Purchases extends CI_Controller
 			$this->load->view("purchases/purchases-list-view", [
 				"data" => $_data['query'],
 				"submit_to" => base_url("/purchases/order/"),
-				"edit_url" => base_url("/purchases/order/edit/"),
+				"edit_url" => base_url("/router/purchases/edit/"),
 				"default_per_page" => $this->_default_per_page,
 				"page" => $this->_page,
 				"ad_start_date" => $_query['i-start-date'],
@@ -194,145 +196,98 @@ class Purchases extends CI_Controller
 		}
 		$this->load->view("footer");
 	}
-	
-	/**
-	 * Invoice Number Generation
-	 * To generate new invoice number
-	 */
-	public function donew()
-	{
-		// if(!empty($this->session->userdata('transaction')))
-		// {
-		// 	$this->session->unset_userdata('transaction');
-		// }
-		$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_NEXT_NUM'));
-		$this->component_api->CallGet();
-		$_API_NEXT = $this->component_api->GetConfig("result");
-		$_API_NEXT = !empty($_API_NEXT['query']) ? $_API_NEXT['query'] : "";
-		redirect(base_url("purchases/order/create/".$_API_NEXT),"refresh");
-	}
-
-	/**
-	 * To clone existing PO data to new PO view
-	 */
-	public function docopy($_old_num)
-	{
-		$_transaction = [];
-		// if(!empty($this->session->userdata('transaction')))
-		// {
-		// 	$this->session->unset_userdata('transaction');
-		// }
-		//fatch existing transaction
-		$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER').$_old_num);
-		$this->component_api->CallGet();
-		$_API_PURCHASES = $this->component_api->GetConfig("result");
-		$_API_PURCHASES = !empty($_API_PURCHASES['query']) ? $_API_PURCHASES['query'] : "";
-		// get next transaction number
-		$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_NEXT_NUM'));
-		$this->component_api->CallGet();
-		$_API_NEXT = $this->component_api->GetConfig("result");
-		$_API_NEXT = !empty($_API_NEXT['query']) ? $_API_NEXT['query'] : "";
-		// transaction retrieve
-		$_transaction[$_API_NEXT] = $_API_PURCHASES;
-		$_transaction[$_API_NEXT]['date'] = date("Y-m-d H:i:s");
-		$this->session->set_userdata('cur_purchasesnum',$_API_NEXT);
-		$this->session->set_userdata('transaction',$_transaction);
-		// echo "<pre>";
-		// var_dump($_API_PURCHASES);
-		// echo "</pre>";
-		redirect(base_url("purchases/order/create/".$_API_NEXT),"refresh");
-	}
 
 	/**
 	 * Create Process
 	 * To create new Purchase transaction
+	 * @param _session_id session ID
 	 * @param _num purchase number
 	 * @param _refer_num reference number
 	 */
-	public function create($_num = "", $_refer_num = "")
+	public function create($_session_id = "", $_num = "", $_refer_num = "")
 	{
 		// variable initial
 		$_show_discard_btn = false;
-		$_transaction = [];
-
-		if(!empty($_num))
+		$_login = $this->session->userdata('login');
+		$_API_MASTER = ['items' => "", 'shops' => "", 'suppliers'=> "", 'paymentmethod' => ""];
+		if(!empty($_session_id) && !empty($_num))
 		{
 			$_show_discard_btn = true;
+			// Initial transaction array
 
-			// For back button after submit to tender page
-			if(!empty($this->session->userdata('transaction')) && !empty($this->session->userdata('cur_purchasesnum')))
+			// read data from session
+			$_sess = $this->session->userdata($_session_id);
+			if( isset( $_sess[$_num] ) && !empty( $_sess[$_num] ) )
 			{
-				$_num = $this->session->userdata('cur_purchasesnum');
-				$_transaction = $this->session->userdata('transaction');
+				$_transaction = $_sess[$_num];
+				$_transaction['purchases_num'] = $_num;
+				$_transaction['prefix'] = $this->_inv_header_param["topNav"]['prefix'];
+				$this->session->set_tempdata($_session_id, $_transaction, 600);
 			}
 			// For new create
-			else 
+			else
 			{
-				$_transaction[$_num]['refernum'] = "";
-				$_transaction[$_num]['items'] = [];
-				$_transaction[$_num]['supp_code'] = "";
-				$_transaction[$_num]['supp_name'] = "";
-				$_transaction[$_num]['paymentmethod'] = "";
-				$_transaction[$_num]['paymentmethodname'] = "";
-				$_transaction[$_num]['remark'] = "";
-				$this->session->set_userdata('cur_purchasesnum',$_num);
-				$this->session->set_userdata('transaction',$_transaction);
+				$_transaction = [
+					'items' => [],
+					'refer_num' => "",
+					'supp_code' => "",
+					'supp_name' => "",
+					"paymentmethod" => "",
+					"paymentmethodname" => "",
+					"remark" => "",
+					"purchases_num" => $_num,
+				];
+				$_sess[$_num] = $_transaction;
+				$this->session->set_tempdata($_session_id, $_sess, 600);
 			}
 
-		 // echo "<pre>";
-		 // var_dump($_SESSION);
-		 // echo "</pre>";
- 
 			// fatch items API
 			$this->component_api->SetConfig("url", $this->config->item('URL_MASTER'));
 			$this->component_api->CallGet();
-			$_API_MASTER = $this->component_api->GetConfig("result");
-
-			if(empty($_API_MASTER['query']))
+			$result = $this->component_api->GetConfig("result");
+			if($result['http_code'] == 200)
 			{
-				$_API_MASTER['items'] = [];
-				$_API_MASTER['shops'] = [];
-				$_API_MASTER['customers'] =[];
-				$_API_MASTER['paymentmethod'] = [];
-			}
-			else
-			{
-				$_API_MASTER = $_API_MASTER['query'];
-			}
+				$_API_MASTER = $result;
+				if(!empty($_API_MASTER['query']))
+				{
+					$_API_MASTER = $_API_MASTER['query'];
+				}
 
-			// function bar with next, preview and save button
-
-			$this->load->view('function-bar', [
-				"btn" => [
-					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
-					["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('purchases/order/discard'), "style" => "btn btn-danger", "show" => $_show_discard_btn]
-				]
-			]);
-			$this->load->view('title-bar', [
-				"title" => $this->lang->line("purchase_order_new_title")
-			]);
-			// present form view
-			$this->load->view('purchases/purchases-create-view', [
-				"submit_to" => base_url("/purchases/order/process"),
-				"prefix" => $this->_inv_header_param['topNav']['prefix'],
-				"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
-				"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
-				"purchasesnum" => $_num,
-				"date" => date("Y-m-d H:i:s"),
-				"ajax" => [
-					"items" => $_API_MASTER['items'],
-					"shop_code" => $_API_MASTER['shops'],
-					"suppliers" => $_API_MASTER['suppliers'],
-					"tender" => $_API_MASTER['paymentmethod']
-				],
-				"data" => $_transaction[$_num],
-				"default_per_page" => $this->_default_per_page,
-				"function_bar" => $this->load->view('function-bar', [
+				// function bar with next, preview and save button
+				$this->load->view('function-bar', [
 					"btn" => [
-						["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "new", "url"=>base_url('/suppliers/?new=1'), "style" => "", "show" => true]
+						["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "Back", "url"=> base_url('/purchases/order/'.$_login['preference']), "style" => "", "show" => true],
+						["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "btn btn-primary", "show" => true],
+						["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('/router/purchases/discard/'.$_session_id), "style" => "btn btn-danger", "show" => $_show_discard_btn]
 					]
-				],true)
-			]);
+				]);
+				$this->load->view('title-bar', [
+					"title" => $this->lang->line("purchase_order_new_title")
+				]);
+				// present form view
+				$this->load->view('purchases/purchases-create-view', [
+					"submit_to" => base_url("/purchases/order/process/".$_session_id),
+					"discard_url" => base_url("/router/purchases/discard/".$_session_id),
+					"prefix" => $this->_inv_header_param['topNav']['prefix'],
+					"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
+					"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
+					"purchasesnum" => $_num,
+					"date" => date("Y-m-d H:i:s"),
+					"ajax" => [
+						"items" => $_API_MASTER['items'],
+						"shop_code" => $_API_MASTER['shops'],
+						"suppliers" => $_API_MASTER['suppliers'],
+						"tender" => $_API_MASTER['paymentmethod']
+					],
+					"data" => $_transaction,
+					"default_per_page" => $this->_default_per_page,
+					"function_bar" => $this->load->view('function-bar', [
+						"btn" => [
+							["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "new", "url"=>base_url('/suppliers/?new=1'), "style" => "", "show" => true]
+						]
+					],true)
+				]);
+			}
 			// persent footer view
 			$this->load->view('footer');
 		}
@@ -341,8 +296,9 @@ class Purchases extends CI_Controller
 	/**
 	 * Process
 	 * To confirm Purchase transaction
+	 * @param _session_id adjustments number
 	 */
-	public function confirm()
+	public function confirm($_session_id = "")
 	{
 		if(isset($_POST["i-post"]))
 		{
@@ -350,18 +306,21 @@ class Purchases extends CI_Controller
 			// variable initial
 			$_data = json_decode($_POST['i-post'], true);
 			$_transaction = [];
-			$_cur_num = $_data['purchasesnum'];
+			
+			$_cur_num = $_data['purchases_num'];
 			$_show_save_btn = false;
 			$_show_reprint_btn = false;
+			$_show_discard_btn = true;
 
-			$_transaction[$_cur_num] = $_data;
-			$this->session->set_userdata('cur_purchasesnum',$_cur_num);
-			$this->session->set_userdata('transaction',$_transaction);
+			$_transaction = $_data;
+			$_sess[$_cur_num] = $_transaction;
+			$_sess['cur_purchasesnum'] = $_cur_num;
+			$this->session->set_tempdata($_session_id, $_sess, 600);
 
 			// show save button
-			if(isset($_transaction[$_cur_num]['void']))
+			if(isset($_transaction['void']))
 			{
-				if(filter_var($_transaction[$_cur_num]['void'], FILTER_VALIDATE_BOOLEAN))
+				if(filter_var($_transaction['void']))
 				{
 					$_show_save_btn = true;
 				}
@@ -385,17 +344,19 @@ class Purchases extends CI_Controller
 			// function bar
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/purchases/order/'.$_data['formtype'].'/'.$_cur_num) ,"style" => "","show" => true],
-					//["name" => "Preview", "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
-					["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=> base_url("/purchases/order/".$_the_form_type) , "style" => "","show" => $_show_save_btn],
-					//["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn]
+					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/purchases/order/'.$_data['formtype'].'/'.$_session_id.'/'.$_data['purchases_num'].'?b_url='.base_url().uri_string().'') ,"style" => "","show" => true],
+					["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=> base_url("/purchases/order/".$_the_form_type."/".$_session_id) , "style" => "btn btn-primary", "show" => $_show_save_btn],
+					["name" => "<i class='far fa-file-alt'></i> ".$this->lang->line("function_preview"), "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
+					//["name" => "Reprint", "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => $_show_reprint_btn],
+					["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('/router/purchases/discard/'.$_session_id), "style" => "btn btn-danger", "show" => $_show_discard_btn]
 				]
 			]);
 			// render view
 			$this->load->view("purchases/purchases-process-view", [
-				"data" => $_transaction[$_cur_num],
-				"preview_url" => base_url('/ThePrint/purchases/preview'),
-				"print_url" => base_url('/ThePrint/purchases/save')
+				"data" => $_transaction,
+				"discard_url" => base_url("/router/purchases/discard/".$_session_id),
+				"preview_url" => base_url('/ThePrint/purchases/preview/'.$_session_id),
+				"print_url" => base_url('/ThePrint/purchases/save/'.$_session_id)
 			]);
 			$this->load->view("footer");
 		}
@@ -405,22 +366,29 @@ class Purchases extends CI_Controller
 	 * Save New Purchase Order
 	 * To Save new purchase order
 	 */
-	public function save()
+	public function save($_session_id = "")
 	{
+		$_transaction = [];
 		$_login = $this->session->userdata('login');
-		$_cur_num = $this->session->userdata('cur_purchasesnum');
-		$_transaction = $this->session->userdata('transaction');
+		$_data = $this->session->userdata($_session_id);
+
+		if(isset($_data))
+		{
+			$_cur_purchasesnum = $_data['cur_purchasesnum'];
+			$_transaction = $_data[$_cur_purchasesnum];
+		}
+
 		$alert = "danger";
 		$this->load->view('function-bar', [
 			"btn" => [
 				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/purchases/order/'.$_login['preference']) ,"style" => "","show" => true],
-				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "donew", "url"=> base_url('/purchases/order/donew'),"style" => "","show" => true]
+				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "donew", "url"=> base_url('/router/purchases/create/'),"style" => "","show" => true]
 			]
 		]);
 
-		if(!empty($_transaction[$_cur_num]) && isset($_transaction[$_cur_num]))
+		if(!empty($_transaction) && isset($_transaction))
 		{
-			$_api_body = json_encode($_transaction[$_cur_num],true);
+			$_api_body = json_encode($_transaction,true);
 			// echo "<pre>";
 			// var_dump($_api_body);
 			// echo "</pre>";
@@ -445,7 +413,6 @@ class Purchases extends CI_Controller
 				'code'=> $result["error"]['code'], 
 				'alertstyle' => $alert
 			]);
-
 		}
 		else
 		{
@@ -458,12 +425,8 @@ class Purchases extends CI_Controller
 			   'alertstyle' => $alert
 		   ]);
 		}
-						
-		unset($_transaction[$_cur_num]);
-		$this->session->set_userdata('cur_purchasesnum',"");
-		$this->session->set_userdata('transaction',[]);
-		
-		header("Refresh: 5; url='".base_url('purchases/order'.$_login["preference"])."'");
+		$this->session->unset_userdata($_session_id);
+		header("Refresh: 5; url='".base_url('purchases/order/'.$_login["preference"])."'");
 	}
 
 	/**
@@ -471,7 +434,7 @@ class Purchases extends CI_Controller
 	 * @param _num Quotation number
 	 *
 	 */
-	public function edit($_num="")
+	public function edit($_session_id = "", $_num="")
 	{
 		// variable initial
 		$_transaction = [];
@@ -479,131 +442,135 @@ class Purchases extends CI_Controller
 		$_show_next_btn = true;
 		$_show_grn_btn = true;
 		$_grn_btn_name = "";
+		$_login = $this->session->userdata('login');
+		$_API_MASTER = ['items' => "", 'shops' => "", 'suppliers'=> "", 'paymentmethod' => ""];
 		if(!empty($_num))
 		{
 			// Check Quotation exist
 			$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER').$_num);
 			$this->component_api->CallGet();
-			$_transaction = $this->component_api->GetConfig("result");
-			$_transaction = $_transaction != null ? $_transaction : "";
-			
-			// set current invoice number to session
-			$this->session->set_userdata('cur_purchasesnum',$_num);
-			$this->session->set_userdata('transaction',$_transaction['query']);
-			
+			$result = $this->component_api->GetConfig("result");
 			// echo "<pre>";
-			// var_dump($_transaction);
+			// var_dump($result);
 			// echo "</pre>";
-			if(!empty($_transaction))
-			{	
-				$_login = $this->session->userdata('login');
-
-				// already has GRN so transaction cannot be void
-				if($_transaction['query']['has_grn'] > 0)
-				{
-					$_show_void_btn = false;
-					$_show_next_btn = false;
-				}
-				// already settlement
-				if($_transaction['query']['is_settle'] > 0)
-				{
-					$_show_grn_btn = false;
-				}
-				// display button name
-				if($_transaction['query']['settlement'])
-				{
-					$_grn_btn_name = $this->lang->line("function_settlement");
-				}
-				else
-				{
-					$_grn_btn_name = $this->lang->line("function_good_received");
-				}
+			if($result['http_code'] == 200)
+			{
+				$_transaction = $result != null ? $result : "";
+				// set current invoice number to session
+				$_sess[$_num] = $_transaction['query'];
+				$_sess['cur_purchasesnum'] = $_num;
+				$this->session->set_tempdata($_session_id, $_sess, 600);
 				
-
-				if($_transaction['has'])
-				{
-					// fatch items API
-					$this->component_api->SetConfig("url", $this->config->item('URL_MASTER'));
-					$this->component_api->CallGet();
-					$_API_MASTER = $this->component_api->GetConfig("result");
-					if(empty($_API_MASTER['query']))
+				if(!empty($_transaction))
+				{	
+					// already has GRN so transaction cannot be void
+					if($_transaction['query']['has_grn'] > 0)
 					{
-						$_API_MASTER['items'] = [];
-						$_API_MASTER['shops'] = [];
-						$_API_MASTER['customers'] =[];
-						$_API_MASTER['paymentmethod'] = [];
+						$_show_void_btn = false;
+						$_show_next_btn = false;
+					}
+					// already settlement
+					if($_transaction['query']['is_settle'] > 0)
+					{
+						$_show_grn_btn = false;
+					}
+					// display button name
+					if($_transaction['query']['settlement'])
+					{
+						$_grn_btn_name = $this->lang->line("function_settlement");
 					}
 					else
 					{
-						$_API_MASTER = $_API_MASTER['query'];
+						$_grn_btn_name = $this->lang->line("function_good_received");
 					}
 
-					// function bar with next, preview and save button
-					$this->load->view('function-bar', [
-						"btn" => [
-							["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "Back", "url"=> base_url('/purchases/order/'.$_login['preference']), "style" => "", "show" => true],
-							["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => $_show_next_btn],
-							["name" => "<i class='far fa-copy'></i> ".$this->lang->line("function_copy"), "type"=>"button", "id" => "copy", "url"=> base_url('/purchases/order/copy/'.$_num), "style" => "btn btn-dark", "show" => true],
-							["name" => "<i class='fas fa-truck-loading'></i> ".$_grn_btn_name."", "type"=>"button", "id" => "grn", "url"=> base_url('/purchases/order/togrn/'.$_num), "style" => "btn btn-success", "show" => $_show_grn_btn],
-							["name" => "<i class='fas fa-eraser'></i> ".$this->lang->line("function_cancel"), "type"=>"button", "id" => "discard", "url"=> base_url('/purchases/order/void/'.$_num), "style" => "btn btn-danger", "show" => $_show_void_btn]
-						]
-					]);
-					$this->load->view('title-bar', [
-						"title" => $this->lang->line("purchase_order_edit_title")
-					]);
-					
-					// show edit view
-					$this->load->view('purchases/purchases-edit-view', [
-						"submit_to" => base_url("/purchases/order/process"),
-						"prefix" => $this->_inv_header_param['topNav']['prefix'],
-						"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
-						"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
-						"date" => date("Y-m-d H:i:s"),
-						"ajax" => [
-							"items" => $_API_MASTER['items'],
-							"shop_code" => $_API_MASTER['shops'],
-							"customers" => $_API_MASTER['customers'],
-							"tender" => $_API_MASTER['paymentmethod']
-						],
-						"data" => $_transaction['query'],
-						"show" => $_show_void_btn,
-						"default_per_page" => $this->_default_per_page,
-						"function_bar" => $this->load->view('function-bar', [
+					if($_transaction['has'])
+					{
+						// fatch items API
+						$this->component_api->SetConfig("url", $this->config->item('URL_MASTER'));
+						$this->component_api->CallGet();
+						$_API_MASTER = $this->component_api->GetConfig("result");
+						if(!empty($_API_MASTER['query']))
+						{
+							$_API_MASTER = $_API_MASTER['query'];
+						}
+
+						// function bar with next, preview and save button
+						$this->load->view('function-bar', [
 							"btn" => [
-								["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "new", "url"=>base_url('/suppliers/?new=1'), "style" => "", "show" => true]
+								["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "Back", "url"=> base_url('/purchases/order/'.$_login['preference']), "style" => "", "show" => true],
+								["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "btn btn-primary", "show" => $_show_next_btn],
+								["name" => "<i class='fas fa-truck-loading'></i> ".$_grn_btn_name."", "type"=>"button", "id" => "togrn", "url"=> base_url('/router/purchases/togrn/'.$_num), "style" => "btn btn-success", "show" => $_show_grn_btn],
+								["name" => "<i class='far fa-copy'></i> ".$this->lang->line("function_copy"), "type"=>"button", "id" => "copy", "url"=> base_url('/router/purchases/copy/'.$_session_id), "style" => "btn btn-dark", "show" => true],
+								["name" => "<i class='fas fa-eraser'></i> ".$this->lang->line("function_cancel"), "type"=>"button", "id" => "discard", "url"=> base_url('/purchases/order/void/'.$_session_id.'/'.$_num), "style" => "btn btn-danger", "show" => $_show_void_btn]
 							]
-						],true)						
-					]);
-					$this->load->view('footer');
+						]);
+						$this->load->view('title-bar', [
+							"title" => $this->lang->line("purchase_order_edit_title")
+						]);
+						
+						// show edit view
+						$this->load->view('purchases/purchases-edit-view', [
+							"submit_to" => base_url("/purchases/order/process/".$_session_id),
+							"discard_url" => base_url("/router/purchases/discard/".$_session_id),
+							"prefix" => $this->_inv_header_param['topNav']['prefix'],
+							"employee_code" => $this->_inv_header_param['topNav']['employee_code'],
+							"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
+							"date" => date("Y-m-d H:i:s"),
+							"ajax" => [
+								"items" => $_API_MASTER['items'],
+								"shop_code" => $_API_MASTER['shops'],
+								"suppliers" => $_API_MASTER['suppliers'],
+								"tender" => $_API_MASTER['paymentmethod']
+							],
+							"data" => $_transaction['query'],
+							"show" => $_show_void_btn,
+							"default_per_page" => $this->_default_per_page,
+							"function_bar" => $this->load->view('function-bar', [
+								"btn" => [
+									["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "new", "url"=>base_url('/suppliers/?new=1'), "style" => "", "show" => true]
+								]
+							],true)						
+						]);
+						$this->load->view('footer');
+					}
 				}
-				else
-				{
-					redirect(base_url("purchases/order/list/"),"refresh");
-				}
+			}
+			else
+			{
+				$this->load->view('function-bar', [
+					"btn" => [
+						["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "Back", "url"=> base_url('/purchases/order/'.$_login['preference']), "style" => "", "show" => true],
+					]
+				]);
 			}
 		}
 	}
 	
-	 /**
-	  * Save Edit
-	  */
-	public function saveedit()
+	/**
+	 * Save Edit
+	 */
+	public function saveedit($_session_id = "")
 	{
-		$_transaction = [];
-		$_cur_num = "";
-		$_cur_num = $this->session->userdata('cur_purchasesnum');
-		$_transaction = $this->session->userdata('transaction');
-		$_login = $this->session->userdata('login');
 		$alert = "danger";
+		$_transaction = [];
+		$_login = $this->session->userdata('login');
+		$_sess = $this->session->userdata($_session_id);
+		if(isset($_sess) )
+		{
+			$_cur_num = $_sess['cur_purchasesnum'];
+			$_transaction = $_sess[$_cur_num];
+		}
+		
 		$this->load->view('function-bar', [
 			"btn" => [
 				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/purchases/order/'.$_login['preference']) ,"style" => "","show" => true],
-				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "donew", "url"=> base_url('/purchases/order/donew'),"style" => "","show" => true],
+				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "donew", "url"=> base_url('/router/purchases/create'),"style" => "","show" => true],
 			]
 		]);
-		if(!empty($_transaction[$_cur_num]) && isset($_transaction[$_cur_num]))
+		if(!empty($_transaction) && isset($_transaction))
 		{
-			$_api_body = json_encode($_transaction[$_cur_num],true);
+			$_api_body = json_encode($_transaction,true);
 			//  echo $_api_body;
 			// echo "<pre>";
 			// echo ($_api_body);
@@ -639,45 +606,22 @@ class Purchases extends CI_Controller
 			   'alertstyle' => $alert
 		   ]);
 		}
-		unset($_transaction[$_cur_num]);
-		$this->session->set_userdata('cur_purchasesnum',"");
-		$this->session->set_userdata('transaction',$_transaction);
-		
-		header("Refresh: 5; url='".base_url('purchases/order')."'");
+		header("Refresh: 5; url='".base_url('/purchases/order/'.$_login["preference"])."'");
 	}
-
-	/**
-	 * Discard Operation only for new creation
-	 * To discard Invoice 
-	 */
-	public function discard()
-	{
-		$_cur_purchasesnum = $this->session->userdata('cur_purchasesnum');
-		$_transaction = $this->session->userdata('transaction');
-		unset($_SESSION['cur_purchasesnum']);
-		unset($_transaction[$_cur_purchasesnum]);
-		redirect(base_url("purchases/order/donew"),"refresh");
-	}
-
-	/**
-	 * Void
-	* @param _num transaction number which PO number
-	*/
-	public function void($_num = "")
-	{
-		$this->load->view("purchases/purchases-void-view", [
-			"submit_to" => base_url("purchases/order/void/confirmed/".$_num),
-			"to_deleted_num" => $_num,
-			"return_url" => base_url("purchases/order/edit/".$_num)
-		]);
-	}
+	
 	/**
 	* Save Void
 	*/
-	public function savevoid($_num = "")
+	public function savevoid($_session_id = "")
 	{
-		$alert = "danger";
 		$_login = $this->session->userdata('login');
+		$_sess = $this->session->userdata($_session_id);
+		// echo "<pre>";
+		// var_dump($_data);
+		// echo "</pre>";
+		$_cur_num = $_sess['cur_purchasesnum'];
+		$alert = "danger";
+
 		$result = [];
 		$this->load->view('function-bar', [
 			"btn" => [
@@ -691,9 +635,9 @@ class Purchases extends CI_Controller
 				]
 			]
 		]);
-		if(!empty($_num))
+		if(!empty($_cur_num))
 		{
-			$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER').$_num);
+			$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER').$_cur_num);
 			$this->component_api->CallDelete();
 			$result = $this->component_api->GetConfig("result");
 
@@ -711,90 +655,85 @@ class Purchases extends CI_Controller
 				'code'=> $result["error"]['code'],
 				'alertstyle' => $alert
 			]);
-
-			//header("Refresh: 5; url='".base_url('purchases/order'.$_login["preference"])."'");
+			
 		}
+		else
+		{
+			$result["error"]['code'] = "90000";
+			$result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again"; 
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+		}
+		$this->load->view("footer");
+		//header("Refresh: 5; url='".base_url('purchases/order/'.$_login["preference"])."'");
 	}
 	/**
-	* To GRN
-	* @param _num PO number to good recevied Note
+	 * Void
+	* @param _num transaction number which PO number
 	*/
-	public function togrn($_num = "")
+	public function void($_session_id = "", $_num = "")
 	{
-		$_transaction = [];
-		$_temp = [];
-		$this->component_api->SetConfig("url", $this->config->item('URL_PO_GRN_NEXT_NUM'));
-		$this->component_api->CallGet();
-		$_API_NEXT = $this->component_api->GetConfig("result");
-		$_API_NEXT = !empty($_API_NEXT['query']) ? $_API_NEXT['query'] : "";
-		
-		if(!empty($_API_NEXT))
-		{
-			$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_GRN').$_num);
-			$this->component_api->CallGet();
-			$_API_GET_GRN = $this->component_api->GetConfig("result");
-			// echo "<pre>";
-			// var_dump($_API_GET_GRN);
-			// echo "</pre>";
-			$_API_GET_GRN = !empty($_API_GET_GRN['query']) ? $_API_GET_GRN['query'] : "";
-			
-			if(!empty($_API_GET_GRN)){
-				// send settlement 
-				if($_API_GET_GRN['settlement'])
-				{
-					$this->session->set_userdata('transaction', $_API_GET_GRN);
-					redirect(base_url("purchases/order/settlement/".$_num),"refresh");
-				}
-
-				$_transaction[$_API_NEXT] = $_API_GET_GRN;
-				$_transaction[$_API_NEXT]['trans_code'] = $_API_NEXT;
-				$_transaction[$_API_NEXT]['po_num'] = $_num;
-				$this->session->set_userdata('cur_grnnum', $_API_NEXT);
-				$this->session->set_userdata('transaction', $_transaction);
-			}			
-		}
-		redirect(base_url("stocks/grn/create/".$_API_NEXT."/".$_num),"refresh");
+		$this->load->view("purchases/purchases-void-view", [
+			"submit_to" => base_url("/purchases/order/confirmed/void/".$_session_id),
+			"to_deleted_num" => $_num,
+			"return_url" => base_url("/purchases/order/edit/".$_session_id."/".$_num)
+		]);
+		$this->load->view("footer");
 	}
+	
 	/**
 	 * Settlement
 	 * @param _num Purchase Order reference code
 	 */
-	public function settlement($_num = "")
+	public function settlement($_session_id = "", $_num = "")
 	{
+		$_transaction = [];
 		$_total = 0;
 		$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_SETTLEMENT').$_num);
 		$this->component_api->CallGet();
 		$_API_SETTLEMENT = $this->component_api->GetConfig("result");
 		$_API_SETTLEMENT = !empty($_API_SETTLEMENT['query']) ? $_API_SETTLEMENT['query'] : "";
-
+		// echo "<pre>";
+		// var_dump($_API_SETTLEMENT);
+		// echo "</pre>";
 		// set current invoice number to session
-		$this->session->set_userdata('transaction',$_API_SETTLEMENT['all_grn']);
+		$_transaction = $_API_SETTLEMENT['all_grn'];
+		$_sess[$_num] = $_transaction;
+		$_sess['cur_purchasesnum'] = $_num;
+		$this->session->set_tempdata($_session_id, $_sess, 600);
 
 		$this->load->view("purchases/purchases-settlement-view", [
-			"return_url" => base_url("purchases/order/edit/".$_num),
-			"submit_to" => base_url("purchases/order/settlement/save/".$_num),
+			"return_url" => base_url("/purchases/order/edit/".$_session_id."/".$_num),
+			"submit_to" => base_url("/purchases/order/settlement/save/".$_session_id."/".$_num),
 			"po_num" => $_num,
 			"data" => $_API_SETTLEMENT['all_grn'],
 			"total" => $_API_SETTLEMENT['total']
 		]);
 	}
+
 	/**
 	 * Settlement Save
 	 * @param _num trans_code
 	 */
-	public function savesettlement($_num = "")
+	public function savesettlement($_session_id = "", $_num = "")
 	{
+		$_transaction = [];
 		$_login = $this->session->userdata('login');
-		$_transaction = $this->session->userdata('transaction');
+		$_sess = $this->session->userdata($_session_id);
+		if( isset($_sess[$_num]) )
+		{
+			$_transaction = $_sess[$_num];
+		}
 		$this->load->view('function-bar', [
 			"btn" => [
-				[
-					"name" => "<i class='fas fa-chevron-left'></i> Back", "type"=>"button", "id" => "back", "url"=> base_url('/purchases/order/'.$_login["preference"]), "style" => "", "show" => true
-				]
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/purchases/order/'.$_login["preference"]), "style" => "", "show" => true]
 			]
 		]);
 
-		if(!empty($_num))
+		if(!empty($_num) && !empty($_session_id))
 		{
 			$_api_body = json_encode($_transaction,true);
 			// echo $_api_body;
@@ -804,7 +743,7 @@ class Purchases extends CI_Controller
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('URL_PURCHASES_ORDER_SETTLEMENT').$_num);
 				$this->component_api->CallPatch();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
+				$result = $this->component_api->GetConfig("result");
 				if(isset($result["error"]))
 				{
 					$alert = "danger";
@@ -819,7 +758,9 @@ class Purchases extends CI_Controller
 						'code'=> $result["error"]['code'], 
 						'alertstyle' => $alert
 					]);
-					redirect(base_url("purchases/order/".$_login['preference']),"refresh");
+					// remove current session
+					$this->session->unset_userdata($_session_id);
+					header("Refresh: 5; url='".base_url('purchases/order/'.$_login["preference"])."'");
 				}
 			}
 		}

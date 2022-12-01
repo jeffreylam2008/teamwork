@@ -49,7 +49,8 @@ class Component_Login
     public function GetRedirectURL()
     {
         if(!empty($this->_redirect_url))
-        {
+        {   
+            echo $this->_redirect_url;
             return base_url($this->_redirect_url);
         }
         else

@@ -123,7 +123,34 @@
 
 
 <script>
-
+// unload and redirect
+function doUnLoad(){
+    // console.log(document.activeElement.href);
+    // while unload then redirect
+    $(window).on('unload', function(e){
+        e.preventDefault();
+        // to fix page refresh
+        if(typeof document.activeElement.href !== "undefined")
+        {
+            // target url defined then discard current session
+            fetch("<?=$discard_url?>").then(function(response) {
+                if(response.ok){
+                    window.location.replace(document.activeElement.href);
+                    window.onbeforeunload = null;
+                }
+            });
+        }
+    });
+}
+// unload window
+$(window).on('beforeunload', function(){
+    doUnLoad();
+    return "Any changes will be lost";
+});
+// the button to free page unload
+$("#back, #save, #preview, #reprint, #discard").on("click", function(){
+    $(window).off('beforeunload');
+});
 $("#preview").on("click",function(){
     window.open('<?=$preview_url?>', '_blank', 'location=yes,height=900,width=1000,scrollbars=yes,status=yes');
 })

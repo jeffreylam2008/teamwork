@@ -16,6 +16,15 @@
             echo "<pre>";
             var_dump($_SESSION);
             echo "</pre>";
+            
+            if(isset($_GET['clear_session']))
+            {
+                unset($_SESSION[$_GET['clear_session']]);
+            }
+            if(isset($_GET['clear_all']))
+            {
+                $this->session->sess_destroy();
+            }
         }
             
         ?>
