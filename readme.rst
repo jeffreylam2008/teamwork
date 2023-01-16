@@ -1,8 +1,7 @@
 **************************
 Changelog and New Features
 **************************
-
-You can find a list of all changes for each release in the `user
+N/A
 
 *******************
 Server Requirements
