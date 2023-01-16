@@ -93,7 +93,7 @@ if(isset($items)){
     { 
         $page[$page_separate][] = $v;
         // fixed 8 items for each page, more is not allow
-        if($i % 8==0){
+        if($i % 20==0){
             $page_separate++;
         }
         $i++;
@@ -101,7 +101,7 @@ if(isset($items)){
     //generate the print template
     for($j=1; $j<=$page_separate; $j++)
     {
-        PrintHeader( $date, $employee_code,$num);
+        PrintHeader( $date, $employee_code,$trans_code);
         PrintBody($page[$j]);
         // PrintFooter($total);
         // print "<p style=\"page-break-after: always;\"></p>";

@@ -28,7 +28,7 @@ class Component_File
         }
         ob_start();
         $df = fopen("php://output", 'w');
-    
+        // write utf-8 header
         fputs( $df, "\xEF\xBB\xBF" );
         foreach ($array as $row) {
             fputcsv($df, $row);
@@ -40,7 +40,7 @@ class Component_File
     public function DownloadHeaders($filename) 
     {
         header('Content-Encoding: UTF-8');
-        header('Content-Type: text/csv; charset=utf-8' );
+        header('Content-Type: application/vnd.ms-excel; charset=utf-8' );
         // disable caching
 
         $now = gmdate("D, d M Y H:i:s");
@@ -73,9 +73,11 @@ class Component_File
             
             if (($handle = fopen($fileinput['tmp_name'], "r")) !== FALSE) {
                 while (($data = fgetcsv($handle, 0, ",")) !== FALSE) {
+                    //$content[$row][] = $data;
                     $num = count($data);
                     for ($c=0; $c < $num; $c++) {
-                        $content[$row][] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $data[$c]);
+                        //$content[$row][] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $data[$c]);
+                        $content[$row][] = $data[$c];
                     }
                     $row++;
                 }

@@ -445,7 +445,7 @@ $(document).on("submit", "form", function(event){
     // disable unload warning
     $(window).off('beforeunload');
 });
-$("#discard").on("click", function(){
+$("#back, #discard").on("click", function(){
     doUnLoad();
     $(window).off('beforeunload');
 });

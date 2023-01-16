@@ -187,7 +187,6 @@ $route['stocks'] = 'stocks/index';
 // $route['stocks/process'] = 'stocks/grn_confirm';
 
 // stocks -> grn
-//$route['stocks/grn/donew'] = 'stocks/donewgrn';
 $route['stocks/grn/edit/(:any)/(:any)'] = 'GoodReceivedNote/edit/$1/$2';
 $route['stocks/grn/create/(:any)/(:any)'] = 'GoodReceivedNote/create/$1/$2';
 $route['stocks/grn/create/(:any)/(:any)/(:any)'] = 'GoodReceivedNote/create/$1/$2/$3';
@@ -202,13 +201,22 @@ $route['stocks/dn/process/(:any)'] = 'DeliveryNote/process/$1';
 $route['stocks/dn/save/(:any)'] = 'DeliveryNote/save/$1';
 
 // // stocks -> adjustment
-// $route['stocks/adj/create/'] = 'error_404';
 $route['stocks/adj/create/(:any)/(:any)'] = 'Adjustments/create/$1/$2';
 $route['stocks/adj/create/(:any)/(:any)/(:any)'] = 'Adjustments/create/$1/$2/$3';
 $route['stocks/adj/process/(:any)'] = 'Adjustments/process/$1';
 $route['stocks/adj/edit/(:any)/(:any)'] = 'Adjustments/edit/$1/$2';
 $route['stocks/adj/save/(:any)'] = 'Adjustments/save/$1';
 
+// stocks -> stocktake
+$route['stocks/stocktake/create/(:any)/(:any)'] = 'Stocktake/create/$1/$2';
+$route['stocks/stocktake/process/(:any)'] = 'Stocktake/process/$1';
+$route['stocks/stocktake/edit/(:any)/(:any)'] = 'Stocktake/edit/$1/$2';
+$route['stocks/stocktake/save/(:any)'] = 'Stocktake/save/$1';
+$route['stocks/stocktake/saveedit/(:any)'] = 'Stocktake/saveedit/$1';
+$route['stocks/stocktake/delete/(:any)/(:any)'] = 'Stocktake/delete/$1/$2';
+$route['stocks/stocktake/confirmed/delete/(:any)'] = 'Stocktake/savedelete/$1';
+$route['stocks/stocktake/adjust/(:any)/(:any)'] = 'Stocktake/adjust/$1/$2';
+$route['stocks/stocktake/confirmed/adjust/(:any)'] = 'Stocktake/saveadjust/$1';
 // // stocks -> stocktake
 // // $route['stocks/stocktake/create/(:any)'] = 'stocks/stocktake/$1';
 // // $route['stocks/stocktake/process'] = 'stocks/stocktake_process';
@@ -230,7 +238,7 @@ $route['stocks/adj/save/(:any)'] = 'Adjustments/save/$1';
 // $route['reports/(:any)'] = 'reports/reports/$1';
 
 // // Systems
-// $route['systems/backup'] = 'systems/index';
+$route['systems/backuprestore'] = 'systems/backuprestore';
 
 
 // $route['reroute/quotations/create/(:any)'] = 'reroute/quotations/create/$1';

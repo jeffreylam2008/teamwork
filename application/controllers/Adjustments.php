@@ -54,6 +54,8 @@ class Adjustments extends CI_Controller
 			{
 				case "Adjustments/create":
 					$this->_param = "stocks/index";
+				case "Adjustments/edit":
+						$this->_param = "stocks/index";
 				case "Adjustments/process":
 					$this->_param = "stocks/index";
 				break;
@@ -138,7 +140,7 @@ class Adjustments extends CI_Controller
 			$_sess[$_adj_num] = $_transaction;
 			$this->session->set_tempdata($_session_id, $_sess, 600);
 			
-			// fatch items API
+			// fatch API
 			$this->component_api->SetConfig("url", $this->config->item('URL_MASTER'));
 			$this->component_api->CallGet();
 			$_API_MASTER = $this->component_api->GetConfig("result");
@@ -150,7 +152,7 @@ class Adjustments extends CI_Controller
 			$this->load->view('function-bar', [
 				"btn" => [
 					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/stocks') ,"style" => "","show" => true],
-					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
+					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "btn btn-primary", "show" => true],
 					["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('/stocks'), "style" => "btn btn-danger", "show" => $_show_discard_btn]
 				]
 			]);
@@ -209,9 +211,6 @@ class Adjustments extends CI_Controller
 			// var_dump( $_transaction );
 			// echo "</pre>";
 
-			$this->load->view('title-bar', [
-				"title" => $this->lang->line("adjustment_new_titles")
-			]);
 			// function bar
 			$this->load->view('function-bar', [
 				"btn" => [
@@ -222,6 +221,11 @@ class Adjustments extends CI_Controller
 					["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('/router/adjustments/discard/'.$_session_id), "style" => "btn btn-danger", "show" => $_show_discard_btn],
 				]
 			]);
+
+			$this->load->view('title-bar', [
+				"title" => $this->lang->line("adjustment_new_titles")
+			]);
+			
 
 			$this->load->view("stocks/adj/stocks-adj-process-view",[
 				"data" => $_transaction,
@@ -243,16 +247,18 @@ class Adjustments extends CI_Controller
 		$_transaction = [];
 		$_login = $this->session->userdata('login');
 		$_data = $this->session->userdata($_session_id);
-		echo "<pre>";
-		var_dump($_data);
-		echo "</pre>";
+		$_next = false;
+		$_alert = "danger";
+		$_result = [];
+		// echo "<pre>";
+		// var_dump($_data);
+		// echo "</pre>";
 		if(isset($_data) )
 		{
 			$_cur_adj_num = $_data['_cur_adj_num'];
 			$_transaction = $_data[$_cur_adj_num];
 		}
-		$alert = "danger";
-		$result = [];
+
 		$this->load->view('function-bar', [
 			"btn" => [
 				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/stocks/'.$_login['preference']) ,"style" => "","show" => true],
@@ -261,44 +267,70 @@ class Adjustments extends CI_Controller
 		]);
 		if(!empty($_transaction) && isset($_transaction))
 		{
+			// echo "<pre>";
+			// var_dump($_transaction);
+			// echo "</pre>";
 			$_api_body = json_encode($_transaction,true);
 			// echo "<pre>";
 			// var_dump($_api_body);
 			// echo "</pre>";
-			// create DN
+			
+			// create transaction
 			$this->component_api->SetConfig("body", $_api_body);
 			$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ADJ'));
 			$this->component_api->CallPost();
-			$result = $this->component_api->GetConfig("result");
+			$_result = $this->component_api->GetConfig("result");
 			
-			switch($result["http_code"])
+			switch($_result["http_code"])
 			{
 				case 200:
-					$alert = "success";
+					$_alert = "success";
+					$_next = true;
 				break;
 				case 404:
-					$invoice_ok = false;
-					$alert = "danger";
+					$_alert = "danger";
 				break;
 			}
 			$this->load->view('error-handle', [
-				'message' => $result["error"]['message'], 
-				'code'=> $result["error"]['code'], 
-				'alertstyle' => $alert
+				'message' => $_result["error"]['message'], 
+				'code'=> $_result["error"]['code'], 
+				'alertstyle' => $_alert
 			]);
+			
+			// to settle stocktake and do adjustment
+			if(isset($_transaction['is_convert']) && !empty($_transaction['refer_num']) && $_next)
+			{
+				$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ST')."isconvert/".$_transaction['refer_num']);
+				$this->component_api->CallPatch();
+				$_result = $this->component_api->GetConfig("result");
+				switch($_result["http_code"])
+				{
+					case 200:
+						$_alert = "success";
+					break;
+					case 404:
+						$_alert = "danger";
+					break;
+				}
+				$this->load->view('error-handle', [
+					'message' => $_result["error"]['message'], 
+					'code'=> $_result["error"]['code'], 
+					'alertstyle' => $_alert
+				]);
+			}
 		}
 		else
 		{
-		   $alert = "danger";
-		   $result["error"]['code'] = "90000";
-		   $result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again"; 
+		   $_result["error"]['code'] = "90000";
+		   $_result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again"; 
 		   $this->load->view('error-handle', [
-			   'message' => $result["error"]['message'], 
-			   'code'=> $result["error"]['code'], 
-			   'alertstyle' => $alert
+			   'message' => $_result["error"]['message'], 
+			   'code'=> $_result["error"]['code'], 
+			   'alertstyle' => $_alert
 		   ]);
 		}
 		$this->load->view("footer");
+		$this->session->unset_userdata($_session_id);
 		//header("Refresh: 10; url='".base_url('/stocks')."'");	
 	}
 
@@ -318,7 +350,7 @@ class Adjustments extends CI_Controller
 		$_transaction = $_transaction != null ? $_transaction : "";
 
 		$_data[$_adj_num] = $_transaction['query'];
-		$_data['cur_dnnum'] = $_adj_num;
+		$_data['cur_adjnum'] = $_adj_num;
 		$this->session->set_tempdata($_session_id, $_data, 600);
 
 		if(!empty($_transaction))
@@ -344,14 +376,15 @@ class Adjustments extends CI_Controller
 			//view content
 			$this->load->view("stocks/adj/stocks-adj-detail-view", [
 				"data" => $_transaction['query'],
+				"discard_url" => base_url("/router/adjustments/discard/".$_session_id),
 				"default_shopcode" => $this->_inv_header_param["topNav"]['shop_code'],
-				//"preview_url" => base_url('/ThePrint/adjustment/preview'),
-				//"print_url" => base_url('/ThePrint/adjustment/save'),
-				"function_bar" => $this->load->view('function-bar', [
-					"btn" => [
-						["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "new", "url"=>base_url('/customers/?new=1'), "style" => "", "show" => true]
-					 ]
-				],true)
+				"preview_url" => base_url('/ThePrint/adjustment/preview'),
+				"print_url" => base_url('/ThePrint/adjustment/save'),
+			// 	"function_bar" => $this->load->view('function-bar', [
+			// 		"btn" => [
+			// 			["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "new", "url"=>base_url('/customers/?new=1'), "style" => "", "show" => true]
+			// 		 ]
+			// 	],true)
 			]);
 		}
 	}

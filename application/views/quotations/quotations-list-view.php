@@ -113,6 +113,8 @@
                 }
             }
         });
+
+        
         // capture page while page refreshing
         table.page(<?=$page-1?>).draw('page');
 
@@ -145,7 +147,12 @@
             todayHighlight: true,
             autoclose: true
         });
-
+        // $('#i-quotation-num').focus();
+        $('#i-quotation-num, #i-cust-code').on("keypress", function(e){
+            if(e.keyCode==13){
+                $("#this-form").submit()
+            }
+        });
         $("#i-search").on("click",function(){
             $("#this-form").submit()
         });

@@ -100,6 +100,9 @@ class Shops extends CI_Controller
 			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
 		}
 	}
+	/**
+	 * Shop List view
+	 */
 	public function index()
 	{
 		// variable initial
@@ -125,6 +128,9 @@ class Shops extends CI_Controller
 		]);
 		$this->load->view('footer');
 	}
+	/**
+	 * Shop Edit
+	 */
 	public function edit($shop_code)
 	{
 		// user data
@@ -207,6 +213,9 @@ class Shops extends CI_Controller
 		// 	]);
 		// }
 	}
+	/**
+	 * Shop save edit
+	 */
 	public function saveedit($shop_code = "")
 	{
 		if(isset($_POST) && !empty($_POST) && isset($shop_code) && !empty($shop_code))

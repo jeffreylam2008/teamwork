@@ -186,7 +186,7 @@ class Router extends CI_Controller
                 // echo "<pre>";
                 // var_dump($_API_NEXT);
                 // echo "</pre>";
-                redirect(base_url("/stocks/adj/create/".$session."/".$_API_NEXT),"auto");
+                redirect(base_url("/stocks/adj/create/".$session."/".$_API_NEXT."/".$param),"auto");
                 break;
             case "edit":
                 $session = uniqid();
@@ -234,7 +234,30 @@ class Router extends CI_Controller
         switch($option)
         {
             case "create":
+                $session = uniqid();		
+                $this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ST_NEXT_NUM').$session);
+                $this->component_api->CallGet();
+                $_API_NEXT = $this->component_api->GetConfig("result");
+                $_API_NEXT = !empty($_API_NEXT['query']) ? $_API_NEXT['query'] : "";
+                redirect(base_url("/stocks/stocktake/create/".$session."/".$_API_NEXT),"auto");
                 break;
+            // where param is stocktake ID
+            case "edit":
+                $session = uniqid();
+                redirect(base_url("/stocks/stocktake/edit/".$session."/".$param),"auto");
+                break;
+            // discard session 
+            case "discard":
+                $this->component_api->SetConfig("url", $this->config->item('URL_TRANSACTION_DISCARD').$param);
+                $this->component_api->CallDelete();
+                $this->component_api->GetConfig("result");
+                // Remove session content from session
+                $this->session->unset_userdata($param);
+                redirect(base_url("/stocks"),"auto");
+                break;
+            // case "adjust":
+
+            //     break;
         }
     }
     public function purchases($option = "", $param = "")
@@ -361,6 +384,9 @@ class Router extends CI_Controller
                             break;
                         case "ADJ":
                             $this->adjustments("edit",$_num);
+                            break;
+                        case "ST":
+                            $this->stocktake("edit",$_num);
                             break;
                     }
                 }

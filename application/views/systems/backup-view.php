@@ -157,6 +157,7 @@
             .then(data => { return data.json() })
             .catch(err => { err })
     }
+    // load file function: to check file header
     function loadfile(el,form,url,err)
     {
         const inputElement = document.getElementById(el);
@@ -164,39 +165,39 @@
             const newurl = url+"/"+form
             doFetch(new FormData(document.querySelector("#"+form)),newurl)
             .then(response => {
-                //console.log(response)
+                console.log(response);
                 $("#"+err).html(response.message)
             })
         }, false);
     }
-
+    // load products file
     loadfile("i-products", "products", "<?=$checkheader_url?>","err-product")
     
     $("#i-import-products").on("click", function(){
         doFetch(new FormData(document.querySelector("#products")),"<?=$products_import_url?>")
         .then(response => {
-            console.log(response)
+            console.log(response);
             $("#err-product").html(response.message)
         })
     });
 
-    loadfile("i-categories", "categories", "<?=$checkheader_url?>","err-categories")
+    // loadfile("i-categories", "categories", "<?=$checkheader_url?>","err-categories")
     
-    $("#i-import-categories").on("click", function(){
-        doFetch(new FormData(document.querySelector("#categories")),"<?=$categories_import_url?>")
-        .then(response => {
-            console.log(response)
-            $("#err-categories").html(response.message)
-        })
-    });
+    // $("#i-import-categories").on("click", function(){
+    //     doFetch(new FormData(document.querySelector("#categories")),"<?=$categories_import_url?>")
+    //     .then(response => {
+    //         console.log(response)
+    //         $("#err-categories").html(response.message)
+    //     })
+    // });
 
-    loadfile("i-categories", "categories", "<?=$checkheader_url?>","err-categories")
+    // loadfile("i-categories", "categories", "<?=$checkheader_url?>","err-categories")
     
-    $("#i-import-categories").on("click", function(){
-        doFetch(new FormData(document.querySelector("#categories")),"<?=$categories_import_url?>")
-        .then(response => {
-            console.log(response)
-            $("#err-categories").html(response.message)
-        })
-    });
+    // $("#i-import-categories").on("click", function(){
+    //     doFetch(new FormData(document.querySelector("#categories")),"<?=$categories_import_url?>")
+    //     .then(response => {
+    //         console.log(response)
+    //         $("#err-categories").html(response.message)
+    //     })
+    // });
 </script>

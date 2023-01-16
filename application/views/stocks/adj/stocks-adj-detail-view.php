@@ -91,15 +91,18 @@ function doUnLoad(){
         }
     });
 }
+
 // unload window
 $(window).on('beforeunload', function(){
     doUnLoad();
     return "Any changes will be lost";
 });
 // the button to free page unload
-$("#back, #save, #preview, #reprint, #discard").on("click", function(){
+$("#back").on("click", function(){
+    doUnLoad();
     $(window).off('beforeunload');
 });
+
 $("#preview").on("click",function(){
     window.open('<?=$preview_url?>', '_blank', 'location=yes,height=900,width=800,scrollbars=yes,status=yes');
 })

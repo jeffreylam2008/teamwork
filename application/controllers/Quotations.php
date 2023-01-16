@@ -116,7 +116,7 @@ class Quotations extends CI_Controller
 
 		if(empty($_GET['i-start-date']) && empty($_GET['i-end-date']))
 		{
-			$_GET['i-start-date'] = date("Y-m-d", strtotime('-5 days'));
+			$_GET['i-start-date'] = date("Y-m-d", strtotime('-'.$this->config->item('NUM_DATE_OF_SEARCH').' days'));
 			$_GET['i-end-date'] = date("Y-m-d");
 		}
 		$_query =$this->input->get();
@@ -156,40 +156,29 @@ class Quotations extends CI_Controller
 			// var_dump($_data);
 			// echo "</pre>";
 		}
-		if(!$_data['error']['code'] == "00000")
-		{
-			$this->load->view("error-handle", [
-				"alertstyle" => "danger",
-				"code" => $_data['error']['code'],
-				"message" => $_data['error']['message']
-			]);
-		}
-		else
-		{
-			$this->load->view('function-bar', [
-				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> base_url("/router/quotations/create/"), "style" => "btn btn-primary", "show" => true, "extra" => ""]
-				]
-			]);
-			$this->load->view('function-bar', [
-				"btn" => [
-					["name" => "<i class='fas fa-search'></i> ".$this->lang->line("function_search"), "type"=>"button", "id" => "i-search", "url"=> "#", "style" => "", "show" => true, "extra" => ""],
-					["name" => "<i class='fas fa-undo-alt'></i> ".$this->lang->line("function_clear"), "type"=>"button", "id" => "i-clear", "url"=> "#", "style" => "btn btn-secondary", "show" => true, "extra" => ""]
-				]
-			]);
-			$this->load->view("quotations/quotations-list-view", [
-				'data' => $_data['query'],
-				"submit_to" => base_url("/quotations/list"),
-				"edit_url" => base_url("/router/quotations/edit/"),
-				"default_per_page" => $this->_default_per_page,
-				"page" => $this->_page,
-				"ad_start_date" => $_start_date,
-				"ad_end_date" => $_end_date,
-				"ad_quotation_num" => $_quotation_num,
-				"ad_cust_code" => $_cust_code
-			]);
-			$this->load->view("footer");
-		}
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> base_url("/router/quotations/create/"), "style" => "btn btn-primary", "show" => true, "extra" => ""]
+			]
+		]);
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-search'></i> ".$this->lang->line("function_search"), "type"=>"button", "id" => "i-search", "url"=> "#", "style" => "", "show" => true, "extra" => ""],
+				["name" => "<i class='fas fa-undo-alt'></i> ".$this->lang->line("function_clear"), "type"=>"button", "id" => "i-clear", "url"=> "#", "style" => "btn btn-secondary", "show" => true, "extra" => ""]
+			]
+		]);
+		$this->load->view("quotations/quotations-list-view", [
+			'data' => $_data['query'],
+			"submit_to" => base_url("/quotations/list"),
+			"edit_url" => base_url("/router/quotations/edit/"),
+			"default_per_page" => $this->_default_per_page,
+			"page" => $this->_page,
+			"ad_start_date" => $_start_date,
+			"ad_end_date" => $_end_date,
+			"ad_quotation_num" => $_quotation_num,
+			"ad_cust_code" => $_cust_code
+		]);
+		$this->load->view("footer");
 	}
 
 	/**

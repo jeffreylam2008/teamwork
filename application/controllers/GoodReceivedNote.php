@@ -54,6 +54,8 @@ class GoodReceivedNote extends CI_Controller
 			{
 				case "GoodReceivedNote/create":
 					$this->_param = "stocks/index";
+				case "GoodReceivedNote/edit":
+					$this->_param = "stocks/index";
 				case "GoodReceivedNote/process":
 					$this->_param = "stocks/index";
 				break;
@@ -161,7 +163,7 @@ class GoodReceivedNote extends CI_Controller
 			$this->load->view('function-bar', [
 				"btn" => [
 					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/stocks') ,"style" => "","show" => true],
-					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "", "show" => true],
+					["name" => "<i class='fas fa-arrow-alt-circle-right'></i> ".$this->lang->line("function_go_next"), "type"=>"button", "id" => "next", "url"=> "#", "style" => "btn btn-primary", "show" => true],
 					["name" => "<i class='fas fa-trash-alt'></i> ".$this->lang->line("function_discard"), "type"=>"button", "id" => "discard", "url"=> base_url('/router/grn/discard/'.$_session_id), "style" => "btn btn-danger", "show" => $_show_discard_btn]
 				]
 			]);
@@ -200,6 +202,7 @@ class GoodReceivedNote extends CI_Controller
 	 */
 	public function process($_session_id = "")
 	{
+		$_show_discard_btn = false;
 		if(isset($_POST["i-post"]))
 		{
 			// variable initial
@@ -292,7 +295,7 @@ class GoodReceivedNote extends CI_Controller
 					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=> base_url('/stocks/'.$_login['preference']) ,"style" => "","show" => true],
 					["name" => "<i class='far fa-file-alt'></i> ".$this->lang->line("function_preview"), "type"=>"button", "id" => "preview", "url"=> "#","style" => "","show" => true],
 					["name" => "<i class='fas fa-print'></i> ".$this->lang->line("function_reprint"), "type"=>"button", "id" => "reprint", "url"=> "#" , "style" => "" , "show" => true],
-					["name" => "<i class='fas fa-sliders-h'></i> ".$this->lang->line("adjustment"), "type"=>"button", "id" => "adjustment", "url"=> base_url('/stocks/donewadj/'.$_grn_num) , "style" => "btn btn-warning" , "show" => true]
+					["name" => "<i class='fas fa-sliders-h'></i> ".$this->lang->line("adjustment"), "type"=>"button", "id" => "adjustment", "url"=> base_url('/router/adjustments/create/'.$_grn_num) , "style" => "btn btn-warning" , "show" => true]
 				]
 			]);
 			$this->load->view('title-bar', [
@@ -319,6 +322,7 @@ class GoodReceivedNote extends CI_Controller
 				"print_url" => base_url('/ThePrint/grn/save/'.$_session_id),
 				
 			]);
+			$this->load->view("footer");
 		}
 		else
 		{

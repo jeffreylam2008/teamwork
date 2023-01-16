@@ -10,6 +10,7 @@ class Reports extends CI_Controller
 	var $_profile = "";
 	var $_param = "";
 	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
+	var $_API_HEADER;
 
 	public function __construct()
 	{
@@ -41,24 +42,12 @@ class Reports extends CI_Controller
 		// // login session
 		if(!empty($this->component_login->CheckToken()))
 		{
-			// API data
-			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$this->_profile['username']);
+			//API data
+			$this->component_api->SetConfig("url", $this->config->item('URL_STOCK_ST_HEADER').$this->_profile['username'].'/?lang='.$this->config->item('language'));
 			$this->component_api->CallGet();
-			$_API_EMP = $this->component_api->GetConfig("result");
-			$_API_EMP = !empty($_API_EMP['query']) ? $_API_EMP['query'] : ['username' => "", 'employee_code' => ""];
-			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$this->_profile['shopcode']);
-			$this->component_api->CallGet();
-			$_API_SHOP = $this->component_api->GetConfig("result");
-			$_API_SHOP = !empty($_API_SHOP['query']) ? $_API_SHOP['query'] : ['shop_code' => "", 'name' => ""];
-			$this->component_api->SetConfig("url", $this->config->item('URL_MENU_SIDE'));
-			$this->component_api->CallGet();
-			$_API_MENU = $this->component_api->GetConfig("result");
-			$_API_MENU = !empty($_API_MENU['query']) ? $_API_MENU['query'] : [];
+			$_API_HEADER = $this->component_api->GetConfig("result");
+			$this->_API_HEADER = !empty($_API_HEADER['query']) ? $_API_HEADER['query'] : ['employee' => "", 'menu' => "", "prefix", "dn"=> ["dn_num"=>"", "dn_prefix"=>""]];
 
-			// if($json=file_get_contents($this->config->item('MASTER_FILE_MENU')))
-			// {
-			// 	$_API_MENU = json_decode($json, true);
-			// }
 			// dummy data
 			// sidebar session
 			$this->_param = $this->router->fetch_class()."/".$this->router->fetch_method();
@@ -75,11 +64,11 @@ class Reports extends CI_Controller
 			// fatch employee API
 			$this->_inv_header_param["topNav"] = [
 				"isLogin" => true,
-				"username" => $_API_EMP['username'],
-				"employee_code" => $_API_EMP['employee_code'],
-				"shop_code" => $_API_SHOP['shop_code'],
-				"shop_name" => $_API_SHOP['name'],
-				"today" => date("Y-m-d")
+				"username" => $this->_API_HEADER['employee']['username'],
+				"employee_code" => $this->_API_HEADER['employee']['employee_code'],
+				"shop_code" => $this->_API_HEADER['employee']['shop_code'],
+				"shop_name" => $this->_API_HEADER['employee']['shop_name'],
+				"today" => date("Y-m-d"),
 			];
 			if(!empty($_query))
 			{
@@ -92,7 +81,7 @@ class Reports extends CI_Controller
 				$this->session->set_userdata("login", $_login);
 			}
 			// fatch side bar API
-			$this->component_sidemenu->SetConfig("nav_list", $_API_MENU);
+			$this->component_sidemenu->SetConfig("nav_list", $this->_API_HEADER['menu']);
 			$this->component_sidemenu->SetConfig("active", $this->_param);
 			$this->component_sidemenu->Proccess();
 
@@ -111,7 +100,7 @@ class Reports extends CI_Controller
 		}
 		else
 		{
-			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
+			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"auto");
 		}		
 	}
 	public function index()

@@ -93,14 +93,18 @@
         return "Any changes will be lost";
     });
     // the button to free page unload
+    $("#save).on("click", function(){
+        $(window).off('beforeunload');
+    });
+    // the button to free page unload
     $("#back, #discard").on("click", function(){
         doUnLoad();
         $(window).off('beforeunload');
     });
     // Preview print pop up window 
-    $("#preview").on("click",function(){
-        $(window).off('beforeunload');
-        window.open('<?=$preview_url?>', '_blank', 'location=yes,height=900,width=800,scrollbars=yes,status=yes');
-    })
+    // $("#preview").on("click",function(){
+    //     $(window).off('beforeunload');
+    //     window.open('<?=$preview_url?>', '_blank', 'location=yes,height=900,width=800,scrollbars=yes,status=yes');
+    // })
 
 </script>

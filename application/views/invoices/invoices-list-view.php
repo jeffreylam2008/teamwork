@@ -140,14 +140,20 @@
             $("#i-page").val(tPage);
             $("#i-show").val($(".dataTables_length > label > select").val());
         });
-
+        // datepicker fotmat option
         $('.input-group.date').datepicker({
             format: "yyyy-mm-dd",
             orientation: "bottom left",
             todayHighlight: true,
             autoclose: true
         });
-
+        // Enter press to search field submit input
+        $("#i-invoice-num, #i-cust-code").on("keypress", function(e){
+            if(e.keyCode==13){
+                $("#this-form").submit()
+            }
+        });
+        // mouse click event for search field
         $("#i-search").on("click",function(){
             $("#this-form").submit()
         });

@@ -24,7 +24,7 @@ class Component_API
     }
     public function CallGet()
     {
-        $resp = ['query'=>"", "error" => ['code'=> "", "message"=>""]];
+        //$resp = ['query'=>"", "error" => ['code'=> "", "message"=>""], "API_Error" => "", "API_errCode" => ""];
         $alert = "danger";
         if(!empty($this->_config["url"]))
         {
@@ -43,62 +43,78 @@ class Component_API
             $resp = curl_exec($curl);
             $resp = json_decode($resp,true);
             $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-            $resp['http_code'] = $code;
-            $resp["API_Error"] = curl_error($curl);
-            $resp["API_errCode"]  = curl_errno($curl);
-            curl_close($curl);
             // echo "<pre>";
-            // var_dump($resp);
+            // var_dump($code);
             // echo "</pre>";
+            $resp['http_code'] = $code;
+            // $resp["API_Error"] = curl_error($curl);
+            // $resp["API_errCode"] = curl_errno($curl);
+
             switch($code)
             {
                 case 200:
                     if(!isset($resp['query']))
                     {
-                        $resp["API_Error"] = "Systems Error: Adnormal Data Response - Data Source Error - ".$resp["API_Error"];
-                        $resp["API_errCode"] = "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"];
+                        $resp["API_Error"] = "Systems Error: Adnormal Data Response - Data Source Error - ".curl_error($curl);
+                        $resp["API_errCode"] = "Systems Error: HTTP Code: ".$code." - ".curl_errno($curl);
                         $this->_CI->load->view('error-handle', [
                             'message'=> $resp["API_Error"], 
                             'code' => $resp["API_errCode"], 
-                            'alertstyle' => $alert
+                            'alertstyle' => "success"
                         ]);
                     }
                 break;
-                case 404:
-                    $resp["API_Error"] = "Systems Error: Data Source Error - ".$resp["API_Error"];
-                    $resp["API_errCode"] =  "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"];
+                case 400:
+                    $resp['query'] = [];
+                    $resp["API_Error"] = "Systems Error: Data Source Error";
+                    $resp["API_errCode"] =  "Systems Error: HTTP Code: ".$code;
+                    $resp["error"]["code"] = ""; 
+                    $resp["error"]["message"] = "";
                     $this->_CI->load->view('error-handle', [
                         'message'=> $resp["API_Error"], 
                         'code' => $resp["API_errCode"],
-                        'alertstyle' => $alert
+                        'alertstyle' => "danger"
+                    ]);
+                break;
+                case 404:
+                    $resp['query'] = [];
+                    $resp["API_Error"] = "Systems Error: Data Source Error - ".curl_error($curl);
+                    $resp["API_errCode"] =  "Systems Error: HTTP Code: ".$code." - ".curl_errno($curl);
+                    $this->_CI->load->view('error-handle', [
+                        'message'=> $resp["API_Error"], 
+                        'code' => $resp["API_errCode"],
+                        'alertstyle' => "danger"
                     ]);
                 break;
                 case 405:
-                    $resp["API_Error"] = "Systems Error: Data Source Error - ".$resp["API_Error"];
-                    $resp["API_errCode"] =  "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"];
+                    $resp['query'] = [];
+                    $resp["API_Error"] = "Systems Error: Data Source Error - ".curl_error($curl);
+                    $resp["API_errCode"] =  "Systems Error: HTTP Code: ".$code." - ".curl_errno($curl);
                     $this->_CI->load->view('error-handle', [
                         'message'=> $resp["API_Error"], 
                         'code' => $resp["API_errCode"],
-                        'alertstyle' => $alert
+                        'alertstyle' => "danger"
                     ]);
                 break;
                 case 500:
-                    $resp["API_Error"] = "Systems Error: Data Source Error - ".$resp["API_Error"];
-                    $resp["API_errCode"] =  "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"];
+                    $resp['query'] = [];
+                    $resp["API_Error"] = "Systems Error: Data Source Error - ".curl_error($curl);
+                    $resp["API_errCode"] =  "Systems Error: HTTP Code: ".$code." - ".curl_errno($curl);
                     $this->_CI->load->view('error-handle', [
                         'message'=> $resp["API_Error"], 
                         'code' => $resp["API_errCode"],
-                        'alertstyle' => $alert
+                        'alertstyle' => "danger"
                     ]);
                 break;
             }
+            curl_close($curl);
             $this->SetConfig("result",$resp);
         }
     }
 
     public function CallPost()
     {
-        $resp = ['query'=>"", "error" => ['code'=> "", "message"=>""]];
+        //$resp = ['query'=>"", "error" => ['code'=> "", "message"=>""]];
         $alert = "danger";
         if(!empty($this->_config["url"]))
         {
@@ -116,57 +132,72 @@ class Component_API
             $resp = json_decode($resp,true);
             $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             $resp['http_code'] = $code;
-            $resp["API_Error"] = curl_error($curl);
-            $resp["API_errCode"]  = curl_errno($curl);
-            curl_close($curl);
+            // $resp["API_Error"] = curl_error($curl);
+            // $resp["API_errCode"]  = curl_errno($curl);
             switch($code)
             {
                 case 200:
                     if(!isset($resp['query']))
                     {
-                        $resp["API_Error"] = "Systems Error: Adnormal Data Response - Data Source Error - ".$resp["API_Error"];
-                        $resp["API_errCode"] = "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"];
+                        $resp["API_Error"] = "Systems Error: Adnormal Data Response - Data Source Error - ".curl_error($curl);
+                        $resp["API_errCode"] = "Systems Error: HTTP Code: ".$code." - ".curl_errno($curl);
                         $this->_CI->load->view('error-handle', [
                             'message'=> $resp["API_Error"], 
                             'code' => $resp["API_errCode"], 
-                            'alertstyle' => $alert
+                            'alertstyle' => "success"
                         ]);
                     }
                 break;
-                case 404:
-                    $resp["API_Error"] = "Systems Error: Data Source Error - ".$resp["API_Error"];
-                    $resp["API_errCode"] =  "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"];
+                case 400:
+                    $resp['query'] = [];
+                    $resp["API_Error"] = "Systems Error: Data Source Error";
+                    $resp["API_errCode"] =  "Systems Error: HTTP Code: ".$code;
+                    $resp["error"]["code"] = ""; 
+                    $resp["error"]["message"] = "";
                     $this->_CI->load->view('error-handle', [
                         'message'=> $resp["API_Error"], 
                         'code' => $resp["API_errCode"],
-                        'alertstyle' => $alert
+                        'alertstyle' => "danger"
+                    ]);
+                break;
+                case 404:
+                    $resp['query'] = [];
+                    $resp["API_Error"] = "Systems Error: Data Source Error - ".curl_error($curl);
+                    $resp["API_errCode"] =  "Systems Error: HTTP Code: ".$code." - ".curl_errno($curl);
+                    $this->_CI->load->view('error-handle', [
+                        'message'=> $resp["API_Error"], 
+                        'code' => $resp["API_errCode"],
+                        'alertstyle' => "danger"
                     ]);
                 break;
                 case 405:
-                    $resp["API_Error"] = "Systems Error: Data Source Error - ".$resp["API_Error"];
-                    $resp["API_errCode"] =  "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"];
+                    $resp['query'] = [];
+                    $resp["API_Error"] = "Systems Error: Data Source Error - ".curl_error($curl);
+                    $resp["API_errCode"] =  "Systems Error: HTTP Code: ".$code." - ".curl_errno($curl);
                     $this->_CI->load->view('error-handle', [
                         'message'=> $resp["API_Error"], 
                         'code' => $resp["API_errCode"],
-                        'alertstyle' => $alert
+                        'alertstyle' => "danger"
                     ]);
                 break;
                 case 500:
-                    $resp["API_Error"] = "Systems Error: Data Source Error - ".$resp["API_Error"];
-                    $resp["API_errCode"] =  "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"];
+                    $resp['query'] = [];
+                    $resp["API_Error"] = "Systems Error: Data Source Error - ".curl_error($curl);
+                    $resp["API_errCode"] =  "Systems Error: HTTP Code: ".$code." - ".curl_errno($curl);
                     $this->_CI->load->view('error-handle', [
                         'message'=> $resp["API_Error"], 
                         'code' => $resp["API_errCode"],
-                        'alertstyle' => $alert
+                        'alertstyle' => "danger"
                     ]);
                 break;
             }
+            curl_close($curl);
             $this->SetConfig("result",$resp);
         }
     }
     public function CallPatch()
     {
-        $resp = ['query'=>"", "error" => ['code'=> "", "message"=>""]];
+        // $resp = ['query'=>"", "error" => ['code'=> "", "message"=>""]];
         $alert = "danger";
         if(!empty($this->_config["url"]))
         {
@@ -185,57 +216,72 @@ class Component_API
             $resp = json_decode($resp,true);
             $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             $resp['http_code'] = $code;
-            $resp["API_Error"] = curl_error($curl);
-            $resp["API_errCode"]  = curl_errno($curl);
-            curl_close($curl);
+            // $resp["API_Error"] = curl_error($curl);
+            // $resp["API_errCode"]  = curl_errno($curl);
             switch($code)
             {
                 case 200:
                     if(!isset($resp['query']))
                     {
-                        $resp["API_Error"] = "Systems Error: Adnormal Data Response - Data Source Error - ".$resp["API_Error"];
-                        $resp["API_errCode"] = "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"];
+                        $resp["API_Error"] = "Systems Error: Adnormal Data Response - Data Source Error - ".curl_error($curl);
+                        $resp["API_errCode"] = "Systems Error: HTTP Code: ".$code." - ".curl_errno($curl);
                         $this->_CI->load->view('error-handle', [
                             'message'=> $resp["API_Error"], 
                             'code' => $resp["API_errCode"], 
-                            'alertstyle' => $alert
+                            'alertstyle' => "success"
                         ]);
                     }
                 break;
-                case 404:
-                    $resp["API_Error"] = "Systems Error: Data Source Error - ".$resp["API_Error"];
-                    $resp["API_errCode"] =  "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"];
+                case 400:
+                    $resp['query'] = [];
+                    $resp["API_Error"] = "Systems Error: Data Source Error";
+                    $resp["API_errCode"] =  "Systems Error: HTTP Code: ".$code;
+                    $resp["error"]["code"] = ""; 
+                    $resp["error"]["message"] = "";
                     $this->_CI->load->view('error-handle', [
                         'message'=> $resp["API_Error"], 
                         'code' => $resp["API_errCode"],
-                        'alertstyle' => $alert
+                        'alertstyle' => "danger"
+                    ]);
+                break;
+                case 404:
+                    $resp['query'] = [];
+                    $resp["API_Error"] = "Systems Error: Data Source Error - ".curl_error($curl);
+                    $resp["API_errCode"] =  "Systems Error: HTTP Code: ".$code." - ".curl_errno($curl);
+                    $this->_CI->load->view('error-handle', [
+                        'message'=> $resp["API_Error"], 
+                        'code' => $resp["API_errCode"],
+                        'alertstyle' => "danger"
                     ]);
                 break;
                 case 405:
-                    $resp["API_Error"] = "Systems Error: Data Source Error - ".$resp["API_Error"];
-                    $resp["API_errCode"] =  "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"];
+                    $resp['query'] = [];
+                    $resp["API_Error"] = "Systems Error: Data Source Error - ".curl_error($curl);
+                    $resp["API_errCode"] =  "Systems Error: HTTP Code: ".$code." - ".curl_errno($curl);
                     $this->_CI->load->view('error-handle', [
                         'message'=> $resp["API_Error"], 
                         'code' => $resp["API_errCode"],
-                        'alertstyle' => $alert
+                        'alertstyle' => "danger"
                     ]);
                 break;
                 case 500:
-                    $resp["API_Error"] = "Systems Error: Data Source Error - ".$resp["API_Error"];
-                    $resp["API_errCode"] =  "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"];
+                    $resp['query'] = [];
+                    $resp["API_Error"] = "Systems Error: Data Source Error - ".curl_error($curl);
+                    $resp["API_errCode"] =  "Systems Error: HTTP Code: ".$code." - ".curl_errno($curl);
                     $this->_CI->load->view('error-handle', [
                         'message'=> $resp["API_Error"], 
                         'code' => $resp["API_errCode"],
-                        'alertstyle' => $alert
+                        'alertstyle' => "danger"
                     ]);
                 break;
             }
+            curl_close($curl);
             $this->SetConfig("result",$resp);
         }
     }
     public function CallDelete()
     {
-        $resp = ['query'=>"", "error" => ['code'=> "", "message"=>""]];
+        // $resp = ['query'=>"", "error" => ['code'=> "", "message"=>""]];
         $alert = "danger";
         if(!empty($this->_config["url"]))
         {
@@ -250,51 +296,67 @@ class Component_API
             $resp = json_decode($resp,true);
             $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             $resp['http_code'] = $code;
-            $resp["API_Error"] = curl_error($curl);
-            $resp["API_errCode"]  = curl_errno($curl);
-            curl_close($curl);
+            // $resp["API_Error"] = curl_error($curl);
+            // $resp["API_errCode"]  = curl_errno($curl);
+            
             switch($code)
             {
                 case 200:
                     if(!isset($resp['query']))
                     {
-                        $resp["API_Error"] = "Systems Error: Adnormal Data Response - Data Source Error - ".$resp["API_Error"];
-                        $resp["API_errCode"] = "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"];
+                        $resp["API_Error"] = "Systems Error: Adnormal Data Response - Data Source Error - ".curl_error($curl);
+                        $resp["API_errCode"] = "Systems Error: HTTP Code: ".$code." - ".curl_errno($curl);
                         $this->_CI->load->view('error-handle', [
                             'message'=> $resp["API_Error"], 
                             'code' => $resp["API_errCode"], 
-                            'alertstyle' => $alert
+                            'alertstyle' => "success"
                         ]);
                     }
                 break;
-                case 404:
-                    $resp["API_Error"] = "Systems Error: Data Source Error - ".$resp["API_Error"];
-                    $resp["API_errCode"] =  "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"];
+                case 400:
+                    $resp['query'] = [];
+                    $resp["API_Error"] = "Systems Error: Data Source Error";
+                    $resp["API_errCode"] =  "Systems Error: HTTP Code: ".$code;
+                    $resp["error"]["code"] = ""; 
+                    $resp["error"]["message"] = "";
                     $this->_CI->load->view('error-handle', [
                         'message'=> $resp["API_Error"], 
                         'code' => $resp["API_errCode"],
-                        'alertstyle' => $alert
+                        'alertstyle' => "danger"
+                    ]);
+                break;
+                case 404:
+                    $resp['query'] = [];
+                    $resp["API_Error"] = "Systems Error: Data Source Error - ".curl_error($curl);
+                    $resp["API_errCode"] =  "Systems Error: HTTP Code: ".$code." - ".curl_errno($curl);
+                    $this->_CI->load->view('error-handle', [
+                        'message'=> $resp["API_Error"], 
+                        'code' => $resp["API_errCode"],
+                        'alertstyle' => "danger"
                     ]);
                 break;
                 case 405:
-                    $resp["API_Error"] = "Systems Error: Data Source Error - ".$resp["API_Error"];
-                    $resp["API_errCode"] =  "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"];
+                    $resp['query'] = [];
+                    $resp["API_Error"] = "Systems Error: Data Source Error - ".curl_error($curl);
+                    $resp["API_errCode"] =  "Systems Error: HTTP Code: ".$code." - ".curl_errno($curl);
                     $this->_CI->load->view('error-handle', [
                         'message'=> $resp["API_Error"], 
                         'code' => $resp["API_errCode"],
-                        'alertstyle' => $alert
+                        'alertstyle' => "danger"
                     ]);
                 break;
                 case 500:
-                    $resp["API_Error"] = "Systems Error: Data Source Error - ".$resp["API_Error"];
-                    $resp["API_errCode"] =  "Systems Error: HTTP-Code: ".$code." - ".$resp["API_errCode"];
+                    $resp['query'] = [];
+                    $resp["API_Error"] = "Systems Error: Data Source Error - ".curl_error($curl);
+                    $resp["API_errCode"] =  "Systems Error: HTTP Code: ".$code." - ".curl_errno($curl);
                     $this->_CI->load->view('error-handle', [
                         'message'=> $resp["API_Error"], 
                         'code' => $resp["API_errCode"],
-                        'alertstyle' => $alert
+                        'alertstyle' => "danger"
                     ]);
                 break;
             }
+            curl_close($curl);
             $this->SetConfig("result",$resp);
         }
     }

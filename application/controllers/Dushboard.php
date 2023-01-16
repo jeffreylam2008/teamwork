@@ -26,9 +26,6 @@ class Dushboard extends CI_Controller
 		// login session
 		if(!empty($this->component_login->CheckToken()))
 		{
-			$_param = $this->router->fetch_class()."/".$this->router->fetch_method();
-
-
 			// API data
 			$this->component_api->SetConfig("url", $this->config->item('URL_INVOICES_HEADER').$this->_profile['username'].'/?lang='.$this->config->item('language'));
 			$this->component_api->CallGet();

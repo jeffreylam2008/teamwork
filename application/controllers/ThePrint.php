@@ -138,30 +138,33 @@ class ThePrint extends CI_Controller
             }
         }
     }
-    public function stocktake($_option)
+    public function stocktake($_option,$_session_id)
     {
-        $_cur_num = $this->session->userdata('cur_stocktake_num');
-        $_transaction = $this->component_transactions->Get($_cur_num);
+        $_data = $this->session->userdata($_session_id);
+        if(!empty($_data))
+        {
+            $_cur_num = $_data['cur_stocktakenum'];
+            $_transaction = $_data[$_cur_num];
+            $this->session->keep_flashdata($_session_id);
 
-        // // API Call
-       
-        if(isset($_transaction) && !empty($_transaction)){
-            // read data from session
+            if(isset($_transaction) && !empty($_transaction)){
+                // read data from session
 
-            switch($_option)
-            {
-                case "preview":
-                    $this->load->view('stocks/stocks-stocktake-print-view', [
-                        "data" => $_transaction,
-                        "preview" => true
-                    ]);
-                break;
-                case "save":
-                    // $this->load->view('stocks/delivery-note-print-view', [
-                    //     "data" => $_transaction[$_cur_num],
-                    //     "preview" => false
-                    // ]);
-                break;
+                switch($_option)
+                {
+                    case "preview":
+                        $this->load->view('stocks/st/stocks-stocktake-print-view', [
+                            "data" => $_transaction,
+                            "preview" => true
+                        ]);
+                    break;
+                    case "save":
+                        $this->load->view('stocks/st/stocks-stocktake-print-view', [
+                            "data" => $_transaction,
+                            "preview" => false
+                        ]);
+                    break;
+                }
             }
         }
     }

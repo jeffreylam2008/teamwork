@@ -1,3 +1,9 @@
+<?php 
+    // echo "<pre>";
+    // var_dump($data);
+    // echo "</pre>";
+    extract($data);
+?>
 <form class="" method="GET" id="this-form" action="<?=$submit_to?>">
     <!-- search selection -->
     <?=$this->lang->line("function_adv_search")?>
@@ -68,27 +74,22 @@
         <thead>
         <tbody>
         <?php
-            if(!empty($data))
+
+            foreach($data as $key => $val)
             {
-            // echo "<pre>";
-            // var_dump($data);
-            // echo "</pre>";
-                extract($data);
-                foreach($data as $key => $val)
-                {
-                    echo "<tr>";
-                    echo "<td><a href='".$edit_url.$val['trans_code']."'>".$val['trans_code']."</a></td>";
-                    echo "<td>".$val['refer_code']."</td>";
-                    echo "<td>(".$val['shop_code'].") - ".$val['shop_name']."</td>";
-                    echo "<td>(".$val['supp_code'].") - ".$val['supp_name']."</td>";
-                    echo "<td>".$val['payment_method']."</td>";
-                    echo "<td>".$val['remark']."</td>";
-                    echo "<td>$".number_format($val['total'],2,".",",")."</td>";
-                    echo "<td>".$val['create_date']."</td>";
-                    echo "<td>".$val['modify_date']."</td>";
-                    echo "</tr>";
-                }
+                echo "<tr>";
+                echo "<td><a href='".$edit_url.$val['trans_code']."'>".$val['trans_code']."</a></td>";
+                echo "<td>".$val['refer_code']."</td>";
+                echo "<td>(".$val['shop_code'].") - ".$val['shop_name']."</td>";
+                echo "<td>(".$val['supp_code'].") - ".$val['supp_name']."</td>";
+                echo "<td>".$val['payment_method']."</td>";
+                echo "<td>".$val['remark']."</td>";
+                echo "<td>$".number_format($val['total'],2,".",",")."</td>";
+                echo "<td>".$val['create_date']."</td>";
+                echo "<td>".$val['modify_date']."</td>";
+                echo "</tr>";
             }
+        
         ?>
         </tbody>
     </table>
@@ -148,7 +149,11 @@
             todayHighlight: true,
             autoclose: true
         });
-
+        $('#i-num, #i-supp-code').on("keypress", function(e){
+            if(e.keyCode==13){
+                $("#this-form").submit()
+            }
+        });
         $("#i-search").on("click",function(){
             $("#this-form").submit()
         });

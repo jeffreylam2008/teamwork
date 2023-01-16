@@ -382,6 +382,10 @@
         // disable unload warning
         $(window).off('beforeunload');
     });
+    $("#back, #discard").on("click", function(){
+        doUnLoad();
+        $(window).off('beforeunload');
+    });
     //construct
     $(document).ready(function(){
         refresh()

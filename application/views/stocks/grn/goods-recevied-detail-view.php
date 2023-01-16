@@ -178,6 +178,10 @@ $("#back").on("click", function(){
     doUnLoad();
     $(window).off('beforeunload');
 });
+$("#adjustment").on("click", function(){
+    // disable unload warning
+    $(window).off('beforeunload');
+});
 $("#preview").on("click",function(){
     $(window).off('beforeunload');
     window.open('<?=$preview_url?>', '_blank', 'location=yes,height=900,width=800,scrollbars=yes,status=yes');

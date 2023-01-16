@@ -15,13 +15,13 @@
 
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <span class="input-group-text" id="">Transaction Number</span>
+            <span class="input-group-text" id=""><?=$this->lang->line("stock_tran_number")?></span>
         </div>            
         <input type="text" class="form-control" id="i-st-num" value="<?=$trans_code?>" disabled>
     </div>
     <div class="input-group mb-2 input-group-sm">
         <div class="input-group-prepend">
-            <span class="input-group-text" id="">Date</span>
+            <span class="input-group-text" id=""><?=$this->lang->line("date")?></span>
         </div>
         <input type="text" class="form-control" id="i-date" value="<?=$date?>" disabled>
     </div>
@@ -29,11 +29,11 @@
         <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Item Code</th>
-                <th scope="col">English Name</th>
-                <th scope="col">Chinese Name</th>
-                <th scope="col">Qty</th>
-                <th scope="col">Unit</th>
+                <th><?=$this->lang->line("item_code")?></th>
+                <th><?=$this->lang->line("item_eng_name")?></th>
+                <th><?=$this->lang->line("item_chi_name")?></th>
+                <th><?=$this->lang->line("item_qty")?></th>
+                <th><?=$this->lang->line("item_unit")?></th>
             </tr>
         </thead>
         <!-- render items-list here -->
@@ -68,32 +68,41 @@
     function doUnLoad(){
             // console.log(document.activeElement.href);
             // while unload then redirect
-            $(window).on('unload', function(e){
-                e.preventDefault();
-                // to fix page refresh
-                if(typeof document.activeElement.href !== "undefined")
-                {
-                    // target url defined then discard current session
-                    fetch("<?=$discard_url?>").then(function(response) {
-                        if(response.ok){
-                            window.location.replace(document.activeElement.href);
-                            window.onbeforeunload = null;
-                        }
-                    });
-                }
-            });
-        }
-        // unload window
-        $(window).on('beforeunload', function(){
-            doUnLoad();
-            return "Any changes will be lost";
+        $(window).on('unload', function(e){
+            e.preventDefault();
+            // to fix page refresh
+            if(typeof document.activeElement.href !== "undefined")
+            {
+                // target url defined then discard current session
+                fetch("<?=$discard_url?>").then(function(response) {
+                    if(response.ok){
+                        window.location.replace(document.activeElement.href);
+                        window.onbeforeunload = null;
+                    }
+                });
+            }
         });
-        // the button to free page unload
-        $("#back, #save, #preview, #reprint, #discard").on("click", function(){
-            $(window).off('beforeunload');
-        });
+    }
+    // unload window
+    $(window).on('beforeunload', function(){
+        doUnLoad();
+        return "Any changes will be lost";
+    });
+    // the button to free page unload
+    $("#save, #preview, #reprint").on("click", function(){
+        $(window).off('beforeunload');
+    });
+    // the button to free page unload
+    $("#back, #discard").on("click", function(){
+        doUnLoad();
+        $(window).off('beforeunload');
+    });
     $("#preview").on("click",function(){
         window.open('<?=$preview_url?>', '_blank', 'location=yes,height=900,width=800,scrollbars=yes,status=yes');
+    })
+    // Print receipt pop up window
+    $("#reprint").on("click",function(){
+    window.open('<?=$print_url?>', '_blank', 'location=yes,height=500,width=900,scrollbars=yes,status=yes');
     })
     // $("#save").on("click",function(){
     //     window.open('<?=$print_url?>', '_blank', 'location=yes,height=900,width=800,scrollbars=yes,status=yes');

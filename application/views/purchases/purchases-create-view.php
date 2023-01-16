@@ -417,7 +417,7 @@ extract($data);
         // disable unload warning
         $(window).off('beforeunload');
     });
-    $("#discard").on("click", function(){
+    $("#Back,#discard").on("click", function(){
         doUnLoad();
         // disable unload warning
         $(window).off('beforeunload');

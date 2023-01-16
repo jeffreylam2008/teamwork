@@ -388,7 +388,7 @@
         // disable unload warning
         $(window).off('beforeunload');
     });
-    $("#discard").on("click", function(){
+    $("#back, #discard").on("click", function(){
         doUnLoad();
         $(window).off('beforeunload');
     });
@@ -527,7 +527,7 @@
         _inputs["refer_num"] = $("#i-refer-num").val()
         _inputs["employee_code"] = $("#i-employeecode").val()
         _inputs["date"] = $("#i-date").val()
-        _inputs["shopcode"] = $("#i-shopcode").val()
+        _inputs["shop_code"] = $("#i-shopcode").val()
         _inputs['items'] = items
         _inputs['remark'] = $("#i-remark").val()
         _inputs['formtype'] = $("#i-form-type").val()
@@ -535,7 +535,7 @@
         $("#i-post").val(JSON.stringify(_inputs))
         $("#i-shopcode").removeClass("is-invalid")
 
-        if(_inputs["shopcode"] == -1){
+        if(_inputs["shop_code"] == -1){
             $("#i-shopcode").addClass("is-invalid")
             _valid = 1
         }

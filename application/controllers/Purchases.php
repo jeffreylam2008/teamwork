@@ -113,7 +113,7 @@ class Purchases extends CI_Controller
 
 		if(empty($_GET['i-start-date']) && empty($_GET['i-end-date']))
 		{
-			$_GET['i-start-date'] = date("Y-m-d", strtotime('-5 days'));
+			$_GET['i-start-date'] = date("Y-m-d", strtotime('-'.$this->config->item('NUM_DATE_OF_SEARCH').' days'));
 			$_GET['i-end-date'] = date("Y-m-d");
 		}
 		$_query = [
@@ -150,50 +150,31 @@ class Purchases extends CI_Controller
 		// echo "<pre>";
 		// var_dump($_data);
 		// echo "</pre>";
-		
-		switch($_data["http_code"])
-		{
-			case 200:
-				$alert = "success";
-			break;
-			case 404:
-				$alert = "danger";
-			break;
-		}
-		if(!$_data['error']['code'] == "00000")
-		{
-			$this->load->view("error-handle", [
-				"alertstyle" => "danger",
-				"code" => $_data['error']['code'],
-				"message" => $_data['error']['message']
-			]);
-		}
-		else
-		{
-			// Function bar
-			$this->load->view('function-bar', [
-				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> base_url("/router/purchases/create/"), "style" => "btn btn-primary", "show" => true, "extra" => ""],
-				]
-			]);
-			$this->load->view('function-bar', [
-				"btn" => [
-					["name" => "<i class='fas fa-search'></i> ".$this->lang->line("function_search"), "type"=>"button", "id" => "i-search", "url"=> "#", "style" => "", "show" => true, "extra" => ""],
-					["name" => "<i class='fas fa-undo-alt'></i> ".$this->lang->line("function_clear"), "type"=>"button", "id" => "i-clear", "url"=> "#", "style" => "btn btn-secondary", "show" => true, "extra" => ""]
-				]
-			]);
-			$this->load->view("purchases/purchases-list-view", [
-				"data" => $_data['query'],
-				"submit_to" => base_url("/purchases/order/"),
-				"edit_url" => base_url("/router/purchases/edit/"),
-				"default_per_page" => $this->_default_per_page,
-				"page" => $this->_page,
-				"ad_start_date" => $_query['i-start-date'],
-				"ad_end_date" => $_query['i-end-date'],
-				"ad_supp_code" => $_query['i-supp-code'],
-				"ad_num" => $_query['i-num']
-			]);
-		}
+
+		// Function bar
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=> base_url("/router/purchases/create/"), "style" => "btn btn-primary", "show" => true, "extra" => ""],
+			]
+		]);
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-search'></i> ".$this->lang->line("function_search"), "type"=>"button", "id" => "i-search", "url"=> "#", "style" => "", "show" => true, "extra" => ""],
+				["name" => "<i class='fas fa-undo-alt'></i> ".$this->lang->line("function_clear"), "type"=>"button", "id" => "i-clear", "url"=> "#", "style" => "btn btn-secondary", "show" => true, "extra" => ""]
+			]
+		]);
+		$this->load->view("purchases/purchases-list-view", [
+			"data" => $_data['query'],
+			"submit_to" => base_url("/purchases/order/"),
+			"edit_url" => base_url("/router/purchases/edit/"),
+			"default_per_page" => $this->_default_per_page,
+			"page" => $this->_page,
+			"ad_start_date" => $_query['i-start-date'],
+			"ad_end_date" => $_query['i-end-date'],
+			"ad_supp_code" => $_query['i-supp-code'],
+			"ad_num" => $_query['i-num']
+		]);
+
 		$this->load->view("footer");
 	}
 
@@ -245,14 +226,10 @@ class Purchases extends CI_Controller
 			$this->component_api->SetConfig("url", $this->config->item('URL_MASTER'));
 			$this->component_api->CallGet();
 			$result = $this->component_api->GetConfig("result");
-			if($result['http_code'] == 200)
-			{
-				$_API_MASTER = $result;
-				if(!empty($_API_MASTER['query']))
-				{
-					$_API_MASTER = $_API_MASTER['query'];
-				}
 
+			if(!empty($result['query']))
+			{
+				$_API_MASTER = $result['query'];
 				// function bar with next, preview and save button
 				$this->load->view('function-bar', [
 					"btn" => [
@@ -371,7 +348,7 @@ class Purchases extends CI_Controller
 		$_transaction = [];
 		$_login = $this->session->userdata('login');
 		$_data = $this->session->userdata($_session_id);
-
+		$_alert = "danger";
 		if(isset($_data))
 		{
 			$_cur_purchasesnum = $_data['cur_purchasesnum'];
@@ -402,27 +379,27 @@ class Purchases extends CI_Controller
 			switch($result["http_code"])
 			{
 				case 200:
-					$alert = "success";
+					$_alert = "success";
 				break;
 				case 404:
-					$alert = "danger";
+					$_alert = "danger";
 				break;
 			}
 			$this->load->view('error-handle', [
 				'message' => $result["error"]['message'], 
 				'code'=> $result["error"]['code'], 
-				'alertstyle' => $alert
+				'alertstyle' => $_alert
 			]);
 		}
 		else
 		{
-		   $alert = "danger";
+		   
 		   $result["error"]['code'] = "90000";
 		   $result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again"; 
 		   $this->load->view('error-handle', [
 			   'message' => $result["error"]['message'], 
 			   'code'=> $result["error"]['code'], 
-			   'alertstyle' => $alert
+			   'alertstyle' => $_alert
 		   ]);
 		}
 		$this->session->unset_userdata($_session_id);

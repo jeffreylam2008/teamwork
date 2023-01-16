@@ -11,7 +11,7 @@ class Component_URI
         $len = count($input);
         foreach($input as $k => $v)
         {
-        	$str .= $k."=".$v;
+        	$str .= $k."=".trim($v);
         	if ($i != $len - 1) {
         		$str .="&";
         	}

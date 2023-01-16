@@ -490,7 +490,7 @@ extract($data);
         $(window).off('beforeunload');
     });
 
-    $("#discard").on("click", function(){
+    $("#back, #discard").on("click", function(){
         doUnLoad();
         $(window).off('beforeunload');
     });

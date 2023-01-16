@@ -121,7 +121,7 @@ class Invoices extends CI_Controller
 
 		if(empty($_GET['i-start-date']) && empty($_GET['i-end-date']))
 		{
-			$_GET['i-start-date'] = date("Y-m-d", strtotime('-5 days'));
+			$_GET['i-start-date'] = date("Y-m-d", strtotime('-'.$this->config->item('NUM_DATE_OF_SEARCH').' days'));
 			$_GET['i-end-date'] = date("Y-m-d");
 		}
 
