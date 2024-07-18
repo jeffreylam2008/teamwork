@@ -118,7 +118,7 @@ class Payments extends CI_Controller
 		}
 		// variable initial
 		// Uer Auth
-		$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => false];
+		$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => true];
 
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
@@ -136,26 +136,27 @@ class Payments extends CI_Controller
 			// load function bar view
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => $this->_user_auth['create'], "extra" => "data-toggle='modal' data-target='#modal01'"]
+					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("paymentmethod_new").$this->lang->line("paymentmethod_title"), "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => $this->_user_auth['create'], "extra" => "data-toggle='modal' data-target='#modal01'"]
 				]
 			]);
 
 			// load main view
 			$this->load->view('/payments/payment-method-view', [
 				"edit_url" => base_url("/administration/payments/method/edit/"),
-				"del_url" => base_url(""),
+				"del_url" => base_url("/administration/payments/method/delete/"),
 				'data' => $_API_PAYMENT_METHOD,
 				"user_auth" => $this->_user_auth,
 				"default_per_page" => $this->_default_per_page,
 				"page" => $this->_page,
 				"modalshow" => $_modalshow
 			]);
+			// load create payment method view
 			$this->load->view("/payments/payment-method-create-view",[
 				"function_bar" => $this->load->view('function-bar', [
 					"btn" => [
-						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/administration/payments/method'), "style" => "", "show" => true],
-						["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
-						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
+						["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/administration/payments/method'), "style" => "", "show" => true],
+						["name" => "<i class='fas fa-undo-alt'></i> ".$this->lang->line("function_clear"), "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
+						["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
 					]
 				],true),
 				"save_url" => base_url("/administration/payments/method/save")
@@ -170,7 +171,7 @@ class Payments extends CI_Controller
 	 * @param _pm_code payment method ID
 	 * @return view /payments/payment-method-edit-view
 	 */
-	 public function paymentmethodedit($_pm_code)
+	 public function paymentmethodedit($_pm_code = "")
 	 {
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS').$_pm_code);
@@ -185,8 +186,8 @@ class Payments extends CI_Controller
 			$_login = $this->session->userdata['login'];
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/administration/payments/method'.$_login['preference']), "style" => "", "show" => true],
-					["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => $this->_user_auth['edit']]
+					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/administration/payments/method'.$_login['preference']), "style" => "", "show" => true],
+					["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => $this->_user_auth['edit']]
 				]
 			]);
 			$this->load->view('/payments/payment-method-edit-view', [
@@ -197,97 +198,193 @@ class Payments extends CI_Controller
 		}
 	 }
  
-	 /**
-	  * Payment method create new confirm page, commit new payment method creation
-	  * 
-	  */
-	 public function paymentmethodsave()
-	 {
-		 // echo "you are on payment save";
-		 // echo "<pre>";
-		 // var_dump($_POST);
-		 // echo "</pre>";
-		 if(isset($_POST) && !empty($_POST) )
-		 {
-			 $_api_body = json_encode($_POST,true);
- 
-			 if($_api_body != "")
-			 {
-				 // echo "<pre>";
-				 // var_dump($_api_body);
-				 // echo "</pre>";
-				 // API data
-				 $this->component_api->SetConfig("body", $_api_body);
-				 $this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
-				 $this->component_api->CallPost();
-				 $result = json_decode($this->component_api->GetConfig("result"),true);
-				 
-				 if(isset($result['error']['message']) || isset($result['error']['code']))
-				 {
-					 $alert = "danger";
-					 switch($result['error']['code'])
-					 {
-						 case "00000":
-							 $alert = "success";
-						 break;
-					 }		
-					 $this->load->view('error-handle', [
-						 'message' => $result['error']['message'], 
-						 'code'=> $result['error']['code'], 
-						 'alertstyle' => $alert
-					 ]);
-					 
-					 // callback initial page
-					 header("Refresh: 5; url=".base_url("/administration/payments/method"));
-				 }
-			 }
-		 }	
-	 }
-
 	/**
 	 * Payment method edit confirm page, confirm change after edit
 	 * 
 	 * @param _pm_code payment method ID
 	 * 
 	 */
-	public function paymentmethodsaveedit($pm_code = "")
+	public function paymentmethodsaveedit($_pm_code = "")
 	{
-		if(isset($_POST) && !empty($_POST) && isset($pm_code) && !empty($pm_code))
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "Back", "url"=> base_url('administration/payments/method/edit/'.$_pm_code), "style" => "", "show" => true],
+			]
+		]);
+		if(isset($_POST) && !empty($_POST) && isset($_pm_code) && !empty($_pm_code))
 		{
 			$_api_body = json_encode($_POST,true);
+			// echo $this->config->item('URL_PAYMENT_METHODS').$_pm_code;
+			
 			// echo "<pre>";
 			// var_dump($_api_body);
 			// echo "</pre>";
-			if($_api_body != "")
+
+			// API data
+			$this->component_api->SetConfig("body", $_api_body);
+			$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS').$_pm_code);
+			$this->component_api->CallPatch();
+			$result = $this->component_api->GetConfig("result");
+			// echo "<pre>";
+			// var_dump($result);
+			// echo "</pre>";
+
+			switch($result["http_code"])
 			{
-				// API data
-				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS').$pm_code);
-				$this->component_api->CallPatch();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
-				
-				if(isset($result['error']['message']) || isset($result['error']['code']))
-				{
+				case 200:
+					$alert = "success";
+				break;				
+				case 201:
+					$alert = "success";
+				break;
+				case 202:
+					$alert = "info";
+				break;
+				case 404:
 					$alert = "danger";
-					switch($result['error']['code'])
-					{
-						case "00000":
-							$alert = "success";
-						break;
-					}		
-					$this->load->view('error-handle', [
-						'message' => $result['error']['message'], 
-						'code'=> $result['error']['code'], 
-						'alertstyle' => $alert
-					]);
-					
-					// callback initial page
-					header("Refresh: 5; url=".base_url("/administration/payments/method"));
-				}
+				break;
 			}
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+		}
+		else
+		{
+			$alert = "danger";
+			$result["error"]['code'] = "90000";
+			$result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again";
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
 		}
 	}
+
+
+	 /**
+	  * Payment method create new confirm page, commit new payment method creation
+	  * 
+	  */
+	 public function paymentmethodsave()
+	 {
+		$alert = "danger";
+		 // echo "you are on payment save";
+		 // echo "<pre>";
+		 // var_dump($_POST);
+		 // echo "</pre>";
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "Back", "url"=> base_url('administration/payments/method'), "style" => "", "show" => true],
+			]
+		]);
+		if(isset($_POST) && !empty($_POST) )
+		{
+			 $_api_body = json_encode($_POST,true);
 	
+			// API data
+			$this->component_api->SetConfig("body", $_api_body);
+			$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
+			$this->component_api->CallPost();
+			$result = $this->component_api->GetConfig("result");
+			//  echo "<pre>";
+			//  var_dump($_api_body);
+			//  echo "</pre>";
+			switch($result["http_code"])
+			{
+				case 200:
+					$alert = "success";
+				break;				
+				case 201:
+					$alert = "success";
+				break;
+				case 202:
+					$alert = "info";
+				break;
+				case 404:
+					$alert = "danger";
+				break;
+			}
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+		}
+		else
+		{
+			$alert = "danger";
+			$result["error"]['code'] = "90000";
+			$result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again";
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+		}
+
+		
+		//header("Refresh: 10; url=".base_url("/administration/payments/method"));
+	 }
+	
+	/**
+	 * Payment method delete 
+	 * 
+	 * @param _pm_code payment method ID
+	 */
+	public function paymentmethodelete($_pm_code = "")
+	{
+		$_data = [];
+		$_login = $this->session->userdata("login");
+		$_comfirm_show = true;
+		$this->load->view("payments/payment-del-view",[
+			"submit_to" => base_url('/administration/payments/method/delete/confirmed/'.$_pm_code),
+			"to_deleted_num" => $_pm_code,
+			"confirm_show" => $_comfirm_show,
+			"return_url" => base_url('/administration/payments/method')
+		]);
+	
+	}
+
+	/**
+	 * Payment method delete confirm
+	 *
+	 * @param _pm_code payment method ID
+	 */
+	public function paymentmethodsavedelete($_pm_code = "")
+	{
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/administration/payments/method'), "style" => "", "show" => true],
+			]
+		]);
+
+		// API data
+		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS').$_pm_code);
+		$this->component_api->CallDelete();
+		$result = $this->component_api->GetConfig("result");
+
+		if(isset($result['error']['message']) || isset($result['error']['code']))
+		{
+			switch($result["http_code"])
+			{
+				case 200:
+					$alert = "success";
+				break;
+				case 404:
+					$alert = "danger";
+				break;
+			}
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+		}
+	}
+
 	/**
 	 * Payment term main page, list of payment term here
 	 * 
@@ -317,7 +414,7 @@ class Payments extends CI_Controller
 			// load function bar view
 			$this->load->view('function-bar', [
 				"btn" => [
-					["name" => "<i class='fas fa-plus-circle'></i> New", "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => $this->_user_auth['create'], "extra" => "data-toggle='modal' data-target='#modal01'"]
+					["name" => "<i class='fas fa-plus-circle'></i> ".$this->lang->line("function_new"), "type"=>"button", "id" => "newitem", "url"=>"#", "style" => "", "show" => $this->_user_auth['create'], "extra" => "data-toggle='modal' data-target='#modal01'"]
 				]
 			]);
 
@@ -335,9 +432,9 @@ class Payments extends CI_Controller
 			$this->load->view("/payments/payment-term-create-view",[
 				"function_bar" => $this->load->view('function-bar', [
 					"btn" => [
-						["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/administration/payments/term'), "style" => "", "show" => true],
-						["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
-						["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
+						["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/administration/payments/term'), "style" => "", "show" => true],
+						["name" => "<i class='fas fa-undo-alt'></i> ".$this->lang->line("function_clear"), "type"=>"button", "id" => "reset", "url" => "#" , "style" => "btn btn-outline-secondary", "show" => true],
+						["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
 					]
 				],true),
 				"save_url" => base_url("/administration/payments/term/save")
@@ -349,77 +446,93 @@ class Payments extends CI_Controller
 	}
 
 	/**
-	 * Payment method edit page, edit specifc payment method information
-	 * 
-	 * @param _pt_code payment method ID
-	 * @return view /payments/payment-method-edit-view
-	 */
-	 public function paymenttermedit($_pt_code)
-	 {
-		// API data
-		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_TERMS').$_pt_code);
-		$this->component_api->CallGet();
-		$_API_PTerm = json_decode($this->component_api->GetConfig("result"),true);
-		$_API_PTerm = !empty($_API_PTerm['query']) ? $_API_PTerm['query'] : [];
-		// echo "<pre>";
-		// var_dump($_API_PAYMENT_METHOD);
-		// echo "</pre>";
-		if(!empty( $_API_PTerm))
-		{
-			$_login = $this->session->userdata['login'];
-			$this->load->view('function-bar', [
-				"btn" => [
-					["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/administration/payments/term'.$_login['preference']), "style" => "", "show" => true],
-					["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => $this->_user_auth['edit']]
-				]
-			]);
-			$this->load->view('/payments/payment-term-edit-view', [
-				"save_url" => base_url("/administration/payments/term/edit/save/"),
-				'data' => $_API_PTerm
-			]);
-			$this->load->view('footer');
-		}
-	 }
-	/**
 	 * Payment terms create new confirm page, commit new payment term creation
 	 * 
 	 */
 	public function paymenttermsave()
 	{
-
+		$alert = "danger";
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "Back", "url"=> base_url('administration/payments/term'), "style" => "", "show" => true],
+			]
+		]);
 		if(isset($_POST) && !empty($_POST) )
 		{
 			$_api_body = json_encode($_POST,true);
 
-			if($_api_body != "")
+			// API data
+			$this->component_api->SetConfig("body", $_api_body);
+			$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_TERMS'));
+			$this->component_api->CallPost();
+			$result = $this->component_api->GetConfig("result");
+			switch($result["http_code"])
 			{
-				// API data
-				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_TERMS'));
-				$this->component_api->CallPost();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
-				
-				if(isset($result['error']['message']) || isset($result['error']['code']))
-				{
+				case 200:
+					$alert = "success";
+				break;				
+				case 201:
+					$alert = "success";
+				break;
+				case 202:
+					$alert = "info";
+				break;
+				case 404:
 					$alert = "danger";
-					switch($result['error']['code'])
-					{
-						case "00000":
-							$alert = "success";
-						break;
-					}		
-					$this->load->view('error-handle', [
-						'message' => $result['error']['message'], 
-						'code'=> $result['error']['code'], 
-						'alertstyle' => $alert
-					]);
-					
-					// callback initial page
-					header("Refresh: 5; url=".base_url("/administration/payments/term"));
-				}
+				break;
 			}
-		}	
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+		}
+		else
+		{
+			$alert = "danger";
+			$result["error"]['code'] = "90000";
+			$result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again";
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+		}
 	}
+
+	/**
+	 * Payment method edit page, edit specifc payment method information
+	 * 
+	 * @param _pt_code payment method ID
+	 * @return view /payments/payment-method-edit-view
+	 */
+	public function paymenttermedit($_pt_code = "")
+	{
+	   // API data
+	   $this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_TERMS').$_pt_code);
+	   $this->component_api->CallGet();
+	   $_API_PTerm = $this->component_api->GetConfig("result");
+	   $_API_PTerm = !empty($_API_PTerm['query']) ? $_API_PTerm['query'] : [];
+	   // echo "<pre>";
+	   // var_dump($_API_PAYMENT_METHOD);
+	   // echo "</pre>";
+	   if(!empty( $_API_PTerm))
+	   {
+		   $_login = $this->session->userdata['login'];
+		   $this->load->view('function-bar', [
+			   "btn" => [
+				   ["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/administration/payments/term'.$_login['preference']), "style" => "", "show" => true],
+				   ["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => $this->_user_auth['edit']]
+			   ]
+		   ]);
+		   $this->load->view('/payments/payment-term-edit-view', [
+			   "save_url" => base_url("/administration/payments/term/edit/save/"),
+			   'data' => $_API_PTerm
+		   ]);
+		   $this->load->view('footer');
+	   }
+	}
+
 	 /**
 	 * Payment Term edit confirm page, confirm change after edit
 	 * 
@@ -428,38 +541,110 @@ class Payments extends CI_Controller
 	 */
 	public function paymenttermsaveedit($_pt_code = "")
 	{
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "Back", "url"=> base_url('administration/payments/term/edit/'.$_pt_code), "style" => "", "show" => true],
+			]
+		]);
 		if(isset($_POST) && !empty($_POST) && isset($_pt_code) && !empty($_pt_code))
 		{
 			$_api_body = json_encode($_POST,true);
-
-			if($_api_body != "")
+			// echo $_api_body;
+			// API data
+			$this->component_api->SetConfig("body", $_api_body);
+			$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_TERMS').$_pt_code);
+			$this->component_api->CallPatch();
+			$result = $this->component_api->GetConfig("result");
+			switch($result["http_code"])
 			{
-				// API data
-				$this->component_api->SetConfig("body", $_api_body);
-				$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_TERMS').$_pt_code);
-				$this->component_api->CallPatch();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
-				
-				if(isset($result['error']['message']) || isset($result['error']['code']))
-				{
+				case 200:
+					$alert = "success";
+				break;				
+				case 201:
+					$alert = "success";
+				break;
+				case 202:
+					$alert = "info";
+				break;
+				case 404:
 					$alert = "danger";
-					switch($result['error']['code'])
-					{
-						case "00000":
-							$alert = "success";
-						break;
-					}		
-					$this->load->view('error-handle', [
-						'message' => $result['error']['message'], 
-						'code'=> $result['error']['code'], 
-						'alertstyle' => $alert
-					]);
-					
-					// callback initial page
-					header("Refresh: 5; url=".base_url("/administration/payments/term"));
-				}
+				break;
 			}
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+		}
+		else
+		{
+			$alert = "danger";
+			$result["error"]['code'] = "90000";
+			$result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again";
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+		}
+
+	}
+
+/**
+	 * Payment term delete 
+	 * 
+	 * @param _pt_code payment method ID
+	 */
+	public function paymenttermdelete($_pt_code = "")
+	{
+		$_data = [];
+		$_login = $this->session->userdata("login");
+		$_comfirm_show = true;
+		$this->load->view("payments/payment-del-view",[
+			"submit_to" => base_url('/administration/payments/term/delete/confirmed/'.$_pt_code),
+			"to_deleted_num" => $_pt_code,
+			"confirm_show" => $_comfirm_show,
+			"return_url" => base_url('/administration/payments/term')
+		]);
+	
+	}
+
+	/**
+	 * Payment term delete confirm
+	 *
+	 * @param _pt_code payment method ID
+	 */
+	public function paymenttermsavedelete($_pt_code = "")
+	{
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/administration/payments/term'), "style" => "", "show" => true],
+			]
+		]);
+
+		// API data
+		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_TERMS').$_pt_code);
+		$this->component_api->CallDelete();
+		$result = $this->component_api->GetConfig("result");
+
+		if(isset($result['error']['message']) || isset($result['error']['code']))
+		{
+			switch($result["http_code"])
+			{
+				case 200:
+					$alert = "success";
+				break;
+				case 404:
+					$alert = "danger";
+				break;
+			}
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
 		}
 	}
+
 
 }

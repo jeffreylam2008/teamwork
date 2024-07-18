@@ -1,0 +1,21 @@
+- Customer
+- Supplier
+- Inventory
+  - Products/items
+  - Categories
+- Sales
+  - Invoices
+  - Quotation
+- Purchasing
+- Warehouse
+  - Delivery Note
+  - Good Received Note
+  - Adjustment
+  - Stocktake
+- System Setting
+  - General
+  - Store
+  - Payment Method
+  - Employees
+- Backup & Restore
+- Report

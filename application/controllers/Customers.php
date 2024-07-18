@@ -265,13 +265,13 @@ class Customers extends CI_Controller
 		$_previous_disable = "";
 		$_next_disable = "";
 		// user data
-
 		
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS').$cust_code);
 		$this->component_api->CallGet();
 		$_API_CUSTOMERS = $this->component_api->GetConfig("result");
 		$_API_CUSTOMERS = !empty($_API_CUSTOMERS['query']) ? $_API_CUSTOMERS['query'] : [];
+
 
 		// Get payment method
 		$this->component_api->SetConfig("url", $this->config->item('URL_PAYMENT_METHODS'));
@@ -382,42 +382,49 @@ class Customers extends CI_Controller
 	 */
 	public function saveedit($cust_code = "")
 	{
+		$result = [];
+		$alert = "danger";
+		$_login = $this->session->userdata("login");
+
+		// function bar with next, preview and save button
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/customers/detail/'.$cust_code.$_login['preference']), "style" => "", "show" => true],
+			]
+		]);
 		// echo "<pre>";
 		// var_dump($_POST);
-		// echo "</pre>";
+		// echo "</pre>";		
 		if(isset($_POST) && !empty($_POST) && isset($cust_code) && !empty($cust_code))
 		{
 			$_api_body = json_encode($_POST,true);
 
-			if($_api_body != "")
+			if($_api_body != "null")
 			{
 				// API data
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS').$cust_code);
 				$this->component_api->CallPatch();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
+				$result = $this->component_api->GetConfig("result");
 
-				if(isset($result['error']['message']) || isset($result['error']['code']))
+				switch($result["http_code"])
 				{
-					$_login = $this->session->userdata("login");
-					$alert = "danger";
-					switch($result['error']['code'])
-					{
-						case "00000":
-							$alert = "success";
-						break;
-					}		
-					$this->load->view('error-handle', [
-						'message' => $result['error']['message'], 
-						'code'=> $result['error']['code'], 
-						'alertstyle' => $alert
-					]);
-					
-					// callback initial page
-					header("Refresh: 5; url=".base_url("/customers".$_login['preference']));
+					case 200:
+						$alert = "success";
+					break;
+					case 404:
+						$alert = "danger";
+					break;
 				}
+				$this->load->view('error-handle', [
+					'message' => $result["error"]['message'], 
+					'code'=> $result["error"]['code'], 
+					'alertstyle' => $alert
+				]);
 			}
 		}
+		// callback initial page
+		//header("Refresh: 5; url=".base_url("/customers".$_login['preference']));
 	}
 
 	/** 
@@ -428,30 +435,37 @@ class Customers extends CI_Controller
 	 */
 	public function savedel($cust_code="")
 	{
+		$result = [];
+		$alert = "danger";
+		$_login = $this->session->userdata("login");
+
+		// function bar with next, preview and save button
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/customers/'.$_login['preference']), "style" => "", "show" => true],
+			]
+		]);
+
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS').$cust_code);
 		$this->component_api->CallDelete();
-		$result = json_decode($this->component_api->GetConfig("result"),true);
-		if(isset($result['error']['message']) || isset($result['error']['code']))
-		{
-			$_login = $this->session->userdata("login");
-			$alert = "danger";
-			switch($result['error']['code'])
-			{
-				case "00000":
-					$alert = "success";
-				break;
-			}					
+		$result = $this->component_api->GetConfig("result");
 			
-			$this->load->view('error-handle', [
-				'message' => $result['error']['message'], 
-				'code'=> $result['error']['code'], 
-				'alertstyle' => $alert
-			]);
-	
-			// callback initial page
-			header("Refresh: 5; url=".base_url("/customers".$_login['preference']));
+		switch($result["http_code"])
+		{
+			case 200:
+				$alert = "success";
+			break;
+			case 404:
+				$alert = "danger";
+			break;
 		}
+		$this->load->view('error-handle', [
+			'message' => $result["error"]['message'], 
+			'code'=> $result["error"]['code'], 
+			'alertstyle' => $alert
+		]);
+		
 	}
 
 	/**
@@ -460,11 +474,19 @@ class Customers extends CI_Controller
 	 */
 	public function save()
 	{
+		$result = [];
+		$alert = "danger";
+		$_login = $this->session->userdata("login");
 
+		// function bar with next, preview and save button
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/customers/'.$_login['preference']), "style" => "", "show" => true],
+			]
+		]);
 		if(isset($_POST) && !empty($_POST))
 		{
 			$_api_body = json_encode($_POST,true);
-
 			if($_api_body != "")
 			{
 				// echo "<pre>";
@@ -474,27 +496,22 @@ class Customers extends CI_Controller
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('URL_CUSTOMERS'));
 				$this->component_api->CallPost();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
+				$result = $this->component_api->GetConfig("result");
 				
-				if(isset($result['error']['message']) || isset($result['error']['code']))
+				switch($result["http_code"])
 				{
-					$_login = $this->session->userdata("login");
-					$alert = "danger";
-					switch($result['error']['code'])
-					{
-						case "00000":
-							$alert = "success";
-						break;
-					}		
-					$this->load->view('error-handle', [
-						'message' => $result['error']['message'], 
-						'code'=> $result['error']['code'], 
-						'alertstyle' => $alert
-					]);
-					
-					// callback initial page
-					header("Refresh: 5; url=".base_url("/customers".$_login['preference']));
+					case 200:
+						$alert = "success";
+					break;
+					case 404:
+						$alert = "danger";
+					break;
 				}
+				$this->load->view('error-handle', [
+					'message' => $result["error"]['message'], 
+					'code'=> $result["error"]['code'], 
+					'alertstyle' => $alert
+				]);
 			}
 		}
 	}

@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <!-- Modal Head -->
-                <h2 class="modal-title" id=""><b>New Payment Term</b></h2>
+                <h2 class="modal-title" id=""><b><?=$this->lang->line("paymentterms_new")?><?=$this->lang->line("paymentterms_title")?></b></h2>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -18,14 +18,14 @@
                         <div class="card-body"> 
                             <div class="form-row">
                                 <div class="col-3">
-                                    <label for="">Code</label>
-                                    <input type="text" class="form-control form-control-sm" name="i-pt-code" placeholder="Code" value="">
+                                    <label for=""><?=$this->lang->line("paymentterms_code")?></label>
+                                    <input type="text" class="form-control form-control-sm" name="i-pt-code" placeholder="<?=$this->lang->line("paymentterms_code")?>" value="">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="col-3">
-                                    <label for="">Payment Terms</label>
-                                    <textarea class="form-control form-control-sm" name="i-pt" placeholder="Terms" value=""></textarea>
+                                    <label for=""><?=$this->lang->line("paymentterms_title")?></label>
+                                    <textarea class="form-control form-control-sm" name="i-pt" placeholder="<?=$this->lang->line("paymentterms_code")?>" value=""></textarea>
                                 </div>
                             </div>
                         </div>

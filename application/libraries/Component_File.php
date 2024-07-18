@@ -29,7 +29,7 @@ class Component_File
         ob_start();
         $df = fopen("php://output", 'w');
         // write utf-8 header
-        fputs( $df, "\xEF\xBB\xBF" );
+        //fputs( $df, "\xEF\xBB\xBF" );
         foreach ($array as $row) {
             fputcsv($df, $row);
         }
@@ -76,19 +76,20 @@ class Component_File
                     //$content[$row][] = $data;
                     $num = count($data);
                     for ($c=0; $c < $num; $c++) {
-                        //$content[$row][] = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $data[$c]);
-                        $content[$row][] = $data[$c];
+                        //$content[$row][] = $data[$c];
+                        $content[$row][] = trim($data[$c]);
                     }
                     $row++;
                 }
                 fclose($handle);
             }
-            $response = array(
-                "data" => $content,
-                "status" => "success",
-                "error" => false,
-                "message" => "file content"
-            );
+            $response = $content;
+            // $response = array(
+            //     "data" => $content,
+            //     "status" => "success",
+            //     "error" => false,
+            //     "message" => "file content"
+            // );
         }
         catch(exception $e)
         {

@@ -10,7 +10,7 @@
                 <div class="container-fluid">
                     <p><?=$this->lang->line('label_delete_msg')?><u><?=$to_deleted_num?></u>?</p>
                     <?php  if(!$confirm_show) : ?>
-                    <p><?=$this->lang->line("label_delete_msg1")?> <a href="<?=$trans_url?>"><?=$trans_code?></a> <?=$this->lang->line("label_delete_msg2")?>  <u><?=$to_deleted_num?></u></p>
+                        <p><?=$this->lang->line("label_delete_msg1")?> <a href="<?=$trans_url?>"><?=$trans_code?></a> <?=$this->lang->line("label_delete_msg2")?>  <u><?=$to_deleted_num?></u></p>
                     <?php  endif; ?>
 
                 </div>

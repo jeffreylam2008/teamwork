@@ -8,34 +8,34 @@
 <form id="form1" name="form1" method="POST" action="<?=$save_url?>">
     <div class="card">
         <div class="card-header">
-            <h2> Shop: <u><?=$shop_code?></u></h2>
+            <h2> <?=$this->lang->line('shop_code')?>: <u><?=$shop_code?></u></h2>
         </div>
         <div class="card-body">
 
             <div class="form-row">
                 <div class="col-4">
-                    <label for="t1">Shop Name</label>
+                    <label for="t1"><?=$this->lang->line('shop_name')?></label>
                     <input type="text" class="form-control form-control-sm" name="i-name" id="i-name" placeholder="Name" value="<?=$name?>">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="col-3">
-                    <label for="t2">Phone</label>
+                    <label for="t2"><?=$this->lang->line('shop_phone')?></label>
                     <input type="text" class="form-control form-control-sm" name="i-phone" id="i-phone" placeholder="phone" value="<?=$phone?>">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="col-6">
-                    <label for="t3">Address 1</label>
+                    <label for="t3"><?=$this->lang->line('shop_addr1')?></label>
                     <input type="text" class="form-control form-control-sm" name="i-address1" id="i-address1" placeholder="Address 1" value="<?=$address1?>">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="col-6">
-                    <label for="t4">Address 2</label>
+                    <label for="t4"><?=$this->lang->line('shop_addr2')?></label>
                     <input type="text" class="form-control form-control-sm" name="i-address2" id="i-address2" placeholder="Address 2" value="<?=$address2?>">
                 </div>
             </div>

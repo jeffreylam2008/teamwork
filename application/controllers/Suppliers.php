@@ -341,9 +341,9 @@ class Suppliers extends CI_Controller
 		$this->component_api->CallGet();
 		$_data = $this->component_api->GetConfig("result");
 		$_data = $_data['query'] != null ? $_data['query'] : [];
-		echo "<pre>";
-		var_dump($_data);
-		echo "</pre>";		
+		// echo "<pre>";
+		// var_dump($_data);
+		// echo "</pre>";		
 		if(!empty($_data))
 		{
 

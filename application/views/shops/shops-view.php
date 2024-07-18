@@ -3,11 +3,11 @@
     <thead>
         <tr>
             <td>#</td>
-            <td>Shop Code</td>
-            <td>Shop Name</td>
-            <td>Phone</td>
-            <td>Address1</td>
-            <td>Address2</td>
+            <td><?=$this->lang->line('shop_code')?></td>
+            <td><?=$this->lang->line('shop_name')?></td>
+            <td><?=$this->lang->line('shop_phone')?></td>
+            <td><?=$this->lang->line('shop_Addr1')?></td>
+            <td><?=$this->lang->line('shop_Addr2')?></td>
         </tr>
     <thead>
     <tbody>
@@ -36,10 +36,24 @@
 <script>
 $(document).ready(function() {  
     var table = $('#tbl').DataTable({
+        "order" : [[1, "desc"]],
         "select": {
             items: 'column'
         },
         "iDisplayLength": <?=$default_per_page?>,
+        "language": {
+            "emptyTable" : "<?=$this->lang->line('label_emptytable')?>",
+            "infoEmpty":   "<?=$this->lang->line('label_infoEmpty')?>",
+            "lengthMenu" : "<?=$this->lang->line('function_page_showing')?> _MENU_",
+            "search": "<?=$this->lang->line('function_search')?> :",
+            "info": "<?=$this->lang->line('function_page_showing')?> _START_ <?=$this->lang->line('function_page_to')?> _END_ <?=$this->lang->line('function_page_of')?> _TOTAL_ <?=$this->lang->line('function_page_entries')?>",
+            "paginate": {
+                "first": "<?=$this->lang->line('function_first')?>",
+                "last": "<?=$this->lang->line('function_last')?>",
+                "next": "<?=$this->lang->line('function_next')?>",
+                "previous": "<?=$this->lang->line('function_previous')?>"
+            }
+        }
     });
     table.page(<?=$page-1?>).draw('page');
 

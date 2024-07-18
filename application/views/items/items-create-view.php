@@ -83,7 +83,7 @@
                                     <div class="col-12">
                                         <label><?=$this->lang->line("item_type")?></label>  
                                         <select class="form-control" id="i-type" name="i-type">
-                                            <option value="null"><?=$this->lang->line("function_select")?></option>                                            
+                                            <option value="0"><?=$this->lang->line("function_select")?></option>                                            
                                             <option value='1'><?=$this->lang->line("item_non_inventory")?></option>
                                             <option value='2'><?=$this->lang->line("item_inventory")?></option>
                                             <option value='3'><?=$this->lang->line("item_non_inventory_point")?></option>

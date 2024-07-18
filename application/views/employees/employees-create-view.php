@@ -1,3 +1,4 @@
+
 <!-- Modal -->
 <div class="modal fade" id="modal01" tabindex="-1" role="dialog" aria-labelledby="newitem" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -43,9 +44,23 @@
                                     <label for=""><?=$this->lang->line("employee_default_shop")?></label>
                                     <select class="custom-select custom-select-sm" id="i-shops" name="i-shops" >
                                         <?php 
-                                        foreach($data as $key => $val):
+                                        foreach($data['shop'] as $key => $val):
                                         ?>
                                         <option value="<?=$val['shop_code']?>"><?=$val['name']?></option>
+                                        <?php
+                                        endforeach;
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-3">
+                                    <label for=""><?=$this->lang->line("employee_access_level")?></label>
+                                    <select class="custom-select custom-select-sm" id="i-emp-roles" name="i-emp-roles" >
+                                        <?php 
+                                        foreach($data['emp_roles'] as $val):
+                                        ?>
+                                        <option value="<?=$val['role_code']?>"><?=$val['name']?></option>
                                         <?php
                                         endforeach;
                                         ?>

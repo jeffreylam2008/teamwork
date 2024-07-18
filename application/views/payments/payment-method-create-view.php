@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <!-- Modal Head -->
-                <h2 class="modal-title" id=""><b>New Payment Method</b></h2>
+                <h2 class="modal-title" id=""><b><?=$this->lang->line("paymentmethod_title")?></b></h2>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -18,12 +18,12 @@
                         <div class="card-body"> 
                             <div class="form-row">
                                 <div class="col-3">
-                                    <label for="">Code</label>
-                                    <input type="text" class="form-control form-control-sm" name="i-pm-code" placeholder="Code" value="">
+                                    <label for=""><?=$this->lang->line("paymentmethod_code")?></label>
+                                    <input type="text" class="form-control form-control-sm" name="i-pm-code" placeholder="<?=$this->lang->line("paymentmethod_code")?>" value="">
                                 </div>
                                 <div class="col-3">
-                                    <label for="">Payment Method</label>
-                                    <input type="text" class="form-control form-control-sm" name="i-pm" placeholder="Paymen Method" value="">
+                                    <label for=""><?=$this->lang->line("paymentmethod_name")?></label>
+                                    <input type="text" class="form-control form-control-sm" name="i-pm" placeholder="<?=$this->lang->line("paymentmethod_name")?>" value="">
                                 </div>
                             </div>
                         </div>

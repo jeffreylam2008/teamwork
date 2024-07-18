@@ -41,7 +41,6 @@
                 {
                     $result .= "<div class='sub collapse' id='".$val["name"]."'>";
                 }
-
                 $result .= traversal($val["child"],$path, $param);
                 $result .= "</div>";
             }
@@ -56,7 +55,7 @@
                 {
                     $result .= "<div class='sub1'>";
                 }
-                $result .= "<a href='".base_url($val["slug"])."'>";
+                $result .= "<a href='".base_url($val["slug"])."'> # ";
                 $result .= $val["name"];
                 $result .= "</a>";
                 $result .= "</div>";

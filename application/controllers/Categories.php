@@ -103,6 +103,11 @@ class Categories extends CI_Controller
 			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
 		}
 	}
+	
+	/**
+	 * Listing page of Categories 
+	 * To list out categories
+	 */
 	public function index()
 	{
 		// variable initial
@@ -154,7 +159,6 @@ class Categories extends CI_Controller
 	/**
 	 * Edit category
 	 * @param cate_code with input category code
-	 *  
 	 */
 	public function edit($cate_code="")
 	{
@@ -200,10 +204,13 @@ class Categories extends CI_Controller
 	}
 	/**
 	 * Delete
-	 * 
+	 * @param cate_code with input of category code 
 	 */
 	public function delete($cate_code="")
 	{
+		$_data = [];
+		$_trans_url = "";
+		$_trans_code = "";
 		// user data
 		$_login = $this->session->userdata("login");
 		$_comfirm_show = true;
@@ -212,51 +219,63 @@ class Categories extends CI_Controller
 		$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES_HAS_ITEM').$cate_code);
 		$this->component_api->CallGet();
 		$_data = $this->component_api->GetConfig("result");
-
+		// echo "<pre>";
+		// var_dump($_data['query']);
+		// echo "</pre>";
 		if(isset($_data))
 		{	
 			if($_data['query'])
 			{
-				$_comfirm_show = false;	
+				$_comfirm_show = false;
+				$_trans_url = base_url("/products/items/edit/".$_data['query']['item_code']);
+				$_trans_code = $_data['query']['item_code'];
 			}
 
 			$this->load->view("categories/categories-del-view",[
 				"submit_to" => base_url('/products/categories/delete/confirmed/'.$cate_code),
 				"to_deleted_num" => $cate_code,
 				"confirm_show" => $_comfirm_show,
-				"trans_url" => base_url("/products/items/"),
-				"trans_code" => $_data['error']['message'],
+				"trans_url" => $_trans_url,
+				"trans_code" => $_trans_code,
 				"return_url" => base_url('/products/categories'.$_login['preference'])
 			]);
 		}
 	}
 	/** 
 	 * Process Save delete 
-	 * 
+	 * @param cate_code with input of category code 
 	 */
 	public function savedel($cate_code = "")
 	{
+		$_login = $this->session->userdata("login");
+		// function bar has go back button
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/products/categories/'.$_login["preference"]), "style" => "", "show" => true],
+			]
+		]);
+
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES').$cate_code);
 		$this->component_api->CallDelete();
-		$result = json_decode($this->component_api->GetConfig("result"),true);
+		$result = $this->component_api->GetConfig("result");
+
 		if(isset($result['error']['message']) || isset($result['error']['code']))
 		{
-			$_login = $this->session->userdata("login");
-			$alert = "danger";
-			switch($result['error']['code'])
+			switch($result["http_code"])
 			{
-				case "00000":
+				case 200:
 					$alert = "success";
 				break;
-			}					
-			
+				case 404:
+					$alert = "danger";
+				break;
+			}
 			$this->load->view('error-handle', [
-				'message' => $result['error']['message'], 
-				'code'=> $result['error']['code'], 
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
 				'alertstyle' => $alert
 			]);
-	
 			// callback initial page
 			header("Refresh: 5; url=".base_url("/products/categories/".$_login['preference']));
 		}
@@ -267,82 +286,94 @@ class Categories extends CI_Controller
 	 */
 	public function savecreate()
 	{
+		$result = [];
+		$alert = "danger";
+		$_login = $this->session->userdata("login");
+		// function bar has go back button
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/products/categories/'.$_login["preference"]), "style" => "", "show" => true],
+			]
+		]);
 		if(isset($_POST) && !empty($_POST))
 		{
 			$_api_body = json_encode($_POST,true);
-
 			if($_api_body != "null")
 			{
 				// API data
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES'));
 				$this->component_api->CallPost();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
+				$result = $this->component_api->GetConfig("result");
 				
-				if(isset($result['error']['message']) || isset($result['error']['code']))
+				switch($result["http_code"])
 				{
-					$_login = $this->session->userdata("login");
-					$alert = "danger";
-					switch($result['error']['code'])
-					{
-						case "00000":
-							$alert = "success";
-						break;
-					}					
-					
-					$this->load->view('error-handle', [
-						'message' => $result['error']['message'], 
-						'code'=> $result['error']['code'], 
-						'alertstyle' => $alert
-					]);
-			
-					// callback initial page
-					header("Refresh: 5; url=".base_url("/products/categories/".$_login['preference']));
+					case 200:
+						$alert = "success";
+					break;
+					case 404:
+						$alert = "danger";
+					break;
 				}
+				$this->load->view('error-handle', [
+					'message' => $result["error"]['message'], 
+					'code'=> $result["error"]['code'], 
+					'alertstyle' => $alert
+				]);
 			}
 		}
+		// callback initial page
+		header("Refresh: 5; url=".base_url("/products/categories/".$_login['preference']));
 	}
 	/** 
 	 * Process Save edit 
-	 * 
+	 * @param cate_code with input of category code 
 	 */
 	public function saveedit($cate_code = "")
 	{
+		$result = [];
+		$alert = "danger";
+		$_login = $this->session->userdata("login");
+
+		// function bar with next, preview and save button
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/products/categories/'.$_login["preference"]), "style" => "", "show" => true],
+			]
+		]);
+
 		if(isset($_POST) && !empty($_POST) && isset($cate_code) && !empty($cate_code))
 		{
 			$_api_body = json_encode($_POST,true);
 			// echo "<pre>";
 			// var_dump($_api_body);
 			// echo "</pre>";
-			if($_api_body != "")
+			if($_api_body != "null")
 			{
 				// API data
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('URL_CATEGORIES').$cate_code);
 				$this->component_api->CallPatch();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
+				$result = $this->component_api->GetConfig("result");
 				
-				if(isset($result['error']['message']) || isset($result['error']['code']))
+				switch($result["http_code"])
 				{
-					$_login = $this->session->userdata("login");
-					$alert = "danger";
-					switch($result['error']['code'])
-					{
-						case "00000":
-							$alert = "success";
-						break;
-					}		
-					$this->load->view('error-handle', [
-						'message' => $result['error']['message'], 
-						'code'=> $result['error']['code'], 
-						'alertstyle' => $alert
-					]);
-					
-					// callback initial page
-					header("Refresh: 5; url=".base_url("/products/categories/".$_login['preference']));
+					case 200:
+						$alert = "success";
+					break;
+					case 404:
+						$alert = "danger";
+					break;
 				}
+				$this->load->view('error-handle', [
+					'message' => $result["error"]['message'], 
+					'code'=> $result["error"]['code'], 
+					'alertstyle' => $alert
+				]);
 			}
 		}
+		// callback initial page
+		header("Refresh: 5; url=".base_url("/products/categories/".$_login['preference']));
 	}
 	
 }

@@ -9,7 +9,7 @@ class Employees extends CI_Controller
 	var $_token = "";
 	var $_profile = "";
 	var $_param = "";
-	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => false];
+	var $_user_auth = ['create' => false, 'edit' => false, 'delete' => true];
 	var $_API_HEADER;
 	/**
 	 * Payment method and term constructor
@@ -92,13 +92,13 @@ class Employees extends CI_Controller
 					"topNav" => $this->_inv_header_param["topNav"]
 				], TRUE)
 			]);
-			$this->_user_auth = ['create' => true, 'edit' => true, 'delete' => false];
 		}
 		else
 		{
 			redirect(base_url("login?url=".urlencode($this->component_login->GetRedirectURL())),"refresh");
 		}
 	}
+
 	public function index()
 	{
 		// API data
@@ -106,6 +106,12 @@ class Employees extends CI_Controller
 		$this->component_api->CallGet();
 		$_API_EMPLOYEES = $this->component_api->GetConfig("result");
 		$_API_EMPLOYEES = !empty($_API_EMPLOYEES['query']) ? $_API_EMPLOYEES['query'] : [];
+		
+		$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES')."roles/");
+		$this->component_api->CallGet();
+		$_API_EMPLOYEES_ROLES = $this->component_api->GetConfig("result");
+		$_API_EMPLOYEES_ROLES = !empty($_API_EMPLOYEES_ROLES['query']) ? $_API_EMPLOYEES_ROLES['query'] : [];
+		
 		$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
 		$this->component_api->CallGet();
 		$_API_SHOPS = $this->component_api->GetConfig("result");
@@ -126,7 +132,7 @@ class Employees extends CI_Controller
 			// load main view
 			$this->load->view('/employees/employees-view', [
 				"edit_url" => base_url("/administration/employees/edit/"),
-				"del_url" => base_url(""),
+				"del_url" => base_url("/administration/employees/delete/"),
 				'data' => $_API_EMPLOYEES,
 				"user_auth" => $this->_user_auth,
 				"default_per_page" => $this->_default_per_page,
@@ -140,51 +146,85 @@ class Employees extends CI_Controller
 						["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true]
 					 ]
 				],true),
+				
 				"save_url" => base_url("/administration/employees/save"),
-				"data" => $_API_SHOPS
+				"data" => ["shop"=>$_API_SHOPS, "emp_roles" => $_API_EMPLOYEES_ROLES] 
 			]);
 			$this->load->view('footer');
 		}
 	}
+
 	/**
 	 * Edit employee configure 
 	 * 
 	 */
 	public function edit($_employee_code)
 	{
-		// variable initial
-		if(!empty($_employee_code))
-		{
-			//API call here
-			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES_CODE').$_employee_code);
-			$this->component_api->CallGet();
-			$_API_EMPLOYEES = json_decode($this->component_api->GetConfig("result"),true);
-			$_API_EMPLOYEES = !empty($_API_EMPLOYEES['query']) ? $_API_EMPLOYEES['query'] : [];
-			$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
-			$this->component_api->CallGet();
-			$_API_SHOPS = json_decode($this->component_api->GetConfig("result"),true);
-			$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : [];
-
-			$_login = $this->session->userdata['login'];
-
-			if( !empty($_API_EMPLOYEES))
-			{
-				// function bar here
-				$this->load->view('function-bar', [
-					"btn" => [
-						["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/administration/employees'.$_login['preference']), "style" => "", "show" => true],
-						["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
-					]
-				]);
-				// load view here
-				$this->load->view('/employees/employees-edit-view', [
-					"save_url" => base_url("administration/employees/edit/save/".$_employee_code),
-					"shops" => $_API_SHOPS,
-					"employees" => $_API_EMPLOYEES
-				]);
-			}
+		if(empty($_employee_code))
+		{	
+			echo "System Message: Wrong employee input!";
+			return;
 		}
+		// variable initial
+		
+		//API call here
+		$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES_CODE').$_employee_code);
+		$this->component_api->CallGet();
+		$_API_EMPLOYEES = $this->component_api->GetConfig("result");
+		$_API_EMPLOYEES = !empty($_API_EMPLOYEES['query']) ? $_API_EMPLOYEES['query'] : [];
+		
+		$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES_ROLES'));
+		$this->component_api->CallGet();
+		$_API_ROLES = $this->component_api->GetConfig("result");
+		$_API_ROLES = !empty($_API_ROLES['query']) ? $_API_ROLES['query'] : [];
+
+		$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
+		$this->component_api->CallGet();
+		$_API_SHOPS = $this->component_api->GetConfig("result");
+		$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : [];
+
+		if(empty($_API_EMPLOYEES))
+		{
+			echo "System Message: Fetch employee error!";
+			return;
+		}
+		$_login = $this->session->userdata['login'];
+		// function bar here
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/administration/employees'.$_login['preference']), "style" => "", "show" => true],
+				["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
+			]
+		]);
+		// load view here
+		$this->load->view('/employees/employees-edit-view', [
+			"save_url" => base_url("administration/employees/edit/save/".$_employee_code),
+			"shops" => $_API_SHOPS,
+			"employees" => $_API_EMPLOYEES,
+			"roles" => $_API_ROLES
+		]);
 	}
+
+	/**
+	 * Delete employee
+	 */
+	public function delete($_employee_code = "")
+	{
+		$_login = $this->session->userdata("login");
+		$_comfirm_show = true;
+		// echo "<pre>";
+		// var_dump($_data['query']);
+		// echo "</pre>";
+
+		$this->load->view("items/items-del-view",[
+			"submit_to" => base_url('/administration/employees/delete/confirmed/'.$_employee_code),
+			"to_deleted_num" => $_employee_code,
+			"confirm_show" => $_comfirm_show,
+			"return_url" => base_url('/administration/employees/'.$_login['preference'])
+		]);
+		
+	}
+
 	/**
 	 * save employees crete configure setting
 	 *
@@ -194,36 +234,45 @@ class Employees extends CI_Controller
 		// echo "<pre>";
 		// var_dump($_POST);
 		// echo "</pre>";
-
 		$_api_body = "";
+		$result = "";
+		$_login = $this->session->userdata("login");
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/administration/employees'.$_login["preference"]), "style" => "", "show" => true],
+			]
+		]);
 		if(!empty($_POST))
 		{
 			$_api_body = json_encode($_POST,true);
-			// echo $_api_body;
+			//echo $_api_body;
 			// API data
 			$this->component_api->SetConfig("body", $_api_body);
 			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES'));
 			$this->component_api->CallPost();
-			$result = json_decode($this->component_api->GetConfig("result"),true);
+			$result = $this->component_api->GetConfig("result");
 
-			if(isset($result['error']['message']) || isset($result['error']['code']))
+			// echo "<pre>";
+			// var_dump($result);
+			// echo "</pre>";
+			switch($result["http_code"])
 			{
-				$alert = "danger";
-				switch($result['error']['code'])
-				{
-					case "00000":
-						$alert = "success";
-					break;
-				}		
-				$this->load->view('error-handle', [
-					'message' => $result['error']['message'], 
-					'code'=> $result['error']['code'], 
-					'alertstyle' => $alert
-				]);
-				
-				// callback initial page
-				header("Refresh: 5; url=".base_url("/administration/employees"));
+				case 200:
+					$alert = "success";
+				break;
+				case 404:
+					$alert = "danger";
+				break;
 			}
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+				
+			// callback initial page
+			header("Refresh: 3; url=".base_url("/administration/employees"));
+			
 		}
 	}
 
@@ -234,44 +283,97 @@ class Employees extends CI_Controller
 	public function saveedit($_employee_code = "")
 	{
 		$_api_body = "";
-		if(!empty($_POST))
+		$alert = "danger";
+		$result = "";
+		$_login = $this->session->userdata("login");
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/administration/employees'.$_login["preference"]), "style" => "", "show" => true],
+			]
+		]);
+		if(empty($_POST))
 		{
-			if(empty($_POST['i-pwd']))
-			{
-				// do change pwd
-				unset($_POST["i-pwd"]);
-				unset($_POST["i-confirm-pwd"]);
-			}
-			$_api_body = json_encode($_POST,true);
-			// echo $_api_body;
-			// API data
-			$this->component_api->SetConfig("body", $_api_body);
-			$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$_employee_code);
-			$this->component_api->CallPatch();
-			$result = json_decode($this->component_api->GetConfig("result"),true);
-
-			if(isset($result['error']['message']) || isset($result['error']['code']))
-			{
-				$alert = "danger";
-				switch($result['error']['code'])
-				{
-					case "00000":
-						$alert = "success";
-					break;
-				}		
-				$this->load->view('error-handle', [
-					'message' => $result['error']['message'], 
-					'code'=> $result['error']['code'], 
-					'alertstyle' => $alert
-				]);
-				
-				// callback initial page
-				header("Refresh: 5; url=".base_url("/administration/employees"));
-			}
+			echo "System Msg: No data submitted or data lost in transmit!";
+			return;
 		}
+		if(empty($_POST['i-pwd']))
+		{
+			// do change pwd
+			unset($_POST["i-pwd"]);
+			unset($_POST["i-confirm-pwd"]);
+		}
+		$_api_body = json_encode($_POST,true);
+		// echo $_api_body;
+		// API data
+		//echo $this->config->item('URL_EMPLOYEES').$_employee_code;
+		$this->component_api->SetConfig("body", $_api_body);
+		$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$_employee_code);
+		$this->component_api->CallPatch();
+		$result = $this->component_api->GetConfig("result");
 
+		// echo "<pre>";
+		// var_dump($result);
+		// echo "</pre>";
+		switch($result["http_code"])
+		{
+			case 200:
+				$alert = "success";
+			break;
+			case 404:
+				$alert = "danger";
+			break;
+		}
+		$this->load->view('error-handle', [
+			'message' => $result["error"]['message'], 
+			'code'=> $result["error"]['code'], 
+			'alertstyle' => $alert
+		]);
+			
+		// callback initial page
+		header("Refresh: 3; url=".base_url("/administration/employees"));
+		return;
 		// echo "<pre>";
 		// var_dump($_POST);
 		// echo "</pre>";
+	}
+
+	/**
+	 * to save delete employee
+	 * 
+	 */
+	public function savedel($_employee_code = "")
+	{
+		$alert = "danger";
+		$result = "";
+		// variable define
+		$_login = $this->session->userdata("login");
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/administration/employees'.$_login["preference"]), "style" => "", "show" => true],
+			]
+		]);
+		// gather user information
+		$this->component_api->SetConfig("url", $this->config->item('URL_EMPLOYEES').$_employee_code);
+		$this->component_api->CallDelete();
+		$result = $this->component_api->GetConfig("result");
+		// send data to view 
+		switch($result["http_code"])
+		{
+			case 200:
+				$alert = "success";
+			break;
+			case 404:
+				$alert = "danger";
+			break;
+		}
+		$this->load->view('error-handle', [
+			'message' => $result["error"]['message'], 
+			'code'=> $result["error"]['code'], 
+			'alertstyle' => $alert
+		]);
+			
+		// callback initial page
+		header("Refresh: 3; url=".base_url("/administration/employees"));
+		return;
 	}
 }

@@ -113,19 +113,23 @@ class Quotations extends CI_Controller
 		$_end_date = "";
 		$_quotation_num = "";
 		$_cust_code = "";
-
+		$_query = "";
+		$_login = $this->session->userdata['login'];
+		
 		if(empty($_GET['i-start-date']) && empty($_GET['i-end-date']))
 		{
 			$_GET['i-start-date'] = date("Y-m-d", strtotime('-'.$this->config->item('NUM_DATE_OF_SEARCH').' days'));
 			$_GET['i-end-date'] = date("Y-m-d");
 		}
-		$_query =$this->input->get();
+		$_query = $_login['preference'];
+		$_query = $this->input->get();
+
 		if(!empty($_query))
 		{
 			$_quotation_num = $this->input->get("i-quotation-num");
 			$_start_date = $this->input->get('i-start-date');
 			$_end_date = $this->input->get('i-end-date');
-			$_cust_code = $this->input->get('i-cust-code');
+			$_cust_code = $this->input->get('i-cust-code');	
 
 			//Set user preference
 			$_query['page'] = htmlspecialchars($this->_page);
@@ -135,7 +139,7 @@ class Quotations extends CI_Controller
 			$_query['i-quotation-num'] = htmlspecialchars($_quotation_num);
 			$_query['i-cust-code'] = htmlspecialchars($_cust_code);
 			$_query = $this->component_uri->QueryToString($_query);
-			$_login = $this->session->userdata['login'];
+			
 			$_login['preference'] = $_query;
 			$this->session->set_userdata("login", $_login);
 
@@ -195,9 +199,7 @@ class Quotations extends CI_Controller
 
 		if(!empty($_session_id) && !empty($_num))
 		{
-			
 			$_show_discard_btn = true;
-
 			$_data = $this->session->userdata($_session_id);
 			// create new quotation
 			// For back button after submit to tender page
@@ -287,6 +289,7 @@ class Quotations extends CI_Controller
 		$_show_void_btn = false;
 		$_show_convert_btn = false;
 		$_API_MASTER = ['items' => "", 'shops' => "", 'customers'=> "", 'paymentmethod' => ""];
+		$_login = $this->session->userdata('login');
 
 		if(!empty($_num))
 		{
@@ -302,8 +305,7 @@ class Quotations extends CI_Controller
 
 			if(!empty($_transaction))
 			{
-				$_login = $this->session->userdata('login');
-
+				
 				if($_transaction['has'])
 				{
 					if($_transaction['query']['is_convert'] == 0)

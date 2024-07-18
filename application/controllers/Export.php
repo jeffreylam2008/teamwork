@@ -37,7 +37,7 @@ class Export extends CI_Controller
     }
     public function products()
     {
-        $this->component_api->SetConfig("url", $this->config->item('URL_BACKUP')."products/");
+        $this->component_api->SetConfig("url", $this->config->item('URL_EXPORT')."products/");
 		$this->component_api->CallGet();
 		$_API = $this->component_api->GetConfig("result");
         $_API = !empty($_API['query']) ? $_API['query'] : [];
@@ -49,6 +49,9 @@ class Export extends CI_Controller
         $_new_array[0][] = "Price";
         $_new_array[0][] = "Discount";
         $_new_array[0][] = "category";
+        $_new_array[0][] = "type";
+        $_new_array[0][] = "image_name";
+        $_new_array[0][] = "image_body";
         $_new_array[0][] = "Unit";
         $k = 1;
         foreach($_API as $row )
@@ -60,6 +63,9 @@ class Export extends CI_Controller
             $_new_array[$k][] = $row['price'];
             $_new_array[$k][] = $row['price_special'];
             $_new_array[$k][] = $row['category'];
+            $_new_array[$k][] = $row['type'];
+            $_new_array[$k][] = $row['image_name'];
+            $_new_array[$k][] = base64_encode($row['image_body']);
             $_new_array[$k][] = $row['unit'];
             $k++;
         }
@@ -69,7 +75,7 @@ class Export extends CI_Controller
     }
     public function categories()
     {
-        $this->component_api->SetConfig("url", $this->config->item('URL_BACKUP')."categories/");
+        $this->component_api->SetConfig("url", $this->config->item('URL_EXPORT')."categories/");
 		$this->component_api->CallGet();
 		$_API = $this->component_api->GetConfig("result");
         $_API = !empty($_API['query']) ? $_API['query'] : [];
@@ -89,7 +95,7 @@ class Export extends CI_Controller
     }
     public function customers()
     {
-        $this->component_api->SetConfig("url", $this->config->item('URL_BACKUP')."customers/");
+        $this->component_api->SetConfig("url", $this->config->item('URL_EXPORT')."customers/");
 		$this->component_api->CallGet();
 		$_API = $this->component_api->GetConfig("result");
         $_API = !empty($_API['query']) ? $_API['query'] : [];
@@ -163,7 +169,7 @@ class Export extends CI_Controller
     }
     public function suppliers()
     {
-        $this->component_api->SetConfig("url", $this->config->item('URL_BACKUP')."suppliers/");
+        $this->component_api->SetConfig("url", $this->config->item('URL_EXPORT')."suppliers/");
 		$this->component_api->CallGet();
 		$_API = $this->component_api->GetConfig("result");
         $_API = !empty($_API['query']) ? $_API['query'] : [];
@@ -201,7 +207,7 @@ class Export extends CI_Controller
     }
     public function paymentmethod()
     {
-        $this->component_api->SetConfig("url", $this->config->item('URL_BACKUP')."paymentmethods/");
+        $this->component_api->SetConfig("url", $this->config->item('URL_EXPORT')."paymentmethods/");
 		$this->component_api->CallGet();
 		$_API = $this->component_api->GetConfig("result");
         $_API = !empty($_API['query']) ? $_API['query'] : [];
@@ -222,7 +228,7 @@ class Export extends CI_Controller
     }
     public function paymentterm()
     {
-        $this->component_api->SetConfig("url", $this->config->item('URL_BACKUP')."paymentterms/");
+        $this->component_api->SetConfig("url", $this->config->item('URL_EXPORT')."paymentterms/");
 		$this->component_api->CallGet();
 		$_API = $this->component_api->GetConfig("result");
         $_API = !empty($_API['query']) ? $_API['query'] : [];
@@ -243,10 +249,25 @@ class Export extends CI_Controller
     
     public function districts()
     {
+        $this->component_api->SetConfig("url", $this->config->item('URL_EXPORT')."districts/");
+		$this->component_api->CallGet();
+		$_API = $this->component_api->GetConfig("result");
+        $_API = !empty($_API['query']) ? $_API['query'] : [];
         $_new_array = [];
         $_new_array[0][] = "District Code";
         $_new_array[0][] = "Chinese name";
         $_new_array[0][] = "English name";
+        $_new_array[0][] = "Region";
+        $k = 1;
+        foreach($_API as $row)
+        {
+            $_new_array[$k][] = $row["district_code"];
+            $_new_array[$k][] = $row["district_chi"];
+            $_new_array[$k][] = $row["district_eng"];
+            $_new_array[$k][] = $row["region"];
+            $k++;
+        }
+
         $this->component_file->Array2CSV($_new_array);
         $this->component_file->DownloadHeaders("districts.csv");
         die();

@@ -22,14 +22,14 @@ class Systems extends CI_Controller
 		$this->_page = $this->config->item('DEFAULT_FIRST_PAGE');
 
 
-		if($this->input->get("page"))
-		{
-			$this->_page = $this->input->get("page");
-		}
-		if($this->input->get("show"))
-		{
-			$this->_default_per_page = $this->input->get("show");
-		}
+		// if($this->input->get("page"))
+		// {
+		// 	$this->_page = $this->input->get("page");
+		// }
+		// if($this->input->get("show"))
+		// {
+		// 	$this->_default_per_page = $this->input->get("show");
+		// }
 		if(!empty($this->session->userdata['login']))
 		{
 			$this->_token = $this->session->userdata['login']['token'];
@@ -69,12 +69,12 @@ class Systems extends CI_Controller
 				"today" => date("Y-m-d")
 			];
 			//Set user preference
-			$_query['page'] = htmlspecialchars($this->_page);
-			$_query['show'] = htmlspecialchars($this->_default_per_page);
-			$_query = $this->component_uri->QueryToString($_query);
-			$_login = $this->session->userdata['login'];
-			$_login['preference'] = $_query;
-			$this->session->set_userdata("login", $_login);
+			// $_query['page'] = htmlspecialchars($this->_page);
+			// $_query['show'] = htmlspecialchars($this->_default_per_page);
+			// $_query = $this->component_uri->QueryToString($_query);
+			// $_login = $this->session->userdata['login'];
+			// $_login['preference'] = $_query;
+			// $this->session->set_userdata("login", $_login);
 
 			// fatch side bar 
 			$this->component_sidemenu->SetConfig("nav_list", $this->_API_HEADER['menu']);
@@ -83,7 +83,7 @@ class Systems extends CI_Controller
 
 			// load header view
 			$this->load->view('header',[
-				'title'=>'Suppliers',
+				'title'=>'Import & Export',
 				'sideNav_view' => $this->load->view('side-nav', [
 					"sideNav" => $this->component_sidemenu->GetConfig("nav_finished_list"),
 					"path" => $this->component_sidemenu->GetConfig("path"),
@@ -103,13 +103,12 @@ class Systems extends CI_Controller
     public function backuprestore()
     {
         $this->load->view('title-bar', [
-            "title" => "Backup / Restore: "
+            "title" => $this->lang->line("import_export")
         ]);
         $this->load->view("systems/backup-view",[
-            "submit_to" => base_url("#"),
 			"checkheader_url" =>base_url("import/checkheader"),
-            "products_import_url" => base_url("import/products"),
-			"categories_import_url" => base_url("import/categories"),
+            "products_import_url" => base_url("systems/impproducts"),
+			"categories_import_url" => base_url("systems/imcategories"),
 			"customers_import_url" => base_url("import/customers"),
 			"suppliers_import_url" => base_url("import/suppliers"),
 			"paymentmethod_import_url" => base_url("import/paymentmethod"),
@@ -125,11 +124,30 @@ class Systems extends CI_Controller
             "employees_export_url" => base_url("export/employees"),
             "districts_export_url" => base_url("export/districts")
         ]); 
-
+		
     }
-	public function test()
+	public function impproducts()
 	{
-		$this->load->view("systems/test-view");
+		$this->load->view("systems/modal-import",[
+			"title" => $this->lang->line("import_product_title"),
+			"extra_txt" => $this->lang->line("import_product_extra_txt"),
+			"check_url" => base_url("import/checkheader"),
+			"submit_to" => $this->config->item('URL_IMPORT')."products/",
+			"check_type" => "products",
+			"return_url" => base_url("systems/backuprestore")
+		]);
+	}
+
+	public function imcategories()
+	{
+		$this->load->view("systems/modal-import",[
+			"title" => $this->lang->line("import_categories_title"),
+			"extra_txt" => $this->lang->line("import_categories_extra_txt"),
+			"check_url" => base_url("import/checkheader"),
+			"submit_to" => $this->config->item('URL_IMPORT')."categories/",
+			"check_type" => "categories",
+			"return_url" => base_url("systems/backuprestore")
+		]);
 	}
 
 	public function access()

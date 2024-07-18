@@ -57,6 +57,25 @@
                     </select>
                 </div>
             </div>
+
+            <div class="form-row">
+                <div class="col-3">
+                    <label for=""><?=$this->lang->line("employee_access_level")?></label>
+                    <select class="custom-select custom-select-sm" id="i-emp-roles" name="i-emp-roles" >
+                        <option value="<?=$employees['role_code']?>"><?=$employees['role_name']?></option>
+                        <?php 
+
+                        foreach($roles as $key => $val):
+                            
+                        ?>
+                        <option value="<?=$val['role_code']?>"><?=$val['name']?></option>
+                        <?php
+                        endforeach;
+                        ?>
+                    </select>
+                </div>
+            </div>
+
             <div class="form-row">
                 <div class="col-2">
                     <label for=""><?=$this->lang->line('employee_status')?></label>

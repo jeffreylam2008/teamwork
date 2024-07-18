@@ -563,6 +563,7 @@ $config['URL_SHOP'] = $config['api_url']."/systems/shops/";
 $config['URL_SHOP_HEADER'] = $config['api_url']."/systems/shops/view/header/username/";
 $config['URL_EMPLOYEES'] = $config['api_url']."/systems/employees/";
 $config['URL_EMPLOYEES_CODE'] = $config['api_url']."/systems/employees/code/";
+$config['URL_EMPLOYEES_ROLES'] = $config['api_url']."/systems/employees/roles/";
 $config['URL_MENU_SIDE'] = $config['api_url']."/systems/menu/side?l=".$config['language'];
 $config['URL_CATEGORIES'] = $config['api_url']."/products/categories/";
 $config['URL_CATEGORIES_HAS_ITEM'] = $config['api_url']."/products/items/has/category/";
@@ -621,3 +622,4 @@ $config['URL_DUSHBOARD_MONTHLY_INVOICES'] = $config['api_url']."/inventory/invoi
 $config['URL_DUSHBOARD_MONTHLY_PURCHASES'] = $config['api_url']."/purchases/order/transaction/h/count/";
 $config['URL_BACKUP'] = $config['api_url']."/systems/backup/";
 $config['URL_MASTER'] = $config['api_url']."/systems/master/";
+$config['URL_IMPORT'] = $config['api_url']."/systems/restore/";

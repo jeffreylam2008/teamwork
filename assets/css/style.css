@@ -41,13 +41,13 @@
     margin: 0px 0px;
 }
 #diy-sidebar .sub{
-    text-indent: 1px;
+    text-indent: 2px;
     left: 0;
     background-color: #384b77;
     overflow-x: hidden;
 }
 #diy-sidebar .sub .sub1{
-    text-indent: 10px;
+    text-indent: 12px;
 }
 #diy-sidebar .sub .sub .sub1{
     text-indent: 20px;

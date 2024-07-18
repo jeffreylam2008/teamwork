@@ -21,10 +21,19 @@ class Shops extends CI_Controller
 		$this->_default_per_page = $this->config->item('DEFAULT_PER_PAGE');
 		$this->_page = $this->config->item('DEFAULT_FIRST_PAGE');
 
+		if($this->input->get("page"))
+		{
+			$this->_page = $this->input->get("page");
+		}
+		if($this->input->get("show"))
+		{
+			$this->_default_per_page = $this->input->get("show");
+		}
 
-		// dummy data
+		// call token from session
 		if(!empty($this->session->userdata['login']))
 		{
+			// extend logon timeout
 			$this->_token = $this->session->userdata['login']['token'];
 			$this->_profile = $this->session->userdata['login']['profile'];
 		}
@@ -60,22 +69,16 @@ class Shops extends CI_Controller
 				"shop_name" => $this->_API_HEADER['employee']['shop_name'],
 				"today" => date("Y-m-d")
 			];
-			// set preference 
-			if($this->input->get("page"))
+			if(!empty($_query))
 			{
-				$this->_page = $this->input->get("page");
+				//Set user preference
+				$_query['page'] = htmlspecialchars($this->_page);
+				$_query['show'] = htmlspecialchars($this->_default_per_page);
+				$_query = $this->component_uri->QueryToString($_query);
+				$_login = $this->session->userdata['login'];
+				$_login['preference'] = $_query;
+				$this->session->set_userdata("login", $_login);
 			}
-			if($this->input->get("show"))
-			{
-				$this->_default_per_page = $this->input->get("show");
-			}
-			$_query['page'] = $this->_page;
-			$_query['show'] = $this->_default_per_page;
-			$_query = $this->component_uri->QueryToString($_query);
-
-			$_login = $this->session->userdata['login'];
-			$_login['preference'] = $_query;
-			$this->session->set_userdata("login", $_login);
 
 			// Set side menu config
 			$this->component_sidemenu->SetConfig("nav_list", $this->_API_HEADER['menu']);
@@ -131,7 +134,7 @@ class Shops extends CI_Controller
 	/**
 	 * Shop Edit
 	 */
-	public function edit($shop_code)
+	public function edit($shop_code = "")
 	{
 		// user data
 		$_previous_disable = "";
@@ -140,90 +143,64 @@ class Shops extends CI_Controller
 		$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$shop_code);
 		$this->component_api->CallGet();
 		$_API_SHOPS = $this->component_api->GetConfig("result");
-		$_API_SHOPS = $_API_SHOPS['query'];
+		$_API_SHOPS = !empty($_API_SHOPS['query']) ? $_API_SHOPS['query'] : [];
 
-		if(empty($_API_SHOPS["previous"]))
-		{
-			$_previous_disable = "disabled";
+		if(!empty($shop_code)){
+			if(empty($_API_SHOPS["previous"]))
+			{
+				$_previous_disable = "disabled";
+			}
+			if(empty($_API_SHOPS["next"]))
+			{
+				$_next_disable = "disabled";
+			}
+		// echo "<pre>";
+		// var_dump($this->_shops);
+		// echo "</pre>";
+						// function bar with next, preview and save button
+			$this->load->view('function-bar', [
+				"btn" => [
+					["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/administration/shops'), "style" => "", "show" => true],
+					["name" => "<i class='fas fa-undo-alt'></i> ".$this->lang->line("function_clear"), "type"=>"button", "id" => "reset", "url" => "" , "style" => "btn btn-outline-secondary", "show" => true],
+					["name" => "<i class='far fa-save'></i> ".$this->lang->line("function_save"), "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
+					["name" => "<i class='fas fa-step-backward'></i> ".$this->lang->line("function_previous"), "type"=>"button", "id" => "previous", "url"=> base_url("/administration/shops/edit/".$_API_SHOPS["previous"]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
+					["name" => "<i class='fas fa-step-forward'></i> ".$this->lang->line("function_next"), "type"=>"button", "id" => "next", "url"=> base_url("/administration/shops/edit/".$_API_SHOPS["next"]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
+				]
+			]);
+	
+			// load main view
+			$this->load->view('shops/shops-edit-view', [
+				"save_url" => base_url("administration/shops/edit/save/".$shop_code),
+				"data" => $_API_SHOPS
+			]);
+			$this->load->view('footer');
+
 		}
-		if(empty($_API_SHOPS["next"]))
-		{
-			$_next_disable = "disabled";
-		}
-		// if(!empty($shop_code))
-		// {
-		// 	// Call API here
-
-		// 	// API data usage
-		// 	if(!empty($this->_shops) && !empty($shop_code) )
-		// 	{
-		// 		$_all = array_column($this->_shops, "shop_code");
-				
-		// 		// search key
-		// 		$_key = array_search(
-		// 			$shop_code, array_column($this->_shops, "shop_code")
-		// 		);
-				
-		// 		if($_key !== false)
-		// 		{
-		// 			$_cur = $_key;
-		// 			$_next = $_key + 1;
-		// 			$_previous = $_key - 1;
-					
-		// 			if($_cur == (count($_all)-1))
-		// 			{
-		// 				$_next_disable = "disabled";
-		// 				$_next = (count($_all)-1);
-		// 			}
-		// 			if($_cur <= 0)
-		// 			{
-		// 				$_previous_disable = "disabled";
-		// 				$_previous = 0;
-		// 			}
-	// echo "<pre>";
-	// var_dump($this->_shops);
-	// echo "</pre>";
-					// function bar with next, preview and save button
-		$this->load->view('function-bar', [
-			"btn" => [
-				["name" => "Back", "type"=>"button", "id" => "back", "url"=>base_url('/administration/shops'), "style" => "", "show" => true],
-				["name" => "Reset", "type"=>"button", "id" => "reset", "url" => "" , "style" => "btn btn-outline-secondary", "show" => true],
-				["name" => "Save", "type"=>"button", "id" => "save", "url"=>"#", "style" => "btn btn-primary", "show" => true],
-				["name" => "Previous", "type"=>"button", "id" => "previous", "url"=> base_url("/administration/shops/edit/".$_API_SHOPS["previous"]), "style" => "btn btn-outline-secondary ".$_previous_disable, "show" => true],
-				["name" => "Next", "type"=>"button", "id" => "next", "url"=> base_url("/administration/shops/edit/".$_API_SHOPS["next"]), "style" => "btn btn-outline-secondary ". $_next_disable , "show" => true]
-			]
-		]);
-
-		// load main view
-		$this->load->view('shops/shops-edit-view', [
-			"save_url" => base_url("administration/shops/edit/save/".$shop_code),
-			"data" => $_API_SHOPS
-		]);
-		$this->load->view('footer');
-		// 		}
-		// 	}
-		// }
-		// else
-		// {
-		// 	$alert = "danger";
-		// 	$this->load->view('error-handle', [
-		// 		'message' => "Data not Ready Yet!", 
-		// 		'code'=> "", 
-		// 		'alertstyle' => $alert
-		// 	]);
-		// }
+		
 	}
 	/**
 	 * Shop save edit
 	 */
 	public function saveedit($shop_code = "")
 	{
+		$alert = "danger";
+		$_login = $this->session->userdata('login');
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), 
+				"type"=>"button", "id" => "Back", "url"=> base_url('/administration/shops'), "style" => "", "show" => true],
+			]
+		]);
 		if(isset($_POST) && !empty($_POST) && isset($shop_code) && !empty($shop_code))
 		{
 			$_api_body = json_encode($_POST,true);
+			// debug start
 			// echo "<pre>";
 			// var_dump($_api_body);
 			// echo "</pre>";
+			// $_api_body = "";
+			// debug end
+
 			$result = "";
 			if($_api_body != "")
 			{
@@ -231,27 +208,38 @@ class Shops extends CI_Controller
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('URL_SHOP').$shop_code);
 				$this->component_api->CallPatch();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
-				
-				if(isset($result['error']['message']) || isset($result['error']['code']))
+				$result = $this->component_api->GetConfig("result");
+				// echo "<pre>";
+				// var_dump($result);
+				// echo "</pre>";
+				switch($result["http_code"])
 				{
-					$alert = "danger";
-					switch($result['error']['code'])
-					{
-						case "00000":
-							$alert = "success";
-						break;
-					}		
-					$this->load->view('error-handle', [
-						'message' => $result['error']['message'], 
-						'code'=> $result['error']['code'], 
-						'alertstyle' => $alert
-					]);
-					
-					// callback initial page
-					header("Refresh: 5; url=".base_url("/administration/shops/"));
+					case 200:
+						$alert = "success";
+					break;
+					case 404:
+						$alert = "danger";
+					break;
 				}
+
+				$this->load->view('error-handle', [
+					'message' => $result["error"]['message'], 
+					'code'=> $result["error"]['code'], 
+					'alertstyle' => $alert
+				]);
 			}
 		}
+		else
+		{
+			$result["error"]['code'] = "90000";
+			$result["error"]['message'] = "Data Problem - input data missing or crashed! Please try create again"; 
+			$this->load->view('error-handle', [
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
+				'alertstyle' => $alert
+			]);
+		}
+		// callback initial page
+		header("Refresh: 5; url=".base_url("/administration/shops/".$_login['preference']));
 	}
 }

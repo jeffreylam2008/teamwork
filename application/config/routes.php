@@ -132,6 +132,8 @@ $route['administration/employees/page/(:any)'] = 'employees/index/$1';
 $route['administration/employees/edit/(:any)'] = 'employees/edit/$1';
 $route['administration/employees/save'] = 'employees/save';
 $route['administration/employees/edit/save/(:any)'] = 'employees/saveedit/$1';
+$route['administration/employees/delete/(:any)'] = 'employees/delete/$1';
+$route['administration/employees/delete/confirmed/(:any)'] = 'employees/savedel/$1';
 
 // Payment Method
 $route['administration/payments/method'] = 'payments/paymentmethod';
@@ -139,6 +141,8 @@ $route['administration/payments/method/page/(:any)'] = 'payments/paymentmethod/$
 $route['administration/payments/method/edit/(:any)'] = 'payments/paymentmethodedit/$1';
 $route['administration/payments/method/edit/save/(:any)'] = 'payments/paymentmethodsaveedit/$1';
 $route['administration/payments/method/save'] = 'payments/paymentmethodsave';
+$route['administration/payments/method/delete/(:any)'] = 'payments/paymentmethodelete/$1';
+$route['administration/payments/method/delete/confirmed/(:any)'] = 'payments/paymentmethodsavedelete/$1';
 
 // Payment Term
 $route['administration/payments/term'] = 'payments/paymentterm';
@@ -146,6 +150,8 @@ $route['administration/payments/term/page/(:any)'] = 'payments/paymentterm/$1';
 $route['administration/payments/term/edit/(:any)'] = 'payments/paymenttermedit/$1';
 $route['administration/payments/term/edit/save/(:any)'] = 'payments/paymenttermsaveedit/$1';
 $route['administration/payments/term/save'] = 'payments/paymenttermsave';
+$route['administration/payments/term/delete/(:any)'] = 'payments/paymenttermdelete/$1';
+$route['administration/payments/term/delete/confirmed/(:any)'] = 'payments/paymenttermsavedelete/$1';
 
 // customers
 $route['customers'] = 'customers/index';
@@ -184,7 +190,6 @@ $route['purchases/order/settlement/save/(:any)/(:any)'] = 'purchases/savesettlem
 
 // stocks
 $route['stocks'] = 'stocks/index';
-// $route['stocks/process'] = 'stocks/grn_confirm';
 
 // stocks -> grn
 $route['stocks/grn/edit/(:any)/(:any)'] = 'GoodReceivedNote/edit/$1/$2';
@@ -217,28 +222,23 @@ $route['stocks/stocktake/delete/(:any)/(:any)'] = 'Stocktake/delete/$1/$2';
 $route['stocks/stocktake/confirmed/delete/(:any)'] = 'Stocktake/savedelete/$1';
 $route['stocks/stocktake/adjust/(:any)/(:any)'] = 'Stocktake/adjust/$1/$2';
 $route['stocks/stocktake/confirmed/adjust/(:any)'] = 'Stocktake/saveadjust/$1';
-// // stocks -> stocktake
-// // $route['stocks/stocktake/create/(:any)'] = 'stocks/stocktake/$1';
-// // $route['stocks/stocktake/process'] = 'stocks/stocktake_process';
-// // $route['stocks/stocktake/detail/(:any)'] = 'stocks/stocktake_detail/$1';
-// // $route['stocks/stocktake/save'] = 'stocks/stocktake_save';
-// // $route['stocks/stocktake/discard/(:any)'] = 'stocks/stocktake_discard/$1';
-// // $route['stocks/stocktake/discard/confirmed/(:any)'] = 'stocks/stocktake_save_discard/$1';
-// // $route['stocks/stocktake/adjust/(:any)'] = 'stocks/stocktake_adjust/$1';
-// // $route['stocks/stocktake/adjust/confirmed/(:any)'] = 'stocks/stocktake_save_adjust/$1';
+
+
 
 // // Master file load
 // $route['master'] = 'master/index';
 
 // // testbed load
- $route['TestBed'] = 'TestBed/index';
+$route['TestBed'] = 'TestBed/index';
 
+$route['ErrorHandle/(:any)/(:any)'] = 'ErrorHandle/$1/$2';
 // // Reports -> index
 // $route['reports'] = 'reports/index';
 // $route['reports/(:any)'] = 'reports/reports/$1';
 
 // // Systems
 $route['systems/backuprestore'] = 'systems/backuprestore';
+
 
 
 // $route['reroute/quotations/create/(:any)'] = 'reroute/quotations/create/$1';

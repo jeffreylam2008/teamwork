@@ -1,14 +1,14 @@
 <table id="tbl" class="table table-striped table-borderedNO" style="width:100%">
         <thead>
             <tr>
-                <th>#</td>
+                <th>#</th>
                     <?php 
                         if($user_auth['delete']):
                     ?>                 
                     <th></th>
                     <?php
                         endif;
-                    ?>   
+                    ?>
                 <th><?=$this->lang->line("employee_id")?></th>
                 <th><?=$this->lang->line("employee_username")?></th>
                 <th><?=$this->lang->line("employee_default_shop")?></th>
@@ -29,15 +29,16 @@
                 {
                     echo "<td><a href='".$del_url.$val['employee_code']."'><i class='fas fa-trash-alt'></i></a></td>";
                 }
-                echo "<td>";
+
                 if($user_auth['edit'])
                 {
-                    echo "<a href='".$edit_url.$val['employee_code']."'>".$val['employee_code']."</a>";
+                    echo "<td><a href='".$edit_url.$val['employee_code']."'>".$val['employee_code']."</a></td>";
                 }
                 else
                 {
-                    echo $val['employee_code'];
+                    echo "<td>".$val['employee_code']."</td>";
                 }
+
                 echo "<td>".$val['username']."</td>";
                 echo "<td>".$val['shop_name']."</td>";
                 echo "<td>".$val['access_level']."</td>";

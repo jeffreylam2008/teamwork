@@ -3,7 +3,7 @@
     // echo "<pre>";
     // print_r($data);
     // echo "</pre>";
-// ?>
+?>
 
 <form id="form1" name="form1" method="POST" action="<?=$save_url.$item_code?>" enctype="multipart/form-data">
 <div class="card">
@@ -67,11 +67,11 @@
                                 <option value="null"><?=$this->lang->line("function_select")?></option>
                             <?php endif;?>
                                 <?php 
-                                        foreach($categories as $k => $v):
+                                    foreach($categories as $k => $v):
                                 ?>
-                                            <?="<option value='".$k."'>".$v."</option>"?>
+                                <?="<option value='".$k."'>".$v."</option>"?>
                                 <?php
-                                        endforeach;
+                                    endforeach;
                                 ?>
                             </select>
                         </div>
@@ -85,7 +85,7 @@
                                 <?php
                                     else:
                                 ?>
-                                <option value="null"><?=$this->lang->line("function_select")?></option>
+                                <option value="-1"><?=$this->lang->line("function_select")?></option>
                                 <?php endif;?>                                                                   
                                 <option value='1'><?=$this->lang->line("item_non_inventory")?></option>
                                 <option value='2'><?=$this->lang->line("item_inventory")?></option>
@@ -104,7 +104,7 @@
                     <div class="form-row" id="i-file">
                         <div class="col-10">
                             <label><?=$this->lang->line("item_image")?></label>
-                            <input type="file" class="form-control form-control-sm" id="i-img" name="i-img" value="" disabled>
+                            <input type="file" class="form-control form-control-sm" id="i-img" name="i-img" value="">
                         </div>
                     </div>
                     <?php if(!$remove_img):?>
@@ -112,14 +112,7 @@
                             <div class="col-10">
                                 <a href="#" type="button" class="btn btn-danger btn-sm" id="i-img-remove" name="i-img-remove" ><?=$this->lang->line("item_removeimage")?></a>
                             </div>
-                        </div>
-                    <?php else: ?>
-                        <div class="form-row">
-                            <div class="col-10">
-                                <label><?=$this->lang->line("item_image")?></label>
-                                <input type="file" class="form-control form-control-sm" id="i-img" name="i-img" value="">
-                            </div>
-                        </div>
+                        </div>   
                     <?php endif;?>
                     <div class="form-row">
                         <div class="col-10">
@@ -139,7 +132,7 @@
         <div class="form-row">
             <div class="col-2">
                 <label for=""><?=$this->lang->line("item_Stockonhand")?></label>
-                <input type="text" class="form-control form-control-sm" name="i-stockonhand" placeholder="Type Something" value="<?=$stockonhand?>" disabled>
+                <input type="text" class="form-control form-control-sm" name="i-stockonhand" placeholder="No Data" value="<?=$stockonhand?>" disabled>
             </div>
         </div>
     </div>
@@ -148,7 +141,6 @@
 <script>
 
 $(document).ready(function() {
-    $("#i-file").hide();
     // The change event while edit product image
     $("#i-img").on("change", function(event){
         if(event.target.files.length > 0){
@@ -184,8 +176,6 @@ $("#save").click(function(){
         else{
             return true;
         }
-
-            
     });
     var isvalid = $("#form1").validate({
         rules: {

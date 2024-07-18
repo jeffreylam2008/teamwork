@@ -158,9 +158,9 @@ class Invoices extends CI_Controller
 			$this->component_api->CallGet();
 			$_data = $this->component_api->GetConfig("result");
 		}
-		// echo "<pre>";
-		// var_dump($_data);
-		// echo "</pre>";
+			// echo "<pre>";
+			// var_dump($_data);
+			// echo "</pre>";
 		if(!$_data['error']['code'] == "00000")
 		{
 			$this->load->view("error-handle", [
@@ -302,7 +302,6 @@ class Invoices extends CI_Controller
 			$this->load->view('footer');
 		}
 	}
-	
 	/**
 	 * Edit Process
 	 * To edit inovice information
@@ -534,6 +533,7 @@ class Invoices extends CI_Controller
 			switch($result["http_code"])
 			{
 				case 200:
+					$invoice_ok = false;
 					$alert = "success";
 				break;
 				case 404:
@@ -546,6 +546,7 @@ class Invoices extends CI_Controller
 				'code'=> $result["error"]['code'], 
 				'alertstyle' => $alert
 			]);
+
 			// Invoice cannot be create
 			if($invoice_ok)
 			{

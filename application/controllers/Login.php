@@ -50,7 +50,7 @@ class Login extends CI_Controller
 		$_api_body["password"] = $this->input->post('i-password',true);
 		$_api_body["shopcode"] = $this->input->post('i-shops',true);
 		$_api_body = json_encode($_api_body, true);
-		// echo $_api_body;
+		echo $_api_body;
 		// echo "<br>";
 		$this->component_api->SetConfig("body", $_api_body);
 		$this->component_api->SetConfig("url", $this->config->item('URL_LOGIN'));
@@ -89,17 +89,20 @@ class Login extends CI_Controller
 			}
 			if(!empty($this->input->get('url')))
 			{
+				//echo "has url!!!<br>";
 				// have url already
 				redirect($this->input->get('url')."?token=".$_profile['token'],"auto");
 			}
 			else
 			{
+				//echo "No URL!!!<br>";
 				// No url perpare
 				redirect(base_url($this->config->item('default_home')."/?token=".$_profile['token']),"auto");
 			}
 		}
 		else
 		{
+			//echo "something went wrong!!!<br>";
 			// something went wrong 
 			// No url perpare
 			$_e_code = urlencode($_result['error']['code']);

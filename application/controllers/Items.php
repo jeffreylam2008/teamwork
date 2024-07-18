@@ -221,6 +221,7 @@ class Items extends CI_Controller
 		$this->component_api->CallGet();
 		$_API_CATEGORIES = $this->component_api->GetConfig("result");
 		$_API_CATEGORIES = !empty($_API_CATEGORIES['query']) ? $_API_CATEGORIES['query'] : [];
+		
 		$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS').$item_code);
 		$this->component_api->CallGet();
 		$_API_ITEMS = $this->component_api->GetConfig("result");
@@ -231,9 +232,12 @@ class Items extends CI_Controller
 		$_API_ONHAND = $this->component_api->GetConfig("result");
 		$_API_ONHAND = !empty($_API_ONHAND['query']) ? $_API_ONHAND['query'] : [];
 
+		// echo "<pre>";
+		// var_dump($_API_ITEMS);
+		// echo "</pre>";
 		$_API_ITEMS[0]['stockonhand'] = $_API_ONHAND['qty'];
 		$_API_ITEMS[0]['desc'] = trim($_API_ITEMS[0]['desc']);
-		if(empty($_API_ITEMS['image_body']))
+		if(empty($_API_ITEMS[0]['image_body']))
 		{
 			$_API_ITEMS[0]['image_body'] = "data:image/png;base64,".base64_encode(file_get_contents(base_url("/assets/img/empty-img.jpg")));	
 			$_remove_img = true;
@@ -242,6 +246,7 @@ class Items extends CI_Controller
 		{
 			$_API_ITEMS[0]['image_body'] = "data:image/png;base64,".$_API_ITEMS[0]['image_body'];	
 		}
+
 
 		$_login = $this->session->userdata("login");
 		// data convertion for items edit (next and previous functions)
@@ -313,7 +318,7 @@ class Items extends CI_Controller
 			if($_data['query'])
 			{
 				$_comfirm_show = false;
-				$_trans_url = base_url("/invoices/edit/".$_data['query']['trans_code']);
+				$_trans_url = base_url("/router/invoices/edit/".$_data['query']['trans_code']);
 				$_trans_code = $_data['query']['trans_code'];
 			}
 			$this->load->view("items/items-del-view",[
@@ -334,31 +339,37 @@ class Items extends CI_Controller
 	public function savedel($item_code="")
 	{
 		$_login = $this->session->userdata("login");
+		// function bar has go back button
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/products/items'.$_login["preference"]), "style" => "", "show" => true],
+			]
+		]);
 		// API data
 		$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS').$item_code);
 		$this->component_api->CallDelete();
-		$result = json_decode($this->component_api->GetConfig("result"),true);
+		$result = $this->component_api->GetConfig("result");
 
 		if(isset($result['error']['message']) || isset($result['error']['code']))
 		{
-
-			$alert = "danger";
-			switch($result['error']['code'])
+			switch($result["http_code"])
 			{
-				case "00000":
+				case 200:
 					$alert = "success";
 				break;
-			}					
-			
+				case 404:
+					$alert = "danger";
+				break;
+			}
 			$this->load->view('error-handle', [
-				'message' => $result['error']['message'], 
-				'code'=> $result['error']['code'], 
+				'message' => $result["error"]['message'], 
+				'code'=> $result["error"]['code'], 
 				'alertstyle' => $alert
 			]);
-	
 			// callback initial page
-			header("Refresh: 5; url=".base_url("/products/items/".$_login['preference']));
+			// header("Refresh: 5; url=".base_url("/products/items/".$_login['preference']));
 		}
+		
 	}
 
 	/** 
@@ -366,9 +377,18 @@ class Items extends CI_Controller
 	 */
 	public function savecreate()
 	{
+		$result = [];
+		$alert = "danger";
 		$_NEW_POST = [];
 		$_FILES['i-img']['content'] = "";
+		
 		$_login = $this->session->userdata("login");
+		// function bar has go back button
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/products/items'.$_login["preference"]), "style" => "", "show" => true],
+			]
+		]);
 		if(isset($_POST) && !empty($_POST))
 		{
 			if(!empty($_FILES['i-img']['tmp_name'])){
@@ -387,41 +407,49 @@ class Items extends CI_Controller
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS'));
 				$this->component_api->CallPost();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
+				$result = $this->component_api->GetConfig("result");
 
-				if(isset($result['error']['message']) || isset($result['error']['code']))
+				// echo "<pre>";
+				// var_dump($result);
+				// echo "</pre>";
+				switch($result["http_code"])
 				{
-					$alert = "danger";
-					switch($result['error']['code'])
-					{
-						case "00000":
-							$alert = "success";
-						break;
-					}					
-					
-					$this->load->view('error-handle', [
-						'message' => $result['error']['message'], 
-						'code'=> $result['error']['code'], 
-						'alertstyle' => $alert
-					]);
-			
-					// callback initial page
-					header("Refresh: 5; url=".base_url("/products/items/".$_login['preference']));
+					case 200:
+						$alert = "success";
+					break;
+					case 404:
+						$alert = "danger";
+					break;
 				}
+				$this->load->view('error-handle', [
+					'message' => $result["error"]['message'], 
+					'code'=> $result["error"]['code'], 
+					'alertstyle' => $alert
+				]);
 			}
 		}
+		// callback initial page
+		header("Refresh: 5; url=".base_url('/products/items'.$_login['preference']));
 	}
 
 	/** 
 	 * Save  Operation for Edit 
 	 * @param item_code selected item code 
 	 */
-	public function saveedit($item_code="")
+	public function saveedit($item_code = "")
 	{
+		$result = [];
+		$alert = "danger";
 		$_NEW_POST = [];
 		$_login = $this->session->userdata("login");
-
 		
+		// function bar with next, preview and save button
+		$this->load->view('function-bar', [
+			"btn" => [
+				["name" => "<i class='fas fa-chevron-left'></i> ".$this->lang->line("function_back"), "type"=>"button", "id" => "back", "url"=>base_url('/products/items'.$_login["preference"]), "style" => "", "show" => true],
+			]
+		]);
+
 		if(isset($_POST) && !empty($_POST) && isset($item_code) && !empty($item_code))
 		{
 			if(!empty($_FILES))
@@ -451,31 +479,30 @@ class Items extends CI_Controller
 				$this->component_api->SetConfig("body", $_api_body);
 				$this->component_api->SetConfig("url", $this->config->item('URL_ITEMS').$item_code);
 				$this->component_api->CallPatch();
-				$result = json_decode($this->component_api->GetConfig("result"),true);
-
-				// echo "<pre>";
+				$result = $this->component_api->GetConfig("result");
+				// echo "<pre>";		
 				// var_dump($result);
 				// echo "</pre>";
-				if(isset($result['error']['message']) || isset($result['error']['code']))
+
+				switch($result["http_code"])
 				{
-					$alert = "danger";
-					switch($result['error']['code'])
-					{
-						case "00000":
-							$alert = "success";
-						break;
-					}					
-					
-					$this->load->view('error-handle', [
-						'message' => $result['error']['message'], 
-						'code'=> $result['error']['code'], 
-						'alertstyle' => $alert
-					]);
-			
-					// callback initial page
-					header("Refresh: 2; url=".base_url("/products/items/".$_login['preference']));
+					case 200:
+						$alert = "success";
+					break;
+					case 404:
+						$alert = "danger";
+					break;
 				}
+	
+				$this->load->view('error-handle', [
+					'message' => $result["error"]['message'], 
+					'code'=> $result["error"]['code'], 
+					'alertstyle' => $alert
+				]);
+				
 			}
 		}
+		// callback initial page
+		header("Refresh: 5; url=".base_url("/products/items".$_login['preference']));
 	}
 }

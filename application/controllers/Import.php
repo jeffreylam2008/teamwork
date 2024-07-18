@@ -19,18 +19,21 @@ class Import extends CI_Controller
     public function __construct()
 	{
         parent::__construct();
-        $this->products_word = '"item Code"';
-        $this->products_length = 8;
-        $this->categories_word = '"categories code"';
+        $this->products_word = 'item Code';
+        $this->products_length = 11;
+        $this->categories_word = 'categories code';
         $this->categories_length = 2;
-        $this->customers_word = '"customer code"';
+        $this->customers_word = 'customer code';
         $this->customers_length = 30;
-        $this->suppliers_word = '"Supplier code"';
+        $this->suppliers_word = 'Supplier code';
         $this->suppliers_length = 11;
-        $this->paymentmethod_word = '"payment method code"';
+        $this->paymentmethod_word = 'payment method code';
         $this->paymentmethod_length = 2;
-        $this->paymentterm_word = '"payment term code"';
+        $this->paymentterm_word = 'payment term code';
         $this->paymentterm_length = 2;
+        $this->districts_word = 'District Code';
+        $this->districts_length = 4;
+
     }
 
     public function stocktake()
@@ -43,209 +46,89 @@ class Import extends CI_Controller
     public function checkheader($type)
     {
         header('Content-Type: application/json; charset=utf-8');
-
-        if(isset($_FILES['i-import']))
-        {
-            $response = array();
-            $content = $this->component_file->ReadCSVContents($_FILES['i-import']);
-            $content = json_decode($content);
-            // echo trim($content->data[0][0], "\xEF\xBB\xBF");
-            if($type == "products" && strcmp(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $content->data[0][0]),$this->products_word) == 0 && count($content->data[0]) == $this->products_length )
-            {
-                $response = array(
-                    "length" => count($content->data),
-                    "status" => "success",
-                    "error" => false,
-                    "message" => "Checked Header - OK!"
-                );
-            }
-           
-            // echo json_encode( strcmp(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $content->data[0][0]),$this->products_word)) ;
-            
-            // elseif($type == "categories" && strcmp($content->data[0][0],$this->categories_word) == 0 && count($content->data[0]) == $this->categories_length)
-            // {
-            //     $response = array(
-            //         "length" => count($content->data),
-            //         "status" => "success",
-            //         "error" => false,
-            //         "message" => "Checked Header - OK!"
-            //     );  
-            // }
-            // elseif($type == "customers" && strcmp($content->data[0][0],$this->customers_word) == 0 && count($content->data[0]) == $this->customers_length)
-            // {
-            //     $response = array(
-            //         "length" => count($content->data),
-            //         "status" => "success",
-            //         "error" => false,
-            //         "message" => "Checked Header - OK!"
-            //     );  
-            // }
-            // elseif($type == "suppliers" && strcmp($content->data[0][0],$this->suppliers_word) == 0 && count($content->data[0]) == $this->suppliers_length)
-            // {
-            //     $response = array(
-            //         "length" => count($content->data),
-            //         "status" => "success",
-            //         "error" => false,
-            //         "message" => "Checked Header - OK!"
-            //     );  
-            // }
-            else
-            {
-                $response = array(
-                    "data" => "",
-                    "status" => "failure",
-                    "error" => true,
-                    "message" => "Wrong Header"
-                );
-            }
+        // checking file is exist
+        if(!isset($_FILES['i-import']))
+        {   
+            $response = array(
+                "query" => "",
+                "status" => "failure",
+                "error" => true,
+                "message" => "File not found!"
+            );
             echo json_encode($response);
+            die();
         }
-        die();
-    }
-    public function products()
-    {
-        header('Content-Type: application/json; charset=utf-8');
-        $response = array();
-        $content = $this->component_file->ReadCSVContents($_FILES['i-import']);
-        $content = json_decode($content);
-       
-        // if(count($content->data[0]) == $this->products_length)
-        // {
-            
-        //     // do import here
-        //     // fatch items API
-            $this->component_api->SetConfig("body", json_encode($content->data));
-            $this->component_api->SetConfig("url", $this->config->item('URL_SYS_RESTORE')."products/");
-            $this->component_api->CallPost();
-            $result = $this->component_api->GetConfig("result");
-            echo json_encode($result);
-        //     // respone result
-        //     $response = array(
-        //         "data" => $content->data,
-        //         "status" => "success",
-        //         "error" => false,
-        //         "message" => "file content"
-        //     );
-        // }
-        // else
-        // {
-        //     $response = array(
-        //         "data" => "",
-        //         "status" => "failure",
-        //         "error" => true,
-        //         "message" => "Wrong Header"
-        //     );
-        // }
-        
-        die();
-    }
-    public function categories()
-    {
-        header('Content-Type: application/json; charset=utf-8');
-        $response = array();
-        $content = $this->component_file->ReadCSVContents($_FILES['i-import']);
-        $content = json_decode($content);
-        if(strcmp($content->data[0][0],$this->categories_word) == 0 && count($content->data[0]) == $this->categories_length)
+        // checking file extension
+        $ext = pathinfo($_FILES['i-import']['name'], PATHINFO_EXTENSION);
+        if($ext != "csv")
         {
             $response = array(
-                "data" => $content->data,
+                "query" => "",
+                "status" => "failure",
+                "error" => true,
+                "message" => "File must be .csv extension!"
+            );
+            echo json_encode($response);
+            die();
+        }
+        $response = array();
+        $content = $this->component_file->ReadCSVContents($_FILES['i-import']);
+        $content = json_decode($content);
+        // echo json_encode($content);
+        // echo trim($content->data[0][0], "\xEF\xBB\xBF");
+        switch($type)
+        {
+            case "products":
+                $length = $this->products_length;
+                $title_name = $this->products_word;
+            break;
+            case "categories":
+                $length = $this->categories_length;
+                $title_name = $this->categories_word;
+            break;
+            case "customers":
+                $length = $this->customers_length;
+                $title_name = $this->customers_word;
+            break;
+            case "suppliers":
+                $length = $this->suppliers_length;
+                $title_name = $this->suppliers_word;
+            break;
+            case "paymentmethod":
+                $length = $this->paymentmethod_word;
+                $title_name = $this->paymentmethod_word;
+            break;
+            case "paymentterm":
+                $length = $this->paymentterm_length;
+                $title_name = $this->paymentterm_word;
+            break;
+            case "districts":
+                $length = $this->districts_length;
+                $title_name = $this->districts_word;
+            break;
+        }
+        if(count($content[0]) == $length && $content[0][0] === $title_name)
+        {
+            $response = array(
+                "length" => count($content),
+                "query" => $content,
                 "status" => "success",
                 "error" => false,
-                "message" => "file content"
-            );  
+                "message" => "Checked File - OK!"
+            );
         }
         else
         {
             $response = array(
-                "data" => "",
+                "query" => "",
                 "status" => "failure",
                 "error" => true,
-                "message" => "Wrong Header"
+                "message" => "Wrong File"
             );
         }
         echo json_encode($response);
         die();
     }
-    public function customers()
-    {
-        header('Content-Type: application/json; charset=utf-8');
-        $response = array();
-        $content = $this->component_file->ReadCSVContents($_FILES['i-import']);
-        $content = json_decode($content);
-        if(strcmp($content->data[0][0],$this->customers_word) == 0 && count($content->data[0]) == $this->customers_length)
-        {
-            $response = array(
-                "data" => $content->data,
-                "status" => "success",
-                "error" => false,
-                "message" => "file content"
-            );  
-        }
-        else
-        {
-            $response = array(
-                "data" => "",
-                "status" => "failure",
-                "error" => true,
-                "message" => "Wrong Header"
-            );
-        }
-        echo json_encode($response);
-        die();
-    }
-    public function suppliers()
-    {
-        header('Content-Type: application/json; charset=utf-8');
-        $response = array();
-        $content = $this->component_file->ReadCSVContents($_FILES['i-import']);
-        $content = json_decode($content);
-        if(strcmp($content->data[0][0],$this->categories_word) == 0 && count($content->data[0]) == $this->categories_length)
-        {
-            $response = array(
-                "data" => $content->data,
-                "status" => "success",
-                "error" => false,
-                "message" => "file content"
-            );  
-        }
-        else
-        {
-            $response = array(
-                "data" => "",
-                "status" => "failure",
-                "error" => true,
-                "message" => "Wrong Header"
-            );
-        }
-        echo json_encode($response);
-        die();
-    }
-
-    public function paymentmethod()
-    {
-        header('Content-Type: application/json; charset=utf-8');
-        $response = array();
-        $content = $this->component_file->ReadCSVContents($_FILES['i-import']);
-        $content = json_decode($content);
-        if(strcmp($content->data[0][0],$this->paymentmethod_word) == 0 && count($content->data[0]) == $this->paymentmethod_length)
-        {
-            $response = array(
-                "data" => $content->data,
-                "status" => "success",
-                "error" => false,
-                "message" => "file content"
-            );  
-        }
-        else
-        {
-            $response = array(
-                "data" => "",
-                "status" => "failure",
-                "error" => true,
-                "message" => "Wrong Header"
-            );
-        }
-        echo json_encode($response);
-        die();
-    }
+   
+  
 }
