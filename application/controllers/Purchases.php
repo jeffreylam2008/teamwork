@@ -408,7 +408,7 @@ class Purchases extends CI_Controller
 
 	/**
 	 * Edit PO transaction 
-	 * @param _num Quotation number
+	 * @param _num Purchase number
 	 *
 	 */
 	public function edit($_session_id = "", $_num="")

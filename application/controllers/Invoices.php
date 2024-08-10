@@ -351,10 +351,13 @@ class Invoices extends CI_Controller
 						$_show_next_btn = false;
 						$_show_void_btn = false;
 					}
+
 					// fatch items API
 					$this->component_api->SetConfig("url", $this->config->item('URL_MASTER'));
 					$this->component_api->CallGet();
 					$_API_MASTER = $this->component_api->GetConfig("result");
+
+					
 					if(!empty($_API_MASTER['query']))
 					{
 						$_API_MASTER = $_API_MASTER['query'];

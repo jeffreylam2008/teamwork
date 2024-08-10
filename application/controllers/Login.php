@@ -17,6 +17,7 @@ class Login extends CI_Controller
 	{	
 		$_e_code = "";
 		$_e_msg = "";
+		
 		$this->component_api->SetConfig("url", $this->config->item('URL_SHOP'));
 		$this->component_api->CallGet();
 		$_API = $this->component_api->GetConfig("result");

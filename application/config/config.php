@@ -31,7 +31,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://192.168.1.33/webapp';
+$config['base_url'] = 'http://localhost/webapp';
 
 /*
 |--------------------------------------------------------------------------
@@ -84,8 +84,8 @@ $config['url_suffix'] = '';
 | than english.
 |
 */
-$config['language']	= 'zh-hk';
-//$config['language']	= 'en-us';
+//$config['language']	= 'zh-hk';
+$config['language']	= 'en-us';
 /*
 |--------------------------------------------------------------------------
 | Default Character Set
@@ -388,7 +388,8 @@ $config['encryption_key'] = '';
 $config['sess_driver'] = 'files';
 $config['sess_cookie_name'] = 'ci_session';
 $config['sess_expiration'] = 0;
-$config['sess_save_path'] = sys_get_temp_dir();
+//$config['sess_save_path'] = sys_get_temp_dir();
+$config['sess_save_path'] = "/Applications/XAMPP/htdocs/webapp/sess.storage/";
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
 $config['sess_regenerate_destroy'] = FALSE;
@@ -543,7 +544,7 @@ $config['default_home'] = 'dushboard';
 */
 //$config['api_url'] = 'http://13.209.150.150/erp_backend/api/v1';
 //$config['api_url'] = 'http://46.137.246.181/erp_backend/api/v1';
-$config['api_url'] = 'http://192.168.1.33/erp_backend/api/v1';
+$config['api_url'] = 'http://localhost/erp_backend/api/v1';
 $config['DEBUG_MODE'] = true;
 $config['DEFAULT_PER_PAGE'] = 50;
 $config['DEFAULT_FIRST_PAGE'] = 1;
